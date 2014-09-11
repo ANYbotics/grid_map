@@ -34,7 +34,7 @@ Installation
 
 ### Dependencies
 
-- [Eigen] (linear algebra library)
+- [Eigen]
 
 ### Building
 
