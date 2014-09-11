@@ -8,7 +8,7 @@ This is a C++ library to manage two-dimensional grid maps with multiple data lay
 
 The storage structure is implemented as two-dimensional circular buffer so the map can be moved efficiently while the data keeps its correspodance to a fixed reference frame. This library builds on the [Eigen] library and provides interfaces and message definitions for [ROS]. Currently, only float data can be stored in the grid map.
 
-**Author: Peter Fankhauser, pfankhauser@ethz.ch<br />
+**Author: Péter Fankhauser, pfankhauser@ethz.ch<br />
 Affiliation: Autonomous Systems Lab, ETH Zurich**
 
 
