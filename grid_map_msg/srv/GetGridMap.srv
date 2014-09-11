@@ -1,0 +1,19 @@
+# Requested submap position in x-direction [m].
+float64 positionX
+  
+# Requested submap position in y-direction [m].
+float64 positionY
+
+# Requested submap length in x-direction [m].
+float64 lengthX
+  
+# Requested submap width in y-direction [m].
+float64 lengthY
+
+# Requested data. If empty, get all available data.
+std_msgs/String[] dataDefinition
+
+---
+
+# Submap
+grid_map_msg/GridMap gridMap
