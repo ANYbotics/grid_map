@@ -59,10 +59,10 @@ class GridMapVisualization
   //! ROS nodehandle.
   ros::NodeHandle& nodeHandle_;
 
-  //! ROS subscriber to the elevation map.
+  //! ROS subscriber to the grid map.
   ros::Subscriber mapSubscriber_;
 
-  //! Topic name of the elevation map to be visualized.
+  //! Topic name of the grid map to be visualized.
   std::string mapTopic_;
 
   //! Map region visualization.
@@ -72,4 +72,4 @@ class GridMapVisualization
   PointCloudVisualization pointCloudVisualization_;
 };
 
-} /* elevation_map_visualization */
+} /* namespace */
