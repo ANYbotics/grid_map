@@ -79,4 +79,4 @@ bool MapRegionVisualization::visualize(const grid_map::GridMap& map)
   return true;
 }
 
-} /* namespace elevation_map_visualization */
+} /* namespace */

@@ -75,4 +75,4 @@ class MapRegionVisualization
 
 };
 
-} /* namespace elevation_map_visualization */
+} /* namespace */

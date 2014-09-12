@@ -19,7 +19,7 @@
 namespace grid_map_visualization {
 
 /*!
- * Visualized an elevation map by publishing marker arrays that can be viewed in rviz.
+ * Visualizes a grid map by publishing different topics that can be viewed in Rviz.
  */
 class GridMapVisualization
 {

@@ -25,7 +25,7 @@ PointCloudVisualization::~PointCloudVisualization()
 
 bool PointCloudVisualization::readParameters()
 {
-  nodeHandle_.param("point_cloud/point_type", pointType_, std::string("elevation"));
+  nodeHandle_.param("point_cloud/point_type", pointType_, std::string("feature"));
   return true;
 }
 
