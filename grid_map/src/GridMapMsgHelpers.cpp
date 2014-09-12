@@ -27,7 +27,7 @@ bool isRowMajor(const std_msgs::Float32MultiArray& messageData)
   if (messageData.layout.dim[0].label == storageIndexNames[StorageIndices::Column]) return false;
   else if (messageData.layout.dim[0].label == storageIndexNames[StorageIndices::Row]) return true;
 
-  ROS_ERROR("elevation_map_msg: isRowMajor() failed because layout label is not set correctly.");
+  ROS_ERROR("isRowMajor() failed because layout label is not set correctly.");
   return false;
 }
 
@@ -70,7 +70,29 @@ bool multiArrayMessageMapToMatrixEigen(std_msgs::Float32MultiArray& m, Eigen::Ma
   return true;
 }
 
-void transformColorVectorToValue(const Eigen::Vector3i& colorVector, float& colorValue)
+bool colorValueToVector(const unsigned long& colorValue, Eigen::Vector3i& colorVector)
+{
+  colorVector(0) = (colorValue >> 16) & 0x0000ff;
+  colorVector(1) = (colorValue >> 8) & 0x0000ff;
+  colorVector(2) =  colorValue & 0x0000ff;
+  return true;
+}
+
+bool colorValueToVector(const unsigned long& colorValue, Eigen::Vector3f& colorVector)
+{
+  Eigen::Vector3i tempColorVector;
+  colorValueToVector(colorValue, tempColorVector);
+  colorVector = ((tempColorVector.cast<float>()).array() / 255.0).matrix();
+  return true;
+}
+
+bool colorVectorToValue(const Eigen::Vector3i& colorVector, unsigned long& colorValue)
+{
+  colorValue = ((int)colorVector(0)) << 16 | ((int)colorVector(1)) << 8 | ((int)colorVector(2));
+  return true;
+}
+
+void colorVectorToValue(const Eigen::Vector3i& colorVector, float& colorValue)
 {
   int color = (colorVector(0) << 16) + (colorVector(1) << 8) + colorVector(2);
   colorValue = *reinterpret_cast<float*>(&color);

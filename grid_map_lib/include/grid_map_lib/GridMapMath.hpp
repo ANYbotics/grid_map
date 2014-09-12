@@ -181,6 +181,18 @@ bool getBufferRegionsForSubmap(std::vector<Eigen::Array2i>& submapIndeces,
                                const Eigen::Array2i& bufferStartIndex = Eigen::Array2i::Zero());
 
 /*!
+ * Increases the index by one to iterate through the map.
+ * Increments either to the neighboring index to the right or to
+ * the start of the lower row. Returns false if end of iterations are reached.
+ * @param[in/out] index the index in the map that is incremented (corrected for the circular buffer).
+ * @param[in] bufferSize the map buffer size.
+ * @param[in] bufferStartIndex the map buffer start index.
+ * @return true if successfully incremented indeces, false if end of iteration limits are reached.
+ */
+bool incrementIndex(Eigen::Array2i& index, const Eigen::Array2i& bufferSize,
+                    const Eigen::Array2i& bufferStartIndex = Eigen::Array2i::Zero());
+
+/*!
  * Increases the index by one to iterate through the cells of a submap.
  * Increments either to the neighboring index to the right or to
  * the start of the lower row. Returns false if end of iterations are reached.

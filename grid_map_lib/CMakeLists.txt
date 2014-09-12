@@ -42,6 +42,7 @@ include_directories(
 add_library(${PROJECT_NAME}
    src/GridMap.cpp
    src/GridMapMath.cpp
+   src/GridMapIterator.cpp
 )
 
 target_link_libraries(${PROJECT_NAME}

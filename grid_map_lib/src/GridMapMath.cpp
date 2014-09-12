@@ -432,10 +432,34 @@ bool getBufferRegionsForSubmap(std::vector<Eigen::Array2i>& submapIndeces,
   return false;
 }
 
+bool incrementIndex(Eigen::Array2i& index, const Eigen::Array2i& bufferSize,
+                    const Eigen::Array2i& bufferStartIndex)
+{
+  Eigen::Array2i unwrappedIndex = getIndexFromBufferIndex(index, bufferSize, bufferStartIndex);
+
+  // Increment index.
+  if (unwrappedIndex(1) + 1 < bufferSize(1)) {
+    // Same row.
+    unwrappedIndex[1]++;
+  } else {
+    // Next row.
+    unwrappedIndex[0]++;
+    unwrappedIndex[1] = 0;
+  }
+
+  // End of iterations reached.
+  if (!checkIfIndexWithinRange(unwrappedIndex, bufferSize)) return false;
+
+  // Return true iterated index.
+  index = getBufferIndexFromIndex(unwrappedIndex, bufferSize, bufferStartIndex);
+  return true;
+}
+
 bool incrementIndexForSubmap(Eigen::Array2i& submapIndex, Eigen::Array2i& index, const Eigen::Array2i& submapTopLeftIndex,
                              const Eigen::Array2i& submapBufferSize, const Eigen::Array2i& bufferSize,
                              const Eigen::Array2i& bufferStartIndex)
 {
+  // TODO Rewrite this function to use upper function.
   // Copy the data first, only copy it back if everything is within range.
   Array2i tempIndex = index;
   Array2i tempSubmapIndex = submapIndex;

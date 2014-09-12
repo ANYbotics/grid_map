@@ -34,6 +34,11 @@ GridMap::GridMap(const std::vector<std::string>& types)
   }
 }
 
+GridMap::GridMap()
+{
+
+}
+
 GridMap::~GridMap()
 {
 
@@ -65,14 +70,14 @@ void GridMap::setClearTypes(const std::vector<std::string>& clearTypes)
   clearTypes_ = clearTypes;
 }
 
-const Eigen::MatrixXf& GridMap::getConst(const std::string& type)
+const Eigen::MatrixXf& GridMap::get(const std::string& type) const
 {
-  return data_[type];
+  return data_.at(type);
 }
 
 Eigen::MatrixXf& GridMap::get(const std::string& type)
 {
-  return data_[type];
+  return data_.at(type);
 }
 
 float& GridMap::at(const std::string& type, const Eigen::Vector2d& position)
@@ -85,7 +90,12 @@ float& GridMap::at(const std::string& type, const Eigen::Vector2d& position)
 
 float& GridMap::at(const std::string& type, const Eigen::Array2i& index)
 {
-  return data_[type](index(0), index(1));
+  return data_.at(type)(index(0), index(1));
+}
+
+float GridMap::at(const std::string& type, const Eigen::Array2i& index) const
+{
+  return data_.at(type)(index(0), index(1));
 }
 
 bool GridMap::getIndex(const Eigen::Vector2d& position, Eigen::Array2i& index)
@@ -93,7 +103,7 @@ bool GridMap::getIndex(const Eigen::Vector2d& position, Eigen::Array2i& index)
   return getIndexFromPosition(index, position, length_, position_, resolution_, bufferSize_, bufferStartIndex_);
 }
 
-bool GridMap::getPosition(const Eigen::Array2i& index, Eigen::Vector2d& position)
+bool GridMap::getPosition(const Eigen::Array2i& index, Eigen::Vector2d& position) const
 {
   return getPositionFromIndex(position, index, length_, position_, resolution_, bufferSize_, bufferStartIndex_);
 }
@@ -103,7 +113,7 @@ bool GridMap::isInside(const Eigen::Vector2d& position)
   return checkIfPositionWithinMap(position, length_, position_);
 }
 
-bool GridMap::isValid(const Eigen::Array2i& index)
+bool GridMap::isValid(const Eigen::Array2i& index) const
 {
   for (auto& type : clearTypes_) {
     if (isnanf(at(type, index))) return false;
@@ -111,13 +121,13 @@ bool GridMap::isValid(const Eigen::Array2i& index)
   return true;
 }
 
-bool GridMap::getPosition3d(const std::string& type, const Eigen::Array2i& index, Eigen::Vector3d& position)
+bool GridMap::getPosition3d(const std::string& type, const Eigen::Array2i& index, Eigen::Vector3d& position) const
 {
   if (!isValid(index)) return false;
   Vector2d position2d;
   getPosition(index, position2d);
   position.head(2) = position2d;
-  position.z() = data_[type](index(0), index(1));
+  position.z() = data_.at(type)(index(0), index(1));
   return true;
 }
 
@@ -185,28 +195,28 @@ void GridMap::move(const Eigen::Vector2d& position)
 
   // Delete fields that fall out of map (and become empty cells).
   for (int i = 0; i < indexShift.size(); i++) {
-    if (indexShift[i] != 0) {
-      if (abs(indexShift[i]) >= getBufferSize()(i)) {
+    if (indexShift(i) != 0) {
+      if (abs(indexShift(i)) >= getBufferSize()(i)) {
         // Entire map is dropped.
         clear();
       } else {
         // Drop cells out of map.
-        int sign = (indexShift[i] > 0 ? 1 : -1);
-        int startIndex = bufferStartIndex_[i] - (sign < 0 ? 1 : 0);
-        int endIndex = startIndex - sign + indexShift[i];
-        int nCells = abs(indexShift[i]);
+        int sign = (indexShift(i) > 0 ? 1 : -1);
+        int startIndex = bufferStartIndex_(i) - (sign < 0 ? 1 : 0);
+        int endIndex = startIndex - sign + indexShift(i);
+        int nCells = abs(indexShift(i));
 
         int index = (sign > 0 ? startIndex : endIndex);
-        mapIndexWithinRange(index, getBufferSize()[i]);
+        mapIndexWithinRange(index, getBufferSize()(i));
 
-        if (index + nCells <= getBufferSize()[i]) {
+        if (index + nCells <= getBufferSize()(i)) {
           // One region to drop.
           if (i == 0) clearCols(index, nCells);
           if (i == 1) clearRows(index, nCells);
         } else {
           // Two regions to drop.
           int firstIndex = index;
-          int firstNCells = getBufferSize()[i] - firstIndex;
+          int firstNCells = getBufferSize()(i) - firstIndex;
           if (i == 0) clearCols(firstIndex, firstNCells);
           if (i == 1) clearRows(firstIndex, firstNCells);
 
@@ -233,7 +243,7 @@ void GridMap::setTimestamp(const uint64_t& timestamp)
   timestamp_ = timestamp;
 }
 
-const uint64_t& GridMap::getTimestamp()
+const uint64_t& GridMap::getTimestamp() const
 {
   return timestamp_;
 }
@@ -243,32 +253,32 @@ void GridMap::setFrameId(const std::string& frameId)
   frameId_ = frameId;
 }
 
-const std::string& GridMap::getFrameId()
+const std::string& GridMap::getFrameId() const
 {
   return frameId_;
 }
 
-const Eigen::Array2d& GridMap::getLength()
+const Eigen::Array2d& GridMap::getLength() const
 {
   return length_;
 }
 
-const Eigen::Vector2d& GridMap::getPosition()
+const Eigen::Vector2d& GridMap::getPosition() const
 {
   return position_;
 }
 
-double GridMap::getResolution()
+double GridMap::getResolution() const
 {
   return resolution_;
 }
 
-const Eigen::Array2i& GridMap::getBufferSize()
+const Eigen::Array2i& GridMap::getBufferSize() const
 {
   return bufferSize_;
 }
 
-const Eigen::Array2i& GridMap::getBufferStartIndex()
+const Eigen::Array2i& GridMap::getBufferStartIndex() const
 {
   return bufferStartIndex_;
 }
@@ -276,7 +286,7 @@ const Eigen::Array2i& GridMap::getBufferStartIndex()
 void GridMap::clear()
 {
   for (auto& key : clearTypes_) {
-    data_[key].setConstant(NAN);
+    data_.at(key).setConstant(NAN);
   }
 }
 
@@ -291,7 +301,7 @@ void GridMap::clearCols(unsigned int index, unsigned int nCols)
 {
   for (auto& type : clearTypes_)
   {
-    data_[type].block(index, 0, nCols, getBufferSize()[1]).setConstant(NAN);
+    data_.at(type).block(index, 0, nCols, getBufferSize()(1)).setConstant(NAN);
   }
 }
 
@@ -299,7 +309,7 @@ void GridMap::clearRows(unsigned int index, unsigned int nRows)
 {
   for (auto& type : clearTypes_)
   {
-    data_[type].block(0, index, getBufferSize()[0], nRows).setConstant(NAN);
+    data_.at(type).block(0, index, getBufferSize()(0), nRows).setConstant(NAN);
   }
 }
 

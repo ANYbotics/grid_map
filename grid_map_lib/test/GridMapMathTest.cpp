@@ -708,6 +708,97 @@ TEST(getBufferRegionsForSubmap, CircularBuffer)
   EXPECT_EQ(1, submapSizes[bottomRight][1]);
 }
 
+TEST(checkIncrementIndex, Simple)
+{
+  Eigen::Array2i index(0, 0);
+  Eigen::Array2i bufferSize(4, 3);
+
+  EXPECT_TRUE(incrementIndex(index, bufferSize));
+  EXPECT_EQ(0, index[0]);
+  EXPECT_EQ(1, index[1]);
+
+  EXPECT_TRUE(incrementIndex(index, bufferSize));
+  EXPECT_EQ(0, index[0]);
+  EXPECT_EQ(2, index[1]);
+
+  EXPECT_TRUE(incrementIndex(index, bufferSize));
+  EXPECT_EQ(1, index[0]);
+  EXPECT_EQ(0, index[1]);
+
+  EXPECT_TRUE(incrementIndex(index, bufferSize));
+  EXPECT_EQ(1, index[0]);
+  EXPECT_EQ(1, index[1]);
+
+  for (int i = 0; i < 6; i++) {
+    EXPECT_TRUE(incrementIndex(index, bufferSize));
+  }
+  EXPECT_EQ(3, index[0]);
+  EXPECT_EQ(1, index[1]);
+
+  EXPECT_TRUE(incrementIndex(index, bufferSize));
+  EXPECT_EQ(3, index[0]);
+  EXPECT_EQ(2, index[1]);
+
+  EXPECT_FALSE(incrementIndex(index, bufferSize));
+  EXPECT_EQ(index[0], index[0]);
+  EXPECT_EQ(index[1], index[1]);
+}
+
+TEST(checkIncrementIndex, CircularBuffer)
+{
+  Eigen::Array2i bufferSize(4, 3);
+  Eigen::Array2i bufferStartIndex(2, 1);
+  Eigen::Array2i index(bufferStartIndex);
+
+  EXPECT_TRUE(incrementIndex(index, bufferSize, bufferStartIndex));
+  EXPECT_EQ(2, index[0]);
+  EXPECT_EQ(2, index[1]);
+
+  EXPECT_TRUE(incrementIndex(index, bufferSize, bufferStartIndex));
+  EXPECT_EQ(2, index[0]);
+  EXPECT_EQ(0, index[1]);
+
+  EXPECT_TRUE(incrementIndex(index, bufferSize, bufferStartIndex));
+  EXPECT_EQ(3, index[0]);
+  EXPECT_EQ(1, index[1]);
+
+  EXPECT_TRUE(incrementIndex(index, bufferSize, bufferStartIndex));
+  EXPECT_EQ(3, index[0]);
+  EXPECT_EQ(2, index[1]);
+
+  EXPECT_TRUE(incrementIndex(index, bufferSize, bufferStartIndex));
+  EXPECT_EQ(3, index[0]);
+  EXPECT_EQ(0, index[1]);
+
+  EXPECT_TRUE(incrementIndex(index, bufferSize, bufferStartIndex));
+  EXPECT_EQ(0, index[0]);
+  EXPECT_EQ(1, index[1]);
+
+  EXPECT_TRUE(incrementIndex(index, bufferSize, bufferStartIndex));
+  EXPECT_EQ(0, index[0]);
+  EXPECT_EQ(2, index[1]);
+
+  EXPECT_TRUE(incrementIndex(index, bufferSize, bufferStartIndex));
+  EXPECT_EQ(0, index[0]);
+  EXPECT_EQ(0, index[1]);
+
+  EXPECT_TRUE(incrementIndex(index, bufferSize, bufferStartIndex));
+  EXPECT_EQ(1, index[0]);
+  EXPECT_EQ(1, index[1]);
+
+  EXPECT_TRUE(incrementIndex(index, bufferSize, bufferStartIndex));
+  EXPECT_EQ(1, index[0]);
+  EXPECT_EQ(2, index[1]);
+
+  EXPECT_TRUE(incrementIndex(index, bufferSize, bufferStartIndex));
+  EXPECT_EQ(1, index[0]);
+  EXPECT_EQ(0, index[1]);
+
+  EXPECT_FALSE(incrementIndex(index, bufferSize, bufferStartIndex));
+  EXPECT_EQ(index[0], index[0]);
+  EXPECT_EQ(index[1], index[1]);
+}
+
 TEST(checkIncrementIndexForSubmap, Simple)
 {
   Eigen::Array2i submapIndex(0, 0);

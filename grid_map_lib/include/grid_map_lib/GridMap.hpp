@@ -64,7 +64,7 @@ class GridMap
    * @param type the data to be returned.
    * @return grid map data.
    */
-  const Eigen::MatrixXf& getConst(const std::string& type);
+  const Eigen::MatrixXf& get(const std::string& type) const;
 
   /*!
    * Returns the grid map data for a type as non-const. Use this function
@@ -91,6 +91,14 @@ class GridMap
   float& at(const std::string& type, const Eigen::Array2i& index);
 
   /*!
+   * Get cell data for requested index. Const version form above.
+   * @param type the type of the map to be accessed.
+   * @param index the requested index.
+   * @return the data of the cell.
+   */
+  float at(const std::string& type, const Eigen::Array2i& index) const;
+
+  /*!
    * Gets the corresponding cell index for a position.
    * @param[in] position the requested position.
    * @param[out] index the corresponding index.
@@ -105,7 +113,7 @@ class GridMap
    * @param[out] position the position of the data point in the parent frame.
    * @return true if successful, false if index not within range of buffer.
    */
-  bool getPosition(const Eigen::Array2i& index, Eigen::Vector2d& position);
+  bool getPosition(const Eigen::Array2i& index, Eigen::Vector2d& position) const;
 
   /*!
    * Check if position is within the map boundaries.
@@ -119,7 +127,7 @@ class GridMap
    * @param index the index to check.
    * @return true if cell is valid, false otherwise.
    */
-  bool isValid(const Eigen::Array2i& index);
+  bool isValid(const Eigen::Array2i& index) const;
 
   /*!
    * Gets the 3d position of a data point (x, y of cell position & cell value as z) in
@@ -129,7 +137,7 @@ class GridMap
    * @param position the position of the data point in the parent frame.
    * @return true if successful, false if no valid data available.
    */
-  bool getPosition3d(const std::string& type, const Eigen::Array2i& index, Eigen::Vector3d& position);
+  bool getPosition3d(const std::string& type, const Eigen::Array2i& index, Eigen::Vector3d& position) const;
 
   /*!
    * Gets a submap from the map. The requested submap is specified with the requested
@@ -172,7 +180,7 @@ class GridMap
    * Get the timestamp of the grid map.
    * @return timestamp in nanoseconds.
    */
-  const uint64_t& getTimestamp();
+  const uint64_t& getTimestamp() const;
 
   /*!
    * Set the frame id of the grid map.
@@ -184,39 +192,44 @@ class GridMap
    * Get the frameId of the grid map.
    * @return frameId.
    */
-  const std::string& getFrameId();
+  const std::string& getFrameId() const;
 
   /*!
    * Get the side length of the grid map.
    * @return side length of the grid map.
    */
-  const Eigen::Array2d& getLength();
+  const Eigen::Array2d& getLength() const;
 
   /*!
    * Get the 2d position of the grid map in the grid map frame.
    * @return position of the grid map in the grid map frame.
    */
-  const Eigen::Vector2d& getPosition();
+  const Eigen::Vector2d& getPosition() const;
 
   /*!
    * Get the resolution of the grid map.
    * @return resolution of the grid map in the xy plane [m/cell].
    */
-  double getResolution();
+  double getResolution() const;
 
   /*!
    * Get the buffer size (rows and cols of the data structure).
    * @return buffer size.
    */
-  const Eigen::Array2i& getBufferSize();
+  const Eigen::Array2i& getBufferSize() const;
 
   /*!
    * Get the start index of the circular buffer.
    * @return buffer start index.
    */
-  const Eigen::Array2i& getBufferStartIndex();
+  const Eigen::Array2i& getBufferStartIndex() const;
 
  protected:
+
+  /*!
+   * Emtpy constructor.
+   */
+  GridMap();
 
   /*!
    * Clear a number of columns of the grid map.

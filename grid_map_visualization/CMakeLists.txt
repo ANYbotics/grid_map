@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(grid_map)
+project(grid_map_visualization)
 
 set(CMAKE_CXX_FLAGS "-std=c++0x ${CMAKE_CXX_FLAGS}")
 
@@ -7,9 +7,11 @@ set(CMAKE_CXX_FLAGS "-std=c++0x ${CMAKE_CXX_FLAGS}")
 find_package(catkin REQUIRED COMPONENTS
   cmake_modules
   roscpp
-  grid_map_lib
+  tf
+  grid_map
   grid_map_msg
-  sensor_msgs
+  visualization_msgs
+  eigen_stl_containers
 )
 
 ## System dependencies are found with CMake's conventions
@@ -25,10 +27,10 @@ find_package(Eigen REQUIRED)
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-    INCLUDE_DIRS include
-    LIBRARIES ${PROJECT_NAME}
-    CATKIN_DEPENDS grid_map_lib
-    DEPENDS Eigen
+  INCLUDE_DIRS include
+#  LIBRARIES ${PROJECT_NAME}
+  CATKIN_DEPENDS grid_map_msg visualization_msgs
+#  DEPENDS system_lib
 )
 
 ###########
@@ -36,18 +38,33 @@ catkin_package(
 ###########
 
 ## Specify additional locations of header files
+## Your package locations should be listed before other locations
 include_directories(
   include
   ${catkin_INCLUDE_DIRS}
-  ${EIGEN_INCLUDE_DIRS}
 )
 
 ## Declare a cpp library
-add_library(${PROJECT_NAME}
-   src/GridMap.cpp
-   src/GridMapMsgHelpers.cpp
+# add_library(${PROJECT_NAME}
+#   src/${PROJECT_NAME}/grid_map_visualization_node.cpp
+# )
+
+## Declare a cpp executable
+add_executable(
+	${PROJECT_NAME}
+	src/grid_map_visualization_node.cpp
+	src/GridMapVisualization.cpp
+	src/GridMapVisualizationHelpers.cpp
+	src/visualizations/PointCloudVisualization.cpp
+	src/visualizations/MapRegionVisualization.cpp
 )
 
-target_link_libraries(${PROJECT_NAME}
+## Add cmake target dependencies of the executable/library
+## as an example, message headers may need to be generated before nodes
+# add_dependencies(grid_map_visualization_node grid_map_visualization_generate_messages_cpp)
+
+## Specify libraries to link a library or executable target against
+target_link_libraries(
+  ${PROJECT_NAME}
   ${catkin_LIBRARIES}
 )
