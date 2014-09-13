@@ -11,7 +11,7 @@ The storage structure is implemented as two-dimensional circular buffer so the m
 **Author: Péter Fankhauser, pfankhauser@ethz.ch<br />
 Affiliation: Autonomous Systems Lab, ETH Zurich**
 
-![Grid map example in Rviz](example.jpg)
+![Grid map example in Rviz](rviz_example.jpg)
 
 
 Citing
