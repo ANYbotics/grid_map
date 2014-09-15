@@ -13,9 +13,6 @@
 // ROS
 #include <sensor_msgs/point_cloud2_iterator.h>
 
-// STL
-#include <stdarg.h>
-
 using namespace std;
 using namespace Eigen;
 
@@ -36,6 +33,12 @@ GridMap::GridMap(const grid_map_msg::GridMap& message)
 GridMap::~GridMap()
 {
 
+}
+
+GridMap GridMap::getSubmap(const Eigen::Vector2d& position, const Eigen::Array2d& length, Eigen::Array2i& indexInSubmap, bool& isSuccess)
+{
+  grid_map_lib::GridMap subMap = grid_map_lib::GridMap::getSubmap(position, length, indexInSubmap, isSuccess);
+  return *static_cast<grid_map::GridMap*>(&subMap);
 }
 
 void GridMap::toMessage(grid_map_msg::GridMap& message) const
@@ -79,7 +82,7 @@ bool GridMap::fromMessage(const grid_map_msg::GridMap& message)
 
   for (unsigned int i = 0; i < message.dataDefinition.size(); i++) {
     Eigen::MatrixXf dataMatrix;
-    multiArrayMessageCopyToMatrixEigen(message.data[i], dataMatrix); // TODO Could we use the mapping method here?
+    multiArrayMessageCopyToMatrixEigen(message.data[i], dataMatrix); // TODO Could we use the data mapping (instead of copying) method here?
     data_.insert(std::pair<std::string, Eigen::MatrixXf>(message.dataDefinition[i].data, dataMatrix));
     types_.push_back(message.dataDefinition[i].data);
   }
@@ -103,8 +106,6 @@ void GridMap::toPointCloud(sensor_msgs::PointCloud2& pointCloud, const std::stri
   pointCloud.header.frame_id = frameId_;
   pointCloud.header.stamp.fromNSec(timestamp_);
   pointCloud.is_dense = false;
-
-  sensor_msgs::PointCloud2Modifier modifier(pointCloud);
 
   // Fields.
   std::vector<std::string> fieldNames;
@@ -179,4 +180,3 @@ void GridMap::toPointCloud(sensor_msgs::PointCloud2& pointCloud, const std::stri
 }
 
 } /* namespace */
-

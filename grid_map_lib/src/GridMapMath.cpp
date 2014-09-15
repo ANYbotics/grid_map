@@ -459,7 +459,6 @@ bool incrementIndexForSubmap(Eigen::Array2i& submapIndex, Eigen::Array2i& index,
                              const Eigen::Array2i& submapBufferSize, const Eigen::Array2i& bufferSize,
                              const Eigen::Array2i& bufferStartIndex)
 {
-  // TODO Rewrite this function to use upper function.
   // Copy the data first, only copy it back if everything is within range.
   Array2i tempIndex = index;
   Array2i tempSubmapIndex = submapIndex;

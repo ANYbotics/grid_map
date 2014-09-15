@@ -12,6 +12,7 @@
 // STL
 #include <iostream>
 #include <cassert>
+#include <math.h>
 
 using namespace std;
 using namespace Eigen;
@@ -61,7 +62,6 @@ void GridMap::setGeometry(const Eigen::Array2d& length, const double resolution,
   position_ = position;
   bufferStartIndex_.setZero();
 
-  cout << "Grid map matrix resized to " << bufferSize_(0) << " rows and "  << bufferSize_(1) << " columns." << endl;
   return;
 }
 
@@ -116,7 +116,7 @@ bool GridMap::isInside(const Eigen::Vector2d& position)
 bool GridMap::isValid(const Eigen::Array2i& index) const
 {
   for (auto& type : clearTypes_) {
-    if (isnanf(at(type, index))) return false;
+    if (!isfinite(at(type, index))) return false;
   }
   return true;
 }
@@ -136,7 +136,8 @@ GridMap GridMap::getSubmap(const Eigen::Vector2d& position, const Eigen::Array2d
   // Submap the generate.
   GridMap submap(types_);
   submap.setClearTypes(clearTypes_);
-//  submap.setHeader(header_); // TODO
+  submap.setTimestamp(timestamp_);
+  submap.setFrameId(frameId_);
 
   // Get submap geometric information.
   Array2i topLeftIndex;
@@ -148,6 +149,7 @@ GridMap GridMap::getSubmap(const Eigen::Vector2d& position, const Eigen::Array2d
                        length, length_, position_, resolution_, bufferSize_, bufferStartIndex_);
 
   submap.setGeometry(submapLength, resolution_, submapPosition);
+  submap.bufferStartIndex_.setZero(); // Because of the way we copy the data below.
 
   // Copy data.
   std::vector<Eigen::Array2i> submapIndeces;
@@ -159,27 +161,12 @@ GridMap GridMap::getSubmap(const Eigen::Vector2d& position, const Eigen::Array2d
     return GridMap(types_);
   }
 
-//  Array2i submapBufferSize;
-//  submapBufferSize[0] =
-//      (submapSizes[3](0) + submapSizes[1](0) > submapSizes[2](0) + submapSizes[0](0)) ?
-//          submapSizes[3](0) + submapSizes[1](0) : submapSizes[2](0) + submapSizes[0](0);
-//  submapBufferSize[1] =
-//      (submapSizes[3](1) + submapSizes[2](1) > submapSizes[1](1) + submapSizes[0](1)) ?
-//          submapSizes[3](1) + submapSizes[2](1) : submapSizes[1](1) + submapSizes[0](1);
-
-//  submap.resizeBuffer(submapBufferSize);
-
-  for (auto& data : data_)
-  {
+  for (auto& data : data_) {
     submap.data_[data.first].topLeftCorner    (submapSizes[0](0), submapSizes[0](1)) = data.second.block(submapIndeces[0](0), submapIndeces[0](1), submapSizes[0](0), submapSizes[0](1));
     submap.data_[data.first].topRightCorner   (submapSizes[1](0), submapSizes[1](1)) = data.second.block(submapIndeces[1](0), submapIndeces[1](1), submapSizes[1](0), submapSizes[1](1));
     submap.data_[data.first].bottomLeftCorner (submapSizes[2](0), submapSizes[2](1)) = data.second.block(submapIndeces[2](0), submapIndeces[2](1), submapSizes[2](0), submapSizes[2](1));
     submap.data_[data.first].bottomRightCorner(submapSizes[3](0), submapSizes[3](1)) = data.second.block(submapIndeces[3](0), submapIndeces[3](1), submapSizes[3](0), submapSizes[3](1));
   }
-
-  // Copy other header information.
-//  submap.setFrame(frameId_, pose_);
-//  submap.setTimeStamp(timeStamp_);
 
   return submap;
 }
@@ -234,7 +221,7 @@ void GridMap::move(const Eigen::Vector2d& position)
   mapIndexWithinRange(bufferStartIndex_, getBufferSize());
   position_ += alignedPositionShift;
 
-//  if (indexShift.all() != 0)
+//  if (indexShift.all() != 0) // TODO Move notifier to implementation.
 //    ROS_DEBUG("Grid map has been moved to position (%f, %f).", position_.x(), position_.y());
 }
 

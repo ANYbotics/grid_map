@@ -48,6 +48,17 @@ class GridMap : public grid_map_lib::GridMap
   virtual ~GridMap();
 
   /*!
+   * Gets a submap from the map. The requested submap is specified with the requested
+   * location and length.
+   * @param[in] position the requested position of the submap (usually the center).
+   * @param[in] length the requested length of the submap.
+   * @param[out] indexInSubmap the index of the requested position in the submap.
+   * @param[out] isSuccess true if successful, false otherwise.
+   * @return submap (is empty if success is false).
+   */
+  GridMap getSubmap(const Eigen::Vector2d& position, const Eigen::Array2d& length, Eigen::Array2i& indexInSubmap, bool& isSuccess);
+
+  /*!
    * Puts the contents to a ROS message of type GridMap.
    * @param message the GridMap message to be populated.
    */
