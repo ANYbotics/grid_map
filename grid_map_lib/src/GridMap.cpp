@@ -13,6 +13,7 @@
 #include <iostream>
 #include <cassert>
 #include <math.h>
+#include <algorithm>
 
 using namespace std;
 using namespace Eigen;
@@ -67,6 +68,13 @@ void GridMap::setClearTypes(const std::vector<std::string>& clearTypes)
   clearTypes_ = clearTypes;
 }
 
+void GridMap::add(const std::string& type, const Eigen::MatrixXf& data)
+{
+  // TODO Add size checks?
+  data_.insert(std::pair<std::string, MatrixXf>(type, data));
+  types_.push_back(type);
+}
+
 const Eigen::MatrixXf& GridMap::get(const std::string& type) const
 {
   return data_.at(type);
@@ -75,6 +83,22 @@ const Eigen::MatrixXf& GridMap::get(const std::string& type) const
 Eigen::MatrixXf& GridMap::get(const std::string& type)
 {
   return data_.at(type);
+}
+
+bool GridMap::remove(const std::string& type)
+{
+  const auto dataIterator = data_.find(type);
+  if (dataIterator == data_.end()) return false;
+  data_.erase(dataIterator);
+
+  const auto typePosition = std::find(types_.begin(), types_.end(), type);
+  if (typePosition == types_.end()) return false;
+  types_.erase(typePosition);
+
+  const auto clearTypePosition = std::find(clearTypes_.begin(), clearTypes_.end(), type);
+  if (clearTypePosition != clearTypes_.end()) clearTypes_.erase(clearTypePosition);
+
+  return true;
 }
 
 float& GridMap::at(const std::string& type, const Eigen::Vector2d& position)

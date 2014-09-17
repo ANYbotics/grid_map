@@ -60,6 +60,13 @@ class GridMap
   void setClearTypes(const std::vector<std::string>& clearTypes);
 
   /*!
+   * Add a new data.
+   * @param type the type identifier of the data.
+   * @param data the data to be added.
+   */
+  void add(const std::string& type, const Eigen::MatrixXf& data);
+
+  /*!
    * Returns the grid map data for a type.
    * @param type the data to be returned.
    * @return grid map data.
@@ -73,6 +80,13 @@ class GridMap
    * @return grid map data.
    */
   Eigen::MatrixXf& get(const std::string& type);
+
+  /*!
+   * Removes the data for a certain kind.
+   * @param type the data to be removed.
+   * @return true if successful.
+   */
+  bool remove(const std::string& type);
 
   /*!
    * Get cell data at requested position.
