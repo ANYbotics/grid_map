@@ -35,10 +35,7 @@ GridMap::GridMap(const std::vector<std::string>& types)
   }
 }
 
-GridMap::GridMap()
-{
-
-}
+GridMap::GridMap() {}
 
 GridMap::~GridMap()
 {
@@ -115,7 +112,12 @@ bool GridMap::isInside(const Eigen::Vector2d& position)
 
 bool GridMap::isValid(const Eigen::Array2i& index) const
 {
-  for (auto& type : clearTypes_) {
+  return isValid(index, clearTypes_);
+}
+
+bool GridMap::isValid(const Eigen::Array2i& index, const std::vector<std::string>& types) const
+{
+  for (auto& type : types) {
     if (!isfinite(at(type, index))) return false;
   }
   return true;
@@ -145,8 +147,11 @@ GridMap GridMap::getSubmap(const Eigen::Vector2d& position, const Eigen::Array2d
   Eigen::Vector2d submapPosition;
   Array2d submapLength;
 
-  getSubmapInformation(topLeftIndex, submapBufferSize, submapPosition, submapLength, indexInSubmap, position,
-                       length, length_, position_, resolution_, bufferSize_, bufferStartIndex_);
+  if (!getSubmapInformation(topLeftIndex, submapBufferSize, submapPosition, submapLength, indexInSubmap, position,
+                       length, length_, position_, resolution_, bufferSize_, bufferStartIndex_)) {
+    isSuccess = false;
+    return GridMap(types_);
+  }
 
   submap.setGeometry(submapLength, resolution_, submapPosition);
   submap.bufferStartIndex_.setZero(); // Because of the way we copy the data below.
@@ -168,6 +173,7 @@ GridMap GridMap::getSubmap(const Eigen::Vector2d& position, const Eigen::Array2d
     submap.data_[data.first].bottomRightCorner(submapSizes[3](0), submapSizes[3](1)) = data.second.block(submapIndeces[3](0), submapIndeces[3](1), submapSizes[3](0), submapSizes[3](1));
   }
 
+  isSuccess = true;
   return submap;
 }
 
@@ -286,16 +292,14 @@ void GridMap::clearAll()
 
 void GridMap::clearCols(unsigned int index, unsigned int nCols)
 {
-  for (auto& type : clearTypes_)
-  {
+  for (auto& type : clearTypes_) {
     data_.at(type).block(index, 0, nCols, getBufferSize()(1)).setConstant(NAN);
   }
 }
 
 void GridMap::clearRows(unsigned int index, unsigned int nRows)
 {
-  for (auto& type : clearTypes_)
-  {
+  for (auto& type : clearTypes_) {
     data_.at(type).block(0, index, getBufferSize()(0), nRows).setConstant(NAN);
   }
 }
@@ -303,9 +307,7 @@ void GridMap::clearRows(unsigned int index, unsigned int nRows)
 void GridMap::resizeBuffer(const Eigen::Array2i& bufferSize)
 {
   bufferSize_ = bufferSize;
-
-  for (auto& data : data_)
-  {
+  for (auto& data : data_) {
     data.second.resize(bufferSize_(0), bufferSize_(1));
   }
 }

@@ -59,10 +59,17 @@ class GridMap : public grid_map_lib::GridMap
   GridMap getSubmap(const Eigen::Vector2d& position, const Eigen::Array2d& length, Eigen::Array2i& indexInSubmap, bool& isSuccess);
 
   /*!
-   * Puts the contents to a ROS message of type GridMap.
-   * @param message the GridMap message to be populated.
+   * Puts the all contents to a ROS message of type GridMap.
+   * @param[out] message the GridMap message to be populated.
    */
   void toMessage(grid_map_msg::GridMap& message) const;
+
+  /*!
+   * Puts the data of requested types to a ROS message of type GridMap.
+   * @param[in] types the types to be added to the message.
+   * @param[out] message the GridMap message to be populated.
+   */
+  void toMessage(const std::vector<std::string>& types, grid_map_msg::GridMap& message) const;
 
   /*!
    * Puts the contents to a ROS PointCloud2 message. Set the type to be transformed

@@ -10,8 +10,9 @@
 #pragma once
 
 #include <grid_map_msg/GridMap.h>
-#include <grid_map_visualization/visualizations/PointCloudVisualization.hpp>
 #include <grid_map_visualization/visualizations/MapRegionVisualization.hpp>
+#include <grid_map_visualization/visualizations/PointCloudVisualization.hpp>
+#include <grid_map_visualization/visualizations/VectorVisualization.hpp>
 
 // ROS
 #include <ros/ros.h>
@@ -70,6 +71,9 @@ class GridMapVisualization
 
   //! Visualizing map as point cloud.
   PointCloudVisualization pointCloudVisualization_;
+
+  //! Visualizing data as vectors.
+  VectorVisualization vectorVisualization_;
 };
 
 } /* namespace */

@@ -43,6 +43,11 @@ GridMap GridMap::getSubmap(const Eigen::Vector2d& position, const Eigen::Array2d
 
 void GridMap::toMessage(grid_map_msg::GridMap& message) const
 {
+  toMessage(types_, message);
+}
+
+void GridMap::toMessage(const std::vector<std::string>& types, grid_map_msg::GridMap& message) const
+{
   message.info.header.stamp.fromNSec(timestamp_);
   message.info.header.frame_id = frameId_;
   message.info.resolution = resolution_;
@@ -51,13 +56,13 @@ void GridMap::toMessage(grid_map_msg::GridMap& message) const
   message.info.positionX = position_.x();
   message.info.positionY = position_.y();
 
-  for (auto& data : data_) {
+  for (auto& type : types) {
     std_msgs::String definition;
-    definition.data = data.first;
+    definition.data = type;
     message.dataDefinition.push_back(definition);
 
     std_msgs::Float32MultiArray dataArray;
-    matrixEigenCopyToMultiArrayMessage(data.second, dataArray);
+    matrixEigenCopyToMultiArrayMessage(data_.at(type), dataArray);
     message.data.push_back(dataArray);
   }
 

@@ -57,6 +57,7 @@ add_executable(
 	src/GridMapVisualizationHelpers.cpp
 	src/visualizations/PointCloudVisualization.cpp
 	src/visualizations/MapRegionVisualization.cpp
+	src/visualizations/VectorVisualization.cpp
 )
 
 ## Add cmake target dependencies of the executable/library

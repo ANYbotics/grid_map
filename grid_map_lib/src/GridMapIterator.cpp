@@ -52,7 +52,7 @@ const Eigen::Array2i& GridMapIterator::operator *() const
 
 GridMapIterator& GridMapIterator::operator ++()
 {
-  incrementIndex(index_, bufferSize_, startIndex_);
+  isPassedEnd_ = !incrementIndex(index_, bufferSize_, startIndex_);
   return *this;
 }
 

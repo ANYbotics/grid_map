@@ -20,7 +20,7 @@ MapRegionVisualization::MapRegionVisualization(ros::NodeHandle& nodeHandle)
       nVertices_(5),
       lineWidth_(0.01)
 {
-  mapMarkerArrayPublisher_ = nodeHandle_.advertise<visualization_msgs::Marker>("region", 1, true);
+  markerPublisher_ = nodeHandle_.advertise<visualization_msgs::Marker>("region", 1, true);
 }
 
 MapRegionVisualization::~MapRegionVisualization()
@@ -53,7 +53,7 @@ bool MapRegionVisualization::initialize()
 
 bool MapRegionVisualization::visualize(const grid_map::GridMap& map)
 {
-  if (mapMarkerArrayPublisher_.getNumSubscribers () < 1) return true;
+  if (markerPublisher_.getNumSubscribers () < 1) return true;
 
   // Set marker info.
   marker_.header.frame_id = map.getFrameId();
@@ -74,7 +74,7 @@ bool MapRegionVisualization::visualize(const grid_map::GridMap& map)
   marker_.points[4].x = marker_.points[0].x;
   marker_.points[4].y = marker_.points[0].y;
 
-  mapMarkerArrayPublisher_.publish(marker_);
+  markerPublisher_.publish(marker_);
 
   return true;
 }

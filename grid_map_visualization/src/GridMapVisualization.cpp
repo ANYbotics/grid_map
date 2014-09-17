@@ -18,7 +18,8 @@ namespace grid_map_visualization {
 GridMapVisualization::GridMapVisualization(ros::NodeHandle& nodeHandle)
     : nodeHandle_(nodeHandle),
       mapRegionVisualization_(nodeHandle),
-      pointCloudVisualization_(nodeHandle)
+      pointCloudVisualization_(nodeHandle),
+      vectorVisualization_(nodeHandle)
 {
   ROS_INFO("Grid map visualization node started.");
   readParameters();
@@ -36,6 +37,7 @@ bool GridMapVisualization::readParameters()
   nodeHandle_.param("grid_map_topic", mapTopic_, string("/grid_map"));
   mapRegionVisualization_.readParameters();
   pointCloudVisualization_.readParameters();
+  vectorVisualization_.readParameters();
   return true;
 }
 
@@ -43,6 +45,7 @@ bool GridMapVisualization::initialize()
 {
   mapRegionVisualization_.initialize();
   pointCloudVisualization_.initialize();
+  vectorVisualization_.initialize();
   ROS_INFO("Grid map visualization initialized.");
   return true;
 }
@@ -53,6 +56,7 @@ void GridMapVisualization::callback(const grid_map_msg::GridMap& message)
   grid_map::GridMap map(message);
   mapRegionVisualization_.visualize(map);
   pointCloudVisualization_.visualize(map);
+  vectorVisualization_.visualize(map);
 }
 
 } /* namespace */

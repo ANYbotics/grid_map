@@ -123,11 +123,19 @@ class GridMap
   bool isInside(const Eigen::Vector2d& position);
 
   /*!
-   * Checks if cell at index is a valid, i.e. if all clearTypes are not NAN.
+   * Checks if cell at index is a valid, i.e. if all clearTypes are finite.
    * @param index the index to check.
    * @return true if cell is valid, false otherwise.
    */
   bool isValid(const Eigen::Array2i& index) const;
+
+  /*!
+   * Checks if cell at index is a valid (finite) for certain types.
+   * @param index the index to check.
+   * @param types the types to be checked for validity.
+   * @return true if cell is valid, false otherwise.
+   */
+  bool isValid(const Eigen::Array2i& index, const std::vector<std::string>& types) const;
 
   /*!
    * Gets the 3d position of a data point (x, y of cell position & cell value as z) in
