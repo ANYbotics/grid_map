@@ -31,3 +31,4 @@
 .cproject
 .project
 .settings
+*.pydevproject

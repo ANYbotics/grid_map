@@ -75,6 +75,11 @@ void GridMap::add(const std::string& type, const Eigen::MatrixXf& data)
   types_.push_back(type);
 }
 
+bool GridMap::exists(const std::string& type) const
+{
+  return !(data_.find(type) == data_.end());
+}
+
 const Eigen::MatrixXf& GridMap::get(const std::string& type) const
 {
   return data_.at(type);
@@ -101,7 +106,15 @@ bool GridMap::remove(const std::string& type)
   return true;
 }
 
-float& GridMap::at(const std::string& type, const Eigen::Vector2d& position)
+float& GridMap::atPosition(const std::string& type, const Eigen::Vector2d& position)
+{
+  Eigen::Array2i index;
+  if (getIndex(position, index)) {
+    return at(type, index);
+  }
+}
+
+float GridMap::atPosition(const std::string& type, const Eigen::Vector2d& position) const
 {
   Eigen::Array2i index;
   if (getIndex(position, index)) {
@@ -119,7 +132,7 @@ float GridMap::at(const std::string& type, const Eigen::Array2i& index) const
   return data_.at(type)(index(0), index(1));
 }
 
-bool GridMap::getIndex(const Eigen::Vector2d& position, Eigen::Array2i& index)
+bool GridMap::getIndex(const Eigen::Vector2d& position, Eigen::Array2i& index) const
 {
   return getIndexFromPosition(index, position, length_, position_, resolution_, bufferSize_, bufferStartIndex_);
 }
@@ -153,7 +166,21 @@ bool GridMap::getPosition3d(const std::string& type, const Eigen::Array2i& index
   Vector2d position2d;
   getPosition(index, position2d);
   position.head(2) = position2d;
-  position.z() = data_.at(type)(index(0), index(1));
+  position.z() = at(type, index);
+  return true;
+}
+
+bool GridMap::getVector(const std::string& typePrefix, const Eigen::Array2i& index, Eigen::Vector3d& vector) const
+{
+  if (!isValid(index)) return false;
+  std::vector<std::string> types;
+  types.push_back(typePrefix + "x");
+  types.push_back(typePrefix + "y");
+  types.push_back(typePrefix + "z");
+  if (!isValid(index, types)) return false;
+  for (size_t i = 0; i < 3; ++i) {
+    vector(i) = at(types[i], index);
+  }
   return true;
 }
 

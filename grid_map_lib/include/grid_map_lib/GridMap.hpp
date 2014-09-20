@@ -67,6 +67,13 @@ class GridMap
   void add(const std::string& type, const Eigen::MatrixXf& data);
 
   /*!
+   * Checks if data type exists.
+   * @param type the type identifier of the data.
+   * @return true if type exists, false otherwise.
+   */
+  bool exists(const std::string& type) const;
+
+  /*!
    * Returns the grid map data for a type.
    * @param type the data to be returned.
    * @return grid map data.
@@ -94,7 +101,15 @@ class GridMap
    * @param position the requested position.
    * @return the data of the cell.
    */
-  float& at(const std::string& type, const Eigen::Vector2d& position);
+  float& atPosition(const std::string& type, const Eigen::Vector2d& position);
+
+  /*!
+   * Get cell data at requested position. Const version form above.
+   * @param type the type of the map to be accessed.
+   * @param position the requested position.
+   * @return the data of the cell.
+   */
+  float atPosition(const std::string& type, const Eigen::Vector2d& position) const;
 
   /*!
    * Get cell data for requested index.
@@ -118,7 +133,7 @@ class GridMap
    * @param[out] index the corresponding index.
    * @return true if successful, false if position outside of map.
    */
-  bool getIndex(const Eigen::Vector2d& position, Eigen::Array2i& index);
+  bool getIndex(const Eigen::Vector2d& position, Eigen::Array2i& index) const;
 
   /*!
    * Gets the 2d position of cell specified by the index (x, y of cell position) in
@@ -160,6 +175,15 @@ class GridMap
    * @return true if successful, false if no valid data available.
    */
   bool getPosition3d(const std::string& type, const Eigen::Array2i& index, Eigen::Vector3d& position) const;
+
+  /*!
+   * Gets the 3d vector of three data types with suffixes 'x', 'y', and 'z'.
+   * @param typePrefix the prefix for the type to bet get as vector.
+   * @param index the index of the requested cell.
+   * @param vector the vector with the values of the data type.
+   * @return true if successful, false if no valid data available.
+   */
+  bool getVector(const std::string& typePrefix, const Eigen::Array2i& index, Eigen::Vector3d& vector) const;
 
   /*!
    * Gets a submap from the map. The requested submap is specified with the requested

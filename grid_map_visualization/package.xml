@@ -15,13 +15,11 @@
   <build_depend>grid_map_msg</build_depend>
   <build_depend>tf</build_depend>
   <build_depend>visualization_msgs</build_depend>
-  <build_depend>geometric_shapes</build_depend>
   <build_depend>eigen_stl_containers</build_depend>
   <run_depend>roscpp</run_depend>
   <run_depend>grid_map</run_depend>
   <run_depend>grid_map_msg</run_depend>
   <run_depend>tf</run_depend>
   <run_depend>visualization_msgs</run_depend>
-  <run_depend>geometric_shapes</run_depend>
   <run_depend>eigen_stl_containers</run_depend>
 </package>
