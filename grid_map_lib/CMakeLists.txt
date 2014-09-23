@@ -3,6 +3,14 @@ project(grid_map_lib)
 
 set(CMAKE_CXX_FLAGS "-std=c++0x ${CMAKE_CXX_FLAGS}")
 
+# Set the build type.  Options are:
+#  Coverage       : w/ debug symbols, w/o optimization, w/ code-coverage
+#  Debug          : w/ debug symbols, w/o optimization
+#  Release        : w/o debug symbols, w/ optimization
+#  RelWithDebInfo : w/ debug symbols, w/ optimization
+#  MinSizeRel     : w/o debug symbols, w/ optimization, stripped binaries
+set(CMAKE_BUILD_TYPE RelWithDebInfo)
+
 ## Find catkin macros and libraries
 find_package(catkin REQUIRED COMPONENTS
   cmake_modules

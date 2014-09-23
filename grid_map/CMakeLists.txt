@@ -3,6 +3,14 @@ project(grid_map)
 
 set(CMAKE_CXX_FLAGS "-std=c++0x ${CMAKE_CXX_FLAGS}")
 
+# Set the build type.  Options are:
+#  Coverage       : w/ debug symbols, w/o optimization, w/ code-coverage
+#  Debug          : w/ debug symbols, w/o optimization
+#  Release        : w/o debug symbols, w/ optimization
+#  RelWithDebInfo : w/ debug symbols, w/ optimization
+#  MinSizeRel     : w/o debug symbols, w/ optimization, stripped binaries
+set(CMAKE_BUILD_TYPE RelWithDebInfo)
+
 ## Find catkin macros and libraries
 find_package(catkin REQUIRED COMPONENTS
   cmake_modules
@@ -27,7 +35,7 @@ find_package(Eigen REQUIRED)
 catkin_package(
     INCLUDE_DIRS include
     LIBRARIES ${PROJECT_NAME}
-    CATKIN_DEPENDS grid_map_lib
+    CATKIN_DEPENDS grid_map_lib grid_map_msg
     DEPENDS Eigen
 )
 
@@ -43,11 +51,17 @@ include_directories(
 )
 
 ## Declare a cpp library
-add_library(${PROJECT_NAME}
-   src/GridMap.cpp
-   src/GridMapMsgHelpers.cpp
+add_library(
+  ${PROJECT_NAME}
+  src/GridMap.cpp
+  src/GridMapMsgHelpers.cpp
 )
 
 target_link_libraries(${PROJECT_NAME}
   ${catkin_LIBRARIES}
+)
+
+add_dependencies(
+  ${PROJECT_NAME}
+  grid_map_msg_generate_messages_cpp
 )
