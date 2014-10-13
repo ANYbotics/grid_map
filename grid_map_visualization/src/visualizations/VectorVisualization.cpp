@@ -35,7 +35,8 @@ bool VectorVisualization::readParameters()
 {
   std::string typePrefix;
   nodeHandle_.param("vector/type_prefix", typePrefix, std::string(""));
-  if (typePrefix.empty()) return isActive_ = false;
+  if (typePrefix.empty()) return true;
+
   types_.push_back(typePrefix + "_x");
   types_.push_back(typePrefix + "_y");
   types_.push_back(typePrefix + "_z");
@@ -49,12 +50,11 @@ bool VectorVisualization::readParameters()
   nodeHandle_.param("vector/color", colorValue, 65280); // green
   setColorFromColorValue(color_, colorValue, true);
 
-  return isActive_ = true;
+  return true;
 }
 
 bool VectorVisualization::initialize()
 {
-  if (!isActive_) return false;
   marker_.ns = "vector";
   marker_.lifetime = ros::Duration();
   marker_.action = visualization_msgs::Marker::ADD;
@@ -65,8 +65,6 @@ bool VectorVisualization::initialize()
 
 bool VectorVisualization::visualize(const grid_map::GridMap& map)
 {
-  if (!isActive_) return false;
-
   if (markerPublisher_.getNumSubscribers () < 1) return true;
 
   // Set marker info.

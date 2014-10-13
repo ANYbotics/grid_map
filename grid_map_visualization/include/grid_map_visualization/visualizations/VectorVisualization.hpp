@@ -54,9 +54,6 @@ class VectorVisualization
 
  private:
 
-  //! If this visualizer is active.
-  bool isActive_;
-
   //! ROS nodehandle.
   ros::NodeHandle& nodeHandle_;
 
