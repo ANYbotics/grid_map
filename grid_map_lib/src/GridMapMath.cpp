@@ -228,7 +228,7 @@ void limitPositionToRange(Eigen::Vector2d& position, const Eigen::Array2d& mapLe
   Vector2d positionShifted = position - mapPosition + distanceOfOrigin;
 
   // We have to make sure to stay inside the map.
-  Vector2d epsilon = mapLength * numeric_limits<double>::epsilon();
+  Array2d epsilon = position.array().abs() * numeric_limits<double>::epsilon();
 
   for (int i = 0; i < positionShifted.size(); i++) {
     if (positionShifted[i] <= 0) {

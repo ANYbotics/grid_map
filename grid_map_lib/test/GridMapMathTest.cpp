@@ -574,6 +574,35 @@ TEST(getSubmapInformation, CircularBuffer)
   EXPECT_GE(2, requestedIndexInSubmap(1));
 }
 
+TEST(getSubmapInformation, Debug1)
+{
+  // Map
+  Array2d mapLength(4.98, 4.98);
+  Vector2d mapPosition(-4.98, -5.76);
+  double resolution = 0.06;
+  Array2i bufferSize(83, 83);
+  Array2i bufferStartIndex(0, 13);
+
+  // Requested submap
+  Vector2d requestedSubmapPosition(-7.44, -3.42);
+  Vector2d requestedSubmapLength(0.12, 0.12);
+
+  // The returned submap indeces
+  Array2i submapTopLeftIndex;
+  Array2i submapSize;
+  Eigen::Vector2d submapPosition;
+  Eigen::Array2d submapLength;
+  Eigen::Array2i requestedIndexInSubmap;
+
+  EXPECT_TRUE(getSubmapInformation(submapTopLeftIndex, submapSize, submapPosition, submapLength, requestedIndexInSubmap,
+                                   requestedSubmapPosition, requestedSubmapLength,
+                                    mapLength, mapPosition, resolution, bufferSize, bufferStartIndex));
+  EXPECT_EQ(2, submapSize(0));
+  EXPECT_EQ(3, submapSize(1));
+  EXPECT_DOUBLE_EQ(0.12, submapLength(0));
+  EXPECT_DOUBLE_EQ(0.18, submapLength(1));
+}
+
 TEST(getBufferRegionsForSubmap, Trivial)
 {
   unsigned int topLeft = bufferRegionIndeces[BufferRegion::TopLeft];
