@@ -290,6 +290,8 @@ TEST(mapIndexWithinRange, All)
 
 TEST(limitPositionToRange, Simple)
 {
+  double epsilon = 11.0 * numeric_limits<double>::epsilon();
+
   Array2d mapLength(30.0, 10.0);
   Vector2d mapPosition(0.0, 0.0);
   Vector2d position;
@@ -301,41 +303,51 @@ TEST(limitPositionToRange, Simple)
 
   position << 15.0, 5.0;
   limitPositionToRange(position, mapLength, mapPosition);
-  EXPECT_DOUBLE_EQ(15.0, position.x());
-  EXPECT_DOUBLE_EQ(5.0, position.y());
+  EXPECT_NEAR(15.0, position.x(), 15.0 * epsilon);
+  EXPECT_GE(15.0, position.x());
+  EXPECT_NEAR(5.0, position.y(), 5.0 * epsilon);
+  EXPECT_GE(5.0, position.y());
 
   position << -15.0, -5.0;
   limitPositionToRange(position, mapLength, mapPosition);
-  EXPECT_DOUBLE_EQ(-15.0, position.x());
-  EXPECT_DOUBLE_EQ(-5.0, position.y());
+  EXPECT_NEAR(-15.0, position.x(), 15.0 * epsilon);
+  EXPECT_LE(-15.0, position.x());
+  EXPECT_NEAR(-5.0, position.y(), 5.0 * epsilon);
+  EXPECT_LE(-5.0, position.y());
 
   position << 16.0, 6.0;
   limitPositionToRange(position, mapLength, mapPosition);
-  EXPECT_DOUBLE_EQ(15.0, position.x());
-  EXPECT_DOUBLE_EQ(5.0, position.y());
+  EXPECT_NEAR(15.0, position.x(), 16.0 * epsilon);
+  EXPECT_GE(15.0, position.x());
+  EXPECT_NEAR(5.0, position.y(), 6.0 * epsilon);
+  EXPECT_GE(5.0, position.y());
 
   position << -16.0, -6.0;
   limitPositionToRange(position, mapLength, mapPosition);
-  EXPECT_DOUBLE_EQ(-15.0, position.x());
-  EXPECT_DOUBLE_EQ(-5.0, position.y());
+  EXPECT_NEAR(-15.0, position.x(), 16.0 * epsilon);
+  EXPECT_LE(-15.0, position.x());
+  EXPECT_NEAR(-5.0, position.y(), 6.0 * epsilon);
+  EXPECT_LE(-5.0, position.y());
 
   position << 1e6, 1e6;
   limitPositionToRange(position, mapLength, mapPosition);
-  EXPECT_LT(14.9, position.x());
-  EXPECT_GT(15.1, position.x());
-  EXPECT_LT(4.9, position.y());
-  EXPECT_GT(5.1, position.y());
+  EXPECT_NEAR(15.0, position.x(), 1e6 * epsilon);
+  EXPECT_GE(15.0, position.x());
+  EXPECT_NEAR(5.0, position.y(), 1e6 * epsilon);
+  EXPECT_GE(5.0, position.y());
 
   position << -1e6, -1e6;
   limitPositionToRange(position, mapLength, mapPosition);
-  EXPECT_LT(-15.1, position.x());
-  EXPECT_GT(-14.9, position.x());
-  EXPECT_LT(-5.1, position.y());
-  EXPECT_GT(-4.9, position.y());
+  EXPECT_NEAR(-15.0, position.x(), 1e6 * epsilon);
+  EXPECT_LE(-15.0, position.x());
+  EXPECT_NEAR(-5.0, position.y(), 1e6 * epsilon);
+  EXPECT_LE(-5.0, position.y());
 }
 
 TEST(limitPositionToRange, Position)
 {
+  double epsilon = 11.0 * numeric_limits<double>::epsilon();
+
   Array2d mapLength(30.0, 10.0);
   Vector2d mapPosition(1.0, 2.0);
   Vector2d position;
@@ -347,37 +359,45 @@ TEST(limitPositionToRange, Position)
 
   position << 16.0, 7.0;
   limitPositionToRange(position, mapLength, mapPosition);
-  EXPECT_DOUBLE_EQ(16.0, position.x());
-  EXPECT_DOUBLE_EQ(7.0, position.y());
+  EXPECT_NEAR(16.0, position.x(), 16.0 * epsilon);
+  EXPECT_GE(16.0, position.x());
+  EXPECT_NEAR(7.0, position.y(), 7.0 * epsilon);
+  EXPECT_GE(7.0, position.y());
 
   position << -14.0, -3.0;
   limitPositionToRange(position, mapLength, mapPosition);
-  EXPECT_DOUBLE_EQ(-14.0, position.x());
-  EXPECT_NEAR(-3.0, position.y(), 10.0 * DBL_EPSILON);
+  EXPECT_NEAR(-14.0, position.x(), 14.0 * epsilon);
+  EXPECT_LE(-14.0, position.x());
+  EXPECT_NEAR(-3.0, position.y(), 3.0 * epsilon);
+  EXPECT_LE(-3.0, position.y());
 
   position << 17.0, 8.0;
   limitPositionToRange(position, mapLength, mapPosition);
-  EXPECT_DOUBLE_EQ(16.0, position.x());
-  EXPECT_DOUBLE_EQ(7.0, position.y());
+  EXPECT_NEAR(16.0, position.x(), 17.0 * epsilon);
+  EXPECT_GE(16.0, position.x());
+  EXPECT_NEAR(7.0, position.y(), 8.0 * epsilon);
+  EXPECT_GE(7.0, position.y());
 
   position << -15.0, -4.0;
   limitPositionToRange(position, mapLength, mapPosition);
-  EXPECT_DOUBLE_EQ(-14.0, position.x());
-  EXPECT_NEAR(-3.0, position.y(), 10.0 * DBL_EPSILON);
+  EXPECT_NEAR(-14.0, position.x(), 15.0 * epsilon);
+  EXPECT_LE(-14.0, position.x());
+  EXPECT_NEAR(-3.0, position.y(), 4.0 * epsilon);
+  EXPECT_LE(-3.0, position.y());
 
   position << 1e6, 1e6;
   limitPositionToRange(position, mapLength, mapPosition);
-  EXPECT_LT(15.9, position.x());
-  EXPECT_GT(16.1, position.x());
-  EXPECT_LT(6.9, position.y());
-  EXPECT_GT(7.1, position.y());
+  EXPECT_NEAR(16.0, position.x(), 1e6 * epsilon);
+  EXPECT_GE(16.0, position.x());
+  EXPECT_NEAR(7.0, position.y(), 1e6 * epsilon);
+  EXPECT_GE(7.0, position.y());
 
   position << -1e6, -1e6;
   limitPositionToRange(position, mapLength, mapPosition);
-  EXPECT_LT(-14.1, position.x());
-  EXPECT_GT(-13.9, position.x());
-  EXPECT_LT(-3.1, position.y());
-  EXPECT_GT(-2.9, position.y());
+  EXPECT_NEAR(-14.0, position.x(), 1e6 * epsilon);
+  EXPECT_LE(-14.0, position.x());
+  EXPECT_NEAR(-3.0, position.y(), 1e6 * epsilon);
+  EXPECT_LE(-3.0, position.y());
 }
 
 TEST(getSubmapInformation, Simple)
@@ -601,6 +621,35 @@ TEST(getSubmapInformation, Debug1)
   EXPECT_EQ(3, submapSize(1));
   EXPECT_DOUBLE_EQ(0.12, submapLength(0));
   EXPECT_DOUBLE_EQ(0.18, submapLength(1));
+}
+
+TEST(getSubmapInformation, Debug2)
+{
+  // Map
+  Array2d mapLength(4.98, 4.98);
+  Vector2d mapPosition(2.46, -25.26);
+  double resolution = 0.06;
+  Array2i bufferSize(83, 83);
+  Array2i bufferStartIndex(42, 6);
+
+  // Requested submap
+  Vector2d requestedSubmapPosition(0.24, -26.82);
+  Vector2d requestedSubmapLength(0.624614, 0.462276);
+
+  // The returned submap indeces
+  Array2i submapTopLeftIndex;
+  Array2i submapSize;
+  Eigen::Vector2d submapPosition;
+  Eigen::Array2d submapLength;
+  Eigen::Array2i requestedIndexInSubmap;
+
+  EXPECT_TRUE(getSubmapInformation(submapTopLeftIndex, submapSize, submapPosition, submapLength, requestedIndexInSubmap,
+                                   requestedSubmapPosition, requestedSubmapLength,
+                                    mapLength, mapPosition, resolution, bufferSize, bufferStartIndex));
+  EXPECT_LT(0, submapSize(0));
+  EXPECT_LT(0, submapSize(1));
+  EXPECT_LT(0.0, submapLength(0));
+  EXPECT_LT(0.0, submapLength(1));
 }
 
 TEST(getBufferRegionsForSubmap, Trivial)

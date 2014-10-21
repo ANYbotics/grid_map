@@ -8,7 +8,7 @@
 
 #include "grid_map_lib/GridMapMath.hpp"
 
-// fmod
+// fabs
 #include <cmath>
 
 // Limits
@@ -228,15 +228,17 @@ void limitPositionToRange(Eigen::Vector2d& position, const Eigen::Array2d& mapLe
   Vector2d positionShifted = position - mapPosition + distanceOfOrigin;
 
   // We have to make sure to stay inside the map.
-  Array2d epsilon = position.array().abs() * numeric_limits<double>::epsilon();
-
   for (int i = 0; i < positionShifted.size(); i++) {
-    if (positionShifted[i] <= 0) {
-      positionShifted[i] = epsilon[i];
+
+    double epsilon = 10.0 * numeric_limits<double>::epsilon(); // TODO Why is the factor 10 necessary.
+    if (std::fabs(position(i)) > 1.0) epsilon *= std::fabs(position(i));
+
+    if (positionShifted(i) <= 0) {
+      positionShifted(i) = epsilon;
       continue;
     }
-    if (positionShifted[i] >= mapLength[i]) {
-      positionShifted[i] = mapLength[i] - epsilon[i];
+    if (positionShifted(i) >= mapLength(i)) {
+      positionShifted(i) = mapLength(i) - epsilon;
       continue;
     }
   }
