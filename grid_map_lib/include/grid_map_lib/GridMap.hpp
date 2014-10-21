@@ -229,6 +229,11 @@ class GridMap
   const uint64_t& getTimestamp() const;
 
   /*!
+   * Resets the timestamp of the grid map (to zero).
+   */
+  void resetTimestamp();
+
+  /*!
    * Set the frame id of the grid map.
    * @param frameId the frame id to set.
    */

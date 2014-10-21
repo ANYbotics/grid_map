@@ -292,6 +292,11 @@ const uint64_t& GridMap::getTimestamp() const
   return timestamp_;
 }
 
+void GridMap::resetTimestamp()
+{
+  timestamp_ = 0.0;
+}
+
 void GridMap::setFrameId(const std::string& frameId)
 {
   frameId_ = frameId;

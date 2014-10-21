@@ -164,7 +164,7 @@ Please report bugs and request features using the [Issue Tracker](https://github
 [Eigen]: http://eigen.tuxfamily.org
 [grid_map_msg/GridMapInfo]: grid_map_msg/msg/GridMapInfo.msg
 [grid_map_msg/GridMap]: grid_map_msg/msg/GridMap.msg
-[grid_map_msg/GetGridMap]: grid_map_msg/srv/GetGridMap.msg
+[grid_map_msg/GetGridMap]: grid_map_msg/srv/GetGridMap.srv
 [sensor_msgs/PointCloud2]: http://docs.ros.org/api/sensor_msgs/html/msg/PointCloud2.html
 [visualization_msgs/Marker]: http://docs.ros.org/api/visualization_msgs/html/msg/Marker.html
 [geometry_msgs/PolygonStamped]: http://docs.ros.org/api/geometry_msgs/html/msg/PolygonStamped.html
