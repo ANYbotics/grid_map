@@ -13,6 +13,9 @@
 // ROS
 #include <sensor_msgs/point_cloud2_iterator.h>
 
+// STL
+#include <limits>
+
 using namespace std;
 using namespace Eigen;
 
@@ -184,4 +187,43 @@ void GridMap::toPointCloud(sensor_msgs::PointCloud2& pointCloud, const std::stri
   }
 }
 
+void GridMap::toOccupancyGrid(nav_msgs::OccupancyGrid& occupancyGrid, const std::string& cellType,
+                              float dataMin, float dataMax) const
+{
+  occupancyGrid.header.frame_id = frameId_;
+  occupancyGrid.header.stamp.fromNSec(timestamp_);
+  
+  occupancyGrid.info.map_load_time = occupancyGrid.header.stamp; // Same as header stamp as we do not load the map
+  occupancyGrid.info.resolution = resolution_;
+  occupancyGrid.info.width = bufferSize_[0];
+  occupancyGrid.info.height = bufferSize_[1];
+  occupancyGrid.info.origin.position.x = position_[0]+0.5*bufferSize_[0]*resolution_;
+  occupancyGrid.info.origin.position.y = position_[1]+0.5*bufferSize_[1]*resolution_;
+  occupancyGrid.info.origin.position.z = 0.0;
+  occupancyGrid.info.origin.orientation.x = 0.0;
+  occupancyGrid.info.origin.orientation.y = 0.0;
+  occupancyGrid.info.origin.orientation.z = 0.0;
+  occupancyGrid.info.origin.orientation.z = 1.0;
+  
+  occupancyGrid.data.resize(bufferSize_[0]*bufferSize_[1]);
+  
+  const float cellMin = numeric_limits<int8_t>::min();
+  const float cellMax = numeric_limits<int8_t>::max();
+  
+  Eigen::Array2i index;
+  for (index[0] = 0; index[0] < bufferSize_[0]; ++index[0]) {
+    for (index[1] = 0; index[1] < bufferSize_[1]; ++index[1]) {
+      float value = (at(cellType, index)-dataMin)/(dataMax-dataMin);
+        
+      if (value < 0.0)
+        value = 0.0;
+      else if (value > 1.0)
+        value = 1.0;
+        
+      occupancyGrid.data[index[1]*bufferSize_[0]+index[0]] =
+        cellMin+value*(cellMax-cellMin);
+    }
+  }
+}
+  
 } /* namespace */

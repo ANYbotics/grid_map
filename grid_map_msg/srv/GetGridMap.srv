@@ -1,3 +1,6 @@
+# Requested frame id of the submap.
+std_msgs/String frameId
+
 # Requested submap position in x-direction [m].
 float64 positionX
   
