@@ -64,6 +64,16 @@ bool checkIfPositionWithinMap(const Eigen::Vector2d& position,
                               const Eigen::Vector2d& mapPosition);
 
 /*!
+ * Gets the position of the data structure origin.
+ * @param[in] position the position of the map.
+ * @param[in] mapLength the map length.
+ * @param[out] positionOfOrigin the position of the data structure origin.
+ */
+void getPositionOfDataStructureOrigin(const Eigen::Vector2d& position,
+                                      const Eigen::Array2d& mapLength,
+                                      Eigen::Vector2d& positionOfOrigin);
+
+/*!
  * Computes how many cells/indeces the map is moved based on a position shift in
  * the grid map frame. Use this function if you are moving the grid map
  * and want to ensure that the cells match before and after.
@@ -211,6 +221,16 @@ bool incrementIndex(Eigen::Array2i& index, const Eigen::Array2i& bufferSize,
 bool incrementIndexForSubmap(Eigen::Array2i& submapIndex, Eigen::Array2i& index, const Eigen::Array2i& submapTopLeftIndex,
                              const Eigen::Array2i& submapBufferSize, const Eigen::Array2i& bufferSize,
                              const Eigen::Array2i& bufferStartIndex = Eigen::Array2i::Zero());
+
+/*!
+ * Returns the 1d index corresponding to the 2d index for either row- or column-major format.
+ * Note: Eigen is defaulting to column-major format.
+ * @param[in] index the 2d index.
+ * @param[in] bufferSize the map buffer size.
+ * @param[in] (optional) rowMajor if the 1d index is generated for row-major format.
+ * @return the 1d index.
+ */
+unsigned int get1dIndexFrom2dIndex(const Eigen::Array2i& index, const Eigen::Array2i& bufferSize, const bool rowMajor);
 
 /*!
  * The definition of the buffer regions.

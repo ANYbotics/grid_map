@@ -94,12 +94,12 @@ class GridMap : public grid_map_lib::GridMap
    * Puts the contents to a ROS OccupancyGrid message. Set the type to be transformed
    * as the cell data of the occupancy grid, all other types will be neglected.
    * @param occupancyGrid the message to be populated.
-   * @param cellType the type that is transformed to cell data.
+   * @param cellType the type that is transformed to the occupancy cell data.
    * @param dataMin the minimum value of the grid map data (used to normalize the cell data in [min, max]).
    * @param dataMax the maximum value of the grid map data (used to normalize the cell data in [min, max]).
    */
   void toOccupancyGrid(nav_msgs::OccupancyGrid& occupancyGrid, const std::string& cellType,
-    float dataMin, float dataMax) const;
+                       float dataMin, float dataMax) const;
 
  private:
   /*!

@@ -70,13 +70,10 @@ bool matrixEigenCopyToMultiArrayMessage(const EigenType_& e, MessageType_& m)
   m.layout.dim[1].stride = e.innerSize();
   m.layout.dim[1].size = e.innerSize();
 
-  if(e.IsRowMajor)
-  {
+  if (e.IsRowMajor) {
     m.layout.dim[0].label = storageIndexNames[StorageIndices::Row];
     m.layout.dim[1].label = storageIndexNames[StorageIndices::Column];
-  }
-  else
-  {
+  } else {
     m.layout.dim[0].label = storageIndexNames[StorageIndices::Column];
     m.layout.dim[1].label = storageIndexNames[StorageIndices::Row];
   }
