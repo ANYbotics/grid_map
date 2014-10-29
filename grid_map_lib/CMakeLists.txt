@@ -14,6 +14,8 @@ set(CMAKE_BUILD_TYPE RelWithDebInfo)
 ## Find catkin macros and libraries
 find_package(catkin REQUIRED COMPONENTS
   cmake_modules
+  sensor_msgs
+  nav_msgs
 )
 
 ## System dependencies are found with CMake's conventions

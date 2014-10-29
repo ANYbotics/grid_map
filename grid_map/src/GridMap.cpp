@@ -8,10 +8,15 @@
 
 #include "grid_map/GridMap.hpp"
 #include "grid_map/GridMapMsgHelpers.hpp"
+#include <grid_map_lib/GridMapMath.hpp>
 #include <grid_map_lib/GridMapIterator.hpp>
 
 // ROS
 #include <sensor_msgs/point_cloud2_iterator.h>
+
+// STL
+#include <limits>
+#include <algorithm>
 
 using namespace std;
 using namespace Eigen;
@@ -184,4 +189,42 @@ void GridMap::toPointCloud(sensor_msgs::PointCloud2& pointCloud, const std::stri
   }
 }
 
+void GridMap::toOccupancyGrid(nav_msgs::OccupancyGrid& occupancyGrid, const std::string& cellType,
+                              float dataMin, float dataMax) const
+{
+  occupancyGrid.header.frame_id = frameId_;
+  occupancyGrid.header.stamp.fromNSec(timestamp_);
+  occupancyGrid.info.map_load_time = occupancyGrid.header.stamp; // Same as header stamp as we do not load the map.
+  occupancyGrid.info.resolution = resolution_;
+  occupancyGrid.info.width = bufferSize_(0);
+  occupancyGrid.info.height = bufferSize_(1);
+  Eigen::Vector2d positionOfOrigin;
+  grid_map_lib::getPositionOfDataStructureOrigin(position_, length_, positionOfOrigin);
+  occupancyGrid.info.origin.position.x = positionOfOrigin.x();
+  occupancyGrid.info.origin.position.y = positionOfOrigin.y();
+  occupancyGrid.info.origin.position.z = 0.0;
+  occupancyGrid.info.origin.orientation.x = 0.0;
+  occupancyGrid.info.origin.orientation.y = 0.0;
+  occupancyGrid.info.origin.orientation.z = 1.0; // yes, this is correct.
+  occupancyGrid.info.origin.orientation.w = 0.0;
+  occupancyGrid.data.resize(occupancyGrid.info.width * occupancyGrid.info.height);
+  
+//  const float cellMin = numeric_limits<int8_t>::min();
+//  const float cellMax = numeric_limits<int8_t>::max();
+  // Occupancy probabilities are in the range [0,100].  Unknown is -1.
+  const float cellMin = 0;
+  const float cellMax = 100;
+  const float cellRange = cellMax - cellMin;
+
+  for (grid_map_lib::GridMapIterator iterator(*this); !iterator.isPassedEnd(); ++iterator) {
+    float value = (at(cellType, *iterator) - dataMin) / (dataMax - dataMin);
+    if (isnan(value)) value = -1;
+    else value = min(max(0.0f, value), 1.0f);
+    // Occupancy grid claims to be row-major order, but it does not seem that way.
+    // http://docs.ros.org/api/nav_msgs/html/msg/OccupancyGrid.html.
+    unsigned int index = grid_map_lib::get1dIndexFrom2dIndex(*iterator, bufferSize_, false);
+    occupancyGrid.data[index] = cellMin + value * cellRange;
+  }
+}
+  
 } /* namespace */
