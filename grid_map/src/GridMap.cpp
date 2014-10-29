@@ -219,11 +219,11 @@ void GridMap::toOccupancyGrid(nav_msgs::OccupancyGrid& occupancyGrid, const std:
   for (grid_map_lib::GridMapIterator iterator(*this); !iterator.isPassedEnd(); ++iterator) {
     float value = (at(cellType, *iterator) - dataMin) / (dataMax - dataMin);
     if (isnan(value)) value = -1;
-    else value = min(max(0.0f, value), 1.0f);
+    else value = cellMin + min(max(0.0f, value), 1.0f) * cellRange;
     // Occupancy grid claims to be row-major order, but it does not seem that way.
     // http://docs.ros.org/api/nav_msgs/html/msg/OccupancyGrid.html.
     unsigned int index = grid_map_lib::get1dIndexFrom2dIndex(*iterator, bufferSize_, false);
-    occupancyGrid.data[index] = cellMin + value * cellRange;
+    occupancyGrid.data[index] = value;
   }
 }
   
