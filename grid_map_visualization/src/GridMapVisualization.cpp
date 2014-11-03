@@ -19,7 +19,8 @@ GridMapVisualization::GridMapVisualization(ros::NodeHandle& nodeHandle)
     : nodeHandle_(nodeHandle),
       mapRegionVisualization_(nodeHandle),
       pointCloudVisualization_(nodeHandle),
-      vectorVisualization_(nodeHandle)
+      vectorVisualization_(nodeHandle),
+      occupancyGridVisualization_(nodeHandle)
 {
   ROS_INFO("Grid map visualization node started.");
   readParameters();
@@ -38,6 +39,7 @@ bool GridMapVisualization::readParameters()
   mapRegionVisualization_.readParameters();
   pointCloudVisualization_.readParameters();
   vectorVisualization_.readParameters();
+  occupancyGridVisualization_.readParameters();
   return true;
 }
 
@@ -46,6 +48,7 @@ bool GridMapVisualization::initialize()
   mapRegionVisualization_.initialize();
   pointCloudVisualization_.initialize();
   vectorVisualization_.initialize();
+  occupancyGridVisualization_.initialize();
   ROS_INFO("Grid map visualization initialized.");
   return true;
 }
@@ -57,6 +60,7 @@ void GridMapVisualization::callback(const grid_map_msg::GridMap& message)
   mapRegionVisualization_.visualize(map);
   pointCloudVisualization_.visualize(map);
   vectorVisualization_.visualize(map);
+  occupancyGridVisualization_.visualize(map);
 }
 
 } /* namespace */
