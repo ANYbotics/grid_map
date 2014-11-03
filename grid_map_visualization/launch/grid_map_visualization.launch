@@ -15,7 +15,6 @@
  		 <param name="vector/color" value="16777215" />
  		 
  		 <param name="occupancy_grid/type" value="occupancy" />
- 		 <param name="occupancy_grid/type" value="occupancy" />
  		 <param name="occupancy_grid/data_min" value="0.0" />
  		 <param name="occupancy_grid/data_max" value="1.0" />
     </node>

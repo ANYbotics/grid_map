@@ -13,6 +13,7 @@
 #include <grid_map_visualization/visualizations/MapRegionVisualization.hpp>
 #include <grid_map_visualization/visualizations/PointCloudVisualization.hpp>
 #include <grid_map_visualization/visualizations/VectorVisualization.hpp>
+#include <grid_map_visualization/visualizations/OccupancyGridVisualization.hpp>
 
 // ROS
 #include <ros/ros.h>
@@ -74,6 +75,9 @@ class GridMapVisualization
 
   //! Visualizing data as vectors.
   VectorVisualization vectorVisualization_;
+
+  //! Occupancy grid visualization.
+  OccupancyGridVisualization occupancyGridVisualization_;
 };
 
 } /* namespace */
