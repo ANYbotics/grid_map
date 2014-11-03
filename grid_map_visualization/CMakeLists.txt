@@ -19,6 +19,8 @@ find_package(catkin REQUIRED COMPONENTS
   grid_map
   grid_map_msg
   visualization_msgs
+  sensor_msgs
+  nav_msgs
   eigen_stl_containers
 )
 
@@ -66,6 +68,7 @@ add_executable(
 	src/visualizations/PointCloudVisualization.cpp
 	src/visualizations/MapRegionVisualization.cpp
 	src/visualizations/VectorVisualization.cpp
+	src/visualizations/OccupancyGridVisualization.cpp
 )
 
 ## Add cmake target dependencies of the executable/library
