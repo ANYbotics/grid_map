@@ -12,7 +12,7 @@
 #include <grid_map_visualization/GridMapVisualizationHelpers.hpp>
 
 // Iterator
-#include <grid_map_lib/GridMapIterator.hpp>
+#include <grid_map_lib/iterators/GridMapIterator.hpp>
 
 // ROS
 #include <geometry_msgs/Point.h>

@@ -1,17 +1,17 @@
 /*
- * GridMapIterator.hpp
+ * IteratorBase.hpp
  *
- *  Created on: Sep 22, 2014
+ *  Created on: Nov 3, 2014
  *      Author: Péter Fankhauser
  *   Institute: ETH Zurich, Autonomous Systems Lab
  */
 
-#include "grid_map_lib/GridMapIterator.hpp"
+#include "grid_map_lib/iterators/IteratorBase.hpp"
 #include "grid_map_lib/GridMapMath.hpp"
 
 namespace grid_map_lib {
 
-GridMapIterator::GridMapIterator(const grid_map_lib::GridMap& gridMap)
+IteratorBase::IteratorBase(const grid_map_lib::GridMap& gridMap)
 {
   bufferSize_ = gridMap.getBufferSize();
   startIndex_ = gridMap.getBufferStartIndex();
@@ -21,7 +21,7 @@ GridMapIterator::GridMapIterator(const grid_map_lib::GridMap& gridMap)
   isPassedEnd_ = false;
 }
 
-GridMapIterator::GridMapIterator(const GridMapIterator* other)
+IteratorBase::IteratorBase(const IteratorBase* other)
 {
   bufferSize_ = other->bufferSize_;
   startIndex_ = other->startIndex_;
@@ -30,7 +30,7 @@ GridMapIterator::GridMapIterator(const GridMapIterator* other)
   isPassedEnd_ = other->isPassedEnd_;
 }
 
-GridMapIterator& GridMapIterator::operator =(const GridMapIterator& other)
+IteratorBase& IteratorBase::operator =(const IteratorBase& other)
 {
   bufferSize_ = other.bufferSize_;
   startIndex_ = other.startIndex_;
@@ -40,30 +40,30 @@ GridMapIterator& GridMapIterator::operator =(const GridMapIterator& other)
   return *this;
 }
 
-bool GridMapIterator::operator !=(const GridMapIterator& other) const
+bool IteratorBase::operator !=(const IteratorBase& other) const
 {
   return (index_ != other.index_).any();
 }
 
-const Eigen::Array2i& GridMapIterator::operator *() const
+const Eigen::Array2i& IteratorBase::operator *() const
 {
   return index_;
 }
 
-GridMapIterator& GridMapIterator::operator ++()
+IteratorBase& IteratorBase::operator ++()
 {
   isPassedEnd_ = !incrementIndex(index_, bufferSize_, startIndex_);
   return *this;
 }
 
-GridMapIterator GridMapIterator::end() const
+IteratorBase IteratorBase::end() const
 {
-  GridMapIterator res(this);
+  IteratorBase res(this);
   res.index_ = endIndex_;
   return res;
 }
 
-bool GridMapIterator::isPassedEnd() const
+bool IteratorBase::isPassedEnd() const
 {
   return isPassedEnd_;
 }

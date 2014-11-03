@@ -52,9 +52,10 @@ include_directories(
 add_library(${PROJECT_NAME}
    src/GridMap.cpp
    src/GridMapMath.cpp
-   src/GridMapIterator.cpp
-   src/SubmapIterator.cpp
-   src/PolygonIterator.cpp
+   src/iterators/IteratorBase.cpp
+   src/iterators/GridMapIterator.cpp
+   src/iterators/SubmapIterator.cpp
+   src/iterators/PolygonIterator.cpp
 )
 
 target_link_libraries(${PROJECT_NAME}

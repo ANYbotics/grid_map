@@ -9,7 +9,7 @@
 #include "grid_map/GridMap.hpp"
 #include "grid_map/GridMapMsgHelpers.hpp"
 #include <grid_map_lib/GridMapMath.hpp>
-#include <grid_map_lib/GridMapIterator.hpp>
+#include <grid_map_lib/iterators/GridMapIterator.hpp>
 
 // ROS
 #include <sensor_msgs/point_cloud2_iterator.h>

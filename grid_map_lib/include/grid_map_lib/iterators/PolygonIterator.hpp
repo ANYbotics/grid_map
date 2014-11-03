@@ -9,7 +9,7 @@
 #pragma once
 
 #include "grid_map_lib/GridMap.hpp"
-#include "grid_map_lib/GridMapIterator.hpp"
+#include "grid_map_lib/iterators/GridMapIterator.hpp"
 
 // Eigen
 #include <Eigen/Core>
@@ -72,10 +72,10 @@ public:
 private:
 
   /*!
-     * Check if current index is inside polygon.
-     * @return true if inside, false otherwise.
-     */
-    bool inPolygon();
+   * Check if current index is inside polygon.
+   * @return true if inside, false otherwise.
+   */
+  bool inPolygon();
 
   /*!
    * Check if point is inside polygon.

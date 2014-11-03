@@ -6,7 +6,7 @@
  *   Institute: ETH Zurich, Autonomous Systems Lab
  */
 
-#include "grid_map_lib/SubmapIterator.hpp"
+#include "grid_map_lib/iterators/SubmapIterator.hpp"
 #include "grid_map_lib/GridMapMath.hpp"
 
 using namespace std;
