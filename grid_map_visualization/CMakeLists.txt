@@ -20,6 +20,8 @@ find_package(catkin REQUIRED COMPONENTS
   grid_map_msg
   visualization_msgs
   eigen_stl_containers
+  sensor_msgs
+  nav_msgs
 )
 
 ## System dependencies are found with CMake's conventions

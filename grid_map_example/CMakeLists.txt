@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(grid_map_lib)
+project(grid_map_example)
 
 set(CMAKE_CXX_FLAGS "-std=c++0x ${CMAKE_CXX_FLAGS}")
 
@@ -14,7 +14,9 @@ set(CMAKE_BUILD_TYPE RelWithDebInfo)
 ## Find catkin macros and libraries
 find_package(catkin REQUIRED COMPONENTS
   cmake_modules
-  sensor_msgs
+  roscpp
+  grid_map
+  grid_map_msg
   nav_msgs
 )
 
@@ -31,10 +33,10 @@ find_package(Eigen REQUIRED)
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-    INCLUDE_DIRS include
-    LIBRARIES ${PROJECT_NAME}
-#   CATKIN_DEPENDS
-    DEPENDS Eigen
+  INCLUDE_DIRS include
+#  LIBRARIES ${PROJECT_NAME}
+  CATKIN_DEPENDS
+#  DEPENDS system_lib
 )
 
 ###########
@@ -42,32 +44,30 @@ catkin_package(
 ###########
 
 ## Specify additional locations of header files
+## Your package locations should be listed before other locations
 include_directories(
   include
   ${catkin_INCLUDE_DIRS}
-  ${EIGEN_INCLUDE_DIRS}
 )
 
 ## Declare a cpp library
-add_library(${PROJECT_NAME}
-   src/GridMap.cpp
-   src/GridMapMath.cpp
-   src/iterators/GridMapIterator.cpp
-   src/iterators/SubmapIterator.cpp
-   src/iterators/PolygonIterator.cpp
+# add_library(${PROJECT_NAME}
+#   src/${PROJECT_NAME}/grid_map_example_node.cpp
+# )
+
+## Declare a cpp executable
+add_executable(
+	${PROJECT_NAME}
+	src/grid_map_example_node.cpp
+	src/GridMapExample.cpp
 )
 
-target_link_libraries(${PROJECT_NAME}
+## Add cmake target dependencies of the executable/library
+## as an example, message headers may need to be generated before nodes
+# add_dependencies(grid_map_visualization_node grid_map_visualization_generate_messages_cpp)
+
+## Specify libraries to link a library or executable target against
+target_link_libraries(
+  ${PROJECT_NAME}
   ${catkin_LIBRARIES}
 )
-
-#############
-## Testing ##
-#############
-
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
-## Add gtest based cpp test target and link libraries
-catkin_add_gtest(${PROJECT_NAME}-test test/test_grid_map.cpp test/GridMapMathTest.cpp test/SubmapIteratorTest.cpp test/PolygonIteratorTest.cpp)
-if(TARGET ${PROJECT_NAME}-test)
-  target_link_libraries(${PROJECT_NAME}-test grid_map)
-endif()
