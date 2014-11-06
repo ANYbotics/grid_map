@@ -59,7 +59,7 @@ Run the unit tests with
 Conventions & Definitions
 ------------
 
-![Grid map convetions](grid_map_lib/doc/grid_map_conventions.png)
+[![Grid map convetions](grid_map_lib/doc/grid_map_conventions.png)](grid_map_lib/doc/grid_map_conventions.pdf)
 
 
 
