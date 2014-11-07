@@ -11,7 +11,7 @@ The storage structure is implemented as two-dimensional circular buffer so the m
 **Author: Péter Fankhauser, pfankhauser@ethz.ch<br />
 Affiliation: Autonomous Systems Lab, ETH Zurich**
 
-![Grid map example in Rviz](rviz_example.jpg)
+![Grid map example in Rviz](grid_map_visualization/doc/rviz_example.jpg)
 
 
 Citing
@@ -54,6 +54,13 @@ In order to install, clone the latest version from this repository into your cat
 Run the unit tests with
 
     catkin_make run_tests_grid_map_lib run_tests_grid_map_lib
+
+
+Conventions & Definitions
+------------
+
+[![Grid map convetions](grid_map_lib/doc/grid_map_conventions.png)](grid_map_lib/doc/grid_map_conventions.pdf)
+
 
 
 Nodes
