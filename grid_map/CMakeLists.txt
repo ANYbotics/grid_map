@@ -56,6 +56,7 @@ add_library(
   ${PROJECT_NAME}
   src/GridMap.cpp
   src/GridMapMsgHelpers.cpp
+  src/Polygon.cpp
 )
 
 target_link_libraries(${PROJECT_NAME}

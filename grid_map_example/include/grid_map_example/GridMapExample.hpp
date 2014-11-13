@@ -9,6 +9,8 @@
 
 #pragma once
 
+#include <grid_map/GridMap.hpp>
+
 // ROS
 #include <ros/ros.h>
 
@@ -33,10 +35,18 @@ class GridMapExample
   virtual ~GridMapExample();
 
   /*!
-   * Callback function for the grid map.
-   * @param message the grid map message to be visualized.
+   * Demos.
    */
   void demoGridMapIterator();
+  void demoSubmapIterator();
+  void demoCircleIterator();
+  void demoPolygonIterator();
+  void demoLineIterator();
+
+  /*!
+   * Publish the grid map to ROS.
+   */
+  void publish();
 
  private:
 
@@ -44,7 +54,13 @@ class GridMapExample
   ros::NodeHandle& nodeHandle_;
 
   //! Grid map publisher.
-  ros::Publisher publisher_;
+  ros::Publisher gridMapPublisher_;
+
+  //! Polygon publisher.
+  ros::Publisher polygonPublisher_;
+
+  //! Grid map data.
+  grid_map::GridMap map_;
 };
 
 } /* namespace */

@@ -4,8 +4,8 @@ Panels:
     Name: Displays
     Property Tree Widget:
       Expanded:
-        - /Global Options1
         - /Map1
+        - /Polygon1
       Splitter Ratio: 0.739612
     Tree Height: 529
   - Class: rviz/Selection
@@ -48,13 +48,27 @@ Visualization Manager:
       Plane Cell Count: 20
       Reference Frame: <Fixed Frame>
       Value: true
+    - Class: rviz/Axes
+      Enabled: true
+      Length: 0.1
+      Name: Axes
+      Radius: 0.01
+      Reference Frame: <Fixed Frame>
+      Value: true
     - Alpha: 0.7
       Class: rviz/Map
       Color Scheme: map
       Draw Behind: false
       Enabled: true
       Name: Map
-      Topic: ""
+      Topic: /grid_map_visualization/occupancy_grid
+      Value: true
+    - Alpha: 0.5
+      Class: rviz/Polygon
+      Color: 255; 255; 255
+      Enabled: true
+      Name: Polygon
+      Topic: /grid_map_example/polygon
       Value: true
   Enabled: true
   Global Options:
@@ -79,7 +93,7 @@ Visualization Manager:
   Value: true
   Views:
     Current:
-      Angle: 0
+      Angle: -1.57079
       Class: rviz/TopDownOrtho
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
@@ -88,7 +102,7 @@ Visualization Manager:
         Value: false
       Name: Current View
       Near Clip Distance: 0.01
-      Scale: 238.839
+      Scale: 420.916
       Target Frame: <Fixed Frame>
       Value: TopDownOrtho (rviz)
       X: 0
@@ -110,5 +124,5 @@ Window Geometry:
   Views:
     collapsed: true
   Width: 1203
-  X: 3185
-  Y: 160
+  X: 3115
+  Y: 90

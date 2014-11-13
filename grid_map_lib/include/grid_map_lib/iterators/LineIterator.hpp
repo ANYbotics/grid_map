@@ -1,7 +1,7 @@
 /*
- * PolygonIterator.hpp
+ * CircleIterator.hpp
  *
- *  Created on: Sep 19, 2014
+ *  Created on: Nov 13, 2014
  *      Author: Péter Fankhauser
  *   Institute: ETH Zurich, Autonomous Systems Lab
  */
@@ -9,43 +9,41 @@
 #pragma once
 
 #include "grid_map_lib/GridMap.hpp"
-#include "grid_map_lib/Polygon.hpp"
 #include "grid_map_lib/iterators/SubmapIterator.hpp"
 
 // Eigen
 #include <Eigen/Core>
 
-// unique_ptr
-#include <memory>
-
 namespace grid_map_lib {
 
 /*!
- * Iterator class to iterate through a polygonal area of the map.
+ * Iterator class to iterate over a line in the map.
+ * Based on Bresenham Line Drawing algorithm.
  */
-class PolygonIterator
+class LineIterator
 {
 public:
 
   /*!
    * Constructor.
    * @param gridMap the grid map to iterate on.
-   * @param polygon the polygonal area to iterate on.
+   * @param start the starting point of the line.
+   * @param end the ending point of the line.
    */
-  PolygonIterator(const grid_map_lib::GridMap& gridMap, const Polygon& polygon);
+  LineIterator(const grid_map_lib::GridMap& gridMap, const Eigen::Vector2d& start, const Eigen::Vector2d& end);
 
   /*!
    * Assignment operator.
    * @param iterator the iterator to copy data from.
    * @return a reference to *this.
    */
-  PolygonIterator& operator =(const PolygonIterator& other);
+  LineIterator& operator =(const LineIterator& other);
 
   /*!
    * Compare to another iterator.
    * @return whether the current iterator points to a different address than the other one.
    */
-  bool operator !=(const PolygonIterator& other) const;
+  bool operator !=(const LineIterator& other) const;
 
   /*!
    * Dereference the iterator with const.
@@ -57,7 +55,7 @@ public:
    * Increase the iterator to the next element.
    * @return a reference to the updated iterator.
    */
-  PolygonIterator& operator ++();
+  LineIterator& operator ++();
 
   /*!
    * Indicates if iterator is passed end.
@@ -67,25 +65,14 @@ public:
 
 private:
 
-  /*!
-   * Check if current index is inside polygon.
-   * @return true if inside, false otherwise.
-   */
-  bool isInside();
+  // TODO
+  void initializeParameters();
 
-  /*!
-   * Finds the submap that fully contains the polygon and returns the parameters.
-   * @param[in] polygon the polygon to get the submap for.
-   * @param[out] startIndex the start index of the submap.
-   * @param[out] bufferSize the buffer size of the submap.
-   */
-  void findSubmapParameters(const Polygon& polygon, Eigen::Array2i& startIndex, Eigen::Array2i& bufferSize) const;
+  //! Starting point of the line.
+  Eigen::Vector2d start_;
 
-  //! Polygon to iterate on.
-  Polygon polygon_;
-
-  //! Grid submap iterator.
-  std::shared_ptr<SubmapIterator> internalIterator_;
+  //! Ending point of the line.
+  Eigen::Vector2d end_;
 
   //! Map information needed to get position from iterator.
   Eigen::Array2d mapLength_;

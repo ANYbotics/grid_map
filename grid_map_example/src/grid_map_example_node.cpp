@@ -16,6 +16,6 @@ int main(int argc, char** argv)
   ros::NodeHandle nodeHandle("~");
   grid_map_example::GridMapExample gridMapExample(nodeHandle);
 
-  ros::spin();
+  ros::requestShutdown();
   return 0;
 }

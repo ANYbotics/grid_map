@@ -14,8 +14,6 @@ set(CMAKE_BUILD_TYPE RelWithDebInfo)
 ## Find catkin macros and libraries
 find_package(catkin REQUIRED COMPONENTS
   cmake_modules
-  sensor_msgs
-  nav_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -52,9 +50,12 @@ include_directories(
 add_library(${PROJECT_NAME}
    src/GridMap.cpp
    src/GridMapMath.cpp
+   src/Polygon.cpp
    src/iterators/GridMapIterator.cpp
    src/iterators/SubmapIterator.cpp
+   src/iterators/CircleIterator.cpp
    src/iterators/PolygonIterator.cpp
+   src/iterators/LineIterator.cpp
 )
 
 target_link_libraries(${PROJECT_NAME}
