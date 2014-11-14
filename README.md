@@ -11,7 +11,7 @@ The storage structure is implemented as two-dimensional circular buffer so the m
 **Author: Péter Fankhauser, pfankhauser@ethz.ch<br />
 Affiliation: Autonomous Systems Lab, ETH Zurich**
 
-![Grid map example in Rviz](grid_map_visualization/doc/rviz_example.jpg)
+![Grid map example in rviz](grid_map_visualization/doc/point_cloud.jpg)
 
 
 Citing
@@ -97,6 +97,9 @@ ROS interfaces and conversions for the `grid_map_lib`.
 
 This node subscribes to a grid map topic and publishes messages that can be visualized in [rviz].
 
+Point cloud | Occupancy grid
+--- | ---
+[![Point cloud](grid_map_visualization/doc/point_cloud_preview.jpg)](grid_map_visualization/doc/point_cloud.jpg) | [![Occupancy grid](grid_map_visualization/doc/occupancy_grid_preview.jpg)](grid_map_visualization/doc/occupancy_grid.jpg)
 
 #### Subscribed Topics
 
@@ -117,6 +120,10 @@ This node subscribes to a grid map topic and publishes messages that can be visu
 
 * **`vector`** ([visualization_msgs/Marker])
 
+    TODO.
+    
+* **`occupancy_grid`** ([nav_msgs/OccupancyGrid])
+    
     TODO.
 
 
@@ -185,6 +192,7 @@ Please report bugs and request features using the [Issue Tracker](https://github
 
 
 [ROS]: http://www.ros.org
+[rviz]: http://wiki.ros.org/rviz
 [Eigen]: http://eigen.tuxfamily.org
 [grid_map_msg/GridMapInfo]: grid_map_msg/msg/GridMapInfo.msg
 [grid_map_msg/GridMap]: grid_map_msg/msg/GridMap.msg
@@ -193,3 +201,4 @@ Please report bugs and request features using the [Issue Tracker](https://github
 [sensor_msgs/PointCloud2]: http://docs.ros.org/api/sensor_msgs/html/msg/PointCloud2.html
 [visualization_msgs/Marker]: http://docs.ros.org/api/visualization_msgs/html/msg/Marker.html
 [geometry_msgs/PolygonStamped]: http://docs.ros.org/api/geometry_msgs/html/msg/PolygonStamped.html
+[nav_msgs/OccupancyGrid]: http://docs.ros.org/api/nav_msgs/html/msg/OccupancyGrid.html
