@@ -56,12 +56,19 @@ Run the unit tests with
     catkin_make run_tests_grid_map_lib run_tests_grid_map_lib
 
 
-Conventions & Definitions
+Usage
 ------------
 
-[![Grid map convetions](grid_map_lib/doc/grid_map_conventions.png)](grid_map_lib/doc/grid_map_conventions.pdf)
+### Conventions & Definitions
+
+[![Grid map conventions](grid_map_lib/doc/grid_map_conventions.png)](grid_map_lib/doc/grid_map_conventions.pdf)
 
 
+### Iterators
+
+[![Grid map iterator](grid_map_lib/doc/iterators/grid_map_iterator_preview.gif)](grid_map_lib/doc/iterators/grid_map_iterator.gif) | [![Submap iterator](grid_map_lib/doc/iterators/submap_iterator_preview.gif)](grid_map_lib/doc/iterators/submap_iterator.gif) | [![Circle iterator](grid_map_lib/doc/iterators/circle_iterator_preview.gif)](grid_map_lib/doc/iterators/circle_iterator.gif)| [![Line iterator](grid_map_lib/doc/iterators/line_iterator_preview.gif)](grid_map_lib/doc/iterators/line_iterator.gif)| [![Polygon iterator](grid_map_lib/doc/iterators/polygon_iterator_preview.gif)](grid_map_lib/doc/iterators/polygon_iterator.gif)
+--- | --- | ---
+Grid map iterator | Submap iterator | Circle iterator | Line iterator | Polygon iterator
 
 Nodes
 ------------
