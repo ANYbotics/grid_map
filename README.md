@@ -56,12 +56,29 @@ Run the unit tests with
     catkin_make run_tests_grid_map_lib run_tests_grid_map_lib
 
 
-Conventions & Definitions
+Usage
 ------------
 
-[![Grid map convetions](grid_map_lib/doc/grid_map_conventions.png)](grid_map_lib/doc/grid_map_conventions.pdf)
+### Conventions & Definitions
+
+[![Grid map conventions](grid_map_lib/doc/grid_map_conventions.png)](grid_map_lib/doc/grid_map_conventions.pdf)
 
 
+### Iterators
+
+The grid map library contains various iterators for convenience.
+
+Grid map | Submap | Circle | Line | Polygon
+--- | --- | --- | --- | ---
+[![Grid map iterator](grid_map_lib/doc/iterators/grid_map_iterator_preview.gif)](grid_map_lib/doc/iterators/grid_map_iterator.gif) | [![Submap iterator](grid_map_lib/doc/iterators/submap_iterator_preview.gif)](grid_map_lib/doc/iterators/submap_iterator.gif) | [![Circle iterator](grid_map_lib/doc/iterators/circle_iterator_preview.gif)](grid_map_lib/doc/iterators/circle_iterator.gif) | [![Line iterator](grid_map_lib/doc/iterators/line_iterator_preview.gif)](grid_map_lib/doc/iterators/line_iterator.gif) | [![Polygon iterator](grid_map_lib/doc/iterators/polygon_iterator_preview.gif)](grid_map_lib/doc/iterators/polygon_iterator.gif)
+
+The simplest way to iterate over the entire grid map is to use the `GridMapIterator` as
+
+    for (grid_map_lib::GridMapIterator iterator(map); !iterator.isPassedEnd(); ++iterator) {
+        cout << "The value at index " << *iterator << " is " << map.at("type", *iterator) << endl;
+    }
+
+You can find more examples on how to use the different interators in the [GridMapExample.cpp](GridMapExample.cpp) example file.
 
 Nodes
 ------------
@@ -172,6 +189,7 @@ Please report bugs and request features using the [Issue Tracker](https://github
 [grid_map_msg/GridMapInfo]: grid_map_msg/msg/GridMapInfo.msg
 [grid_map_msg/GridMap]: grid_map_msg/msg/GridMap.msg
 [grid_map_msg/GetGridMap]: grid_map_msg/srv/GetGridMap.srv
+[GridMapExample.cpp]: grid_map/grid_map_example/src/GridMapExample.cpp
 [sensor_msgs/PointCloud2]: http://docs.ros.org/api/sensor_msgs/html/msg/PointCloud2.html
 [visualization_msgs/Marker]: http://docs.ros.org/api/visualization_msgs/html/msg/Marker.html
 [geometry_msgs/PolygonStamped]: http://docs.ros.org/api/geometry_msgs/html/msg/PolygonStamped.html
