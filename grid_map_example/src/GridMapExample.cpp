@@ -42,11 +42,11 @@ GridMapExample::GridMapExample(ros::NodeHandle& nodeHandle)
   ros::Duration duration(2.0);
   duration.sleep();
 
-//  demoGridMapIterator();
-//  demoSubmapIterator();
-//  demoCircleIterator();
-//  demoPolygonIterator();
+  demoGridMapIterator();
+  demoSubmapIterator();
+  demoCircleIterator();
   demoLineIterator();
+  demoPolygonIterator();
 }
 
 GridMapExample::~GridMapExample() {}
@@ -110,6 +110,27 @@ void GridMapExample::demoCircleIterator()
   duration.sleep();
 }
 
+void GridMapExample::demoLineIterator()
+{
+  ROS_INFO("Running line iterator demo.");
+  map_.clear();
+  publish();
+
+  Eigen::Array2i start(18, 2);
+  Eigen::Array2i end(2, 13);
+
+  for (grid_map_lib::LineIterator iterator(map_, start, end);
+      !iterator.isPassedEnd(); ++iterator) {
+    map_.at("type", *iterator) = 1.0;
+    publish();
+    ros::Duration duration(0.02);
+    duration.sleep();
+  }
+
+  ros::Duration duration(1.0);
+  duration.sleep();
+}
+
 void GridMapExample::demoPolygonIterator()
 {
   ROS_INFO("Running polygon iterator demo.");
@@ -135,27 +156,6 @@ void GridMapExample::demoPolygonIterator()
   polygonPublisher_.publish(polygonMsg);
 
   for (grid_map_lib::PolygonIterator iterator(map_, polygon);
-      !iterator.isPassedEnd(); ++iterator) {
-    map_.at("type", *iterator) = 1.0;
-    publish();
-    ros::Duration duration(0.02);
-    duration.sleep();
-  }
-
-  ros::Duration duration(1.0);
-  duration.sleep();
-}
-
-void GridMapExample::demoLineIterator()
-{
-  ROS_INFO("Running line iterator demo.");
-  map_.clear();
-  publish();
-
-  Eigen::Vector2d start(0.0, -0.15);
-  Eigen::Vector2d end(0.4, 0.15);
-
-  for (grid_map_lib::LineIterator iterator(map_, start, end);
       !iterator.isPassedEnd(); ++iterator) {
     map_.at("type", *iterator) = 1.0;
     publish();

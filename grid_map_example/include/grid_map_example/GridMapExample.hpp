@@ -40,8 +40,8 @@ class GridMapExample
   void demoGridMapIterator();
   void demoSubmapIterator();
   void demoCircleIterator();
-  void demoPolygonIterator();
   void demoLineIterator();
+  void demoPolygonIterator();
 
   /*!
    * Publish the grid map to ROS.

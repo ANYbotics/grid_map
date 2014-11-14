@@ -13,7 +13,7 @@ using namespace std;
 
 namespace grid_map_lib {
 
-LineIterator::LineIterator(const grid_map_lib::GridMap& gridMap, const Eigen::Vector2d& start, const Eigen::Vector2d& end)
+LineIterator::LineIterator(const grid_map_lib::GridMap& gridMap, const Eigen::Array2i& start, const Eigen::Array2i& end)
     : start_(start),
       end_(end)
 {
@@ -24,13 +24,26 @@ LineIterator::LineIterator(const grid_map_lib::GridMap& gridMap, const Eigen::Ve
   bufferStartIndex_ = gridMap.getBufferStartIndex();
   Eigen::Array2i submapStartIndex;
   Eigen::Array2i submapBufferSize;
-//  if(!isInside()) ++(*this);
+  initializeParameters();
+}
+
+LineIterator::LineIterator(const grid_map_lib::GridMap& gridMap, const Eigen::Vector2d& start, const Eigen::Vector2d& end)
+{
+  // TODO Implement this constructor with range checking.
 }
 
 LineIterator& LineIterator::operator =(const LineIterator& other)
 {
+  index_ = other.index_;
   start_ = other.start_;
   end_ = other.end_;
+  iCell_ = other.iCell_;
+  nCells_ = other.nCells_;
+  increment1_ = other.increment1_;
+  increment2_ = other.increment2_;
+  denominator_ = other.denominator_;
+  numerator_ = other.numerator_;
+  numeratorAdd_ = other.numeratorAdd_;
   mapLength_ = other.mapLength_;
   mapPosition_ = other.mapPosition_;
   resolution_ = other.resolution_;
@@ -41,102 +54,75 @@ LineIterator& LineIterator::operator =(const LineIterator& other)
 
 bool LineIterator::operator !=(const LineIterator& other) const
 {
-//  return (internalIterator_ != other.internalIterator_);
+  return (index_ != other.index_).any();
 }
 
 const Eigen::Array2i& LineIterator::operator *() const
 {
-//  return *(*internalIterator_);
+  return index_;
 }
 
 LineIterator& LineIterator::operator ++()
 {
-//  ++(*internalIterator_);
-//  if (internalIterator_->isPassedEnd()) return *this;
-//
-//  for ( ; !internalIterator_->isPassedEnd(); ++(*internalIterator_)) {
-//    if (isInside()) break;
-//  }
-
+  numerator_ += numeratorAdd_;  // Increase the numerator by the top of the fraction
+  if (numerator_ >= denominator_) {
+    numerator_ -= denominator_;
+    index_ += increment1_;
+  }
+  index_ += increment2_;
+  ++iCell_;
   return *this;
 }
 
 bool LineIterator::isPassedEnd() const
 {
-//  return internalIterator_->isPassedEnd();
+  return iCell_ >= nCells_;
 }
 
 void LineIterator::initializeParameters()
 {
-  //Bresenham Ray-Tracing
-//   int deltax = abs(x1 - x0);        // The difference between the x's
-//   int deltay = abs(y1 - y0);        // The difference between the y's
-//   int x = x0;                       // Start x off at the first pixel
-//   int y = y0;                       // Start y off at the first pixel
-//
-//   int xinc1, xinc2, yinc1, yinc2;
-//   int den, num, numadd, numpixels;
-//
-//   base_local_planner::Position2DInt pt;
-//
-//   if (x1 >= x0)                 // The x-values are increasing
-//   {
-//     xinc1 = 1;
-//     xinc2 = 1;
-//   }
-//   else                          // The x-values are decreasing
-//   {
-//     xinc1 = -1;
-//     xinc2 = -1;
-//   }
-//
-//   if (y1 >= y0)                 // The y-values are increasing
-//   {
-//     yinc1 = 1;
-//     yinc2 = 1;
-//   }
-//   else                          // The y-values are decreasing
-//   {
-//     yinc1 = -1;
-//     yinc2 = -1;
-//   }
-//
-//   if (deltax >= deltay)         // There is at least one x-value for every y-value
-//   {
-//     xinc1 = 0;                  // Don't change the x when numerator >= denominator
-//     yinc2 = 0;                  // Don't change the y for every iteration
-//     den = deltax;
-//     num = deltax / 2;
-//     numadd = deltay;
-//     numpixels = deltax;         // There are more x-values than y-values
-//   }
-//   else                          // There is at least one y-value for every x-value
-//   {
-//     xinc2 = 0;                  // Don't change the x for every iteration
-//     yinc1 = 0;                  // Don't change the y when numerator >= denominator
-//     den = deltay;
-//     num = deltay / 2;
-//     numadd = deltax;
-//     numpixels = deltay;         // There are more y-values than x-values
-//   }
-//
-//   for (int curpixel = 0; curpixel <= numpixels; curpixel++)
-//   {
-//     pt.x = x;      //Draw the current pixel
-//     pt.y = y;
-//     pts.push_back(pt);
-//
-//     num += numadd;              // Increase the numerator by the top of the fraction
-//     if (num >= den)             // Check if numerator >= denominator
-//     {
-//       num -= den;               // Calculate the new numerator value
-//       x += xinc1;               // Change the x as appropriate
-//       y += yinc1;               // Change the y as appropriate
-//     }
-//     x += xinc2;                 // Change the x as appropriate
-//     y += yinc2;                 // Change the y as appropriate
-//   }
+  iCell_ = 0;
+  index_ = start_;
+
+  Eigen::Array2i delta = (end_ - start_).abs();
+
+  if (end_.x() >= start_.x()) {
+    // x-values increasing.
+    increment1_.x() = 1;
+    increment2_.x() = 1;
+  } else {
+    // x-values decreasing.
+    increment1_.x() = -1;
+    increment2_.x() = -1;
+  }
+
+  if (end_.y() >= start_.y()) {
+    // y-values increasing.
+    increment1_.y() = 1;
+    increment2_.y() = 1;
+  } else {
+    // y-values decreasing.
+    increment1_.y() = -1;
+    increment2_.y() = -1;
+  }
+
+  if (delta.x() >= delta.y()) {
+    // There is at least one x-value for every y-value.
+    increment1_.x() = 0; // Do not change the x when numerator >= denominator.
+    increment2_.y() = 0; // Do not change the y for every iteration.
+    denominator_ = delta.x();
+    numerator_ = delta.x() / 2;
+    numeratorAdd_ = delta.y();
+    nCells_ = delta.x() + 1; // There are more x-values than y-values.
+  } else {
+    // There is at least one y-value for every x-value
+    increment2_.x() = 0; // Do not change the x for every iteration.
+    increment1_.y() = 0; // Do not change the y when numerator >= denominator.
+    denominator_ = delta.y();
+    numerator_ = delta.y() / 2;
+    numeratorAdd_ = delta.x();
+    nCells_ = delta.y() + 1; // There are more y-values than x-values.
+  }
 }
 
 } /* namespace grid_map_lib */
-

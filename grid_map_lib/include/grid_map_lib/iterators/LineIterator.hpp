@@ -27,6 +27,14 @@ public:
   /*!
    * Constructor.
    * @param gridMap the grid map to iterate on.
+   * @param start the starting index of the line.
+   * @param end the ending index of the line.
+   */
+  LineIterator(const grid_map_lib::GridMap& gridMap, const Eigen::Array2i& start, const Eigen::Array2i& end);
+
+  /*!
+   * Constructor.
+   * @param gridMap the grid map to iterate on.
    * @param start the starting point of the line.
    * @param end the ending point of the line.
    */
@@ -68,11 +76,24 @@ private:
   // TODO
   void initializeParameters();
 
-  //! Starting point of the line.
-  Eigen::Vector2d start_;
+  //! Current index.
+  Eigen::Array2i index_;
 
-  //! Ending point of the line.
-  Eigen::Vector2d end_;
+  //! Starting index of the line.
+  Eigen::Array2i start_;
+
+  //! Ending index of the line.
+  Eigen::Array2i end_;
+
+  //! Current cell number.
+  unsigned int iCell_;
+
+  //! Number of cells in the line.
+  unsigned int nCells_;
+
+  //! Helper variables for Bresenham Line Drawing algorithm.
+  Eigen::Array2i increment1_, increment2_;
+  int denominator_, numerator_, numeratorAdd_;
 
   //! Map information needed to get position from iterator.
   Eigen::Array2d mapLength_;
