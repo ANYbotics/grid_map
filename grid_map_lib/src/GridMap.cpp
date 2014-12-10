@@ -70,8 +70,8 @@ void GridMap::setClearTypes(const std::vector<std::string>& clearTypes)
 
 void GridMap::add(const std::string& type, const Eigen::MatrixXf& data)
 {
-  assert(length_(0) == data.rows());
-  assert(length_(1) == data.cols());
+  assert(bufferSize_(0) == data.rows());
+  assert(bufferSize_(1) == data.cols());
 
   if (exists(type))
   {
