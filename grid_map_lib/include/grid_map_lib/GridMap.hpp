@@ -63,7 +63,7 @@ class GridMap
   void setClearTypes(const std::vector<std::string>& clearTypes);
 
   /*!
-   * Add a new data.
+   * Add new data (if the type exists already, overwrite its data, otherwise add type and data).
    * @param type the type identifier of the data.
    * @param data the data to be added.
    */

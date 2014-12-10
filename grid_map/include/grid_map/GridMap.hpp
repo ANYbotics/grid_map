@@ -33,6 +33,11 @@ class GridMap : public grid_map_lib::GridMap
  public:
   /*!
    * Constructor.
+   */
+  GridMap();
+
+  /*!
+   * Constructor.
    * @param types a vector of strings containing the definition/description of the data.
    */
   GridMap(const std::vector<std::string>& types);

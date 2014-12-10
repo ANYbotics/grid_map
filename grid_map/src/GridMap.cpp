@@ -23,6 +23,12 @@ using namespace Eigen;
 
 namespace grid_map {
 
+GridMap::GridMap()
+ : grid_map_lib::GridMap()
+{
+
+}
+
 GridMap::GridMap(const std::vector<std::string>& types)
  : grid_map_lib::GridMap(types)
 {
@@ -30,7 +36,7 @@ GridMap::GridMap(const std::vector<std::string>& types)
 }
 
 GridMap::GridMap(const grid_map_msg::GridMap& message)
-    : grid_map_lib::GridMap()
+ : grid_map_lib::GridMap()
 {
   fromMessage(message);
 }
