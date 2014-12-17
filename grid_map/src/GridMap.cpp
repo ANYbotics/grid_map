@@ -61,11 +61,8 @@ void GridMap::toMessage(const std::vector<std::string>& types, grid_map_msg::Gri
   message.info.positionX = position_.x();
   message.info.positionY = position_.y();
 
-  for (auto& type : types) {
-    std_msgs::String definition;
-    definition.data = type;
-    message.dataDefinition.push_back(definition);
-
+  for (const auto& type : types) {
+    message.dataDefinition.push_back(type);
     std_msgs::Float32MultiArray dataArray;
     matrixEigenCopyToMultiArrayMessage(data_.at(type), dataArray);
     message.data.push_back(dataArray);
@@ -93,8 +90,8 @@ bool GridMap::fromMessage(const grid_map_msg::GridMap& message)
   for (unsigned int i = 0; i < message.dataDefinition.size(); i++) {
     Eigen::MatrixXf dataMatrix;
     multiArrayMessageCopyToMatrixEigen(message.data[i], dataMatrix); // TODO Could we use the data mapping (instead of copying) method here?
-    data_.insert(std::pair<std::string, Eigen::MatrixXf>(message.dataDefinition[i].data, dataMatrix));
-    types_.push_back(message.dataDefinition[i].data);
+    data_.insert(std::pair<std::string, Eigen::MatrixXf>(message.dataDefinition[i], dataMatrix));
+    types_.push_back(message.dataDefinition[i]);
   }
 
   clearTypes_ = types_;

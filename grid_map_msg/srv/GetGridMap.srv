@@ -11,7 +11,7 @@ float64 lengthX
 float64 lengthY
 
 # Requested data. If empty, get all available data.
-std_msgs/String[] dataDefinition
+string[] dataDefinition
 
 ---
 
