@@ -50,10 +50,24 @@ class Polygon
   void addVertex(const Eigen::Vector2d& vertex);
 
   /*!
+   * Get the vertex with index.
+   * @param index the index of the requested vertex.
+   * @return the requested vertex.
+   * TODO: Make this accessible trough [] operator.
+   */
+  const Eigen::Vector2d& getVertex(const size_t index) const;
+
+  /*!
    * Returns the vertices of the polygon.
    * @return the vertices of the polygon.
    */
   const std::vector<Eigen::Vector2d>& getVertices() const;
+
+  /*!
+   * Returns the number of vertices.
+   * @return the number of vertices.
+   */
+  const size_t nVertices() const;
 
  protected:
 

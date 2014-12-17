@@ -38,9 +38,19 @@ void Polygon::addVertex(const Eigen::Vector2d& vertex)
   vertices_.push_back(vertex);
 }
 
+const Eigen::Vector2d& Polygon::getVertex(const size_t index) const
+{
+  return vertices_.at(index);
+}
+
 const std::vector<Eigen::Vector2d>& Polygon::getVertices() const
 {
   return vertices_;
+}
+
+const size_t Polygon::nVertices() const
+{
+  return vertices_.size();
 }
 
 } /* namespace grid_map_lib */
