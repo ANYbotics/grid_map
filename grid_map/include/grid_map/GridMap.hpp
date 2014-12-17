@@ -32,6 +32,11 @@ class GridMap : public grid_map_lib::GridMap
 {
  public:
   /*!
+   * Default constructor.
+   */
+  GridMap();
+
+  /*!
    * Constructor.
    * @param types a vector of strings containing the definition/description of the data.
    */

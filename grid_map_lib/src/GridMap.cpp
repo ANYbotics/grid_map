@@ -70,9 +70,17 @@ void GridMap::setClearTypes(const std::vector<std::string>& clearTypes)
 
 void GridMap::add(const std::string& type, const Eigen::MatrixXf& data)
 {
-  // TODO Add size checks?
-  data_.insert(std::pair<std::string, MatrixXf>(type, data));
-  types_.push_back(type);
+  assert(bufferSize_(0) == data.rows());
+  assert(bufferSize_(1) == data.cols());
+
+  if (exists(type)) {
+    // Type exists already, overwrite its data.
+    data_.at(type) = data;
+  } else {
+    // Type does not exist yet, add type and data.
+    data_.insert(std::pair<std::string, MatrixXf>(type, data));
+    types_.push_back(type);
+  }
 }
 
 bool GridMap::exists(const std::string& type) const
