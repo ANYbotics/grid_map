@@ -32,7 +32,7 @@ class GridMap : public grid_map_lib::GridMap
 {
  public:
   /*!
-   * Constructor.
+   * Default constructor.
    */
   GridMap();
 
