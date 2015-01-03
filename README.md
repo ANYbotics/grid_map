@@ -1,8 +1,6 @@
-Grid Map
-======================
+# Grid Map
 
-Overview
----------------
+## Overview
 
 This is a C++ library to manage two-dimensional grid maps with multiple data layers. It is designed with mobile robots in mind and typical usage including storing local data such as `elevation`, `variance`, `color`, `friction_coefficient`, `quality`, `surface_normal_x`, `surface_normal_y`, `surface_normal_z` etc. It is used in the [Robot-Centric Elevation Mapping](https://github.com/ethz-asl/elevation_mapping) framework.
 
@@ -14,8 +12,7 @@ Affiliation: Autonomous Systems Lab, ETH Zurich**
 ![Grid map example in rviz](grid_map_visualization/doc/point_cloud.jpg)
 
 
-Citing
----------------
+## Citing
 
 The methods used in this software are described in the following paper (available [here](http://dx.doi.org/10.3929/ethz-a-010173654)):
 
@@ -31,8 +28,7 @@ in International Conference on Climbing and Walking Robots (CLAWAR), 2014.
     }
 
 
-Installation
-------------
+## Installation
 
 ### Dependencies
 
@@ -56,8 +52,7 @@ Run the unit tests with
     catkin_make run_tests_grid_map_lib run_tests_grid_map_lib
 
 
-Usage
-------------
+## Usage
 
 ### Conventions & Definitions
 
@@ -80,8 +75,8 @@ The simplest way to iterate over the entire grid map is to use the `GridMapItera
 
 You can find more examples on how to use the different interators in the [GridMapExample] file.
 
-Nodes
-------------
+
+## Nodes
 
 ### Node: grid_map_lib
 
@@ -100,6 +95,7 @@ This node subscribes to a grid map topic and publishes messages that can be visu
 Point cloud | Occupancy grid
 --- | ---
 [![Point cloud](grid_map_visualization/doc/point_cloud_preview.jpg)](grid_map_visualization/doc/point_cloud.jpg) | [![Occupancy grid](grid_map_visualization/doc/occupancy_grid_preview.jpg)](grid_map_visualization/doc/occupancy_grid.jpg)
+
 
 #### Subscribed Topics
 
@@ -185,8 +181,7 @@ Definition of the grid map message type and services.
     Definition of the service call for requesting a grid map.
 
 
-Bugs & Feature Requests
-------------
+## Bugs & Feature Requests
 
 Please report bugs and request features using the [Issue Tracker](https://github.com/ethz-asl/grid_map/issues).
 
