@@ -14,6 +14,7 @@ set(CMAKE_BUILD_TYPE RelWithDebInfo)
 ## Find catkin macros and libraries
 find_package(catkin REQUIRED COMPONENTS
   cmake_modules
+  filters
 )
 
 ## System dependencies are found with CMake's conventions
@@ -56,6 +57,7 @@ add_library(${PROJECT_NAME}
    src/iterators/CircleIterator.cpp
    src/iterators/PolygonIterator.cpp
    src/iterators/LineIterator.cpp
+   src/filters/WeightedSumFilter.cpp
 )
 
 target_link_libraries(${PROJECT_NAME}

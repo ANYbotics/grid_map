@@ -30,11 +30,12 @@ bool WeightedSumFilter<T>::configure()
 }
 
 template<typename T>
-bool WeightedSumFilter<T>::update(const T& elevation_map, T& slope_map)
+bool WeightedSumFilter<T>::update(const T& elevation_map, T& traversability_map)
 {
+  traversability_map = elevation_map;
   return true;
 }
 
 } /* namespace */
 
-PLUGINLIB_REGISTER_CLASS(WeightedSumFilter, filters::WeightedSumFilter<grid_map::GridMap>, filters::FilterBase<grid_map::GridMap>)
+PLUGINLIB_REGISTER_CLASS(WeightedSumFilter, filters::WeightedSumFilter<grid_map_lib::GridMap>, filters::FilterBase<grid_map_lib::GridMap>)
