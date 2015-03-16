@@ -11,4 +11,9 @@
   <author email="ralf.kaestner@gmail.com">Ralf Kaestner</author>
   <buildtool_depend>catkin</buildtool_depend>
   <build_depend>cmake_modules</build_depend>
+  <build_depend>filters</build_depend>
+  <run_depend>filters</run_depend>
+  <export>
+    <filters plugin="${prefix}/filter_plugins.xml" />
+  </export>
 </package>

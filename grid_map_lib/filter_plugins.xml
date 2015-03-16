@@ -1,0 +1,8 @@
+<class_libraries>
+  <library path="lib/libgrid_map_lib">
+    <class name="filters/WeightedSumFilter" type="filters::WeightedSumFilter<grid_map::GridMap>" base_class_type="filters::FilterBase<grid_map::GridMap>" >
+      <description>
+        This filter computes the weighted sum of different traversability maps.
+      </description>
+    </class>
+</class_libraries>
