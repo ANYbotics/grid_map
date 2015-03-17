@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(libtraversability_estimation)
+project(grid_map_filters)
 
 set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
 

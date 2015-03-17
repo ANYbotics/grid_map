@@ -23,7 +23,7 @@
 namespace filters {
 
 /*!
- * Slope Filter class to compute the slope traversability value of an elevation map.
+ * Weighted Sum Filter class to compute the weighted sum of different layers of a grid map.
  */
 template<typename T>
 class WeightedSumFilter : public FilterBase<T>
@@ -46,13 +46,19 @@ class WeightedSumFilter : public FilterBase<T>
   virtual bool configure();
 
   /*!
-   * Computes the weighted sum of different layers of traversability maps.
-   * @param elevationMap the map for which the slope traversability value is computed.
-   * @param traversability_map gridMap with total traversability value.
+   * Computes the weighted sum of different layers of a grid map.
+   * @param mapIn gridMap with the different layers to sum.
+   * @param mapOut gridMap with an additional layer containing the sum.
    */
-  virtual bool update(const T & elevation_map, T& traversability_map);
+  virtual bool update(const T& mapIn, T& mapOut);
 
  private:
+
+  //! List of types that are added together
+  std::vector<std::string> additionTypes_;
+
+  //! List of weights of the types that are added together
+  std::vector<double> additionWeights_;
 };
 
 } /* namespace */
