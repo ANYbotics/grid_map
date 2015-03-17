@@ -8,17 +8,8 @@
 
 #ifndef WEIGHTEDSUMFILTER_HPP
 #define WEIGHTEDSUMFILTER_HPP
-#include <stdint.h>
-#include <cstring>
-#include <stdio.h>
-#include <boost/scoped_ptr.hpp>
+
 #include <filters/filter_base.h>
-
-// Grid Map
-#include <grid_map/GridMap.hpp>
-
-// Grid Map lib
-#include <grid_map_lib/GridMap.hpp>
 
 namespace filters {
 
@@ -59,6 +50,9 @@ class WeightedSumFilter : public FilterBase<T>
 
   //! List of weights of the types that are added together
   std::vector<double> additionWeights_;
+
+  //! Traversability map type.
+  const std::string traversabilityType_;
 };
 
 } /* namespace */
