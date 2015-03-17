@@ -6,8 +6,8 @@
  *	 Institute: ETH Zurich, Autonomous Systems Lab
  */
 
-#include "grid_map_core/GridMap.hpp"
-#include "grid_map_core/GridMapMath.hpp"
+#include "grid_map_lib/GridMap.hpp"
+#include "grid_map_lib/GridMapMath.hpp"
 
 // STL
 #include <iostream>
@@ -18,7 +18,7 @@
 using namespace std;
 using namespace Eigen;
 
-namespace grid_map_core {
+namespace grid_map_lib {
 
 GridMap::GridMap(const std::vector<std::string>& types)
 {

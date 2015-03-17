@@ -1,15 +1,16 @@
 /*
- * CircleIterator.hpp
+ * PolygonIterator.hpp
  *
- *  Created on: Nov 13, 2014
+ *  Created on: Sep 19, 2014
  *      Author: Péter Fankhauser
  *   Institute: ETH Zurich, Autonomous Systems Lab
  */
 
 #pragma once
 
-#include "grid_map_core/GridMap.hpp"
-#include "grid_map_core/iterators/SubmapIterator.hpp"
+#include "grid_map_lib/GridMap.hpp"
+#include "grid_map_lib/Polygon.hpp"
+#include "grid_map_lib/iterators/SubmapIterator.hpp"
 
 // Eigen
 #include <Eigen/Core>
@@ -17,35 +18,34 @@
 // unique_ptr
 #include <memory>
 
-namespace grid_map_core {
+namespace grid_map_lib {
 
 /*!
- * Iterator class to iterate through a circular area of the map.
+ * Iterator class to iterate through a polygonal area of the map.
  */
-class CircleIterator
+class PolygonIterator
 {
 public:
 
   /*!
    * Constructor.
    * @param gridMap the grid map to iterate on.
-   * @param center the position of the circle center.
-   * @param radius the radius of the circle.
+   * @param polygon the polygonal area to iterate on.
    */
-  CircleIterator(const grid_map_core::GridMap& gridMap, const Eigen::Vector2d& center, const double radius);
+  PolygonIterator(const grid_map_lib::GridMap& gridMap, const Polygon& polygon);
 
   /*!
    * Assignment operator.
    * @param iterator the iterator to copy data from.
    * @return a reference to *this.
    */
-  CircleIterator& operator =(const CircleIterator& other);
+  PolygonIterator& operator =(const PolygonIterator& other);
 
   /*!
    * Compare to another iterator.
    * @return whether the current iterator points to a different address than the other one.
    */
-  bool operator !=(const CircleIterator& other) const;
+  bool operator !=(const PolygonIterator& other) const;
 
   /*!
    * Dereference the iterator with const.
@@ -57,7 +57,7 @@ public:
    * Increase the iterator to the next element.
    * @return a reference to the updated iterator.
    */
-  CircleIterator& operator ++();
+  PolygonIterator& operator ++();
 
   /*!
    * Indicates if iterator is passed end.
@@ -68,29 +68,21 @@ public:
 private:
 
   /*!
-   * Check if current index is inside the circle.
+   * Check if current index is inside polygon.
    * @return true if inside, false otherwise.
    */
   bool isInside();
 
   /*!
-   * Finds the submap that fully contains the circle and returns the parameters.
-   * @param[in] center the position of the circle center.
-   * @param[in] radius the radius of the circle.
+   * Finds the submap that fully contains the polygon and returns the parameters.
+   * @param[in] polygon the polygon to get the submap for.
    * @param[out] startIndex the start index of the submap.
    * @param[out] bufferSize the buffer size of the submap.
    */
-  void findSubmapParameters(const Eigen::Vector2d& center, const double radius,
-                            Eigen::Array2i& startIndex, Eigen::Array2i& bufferSize) const;
+  void findSubmapParameters(const Polygon& polygon, Eigen::Array2i& startIndex, Eigen::Array2i& bufferSize) const;
 
-  //! Position of the circle center;
-  Eigen::Vector2d center_;
-
-  //! Radius of the circle.
-  double radius_;
-
-  //! Square of the radius for efficiency.
-  double radiusSquare_;
+  //! Polygon to iterate on.
+  Polygon polygon_;
 
   //! Grid submap iterator.
   std::shared_ptr<SubmapIterator> internalIterator_;

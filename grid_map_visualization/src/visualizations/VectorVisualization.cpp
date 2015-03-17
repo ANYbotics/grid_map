@@ -12,7 +12,7 @@
 #include <grid_map_visualization/GridMapVisualizationHelpers.hpp>
 
 // Iterator
-#include <grid_map_core/iterators/GridMapIterator.hpp>
+#include <grid_map_lib/iterators/GridMapIterator.hpp>
 
 // ROS
 #include <geometry_msgs/Point.h>
@@ -75,7 +75,7 @@ bool VectorVisualization::visualize(const grid_map::GridMap& map)
   marker_.points.clear();
   marker_.colors.clear();
 
-  for (grid_map_core::GridMapIterator iterator(map); !iterator.isPassedEnd(); ++iterator)
+  for (grid_map_lib::GridMapIterator iterator(map); !iterator.isPassedEnd(); ++iterator)
   {
     if (!map.isValid(*iterator) || !map.isValid(*iterator, types_)) continue;
 

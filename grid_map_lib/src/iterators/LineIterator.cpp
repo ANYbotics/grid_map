@@ -1,19 +1,19 @@
 /*
- * LineIterator.hpp
+ * Circleterator.hpp
  *
  *  Created on: Nov 13, 2014
  *      Author: Péter Fankhauser
  *   Institute: ETH Zurich, Autonomous Systems Lab
  */
 
-#include "grid_map_core/iterators/LineIterator.hpp"
-#include "grid_map_core/GridMapMath.hpp"
+#include "grid_map_lib/iterators/LineIterator.hpp"
+#include "grid_map_lib/GridMapMath.hpp"
 
 using namespace std;
 
-namespace grid_map_core {
+namespace grid_map_lib {
 
-LineIterator::LineIterator(const grid_map_core::GridMap& gridMap, const Eigen::Array2i& start, const Eigen::Array2i& end)
+LineIterator::LineIterator(const grid_map_lib::GridMap& gridMap, const Eigen::Array2i& start, const Eigen::Array2i& end)
     : start_(start),
       end_(end)
 {
@@ -27,7 +27,7 @@ LineIterator::LineIterator(const grid_map_core::GridMap& gridMap, const Eigen::A
   initializeParameters();
 }
 
-LineIterator::LineIterator(const grid_map_core::GridMap& gridMap, const Eigen::Vector2d& start, const Eigen::Vector2d& end)
+LineIterator::LineIterator(const grid_map_lib::GridMap& gridMap, const Eigen::Vector2d& start, const Eigen::Vector2d& end)
 {
   // TODO Implement this constructor with range checking.
 }
@@ -125,4 +125,4 @@ void LineIterator::initializeParameters()
   }
 }
 
-} /* namespace grid_map */
+} /* namespace grid_map_lib */

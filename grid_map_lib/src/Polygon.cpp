@@ -6,9 +6,9 @@
  *   Institute: ETH Zurich, Autonomous Systems Lab
  */
 
-#include <grid_map_core/Polygon.hpp>
+#include <grid_map_lib/Polygon.hpp>
 
-namespace grid_map_core {
+namespace grid_map_lib {
 
 Polygon::Polygon() {}
 
@@ -53,4 +53,4 @@ const size_t Polygon::nVertices() const
   return vertices_.size();
 }
 
-} /* namespace grid_map */
+} /* namespace grid_map_lib */

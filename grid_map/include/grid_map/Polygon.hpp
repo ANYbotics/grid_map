@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include <grid_map_core/Polygon.hpp>
+#include <grid_map_lib/Polygon.hpp>
 
 // STL
 #include <string>
@@ -20,7 +20,7 @@
 
 namespace grid_map {
 
-class Polygon : public grid_map_core::Polygon
+class Polygon : public grid_map_lib::Polygon
 {
  public:
 

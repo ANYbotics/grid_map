@@ -14,7 +14,7 @@
 // Eigen
 #include <Eigen/Core>
 
-namespace grid_map_core {
+namespace grid_map_lib {
 
 class Polygon
 {
@@ -75,4 +75,4 @@ class Polygon
   std::vector<Eigen::Vector2d> vertices_;
 };
 
-} /* namespace grid_map */
+} /* namespace grid_map_lib */

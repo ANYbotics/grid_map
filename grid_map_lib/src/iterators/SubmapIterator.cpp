@@ -6,14 +6,14 @@
  *   Institute: ETH Zurich, Autonomous Systems Lab
  */
 
-#include "grid_map_core/iterators/SubmapIterator.hpp"
-#include "grid_map_core/GridMapMath.hpp"
+#include "grid_map_lib/iterators/SubmapIterator.hpp"
+#include "grid_map_lib/GridMapMath.hpp"
 
 using namespace std;
 
-namespace grid_map_core {
+namespace grid_map_lib {
 
-SubmapIterator::SubmapIterator(const grid_map_core::GridMap& gridMap,
+SubmapIterator::SubmapIterator(const grid_map_lib::GridMap& gridMap,
                                const Eigen::Array2i& submapStartIndex,
                                const Eigen::Array2i& submapBufferSize)
 {
@@ -87,5 +87,5 @@ bool SubmapIterator::isPassedEnd() const
   return isPassedEnd_;
 }
 
-} /* namespace grid_map */
+} /* namespace grid_map_lib */
 
