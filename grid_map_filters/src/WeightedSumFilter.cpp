@@ -6,7 +6,7 @@
  *   Institute: ETH Zurich, Autonomous Systems Lab
  */
 
-#include <grid_map_lib/filters/WeightedSumFilter.hpp>
+#include "filters/WeightedSumFilter.hpp"
 #include <pluginlib/class_list_macros.h>
 
 namespace filters {
@@ -38,4 +38,4 @@ bool WeightedSumFilter<T>::update(const T& elevation_map, T& traversability_map)
 
 } /* namespace */
 
-PLUGINLIB_REGISTER_CLASS(WeightedSumFilter, filters::WeightedSumFilter<grid_map_lib::GridMap>, filters::FilterBase<grid_map_lib::GridMap>)
+PLUGINLIB_REGISTER_CLASS(WeightedSumFilter, filters::WeightedSumFilter<grid_map::GridMap>, filters::FilterBase<grid_map::GridMap>)

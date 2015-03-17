@@ -17,10 +17,6 @@ find_package(catkin REQUIRED COMPONENTS
   grid_map
   grid_map_lib
   grid_map_msg
-#  roscpp
-#  nav_msgs
-#  tf
-#  tf_conversions
 )
 
 ## System dependencies are found with CMake's conventions
@@ -55,9 +51,7 @@ include_directories(
 
 ## Declare a cpp library
 add_library(${PROJECT_NAME}
-   src/SlopeFilter.cpp
-   src/StepFilter.cpp
-   src/RoughnessFilter.cpp
+   src/WeightedSumFilter.cpp
 )
 
 target_link_libraries(${PROJECT_NAME}

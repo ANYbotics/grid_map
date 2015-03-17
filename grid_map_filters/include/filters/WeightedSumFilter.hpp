@@ -14,6 +14,9 @@
 #include <boost/scoped_ptr.hpp>
 #include <filters/filter_base.h>
 
+// Grid Map
+#include <grid_map/GridMap.hpp>
+
 // Grid Map lib
 #include <grid_map_lib/GridMap.hpp>
 
