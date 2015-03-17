@@ -8,7 +8,7 @@
 
 #include "grid_map_visualization/GridMapVisualization.hpp"
 
-#include <grid_map_lib/GridMap.hpp>
+#include <grid_map_core/GridMap.hpp>
 
 using namespace std;
 using namespace ros;

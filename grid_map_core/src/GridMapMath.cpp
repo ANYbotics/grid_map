@@ -6,7 +6,7 @@
  *	 Institute: ETH Zurich, Autonomous Systems Lab
  */
 
-#include "grid_map_lib/GridMapMath.hpp"
+#include "grid_map_core/GridMapMath.hpp"
 
 // fabs
 #include <cmath>
@@ -17,7 +17,7 @@
 using namespace Eigen;
 using namespace std;
 
-namespace grid_map_lib {
+namespace grid_map_core {
 
 namespace internal {
 

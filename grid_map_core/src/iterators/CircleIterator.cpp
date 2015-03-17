@@ -1,21 +1,24 @@
 /*
- * PolygonIterator.hpp
+ * Circleterator.hpp
  *
- *  Created on: Sep 19, 2014
+ *  Created on: Nov 13, 2014
  *      Author: Péter Fankhauser
  *   Institute: ETH Zurich, Autonomous Systems Lab
  */
 
-#include "grid_map_lib/iterators/PolygonIterator.hpp"
-#include "grid_map_lib/GridMapMath.hpp"
+#include "grid_map_core/iterators/CircleIterator.hpp"
+#include "grid_map_core/GridMapMath.hpp"
 
 using namespace std;
 
-namespace grid_map_lib {
+namespace grid_map_core {
 
-PolygonIterator::PolygonIterator(const grid_map_lib::GridMap& gridMap, const Polygon& polygon)
-    : polygon_(polygon)
+CircleIterator::CircleIterator(const grid_map_core::GridMap& gridMap, const Eigen::Vector2d& center,
+                               const double radius)
+    : center_(center),
+      radius_(radius)
 {
+  radiusSquare_ = radius_ * radius_;
   mapLength_ = gridMap.getLength();
   mapPosition_ = gridMap.getPosition();
   resolution_ = gridMap.getResolution();
@@ -23,14 +26,16 @@ PolygonIterator::PolygonIterator(const grid_map_lib::GridMap& gridMap, const Pol
   bufferStartIndex_ = gridMap.getBufferStartIndex();
   Eigen::Array2i submapStartIndex;
   Eigen::Array2i submapBufferSize;
-  findSubmapParameters(polygon, submapStartIndex, submapBufferSize);
+  findSubmapParameters(center, radius, submapStartIndex, submapBufferSize);
   internalIterator_ = std::shared_ptr<SubmapIterator>(new SubmapIterator(gridMap, submapStartIndex, submapBufferSize));
   if(!isInside()) ++(*this);
 }
 
-PolygonIterator& PolygonIterator::operator =(const PolygonIterator& other)
+CircleIterator& CircleIterator::operator =(const CircleIterator& other)
 {
-  polygon_ = other.polygon_;
+  center_ = other.center_;
+  radius_ = other.radius_;
+  radiusSquare_ = other.radiusSquare_;
   internalIterator_ = other.internalIterator_;
   mapLength_ = other.mapLength_;
   mapPosition_ = other.mapPosition_;
@@ -40,17 +45,17 @@ PolygonIterator& PolygonIterator::operator =(const PolygonIterator& other)
   return *this;
 }
 
-bool PolygonIterator::operator !=(const PolygonIterator& other) const
+bool CircleIterator::operator !=(const CircleIterator& other) const
 {
   return (internalIterator_ != other.internalIterator_);
 }
 
-const Eigen::Array2i& PolygonIterator::operator *() const
+const Eigen::Array2i& CircleIterator::operator *() const
 {
   return *(*internalIterator_);
 }
 
-PolygonIterator& PolygonIterator::operator ++()
+CircleIterator& CircleIterator::operator ++()
 {
   ++(*internalIterator_);
   if (internalIterator_->isPassedEnd()) return *this;
@@ -62,26 +67,25 @@ PolygonIterator& PolygonIterator::operator ++()
   return *this;
 }
 
-bool PolygonIterator::isPassedEnd() const
+bool CircleIterator::isPassedEnd() const
 {
   return internalIterator_->isPassedEnd();
 }
 
-bool PolygonIterator::isInside()
+bool CircleIterator::isInside()
 {
   Eigen::Vector2d position;
   getPositionFromIndex(position, *(*internalIterator_), mapLength_, mapPosition_, resolution_, bufferSize_, bufferStartIndex_);
-  return polygon_.isInside(position);
+  double squareNorm = (position - center_).array().square().sum();
+  return (squareNorm <= radiusSquare_);
 }
 
-void PolygonIterator::findSubmapParameters(const Polygon& polygon, Eigen::Array2i& startIndex, Eigen::Array2i& bufferSize) const
+void CircleIterator::findSubmapParameters(const Eigen::Vector2d& center, const double radius,
+                                          Eigen::Array2i& startIndex,
+                                          Eigen::Array2i& bufferSize) const
 {
-  Eigen::Vector2d topLeft = polygon_.getVertices()[0];
-  Eigen::Vector2d bottomRight = topLeft;
-  for (const auto& vertex : polygon_.getVertices()) {
-    topLeft = topLeft.array().max(vertex.array());
-    bottomRight = bottomRight.array().min(vertex.array());
-  }
+  Eigen::Vector2d topLeft = center.array() + radius;
+  Eigen::Vector2d bottomRight = center.array() - radius;
   limitPositionToRange(topLeft, mapLength_, mapPosition_);
   limitPositionToRange(bottomRight, mapLength_, mapPosition_);
   getIndexFromPosition(startIndex, topLeft, mapLength_, mapPosition_, resolution_, bufferSize_, bufferStartIndex_);
@@ -90,5 +94,5 @@ void PolygonIterator::findSubmapParameters(const Polygon& polygon, Eigen::Array2
   bufferSize = endIndex - startIndex + Eigen::Array2i::Ones();
 }
 
-} /* namespace grid_map_lib */
+} /* namespace grid_map */
 

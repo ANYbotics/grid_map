@@ -8,12 +8,12 @@
 
 #include "grid_map_example/GridMapExample.hpp"
 #include <grid_map_msg/GridMap.h>
-#include <grid_map_lib/iterators/GridMapIterator.hpp>
-#include <grid_map_lib/iterators/SubmapIterator.hpp>
-#include <grid_map_lib/iterators/CircleIterator.hpp>
+#include <grid_map_core/iterators/GridMapIterator.hpp>
+#include <grid_map_core/iterators/SubmapIterator.hpp>
+#include <grid_map_core/iterators/CircleIterator.hpp>
+#include <grid_map_core/iterators/PolygonIterator.hpp>
+#include <grid_map_core/iterators/LineIterator.hpp>
 #include <grid_map/Polygon.hpp>
-#include <grid_map_lib/iterators/PolygonIterator.hpp>
-#include <grid_map_lib/iterators/LineIterator.hpp>
 
 // ROS
 #include <geometry_msgs/PolygonStamped.h>
@@ -57,7 +57,7 @@ void GridMapExample::demoGridMapIterator()
   map_.clear();
   publish();
 
-  for (grid_map_lib::GridMapIterator iterator(map_); !iterator.isPassedEnd(); ++iterator) {
+  for (grid_map_core::GridMapIterator iterator(map_); !iterator.isPassedEnd(); ++iterator) {
     map_.at("type", *iterator) = 1.0;
     publish();
     ros::Duration duration(0.01);
@@ -77,7 +77,7 @@ void GridMapExample::demoSubmapIterator()
   Eigen::Array2i submapStartIndex(3, 5);
   Eigen::Array2i submapBufferSize(12, 7);
 
-  for (grid_map_lib::SubmapIterator iterator(map_, submapStartIndex, submapBufferSize);
+  for (grid_map_core::SubmapIterator iterator(map_, submapStartIndex, submapBufferSize);
       !iterator.isPassedEnd(); ++iterator) {
     map_.at("type", *iterator) = 1.0;
     publish();
@@ -98,7 +98,7 @@ void GridMapExample::demoCircleIterator()
   Eigen::Vector2d center(0.0, -0.15);
   double radius = 0.4;
 
-  for (grid_map_lib::CircleIterator iterator(map_, center, radius);
+  for (grid_map_core::CircleIterator iterator(map_, center, radius);
       !iterator.isPassedEnd(); ++iterator) {
     map_.at("type", *iterator) = 1.0;
     publish();
@@ -119,7 +119,7 @@ void GridMapExample::demoLineIterator()
   Eigen::Array2i start(18, 2);
   Eigen::Array2i end(2, 13);
 
-  for (grid_map_lib::LineIterator iterator(map_, start, end);
+  for (grid_map_core::LineIterator iterator(map_, start, end);
       !iterator.isPassedEnd(); ++iterator) {
     map_.at("type", *iterator) = 1.0;
     publish();
@@ -155,7 +155,7 @@ void GridMapExample::demoPolygonIterator()
   polygon.toMessage(polygonMsg);
   polygonPublisher_.publish(polygonMsg);
 
-  for (grid_map_lib::PolygonIterator iterator(map_, polygon);
+  for (grid_map_core::PolygonIterator iterator(map_, polygon);
       !iterator.isPassedEnd(); ++iterator) {
     map_.at("type", *iterator) = 1.0;
     publish();

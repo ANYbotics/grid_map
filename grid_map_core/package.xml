@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package>
-  <name>grid_map_lib</name>
+  <name>grid_map_core</name>
   <version>0.1.0</version>
   <description>General library for handling of grid maps.</description>
   <maintainer email="pfankhauser@ethz.ch">Peter Fankhauser</maintainer>

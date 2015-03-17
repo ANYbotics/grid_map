@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(grid_map_lib)
+project(grid_map_core)
 
 set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
 
@@ -68,7 +68,7 @@ target_link_libraries(${PROJECT_NAME}
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
 ## Add gtest based cpp test target and link libraries
-catkin_add_gtest(${PROJECT_NAME}-test test/test_grid_map.cpp test/GridMapMathTest.cpp test/SubmapIteratorTest.cpp test/PolygonIteratorTest.cpp)
+catkin_add_gtest(${PROJECT_NAME}-test test/test_grid_map_core.cpp test/GridMapMathTest.cpp test/SubmapIteratorTest.cpp test/PolygonIteratorTest.cpp)
 if(TARGET ${PROJECT_NAME}-test)
-  target_link_libraries(${PROJECT_NAME}-test grid_map)
+  target_link_libraries(${PROJECT_NAME}-test grid_map_core)
 endif()
