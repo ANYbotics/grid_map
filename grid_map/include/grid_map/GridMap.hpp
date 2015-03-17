@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include <grid_map_lib/GridMap.hpp>
+#include <grid_map_core/GridMap.hpp>
 #include <grid_map_msg/GridMap.h>
 
 // STL
@@ -28,7 +28,7 @@ namespace grid_map {
 /*!
  * ROS interface for the Grid Map library.
  */
-class GridMap : public grid_map_lib::GridMap
+class GridMap : public grid_map_core::GridMap
 {
  public:
   /*!

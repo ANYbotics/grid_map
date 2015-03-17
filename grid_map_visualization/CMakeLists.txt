@@ -17,6 +17,7 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   tf
   grid_map
+  grid_map_core
   grid_map_msg
   visualization_msgs
   sensor_msgs

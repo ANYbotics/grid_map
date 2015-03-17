@@ -1,5 +1,5 @@
 /*
- * CircleIterator.hpp
+ * LineIterator.hpp
  *
  *  Created on: Nov 13, 2014
  *      Author: Péter Fankhauser
@@ -8,13 +8,13 @@
 
 #pragma once
 
-#include "grid_map_lib/GridMap.hpp"
-#include "grid_map_lib/iterators/SubmapIterator.hpp"
+#include "grid_map_core/GridMap.hpp"
+#include "grid_map_core/iterators/SubmapIterator.hpp"
 
 // Eigen
 #include <Eigen/Core>
 
-namespace grid_map_lib {
+namespace grid_map_core {
 
 /*!
  * Iterator class to iterate over a line in the map.
@@ -30,7 +30,7 @@ public:
    * @param start the starting index of the line.
    * @param end the ending index of the line.
    */
-  LineIterator(const grid_map_lib::GridMap& gridMap, const Eigen::Array2i& start, const Eigen::Array2i& end);
+  LineIterator(const grid_map_core::GridMap& gridMap, const Eigen::Array2i& start, const Eigen::Array2i& end);
 
   /*!
    * Constructor.
@@ -38,7 +38,7 @@ public:
    * @param start the starting point of the line.
    * @param end the ending point of the line.
    */
-  LineIterator(const grid_map_lib::GridMap& gridMap, const Eigen::Vector2d& start, const Eigen::Vector2d& end);
+  LineIterator(const grid_map_core::GridMap& gridMap, const Eigen::Vector2d& start, const Eigen::Vector2d& end);
 
   /*!
    * Assignment operator.

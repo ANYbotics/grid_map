@@ -6,8 +6,8 @@
  *	 Institute: ETH Zurich, Autonomous Systems Lab
  */
 
-#include "grid_map_lib/SubmapIterator.hpp"
-#include "grid_map_lib/GridMap.hpp"
+#include "grid_map_core/iterators/SubmapIterator.hpp"
+#include "grid_map_core/GridMap.hpp"
 
 // Eigen
 #include <Eigen/Core>
@@ -23,7 +23,7 @@
 
 using namespace std;
 using namespace Eigen;
-using namespace grid_map_lib;
+using namespace grid_map_core;
 
 TEST(checkSubmapIterator, Simple)
 {
@@ -34,7 +34,7 @@ TEST(checkSubmapIterator, Simple)
 
   vector<string> types;
   types.push_back("type");
-  grid_map_lib::GridMap map(types);
+  GridMap map(types);
   map.setGeometry(Array2d(8.1, 5.1), 1.0, Vector2d(0.0, 0.0)); // bufferSize(8, 5)
 
   SubmapIterator iterator(map, submapTopLeftIndex, submapBufferSize);
@@ -97,7 +97,7 @@ TEST(checkSubmapIterator, CircularBuffer)
 
   vector<string> types;
   types.push_back("type");
-  grid_map_lib::GridMap map(types);
+  GridMap map(types);
   map.setGeometry(Array2d(8.1, 5.1), 1.0, Vector2d(0.0, 0.0)); // bufferSize(8, 5)
   map.move(Vector2d(-3.0, -2.0)); // bufferStartIndex(3, 2)
 

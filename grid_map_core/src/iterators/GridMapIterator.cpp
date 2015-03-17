@@ -6,12 +6,12 @@
  *   Institute: ETH Zurich, Autonomous Systems Lab
  */
 
-#include "grid_map_lib/iterators/GridMapIterator.hpp"
-#include "grid_map_lib/GridMapMath.hpp"
+#include "grid_map_core/iterators/GridMapIterator.hpp"
+#include "grid_map_core/GridMapMath.hpp"
 
-namespace grid_map_lib {
+namespace grid_map_core {
 
-GridMapIterator::GridMapIterator(const grid_map_lib::GridMap& gridMap)
+GridMapIterator::GridMapIterator(const grid_map_core::GridMap& gridMap)
 {
   bufferSize_ = gridMap.getBufferSize();
   startIndex_ = gridMap.getBufferStartIndex();
@@ -68,4 +68,4 @@ bool GridMapIterator::isPassedEnd() const
   return isPassedEnd_;
 }
 
-} /* namespace grid_map_lib */
+} /* namespace grid_map */

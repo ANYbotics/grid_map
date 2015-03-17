@@ -6,7 +6,7 @@
  *	 Institute: ETH Zurich, Autonomous Systems Lab
  */
 
-#include "grid_map_lib/GridMapMath.hpp"
+#include "grid_map_core/GridMapMath.hpp"
 
 // Eigen
 #include <Eigen/Core>
@@ -22,7 +22,7 @@
 
 using namespace std;
 using namespace Eigen;
-using namespace grid_map_lib;
+using namespace grid_map_core;
 
 TEST(PositionFromIndex, Simple)
 {

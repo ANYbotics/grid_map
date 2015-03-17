@@ -15,7 +15,7 @@ set(CMAKE_BUILD_TYPE RelWithDebInfo)
 find_package(catkin REQUIRED COMPONENTS
   cmake_modules
   roscpp
-  grid_map_lib
+  grid_map_core
   grid_map_msg
   sensor_msgs
   nav_msgs
@@ -36,7 +36,7 @@ find_package(Eigen REQUIRED)
 catkin_package(
     INCLUDE_DIRS include
     LIBRARIES ${PROJECT_NAME}
-    CATKIN_DEPENDS grid_map_lib grid_map_msg
+    CATKIN_DEPENDS grid_map_core grid_map_msg
     DEPENDS Eigen
 )
 

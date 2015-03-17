@@ -15,10 +15,7 @@
 // Eigen
 #include <Eigen/Core>
 
-namespace grid_map_lib {
-
-// TODO TODO HERE::: http://docs.ros.org/indigo/api/costmap_2d/html/costmap__2d_8h_source.html#l00395
-
+namespace grid_map_core {
 
 /*!
  * Grid map managing multiple overlaying maps holding float values.
