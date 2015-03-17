@@ -53,7 +53,7 @@ bool GridMapVisualization::initialize()
   return true;
 }
 
-void GridMapVisualization::callback(const grid_map_msg::GridMap& message)
+void GridMapVisualization::callback(const grid_map_msgs::GridMap& message)
 {
   ROS_DEBUG("Grid map visualization received a map (timestamp %f) for visualization.", message.info.header.stamp.toSec());
   grid_map::GridMap map(message);

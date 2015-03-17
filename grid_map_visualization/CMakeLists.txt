@@ -18,7 +18,7 @@ find_package(catkin REQUIRED COMPONENTS
   tf
   grid_map
   grid_map_core
-  grid_map_msg
+  grid_map_msgs
   visualization_msgs
   sensor_msgs
   nav_msgs
@@ -42,7 +42,7 @@ find_package(Eigen REQUIRED)
 catkin_package(
   INCLUDE_DIRS include
 #  LIBRARIES ${PROJECT_NAME}
-  CATKIN_DEPENDS grid_map_msg visualization_msgs
+  CATKIN_DEPENDS grid_map_msgs visualization_msgs
 #  DEPENDS system_lib
 )
 

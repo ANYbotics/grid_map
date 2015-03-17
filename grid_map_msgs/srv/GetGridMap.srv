@@ -16,4 +16,4 @@ string[] dataDefinition
 ---
 
 # Submap
-grid_map_msg/GridMap gridMap
+grid_map_msgs/GridMap gridMap

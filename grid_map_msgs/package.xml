@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package>
-  <name>grid_map_msg</name>
+  <name>grid_map_msgs</name>
   <version>0.1.0</version>
-  <description>Definition of the grid_map_msg type.</description>
+  <description>Definition of the grid_map_msgs type.</description>
   <maintainer email="pfankhauser@ethz.ch">Peter Fankhauser</maintainer>
   <license>MIT</license>
   <url type="website">http://github.com/ethz-asl/grid_map</url>

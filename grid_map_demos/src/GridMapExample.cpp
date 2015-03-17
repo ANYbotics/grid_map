@@ -7,7 +7,7 @@
  */
 
 #include "grid_map_example/GridMapExample.hpp"
-#include <grid_map_msg/GridMap.h>
+#include <grid_map_msgs/GridMap.h>
 #include <grid_map_core/iterators/GridMapIterator.hpp>
 #include <grid_map_core/iterators/SubmapIterator.hpp>
 #include <grid_map_core/iterators/CircleIterator.hpp>
@@ -31,7 +31,7 @@ GridMapExample::GridMapExample(ros::NodeHandle& nodeHandle)
       map_(vector<string>({"type"}))
 {
   ROS_INFO("Grid map example node started.");
-  gridMapPublisher_ = nodeHandle_.advertise<grid_map_msg::GridMap>("grid_map", 1, true);
+  gridMapPublisher_ = nodeHandle_.advertise<grid_map_msgs::GridMap>("grid_map", 1, true);
   polygonPublisher_ = nodeHandle_.advertise<geometry_msgs::PolygonStamped>("polygon", 1, true);
 
   // Setting up map.
@@ -170,7 +170,7 @@ void GridMapExample::demoPolygonIterator()
 void GridMapExample::publish()
 {
   map_.setTimestamp(ros::Time::now().toNSec());
-  grid_map_msg::GridMap message;
+  grid_map_msgs::GridMap message;
   map_.toMessage(message);
   gridMapPublisher_.publish(message);
   ROS_DEBUG("Grid map (timestamp %f) published.", message.info.header.stamp.toSec());

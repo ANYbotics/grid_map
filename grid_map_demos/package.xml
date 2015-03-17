@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package>
-  <name>grid_map_example</name>
+  <name>grid_map_demos</name>
   <version>0.1.0</version>
-  <description>Example node to show usage of the grid map library.</description>
+  <description>Demo nodes to show usage of the grid map library.</description>
   <maintainer email="pfankhauser@ethz.ch">Peter Fankhauser</maintainer>
   <license>MIT</license>
   <url type="website">http://github.com/ethz-asl/grid_map</url>
@@ -11,10 +11,10 @@
   <buildtool_depend>catkin</buildtool_depend>
   <build_depend>roscpp</build_depend>
   <build_depend>grid_map</build_depend>
-  <build_depend>grid_map_msg</build_depend>
+  <build_depend>grid_map_msgs</build_depend>
   <build_depend>nav_msgs</build_depend>
   <run_depend>roscpp</run_depend>
   <run_depend>grid_map</run_depend>
-  <run_depend>grid_map_msg</run_depend>
+  <run_depend>grid_map_msgs</run_depend>
   <run_depend>nav_msgs</run_depend>
 </package>

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(grid_map_msg)
+project(grid_map_msgs)
 
 ## Find catkin macros and libraries
 find_package(catkin REQUIRED COMPONENTS

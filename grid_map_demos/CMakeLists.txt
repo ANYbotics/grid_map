@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(grid_map_example)
+project(grid_map_demos)
 
 set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
 
@@ -16,7 +16,7 @@ find_package(catkin REQUIRED COMPONENTS
   cmake_modules
   roscpp
   grid_map
-  grid_map_msg
+  grid_map_msgs
   nav_msgs
 )
 

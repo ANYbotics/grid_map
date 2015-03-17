@@ -16,7 +16,7 @@ find_package(catkin REQUIRED COMPONENTS
   cmake_modules
   roscpp
   grid_map_core
-  grid_map_msg
+  grid_map_msgs
   sensor_msgs
   nav_msgs
 )
@@ -36,7 +36,7 @@ find_package(Eigen REQUIRED)
 catkin_package(
     INCLUDE_DIRS include
     LIBRARIES ${PROJECT_NAME}
-    CATKIN_DEPENDS grid_map_core grid_map_msg
+    CATKIN_DEPENDS grid_map_core grid_map_msgs
     DEPENDS Eigen
 )
 
@@ -65,5 +65,5 @@ target_link_libraries(${PROJECT_NAME}
 
 add_dependencies(
   ${PROJECT_NAME}
-  grid_map_msg_generate_messages_cpp
+  grid_map_msgs_generate_messages_cpp
 )

@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include <grid_map_msg/GridMap.h>
+#include <grid_map_msgs/GridMap.h>
 #include <grid_map_visualization/visualizations/MapRegionVisualization.hpp>
 #include <grid_map_visualization/visualizations/PointCloudVisualization.hpp>
 #include <grid_map_visualization/visualizations/VectorVisualization.hpp>
@@ -42,7 +42,7 @@ class GridMapVisualization
    * Callback function for the grid map.
    * @param message the grid map message to be visualized.
    */
-  void callback(const grid_map_msg::GridMap& message);
+  void callback(const grid_map_msgs::GridMap& message);
 
  private:
 

@@ -35,7 +35,7 @@ GridMap::GridMap(const std::vector<std::string>& types)
 
 }
 
-GridMap::GridMap(const grid_map_msg::GridMap& message)
+GridMap::GridMap(const grid_map_msgs::GridMap& message)
  : grid_map_core::GridMap()
 {
   fromMessage(message);
@@ -52,12 +52,12 @@ GridMap GridMap::getSubmap(const Eigen::Vector2d& position, const Eigen::Array2d
   return *static_cast<grid_map::GridMap*>(&subMap);
 }
 
-void GridMap::toMessage(grid_map_msg::GridMap& message) const
+void GridMap::toMessage(grid_map_msgs::GridMap& message) const
 {
   toMessage(types_, message);
 }
 
-void GridMap::toMessage(const std::vector<std::string>& types, grid_map_msg::GridMap& message) const
+void GridMap::toMessage(const std::vector<std::string>& types, grid_map_msgs::GridMap& message) const
 {
   message.info.header.stamp.fromNSec(timestamp_);
   message.info.header.frame_id = frameId_;
@@ -78,7 +78,7 @@ void GridMap::toMessage(const std::vector<std::string>& types, grid_map_msg::Gri
   message.innerStartIndex = bufferStartIndex_(1);
 }
 
-bool GridMap::fromMessage(const grid_map_msg::GridMap& message)
+bool GridMap::fromMessage(const grid_map_msgs::GridMap& message)
 {
   timestamp_ = message.info.header.stamp.toNSec();
   frameId_ = message.info.header.frame_id;
