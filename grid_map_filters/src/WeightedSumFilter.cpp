@@ -23,7 +23,7 @@ namespace filters {
 
 template<typename T>
 WeightedSumFilter<T>::WeightedSumFilter()
-      : sumType_("traversability"),
+      : typeOut_("traversability"),
         normalize_(1)
 {
 
@@ -39,8 +39,8 @@ template<typename T>
 bool WeightedSumFilter<T>::configure()
 {
   // Load Parameters
-  if (!FilterBase<T>::getParam(std::string("sumType"), sumType_)) {
-    ROS_ERROR("WeightedSumFilter did not find param sumType");
+  if (!FilterBase<T>::getParam(std::string("typeOut"), typeOut_)) {
+    ROS_ERROR("WeightedSumFilter did not find param typeOut");
     return false;
   }
 
@@ -87,7 +87,7 @@ template<typename T>
 bool WeightedSumFilter<T>::update(const T& mapIn, T& mapOut)
 {
   mapOut = mapIn;
-  mapOut.add(sumType_, mapIn.get("elevation"));
+  mapOut.add(typeOut_, mapIn.get("elevation"));
   bool hasSum = false;
 
   Eigen::MatrixXf sum, newSummand;
@@ -101,11 +101,10 @@ bool WeightedSumFilter<T>::update(const T& mapIn, T& mapOut)
     if (!hasSum) {
       sum = additionWeights_.at(i)*mapOut.get(additionTypes_.at(i));
       hasSum = true;
-
     }
     else {
       newSummand = additionWeights_.at(i)*mapOut.get(additionTypes_.at(i));
-      if (sumType_ != "traversability") {
+      if (typeOut_ != "traversability") {
         sum += newSummand;
       }
       else {
@@ -127,7 +126,7 @@ bool WeightedSumFilter<T>::update(const T& mapIn, T& mapOut)
     }
 
   }
-  mapOut.add(sumType_, sum);
+  mapOut.add(typeOut_, sum);
 
   return true;
 }

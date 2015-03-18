@@ -5,5 +5,15 @@
         This is a weighted sum filter for a grid map.
       </description>
     </class>
+    <class name="filters/MinFilter" type="filters::MinFilter<grid_map::GridMap>" base_class_type="filters::FilterBase<grid_map::GridMap>" >
+      <description>
+        This is a min filter for a grid map.
+      </description>
+    </class>
+    <class name="filters/ThresholdFilter" type="filters::ThresholdFilter<grid_map::GridMap>" base_class_type="filters::FilterBase<grid_map::GridMap>" >
+      <description>
+        This is a threshold filter for a grid map.
+      </description>
+    </class>
   </library>
 </class_libraries>
