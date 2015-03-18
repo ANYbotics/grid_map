@@ -17,12 +17,14 @@
 
 // Eigen
 #include <Eigen/Core>
+#include <Eigen/Dense>
 
 namespace filters {
 
 template<typename T>
 WeightedSumFilter<T>::WeightedSumFilter()
-      : sumType_("traversability")
+      : sumType_("traversability"),
+        normalize_(1)
 {
 
 }
@@ -57,18 +59,27 @@ bool WeightedSumFilter<T>::configure()
     return false;
   }
 
-  // Normalize weights
-  double sumWeights = 0.0;
-  for (std::vector<double>::iterator it=additionWeights_.begin(); it!=additionWeights_.end(); ++it) {
-//    ROS_INFO("Weight = %f", *it);
-    sumWeights += *it;
+  if (!FilterBase<T>::getParam(std::string("normalize"), normalize_)) {
+    ROS_ERROR("WeightedSumFilter did not find param normalize");
+    return false;
   }
 
-//  ROS_INFO("Sum weights = %f", sumWeights);
-  for (std::vector<double>::iterator it=additionWeights_.begin(); it!=additionWeights_.end(); ++it) {
-    *it /= sumWeights;
-//    ROS_INFO("Weight = %f", *it);
+  if (normalize_) {
+    // Normalize weights
+      double sumWeights = 0.0;
+
+      for (std::vector<double>::iterator it=additionWeights_.begin(); it!=additionWeights_.end(); ++it) {
+        sumWeights += *it;
+      }
+
+      for (std::vector<double>::iterator it=additionWeights_.begin(); it!=additionWeights_.end(); ++it) {
+        *it /= sumWeights;
+      }
   }
+  else {
+    ROS_WARN("No normalization of the weights");
+  }
+
   return true;
 }
 
@@ -79,7 +90,7 @@ bool WeightedSumFilter<T>::update(const T& mapIn, T& mapOut)
   mapOut.add(sumType_, mapIn.get("elevation"));
   bool hasSum = false;
 
-  Eigen::MatrixXf sum;
+  Eigen::MatrixXf sum, newSummand;
 
   for (int i=0; i<additionTypes_.size(); i++) {
     if (!mapOut.exists(additionTypes_.at(i))) {
@@ -93,7 +104,26 @@ bool WeightedSumFilter<T>::update(const T& mapIn, T& mapOut)
 
     }
     else {
-      sum += additionWeights_.at(i)*mapOut.get(additionTypes_.at(i));
+      newSummand = additionWeights_.at(i)*mapOut.get(additionTypes_.at(i));
+      if (sumType_ != "traversability") {
+        sum += newSummand;
+      }
+      else {
+        // Mark the addition of a non-traversable cell as non-traversable (set to zero)
+        // Iterate through the rows
+        for (int j=0; j<sum.rows(); j++) {
+          // Iterate through the cols
+          for (int k=0; k<sum.cols(); k++) {
+            // Check if there are non-traversable cells
+            if (sum(j,k) == 0.0 || newSummand(j,k) == 0.0) {
+              sum(j,k) = 0.0;
+            }
+            else {
+              sum(j,k) += newSummand(j,k);
+            }
+          }
+        }
+      }
     }
 
   }

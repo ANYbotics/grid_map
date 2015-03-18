@@ -10,6 +10,7 @@
 #define WEIGHTEDSUMFILTER_HPP
 
 #include <filters/filter_base.h>
+#include <ros/ros.h>
 
 #include <vector>
 #include <string>
@@ -54,8 +55,14 @@ class WeightedSumFilter : public FilterBase<T>
   //! List of weights of the types that are added together
   std::vector<double> additionWeights_;
 
-  //! Traversability map type.
+  //! map type for summation.
   std::string sumType_;
+
+//  //! Traversability map type.
+//  std::string normalize_;
+
+  //! Traversability map type.
+  int normalize_;
 };
 
 } /* namespace */
