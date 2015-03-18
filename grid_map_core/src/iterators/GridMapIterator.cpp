@@ -13,9 +13,9 @@ namespace grid_map_core {
 
 GridMapIterator::GridMapIterator(const grid_map_core::GridMap& gridMap)
 {
-  bufferSize_ = gridMap.getBufferSize();
-  startIndex_ = gridMap.getBufferStartIndex();
-  endIndex_ = startIndex_ + gridMap.getBufferSize() - Eigen::Array2i::Ones();
+  bufferSize_ = gridMap.getSize();
+  startIndex_ = gridMap.getStartIndex();
+  endIndex_ = startIndex_ + gridMap.getSize() - Eigen::Array2i::Ones();
   mapIndexWithinRange(endIndex_, bufferSize_);
   index_ = startIndex_;
   isPassedEnd_ = false;

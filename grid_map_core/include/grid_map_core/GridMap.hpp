@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include "grid_map_core/TypeDefs.hpp"
+
 // STL
 #include <vector>
 #include <unordered_map>
@@ -50,7 +52,7 @@ class GridMap
    * @param resolution the cell size in [m/cell].
    * @param position the 2d position of the grid map in the grid map frame [m].
    */
-  void setGeometry(const Eigen::Array2d& length, const double resolution, const Eigen::Vector2d& position);
+  void setGeometry(const Eigen::Array2d& length, const double resolution, const Eigen::Vector2d& position = Eigen::Vector2d::Zero());
 
   /*!
    * Set the types that are required to be set NAN when clearing cells of the map.
@@ -78,7 +80,7 @@ class GridMap
    * @param type the data to be returned.
    * @return grid map data.
    */
-  const Eigen::MatrixXf& get(const std::string& type) const;
+  const Grid& get(const std::string& type) const;
 
   /*!
    * Returns the grid map data for a type as non-const. Use this function
@@ -86,7 +88,7 @@ class GridMap
    * @param type the data to be returned.
    * @return grid map data.
    */
-  Eigen::MatrixXf& get(const std::string& type);
+  Grid& get(const std::string& type);
 
   /*!
    * Removes the data for a certain kind.
@@ -174,7 +176,7 @@ class GridMap
    * @param position the position of the data point in the parent frame.
    * @return true if successful, false if no valid data available.
    */
-  bool getPosition3d(const std::string& type, const Eigen::Array2i& index, Eigen::Vector3d& position) const;
+  bool getPosition3(const std::string& type, const Index& index, Position3& position) const;
 
   /*!
    * Gets the 3d vector of three data types with suffixes 'x', 'y', and 'z'.
@@ -264,16 +266,16 @@ class GridMap
   double getResolution() const;
 
   /*!
-   * Get the buffer size (rows and cols of the data structure).
-   * @return buffer size.
+   * Get the grid map size (rows and cols of the data structure).
+   * @return grid map size.
    */
-  const Eigen::Array2i& getBufferSize() const;
+  const grid_map_core::Size& getSize() const;
 
   /*!
    * Get the start index of the circular buffer.
    * @return buffer start index.
    */
-  const Eigen::Array2i& getBufferStartIndex() const;
+  const Eigen::Array2i& getStartIndex() const;
 
  protected:
 
@@ -318,19 +320,19 @@ class GridMap
   std::vector<std::string> clearTypes_;
 
   //! Side length of the map in x- and y-direction [m].
-  Eigen::Array2d length_;
+  grid_map_core::Length length_;
 
   //! Map resolution in xy plane [m/cell].
   double resolution_;
 
   //! Map position in the grid map frame [m].
-  Eigen::Vector2d position_;
+  grid_map_core::Position2 position_;
 
   //! Size of the buffer (rows and cols of the data structure).
-  Eigen::Array2i bufferSize_;
+  grid_map_core::Size size_;
 
   //! Circular buffer start indeces.
-  Eigen::Array2i bufferStartIndex_;
+  grid_map_core::Index startIndex_;
 };
 
 } /* namespace */

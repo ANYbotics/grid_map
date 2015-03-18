@@ -19,8 +19,8 @@ PolygonIterator::PolygonIterator(const grid_map_core::GridMap& gridMap, const Po
   mapLength_ = gridMap.getLength();
   mapPosition_ = gridMap.getPosition();
   resolution_ = gridMap.getResolution();
-  bufferSize_ = gridMap.getBufferSize();
-  bufferStartIndex_ = gridMap.getBufferStartIndex();
+  bufferSize_ = gridMap.getSize();
+  bufferStartIndex_ = gridMap.getStartIndex();
   Eigen::Array2i submapStartIndex;
   Eigen::Array2i submapBufferSize;
   findSubmapParameters(polygon, submapStartIndex, submapBufferSize);

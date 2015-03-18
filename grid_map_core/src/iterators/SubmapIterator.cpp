@@ -17,8 +17,8 @@ SubmapIterator::SubmapIterator(const grid_map_core::GridMap& gridMap,
                                const Eigen::Array2i& submapStartIndex,
                                const Eigen::Array2i& submapBufferSize)
 {
-  bufferSize_ = gridMap.getBufferSize();
-  startIndex_ = gridMap.getBufferStartIndex();
+  bufferSize_ = gridMap.getSize();
+  startIndex_ = gridMap.getStartIndex();
   index_ = submapStartIndex;
   submapBufferSize_ = submapBufferSize;
   submapStartIndex_ = submapStartIndex;

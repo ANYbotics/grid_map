@@ -74,8 +74,8 @@ void GridMap::toMessage(const std::vector<std::string>& types, grid_map_msgs::Gr
     message.data.push_back(dataArray);
   }
 
-  message.outerStartIndex = bufferStartIndex_(0);
-  message.innerStartIndex = bufferStartIndex_(1);
+  message.outerStartIndex = startIndex_(0);
+  message.innerStartIndex = startIndex_(1);
 }
 
 bool GridMap::fromMessage(const grid_map_msgs::GridMap& message)
@@ -101,9 +101,9 @@ bool GridMap::fromMessage(const grid_map_msgs::GridMap& message)
   }
 
   clearTypes_ = types_;
-  bufferSize_ << getRows(message.data[0]), getCols(message.data[0]);
-  bufferStartIndex_(0) = message.outerStartIndex;
-  bufferStartIndex_(1) = message.innerStartIndex;
+  size_ << getRows(message.data[0]), getCols(message.data[0]);
+  startIndex_(0) = message.outerStartIndex;
+  startIndex_(1) = message.innerStartIndex;
   return true;
 }
 
@@ -150,7 +150,7 @@ void GridMap::toPointCloud(sensor_msgs::PointCloud2& pointCloud, const std::stri
   }
 
   // Resize.
-  size_t nPoints = bufferSize_(0) * bufferSize_(1);
+  size_t nPoints = size_(0) * size_(1);
   pointCloud.height = 1;
   pointCloud.width = nPoints;
   pointCloud.point_step = offset;
@@ -169,7 +169,7 @@ void GridMap::toPointCloud(sensor_msgs::PointCloud2& pointCloud, const std::stri
   for (size_t i = 0; i < nPoints; ++i) {
     Eigen::Vector3d position;
     position.setConstant(NAN);
-    getPosition3d(pointType, *mapIterator, position);
+    getPosition3(pointType, *mapIterator, position);
 
     for (auto& iterator : fieldIterators) {
       if (iterator.first == "x") {
@@ -199,8 +199,8 @@ void GridMap::toOccupancyGrid(nav_msgs::OccupancyGrid& occupancyGrid, const std:
   occupancyGrid.header.stamp.fromNSec(timestamp_);
   occupancyGrid.info.map_load_time = occupancyGrid.header.stamp; // Same as header stamp as we do not load the map.
   occupancyGrid.info.resolution = resolution_;
-  occupancyGrid.info.width = bufferSize_(0);
-  occupancyGrid.info.height = bufferSize_(1);
+  occupancyGrid.info.width = size_(0);
+  occupancyGrid.info.height = size_(1);
   Eigen::Vector2d positionOfOrigin;
   grid_map_core::getPositionOfDataStructureOrigin(position_, length_, positionOfOrigin);
   occupancyGrid.info.origin.position.x = positionOfOrigin.x();
@@ -225,7 +225,7 @@ void GridMap::toOccupancyGrid(nav_msgs::OccupancyGrid& occupancyGrid, const std:
     else value = cellMin + min(max(0.0f, value), 1.0f) * cellRange;
     // Occupancy grid claims to be row-major order, but it does not seem that way.
     // http://docs.ros.org/api/nav_msgs/html/msg/OccupancyGrid.html.
-    unsigned int index = grid_map_core::get1dIndexFrom2dIndex(*iterator, bufferSize_, false);
+    unsigned int index = grid_map_core::get1dIndexFrom2dIndex(*iterator, size_, false);
     occupancyGrid.data[index] = value;
   }
 }

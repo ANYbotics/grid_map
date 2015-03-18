@@ -85,7 +85,7 @@ bool VectorVisualization::visualize(const grid_map::GridMap& map)
     vector.z = map.at(types_[2], *iterator);
 
     Eigen::Vector3d position;
-    map.getPosition3d(positionType_, *iterator, position);
+    map.getPosition3(positionType_, *iterator, position);
     geometry_msgs::Point startPoint;
     startPoint.x = position.x();
     startPoint.y = position.y();

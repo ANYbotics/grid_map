@@ -1,0 +1,15 @@
+<launch>
+	
+ 	<!-- Launch the grid map simple demo node -->
+ 	<node pkg="grid_map_demos" type="simple_demo" name="grid_map_simple_demo" output="screen" />
+ 	
+ 	<!-- Launch the grid map visualizer -->
+    <node pkg="grid_map_visualization" type="grid_map_visualization" name="grid_map_visualization" output="screen">
+ 		 <param name="grid_map_topic" value="/grid_map_simple_demo/grid_map" />
+ 		 <param name="point_cloud/point_type" value="height" />
+ 		 <param name="occupancy_grid/type" value="height" />
+ 		 <param name="occupancy_grid/data_min" value="-1.0" />
+ 		 <param name="occupancy_grid/data_max" value="1.0" />
+    </node>
+
+</launch>

@@ -57,17 +57,23 @@ include_directories(
 
 ## Declare a cpp executable
 add_executable(
-	${PROJECT_NAME}
-	src/grid_map_example_node.cpp
-	src/GridMapExample.cpp
+	simple_demo
+	src/simple_demo_node.cpp
 )
 
-## Add cmake target dependencies of the executable/library
-## as an example, message headers may need to be generated before nodes
-# add_dependencies(grid_map_visualization_node grid_map_visualization_generate_messages_cpp)
+add_executable(
+	iterators_demo
+	src/iterators_demo_node.cpp
+	src/IteratorsDemo.cpp
+)
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(
-  ${PROJECT_NAME}
+  simple_demo
+  ${catkin_LIBRARIES}
+)
+
+target_link_libraries(
+  iterators_demo
   ${catkin_LIBRARIES}
 )

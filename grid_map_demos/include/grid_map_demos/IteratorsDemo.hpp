@@ -1,5 +1,5 @@
 /*
- * GridMapExample.hpp
+ * IteratorsDemo.hpp
  *
  *  Created on: Nov 4, 2014
  *      Author: Péter Fankhauser
@@ -14,12 +14,12 @@
 // ROS
 #include <ros/ros.h>
 
-namespace grid_map_example {
+namespace grid_map_demos {
 
 /*!
  * Visualizes a grid map by publishing different topics that can be viewed in Rviz.
  */
-class GridMapExample
+class IteratorsDemo
 {
  public:
 
@@ -27,12 +27,12 @@ class GridMapExample
    * Constructor.
    * @param nodeHandle the ROS node handle.
    */
-  GridMapExample(ros::NodeHandle& nodeHandle);
+  IteratorsDemo(ros::NodeHandle& nodeHandle);
 
   /*!
    * Destructor.
    */
-  virtual ~GridMapExample();
+  virtual ~IteratorsDemo();
 
   /*!
    * Demos.

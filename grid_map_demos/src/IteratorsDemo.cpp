@@ -1,12 +1,12 @@
 /*
- * GridMapExample.cpp
+ * IteratorsDemo.cpp
  *
  *  Created on: Nov 4, 2014
  *      Author: Péter Fankhauser
  *	 Institute: ETH Zurich, Autonomous Systems Lab
  */
 
-#include "grid_map_example/GridMapExample.hpp"
+#include "grid_map_demos/IteratorsDemo.hpp"
 #include <grid_map_msgs/GridMap.h>
 #include <grid_map_core/iterators/GridMapIterator.hpp>
 #include <grid_map_core/iterators/SubmapIterator.hpp>
@@ -24,9 +24,9 @@
 using namespace std;
 using namespace ros;
 
-namespace grid_map_example {
+namespace grid_map_demos {
 
-GridMapExample::GridMapExample(ros::NodeHandle& nodeHandle)
+IteratorsDemo::IteratorsDemo(ros::NodeHandle& nodeHandle)
     : nodeHandle_(nodeHandle),
       map_(vector<string>({"type"}))
 {
@@ -49,9 +49,9 @@ GridMapExample::GridMapExample(ros::NodeHandle& nodeHandle)
   demoPolygonIterator();
 }
 
-GridMapExample::~GridMapExample() {}
+IteratorsDemo::~IteratorsDemo() {}
 
-void GridMapExample::demoGridMapIterator()
+void IteratorsDemo::demoGridMapIterator()
 {
   ROS_INFO("Running grid map iterator demo.");
   map_.clear();
@@ -68,7 +68,7 @@ void GridMapExample::demoGridMapIterator()
   duration.sleep();
 }
 
-void GridMapExample::demoSubmapIterator()
+void IteratorsDemo::demoSubmapIterator()
 {
   ROS_INFO("Running submap iterator demo.");
   map_.clear();
@@ -89,7 +89,7 @@ void GridMapExample::demoSubmapIterator()
   duration.sleep();
 }
 
-void GridMapExample::demoCircleIterator()
+void IteratorsDemo::demoCircleIterator()
 {
   ROS_INFO("Running circle iterator demo.");
   map_.clear();
@@ -110,7 +110,7 @@ void GridMapExample::demoCircleIterator()
   duration.sleep();
 }
 
-void GridMapExample::demoLineIterator()
+void IteratorsDemo::demoLineIterator()
 {
   ROS_INFO("Running line iterator demo.");
   map_.clear();
@@ -131,7 +131,7 @@ void GridMapExample::demoLineIterator()
   duration.sleep();
 }
 
-void GridMapExample::demoPolygonIterator()
+void IteratorsDemo::demoPolygonIterator()
 {
   ROS_INFO("Running polygon iterator demo.");
   map_.clear();
@@ -167,7 +167,7 @@ void GridMapExample::demoPolygonIterator()
   duration.sleep();
 }
 
-void GridMapExample::publish()
+void IteratorsDemo::publish()
 {
   map_.setTimestamp(ros::Time::now().toNSec());
   grid_map_msgs::GridMap message;
