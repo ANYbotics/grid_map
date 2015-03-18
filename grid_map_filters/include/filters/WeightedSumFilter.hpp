@@ -11,6 +11,9 @@
 
 #include <filters/filter_base.h>
 
+#include <vector>
+#include <string>
+
 namespace filters {
 
 /*!
@@ -52,7 +55,7 @@ class WeightedSumFilter : public FilterBase<T>
   std::vector<double> additionWeights_;
 
   //! Traversability map type.
-  const std::string traversabilityType_;
+  std::string sumType_;
 };
 
 } /* namespace */
