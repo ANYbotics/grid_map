@@ -13,17 +13,17 @@ namespace grid_map_core {
 
 GridMapIterator::GridMapIterator(const grid_map_core::GridMap& gridMap)
 {
-  bufferSize_ = gridMap.getSize();
+  size_ = gridMap.getSize();
   startIndex_ = gridMap.getStartIndex();
   endIndex_ = startIndex_ + gridMap.getSize() - Eigen::Array2i::Ones();
-  mapIndexWithinRange(endIndex_, bufferSize_);
+  mapIndexWithinRange(endIndex_, size_);
   index_ = startIndex_;
   isPassedEnd_ = false;
 }
 
 GridMapIterator::GridMapIterator(const GridMapIterator* other)
 {
-  bufferSize_ = other->bufferSize_;
+  size_ = other->size_;
   startIndex_ = other->startIndex_;
   endIndex_ = other->endIndex_;
   index_ = other->index_;
@@ -32,7 +32,7 @@ GridMapIterator::GridMapIterator(const GridMapIterator* other)
 
 GridMapIterator& GridMapIterator::operator =(const GridMapIterator& other)
 {
-  bufferSize_ = other.bufferSize_;
+  size_ = other.size_;
   startIndex_ = other.startIndex_;
   endIndex_ = other.endIndex_;
   index_ = other.index_;
@@ -52,7 +52,7 @@ const Eigen::Array2i& GridMapIterator::operator *() const
 
 GridMapIterator& GridMapIterator::operator ++()
 {
-  isPassedEnd_ = !incrementIndex(index_, bufferSize_, startIndex_);
+  isPassedEnd_ = !incrementIndex(index_, size_, startIndex_);
   return *this;
 }
 

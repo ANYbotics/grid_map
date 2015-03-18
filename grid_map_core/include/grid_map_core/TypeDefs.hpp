@@ -13,7 +13,7 @@
 
 namespace grid_map_core {
 
-  typedef Eigen::MatrixXf Grid;
+  typedef Eigen::MatrixXf Matrix;
   typedef Eigen::Vector2d Position2;
   typedef Eigen::Vector3d Position3;
   typedef Eigen::Array2i Index;

@@ -14,6 +14,7 @@
 #include <cassert>
 #include <math.h>
 #include <algorithm>
+#include <stdexcept>
 
 using namespace std;
 using namespace Eigen;
@@ -29,18 +30,19 @@ GridMap::GridMap(const std::vector<std::string>& types)
   startIndex_.setZero();
   timestamp_ = 0;
   types_ = types;
-  clearTypes_ = types_;
 
   for (auto& type : types_) {
     data_.insert(std::pair<std::string, MatrixXf>(type, MatrixXf()));
   }
 }
 
-GridMap::GridMap() {}
+GridMap::GridMap() :
+    GridMap(std::vector<std::string>())
+{
+}
 
 GridMap::~GridMap()
 {
-
 }
 
 void GridMap::setGeometry(const Eigen::Array2d& length, const double resolution, const Eigen::Vector2d& position)
@@ -49,10 +51,10 @@ void GridMap::setGeometry(const Eigen::Array2d& length, const double resolution,
   assert(length(1) > 0.0);
   assert(resolution > 0.0);
 
-  Array2i bufferSize;
-  bufferSize(0) = static_cast<int>(round(length(0) / resolution)); // There is no round() function in Eigen.
-  bufferSize(1) = static_cast<int>(round(length(1) / resolution));
-  resizeBuffer(bufferSize);
+  Array2i size;
+  size(0) = static_cast<int>(round(length(0) / resolution)); // There is no round() function in Eigen.
+  size(1) = static_cast<int>(round(length(1) / resolution));
+  resize(size);
   clearAll();
 
   resolution_ = resolution;
@@ -63,9 +65,9 @@ void GridMap::setGeometry(const Eigen::Array2d& length, const double resolution,
   return;
 }
 
-void GridMap::setClearTypes(const std::vector<std::string>& clearTypes)
+void GridMap::setBasicTypes(const std::vector<std::string>& basicTypes)
 {
-  clearTypes_ = clearTypes;
+  basicTypes_ = basicTypes;
 }
 
 void GridMap::add(const std::string& type, const Eigen::MatrixXf& data)
@@ -108,8 +110,8 @@ bool GridMap::remove(const std::string& type)
   if (typePosition == types_.end()) return false;
   types_.erase(typePosition);
 
-  const auto clearTypePosition = std::find(clearTypes_.begin(), clearTypes_.end(), type);
-  if (clearTypePosition != clearTypes_.end()) clearTypes_.erase(clearTypePosition);
+  const auto basicTypePosition = std::find(basicTypes_.begin(), basicTypes_.end(), type);
+  if (basicTypePosition != basicTypes_.end()) basicTypes_.erase(basicTypePosition);
 
   return true;
 }
@@ -120,6 +122,7 @@ float& GridMap::atPosition(const std::string& type, const Eigen::Vector2d& posit
   if (getIndex(position, index)) {
     return at(type, index);
   }
+  throw std::out_of_range("GridMap::atPosition() : Position is out of range.");
 }
 
 float GridMap::atPosition(const std::string& type, const Eigen::Vector2d& position) const
@@ -128,6 +131,7 @@ float GridMap::atPosition(const std::string& type, const Eigen::Vector2d& positi
   if (getIndex(position, index)) {
     return at(type, index);
   }
+  return NAN;
 }
 
 float& GridMap::at(const std::string& type, const Eigen::Array2i& index)
@@ -157,11 +161,18 @@ bool GridMap::isInside(const Eigen::Vector2d& position)
 
 bool GridMap::isValid(const Eigen::Array2i& index) const
 {
-  return isValid(index, clearTypes_);
+  return isValid(index, basicTypes_);
+}
+
+bool GridMap::isValid(const Eigen::Array2i& index, const std::string& type) const
+{
+  if (!isfinite(at(type, index))) return false;
+  return true;
 }
 
 bool GridMap::isValid(const Eigen::Array2i& index, const std::vector<std::string>& types) const
 {
+  if (types.empty()) return false;
   for (auto& type : types) {
     if (!isfinite(at(type, index))) return false;
   }
@@ -170,7 +181,7 @@ bool GridMap::isValid(const Eigen::Array2i& index, const std::vector<std::string
 
 bool GridMap::getPosition3(const std::string& type, const Index& index, Position3& position) const
 {
-  if (!isValid(index)) return false;
+  if (!isValid(index, type)) return false;
   Vector2d position2d;
   getPosition(index, position2d);
   position.head(2) = position2d;
@@ -180,7 +191,6 @@ bool GridMap::getPosition3(const std::string& type, const Index& index, Position
 
 bool GridMap::getVector(const std::string& typePrefix, const Eigen::Array2i& index, Eigen::Vector3d& vector) const
 {
-  if (!isValid(index)) return false;
   std::vector<std::string> types;
   types.push_back(typePrefix + "x");
   types.push_back(typePrefix + "y");
@@ -196,7 +206,7 @@ GridMap GridMap::getSubmap(const Eigen::Vector2d& position, const Eigen::Array2d
 {
   // Submap the generate.
   GridMap submap(types_);
-  submap.setClearTypes(clearTypes_);
+  submap.setBasicTypes(basicTypes_);
   submap.setTimestamp(timestamp_);
   submap.setFrameId(frameId_);
 
@@ -342,13 +352,18 @@ const Eigen::Array2i& GridMap::getStartIndex() const
 
 void GridMap::clear()
 {
-  for (auto& key : clearTypes_) {
+  if (basicTypes_.empty()) {
+    clearAll();
+    return;
+  }
+  for (auto& key : basicTypes_) {
     data_.at(key).setConstant(NAN);
   }
 }
 
 void GridMap::clearAll()
 {
+  std::cout << "clear all " << std::endl;
   for (auto& data : data_) {
     data.second.setConstant(NAN);
   }
@@ -356,21 +371,21 @@ void GridMap::clearAll()
 
 void GridMap::clearCols(unsigned int index, unsigned int nCols)
 {
-  for (auto& type : clearTypes_) {
+  for (auto& type : basicTypes_) {
     data_.at(type).block(index, 0, nCols, getSize()(1)).setConstant(NAN);
   }
 }
 
 void GridMap::clearRows(unsigned int index, unsigned int nRows)
 {
-  for (auto& type : clearTypes_) {
+  for (auto& type : basicTypes_) {
     data_.at(type).block(0, index, getSize()(0), nRows).setConstant(NAN);
   }
 }
 
-void GridMap::resizeBuffer(const Eigen::Array2i& bufferSize)
+void GridMap::resize(const Eigen::Array2i& size)
 {
-  size_ = bufferSize;
+  size_ = size;
   for (auto& data : data_) {
     data.second.resize(size_(0), size_(1));
   }

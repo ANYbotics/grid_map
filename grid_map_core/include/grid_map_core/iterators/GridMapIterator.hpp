@@ -74,7 +74,7 @@ public:
 private:
 
   //! Size of the buffer.
-  Eigen::Array2i bufferSize_;
+  Eigen::Array2i size_;
 
   //! Start index of the circular buffer.
   Eigen::Array2i startIndex_;

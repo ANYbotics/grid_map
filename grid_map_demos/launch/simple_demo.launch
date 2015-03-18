@@ -8,8 +8,8 @@
  		 <param name="grid_map_topic" value="/grid_map_simple_demo/grid_map" />
  		 <param name="point_cloud/point_type" value="height" />
  		 <param name="occupancy_grid/type" value="height" />
- 		 <param name="occupancy_grid/data_min" value="-1.0" />
- 		 <param name="occupancy_grid/data_max" value="1.0" />
+ 		 <param name="occupancy_grid/data_min" value="-0.14" />
+ 		 <param name="occupancy_grid/data_max" value="0.14" />
     </node>
 
 </launch>

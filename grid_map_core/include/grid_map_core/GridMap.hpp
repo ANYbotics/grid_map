@@ -55,11 +55,12 @@ class GridMap
   void setGeometry(const Eigen::Array2d& length, const double resolution, const Eigen::Vector2d& position = Eigen::Vector2d::Zero());
 
   /*!
-   * Set the types that are required to be set NAN when clearing cells of the map.
-   * By default the list contains all types.
-   * @param clearTypes the list of types that are required to be set to NAN when clearing cells of the map.
+   * Set the basic types that define which layers need to be valid for a cell to be considered as valid.
+   * Also, the basic types determine which layers are set to NAN when clearing the cells with `clear()`.
+   * By default the list is empty.
+   * @param basicTypes the list of types that are the basic types of the map.
    */
-  void setClearTypes(const std::vector<std::string>& clearTypes);
+  void setBasicTypes(const std::vector<std::string>& basicTypes);
 
   /*!
    * Add new data (if the type exists already, overwrite its data, otherwise add type and data).
@@ -80,7 +81,7 @@ class GridMap
    * @param type the data to be returned.
    * @return grid map data.
    */
-  const Grid& get(const std::string& type) const;
+  const Matrix& get(const std::string& type) const;
 
   /*!
    * Returns the grid map data for a type as non-const. Use this function
@@ -88,7 +89,7 @@ class GridMap
    * @param type the data to be returned.
    * @return grid map data.
    */
-  Grid& get(const std::string& type);
+  Matrix& get(const std::string& type);
 
   /*!
    * Removes the data for a certain kind.
@@ -154,11 +155,20 @@ class GridMap
   bool isInside(const Eigen::Vector2d& position);
 
   /*!
-   * Checks if cell at index is a valid, i.e. if all clearTypes are finite.
+   * Checks if the index of all layers defined as basic types are valid,
+   * i.e. if all basic types are finite. Returns `false` if no basic types are defined.
    * @param index the index to check.
    * @return true if cell is valid, false otherwise.
    */
   bool isValid(const Eigen::Array2i& index) const;
+
+  /*!
+   * Checks if cell at index is a valid (finite) for a certain type.
+   * @param index the index to check.
+   * @param type the type to be checked for validity.
+   * @return true if cell is valid, false otherwise.
+   */
+  bool isValid(const Eigen::Array2i& index, const std::string& type) const;
 
   /*!
    * Checks if cell at index is a valid (finite) for certain types.
@@ -207,13 +217,14 @@ class GridMap
   void move(const Eigen::Vector2d& position);
 
   /*!
-   * Clears all cells (set to NAN) for all types of clearTypes.
+   * Clears all cells (set to NAN) for all types defined as basic type.
+   * Clears all types if no basic types are defined.
    * Header information (geometry etc.) remains valid.
    */
   void clear();
 
   /*!
-   * Clears all cells of the grid map (less efficient than clear()).
+   * Clears all cells of all types of the grid map (less efficient than clear()).
    * Header information (geometry etc.) remains valid.
    */
   void clearAll();
@@ -302,7 +313,7 @@ class GridMap
    * Resize the buffer.
    * @param bufferSize the requested buffer size.
    */
-  void resizeBuffer(const Eigen::Array2i& bufferSize);
+  void resize(const Eigen::Array2i& bufferSize);
 
   //! Frame id of the grid map.
   std::string frameId_;
@@ -316,8 +327,10 @@ class GridMap
   //! Definition/description of the data types.
   std::vector<std::string> types_;
 
-  //! List of types that are required to be set to NAN when clearing cells of the map.
-  std::vector<std::string> clearTypes_;
+  //! List of types from `types_` that are the basic grid map layers.
+  //! This means that for a cell to be valid, all basic types need to be valid.
+  //! Also, the basic types are set to NAN when clearing the map with `clear()`.
+  std::vector<std::string> basicTypes_;
 
   //! Side length of the map in x- and y-direction [m].
   grid_map_core::Length length_;

@@ -33,13 +33,20 @@ int main(int argc, char** argv)
            map.getLength().y(), map.getSize()(0), map.getSize()(1));
 
   // Add data.
-  map.get("std").setConstant(0.0);
   for (GridMapIterator iterator(map); !iterator.isPassedEnd(); ++iterator) {
-    float height = 0.15 * sin(0.4 * (float)(*iterator)(1)) * (float)(*iterator)(0) / (float)map.getSize()(0);
-    map.at("height", *iterator) = height;
+    Position2 position;
+    map.getPosition(*iterator, position);
+    map.at("height", *iterator) = 0.2 * sin(5.0 * position.y()) * position.x();
   }
 
-//  ROS_INFO_STREAM(map.get("height"));
+  map.get("std").setRandom();
+  map.get("std") *= 0.01;
+
+  // Manipulate data.
+  Eigen::MatrixXf::Index maxRow, maxCol;
+  float max = m.maxCoeff(&maxRow, &maxCol);
+
+
 
   // Publish grid map.
   map.setTimestamp(ros::Time::now().toNSec());
@@ -50,7 +57,6 @@ int main(int argc, char** argv)
   ROS_INFO("Grid map (timestamp %f) published.", message.info.header.stamp.toSec());
 
 
-//  ros::requestShutdown();
   ros::waitForShutdown();
   return 0;
 }

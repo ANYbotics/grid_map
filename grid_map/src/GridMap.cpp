@@ -100,7 +100,7 @@ bool GridMap::fromMessage(const grid_map_msgs::GridMap& message)
     types_.push_back(message.dataDefinition[i]);
   }
 
-  clearTypes_ = types_;
+  basicTypes_ = types_;
   size_ << getRows(message.data[0]), getCols(message.data[0]);
   startIndex_(0) = message.outerStartIndex;
   startIndex_(1) = message.innerStartIndex;
