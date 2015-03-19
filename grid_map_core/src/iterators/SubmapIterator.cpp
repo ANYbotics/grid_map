@@ -15,14 +15,14 @@ namespace grid_map_core {
 
 SubmapIterator::SubmapIterator(const grid_map_core::GridMap& gridMap,
                                const Eigen::Array2i& submapStartIndex,
-                               const Eigen::Array2i& submapBufferSize)
+                               const Eigen::Array2i& submapSize)
 {
   bufferSize_ = gridMap.getSize();
   startIndex_ = gridMap.getStartIndex();
   index_ = submapStartIndex;
-  submapBufferSize_ = submapBufferSize;
+  submapBufferSize_ = submapSize;
   submapStartIndex_ = submapStartIndex;
-  submapEndIndex_ = submapStartIndex + submapBufferSize - Eigen::Array2i::Ones();
+  submapEndIndex_ = submapStartIndex + submapSize - Eigen::Array2i::Ones();
   mapIndexWithinRange(submapEndIndex_, submapBufferSize_);
   submapIndex_.setZero();
   isPassedEnd_ = false;

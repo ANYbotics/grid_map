@@ -62,6 +62,8 @@ class GridMap
    */
   void setBasicTypes(const std::vector<std::string>& basicTypes);
 
+  void add(const std::string& type);
+
   /*!
    * Add new data (if the type exists already, overwrite its data, otherwise add type and data).
    * @param type the type identifier of the data.
@@ -80,6 +82,7 @@ class GridMap
    * Returns the grid map data for a type.
    * @param type the data to be returned.
    * @return grid map data.
+   * @throw std::out_of_range If no map layer of type `type` is present.
    */
   const Matrix& get(const std::string& type) const;
 
@@ -88,6 +91,7 @@ class GridMap
    * with great care!
    * @param type the data to be returned.
    * @return grid map data.
+   * @throw std::out_of_range If no map layer of type `type` is present.
    */
   Matrix& get(const std::string& type);
 
@@ -103,6 +107,7 @@ class GridMap
    * @param type the type of the map to be accessed.
    * @param position the requested position.
    * @return the data of the cell.
+   * @throw std::out_of_range If no map layer of type `type` is present.
    */
   float& atPosition(const std::string& type, const Eigen::Vector2d& position);
 
@@ -111,6 +116,7 @@ class GridMap
    * @param type the type of the map to be accessed.
    * @param position the requested position.
    * @return the data of the cell.
+   * @throw std::out_of_range If no map layer of type `type` is present.
    */
   float atPosition(const std::string& type, const Eigen::Vector2d& position) const;
 
@@ -119,6 +125,7 @@ class GridMap
    * @param type the type of the map to be accessed.
    * @param index the requested index.
    * @return the data of the cell.
+   * @throw std::out_of_range If no map layer of type `type` is present.
    */
   float& at(const std::string& type, const Eigen::Array2i& index);
 
@@ -127,6 +134,7 @@ class GridMap
    * @param type the type of the map to be accessed.
    * @param index the requested index.
    * @return the data of the cell.
+   * @throw std::out_of_range If no map layer of type `type` is present.
    */
   float at(const std::string& type, const Eigen::Array2i& index) const;
 
@@ -202,11 +210,21 @@ class GridMap
    * location and length.
    * @param[in] position the requested position of the submap (usually the center).
    * @param[in] length the requested length of the submap.
+   * @param[out] isSuccess true if successful, false otherwise.
+   * @return submap (is empty if success is false).
+   */
+  GridMap getSubmap(const Position& position, const Length& length, bool& isSuccess);
+
+  /*!
+   * Gets a submap from the map. The requested submap is specified with the requested
+   * location and length.
+   * @param[in] position the requested position of the submap (usually the center).
+   * @param[in] length the requested length of the submap.
    * @param[out] indexInSubmap the index of the requested position in the submap.
    * @param[out] isSuccess true if successful, false otherwise.
    * @return submap (is empty if success is false).
    */
-  GridMap getSubmap(const Eigen::Vector2d& position, const Eigen::Array2d& length, Eigen::Array2i& indexInSubmap, bool& isSuccess);
+  GridMap getSubmap(const Position& position, const Length& length, Index& indexInSubmap, bool& isSuccess);
 
   /*!
    * Move the grid map w.r.t. to the grid map frame. Use this to move the grid map
@@ -339,7 +357,7 @@ class GridMap
   double resolution_;
 
   //! Map position in the grid map frame [m].
-  grid_map_core::Position2 position_;
+  grid_map_core::Position position_;
 
   //! Size of the buffer (rows and cols of the data structure).
   grid_map_core::Size size_;

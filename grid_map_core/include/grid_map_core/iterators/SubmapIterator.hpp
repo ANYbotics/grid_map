@@ -28,11 +28,11 @@ public:
    * Constructor.
    * @param gridMap the grid map to iterate on.
    * @param submapStartIndex the start index of the submap, typically top-left index.
-   * @param submapBufferSize the size of the submap to iterate on.
+   * @param submapSize the size of the submap to iterate on.
    */
   SubmapIterator(const grid_map_core::GridMap& gridMap,
                  const Eigen::Array2i& submapStartIndex,
-                 const Eigen::Array2i& submapBufferSize);
+                 const Eigen::Array2i& submapSize);
   /*!
    * Copy constructor.
    * @param other the object to copy.

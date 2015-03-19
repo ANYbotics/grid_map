@@ -70,7 +70,12 @@ void GridMap::setBasicTypes(const std::vector<std::string>& basicTypes)
   basicTypes_ = basicTypes;
 }
 
-void GridMap::add(const std::string& type, const Eigen::MatrixXf& data)
+void GridMap::add(const std::string& type)
+{
+  add(type, Eigen::MatrixXf::Constant(size_(0), size_(1), NAN));
+}
+
+void GridMap::add(const std::string& type, const Matrix& data)
 {
   assert(size_(0) == data.rows());
   assert(size_(1) == data.cols());
@@ -92,12 +97,20 @@ bool GridMap::exists(const std::string& type) const
 
 const Eigen::MatrixXf& GridMap::get(const std::string& type) const
 {
-  return data_.at(type);
+  try {
+    return data_.at(type);
+  } catch (const std::out_of_range& exception) {
+    throw std::out_of_range("GridMap::get(...) : No map layer of type '" + type + "' available.");
+  }
 }
 
 Eigen::MatrixXf& GridMap::get(const std::string& type)
 {
-  return data_.at(type);
+  try {
+    return data_.at(type);
+  } catch (const std::out_of_range& exception) {
+    throw std::out_of_range("GridMap::get(...) : No map layer of type '" + type + "' available.");
+  }
 }
 
 bool GridMap::remove(const std::string& type)
@@ -122,7 +135,7 @@ float& GridMap::atPosition(const std::string& type, const Eigen::Vector2d& posit
   if (getIndex(position, index)) {
     return at(type, index);
   }
-  throw std::out_of_range("GridMap::atPosition() : Position is out of range.");
+  throw std::out_of_range("GridMap::atPosition(...) : Position is out of range.");
 }
 
 float GridMap::atPosition(const std::string& type, const Eigen::Vector2d& position) const
@@ -131,17 +144,25 @@ float GridMap::atPosition(const std::string& type, const Eigen::Vector2d& positi
   if (getIndex(position, index)) {
     return at(type, index);
   }
-  return NAN;
+  throw std::out_of_range("GridMap::atPosition(...) : Position is out of range.");
 }
 
 float& GridMap::at(const std::string& type, const Eigen::Array2i& index)
 {
-  return data_.at(type)(index(0), index(1));
+  try {
+    return data_.at(type)(index(0), index(1));
+  } catch (const std::out_of_range& exception) {
+    throw std::out_of_range("GridMap::at(...) : No map layer of type '" + type + "' available.");
+  }
 }
 
 float GridMap::at(const std::string& type, const Eigen::Array2i& index) const
 {
-  return data_.at(type)(index(0), index(1));
+  try {
+    return data_.at(type)(index(0), index(1));
+  } catch (const std::out_of_range& exception) {
+    throw std::out_of_range("GridMap::at(...) : No map layer of type '" + type + "' available.");
+  }
 }
 
 bool GridMap::getIndex(const Eigen::Vector2d& position, Eigen::Array2i& index) const
@@ -202,7 +223,13 @@ bool GridMap::getVector(const std::string& typePrefix, const Eigen::Array2i& ind
   return true;
 }
 
-GridMap GridMap::getSubmap(const Eigen::Vector2d& position, const Eigen::Array2d& length, Eigen::Array2i& indexInSubmap, bool& isSuccess)
+GridMap GridMap::getSubmap(const Position& position, const Length& length, bool& isSuccess)
+{
+  Index index;
+  return getSubmap(position, length, isSuccess);
+}
+
+GridMap GridMap::getSubmap(const Position& position, const Length& length, Index& indexInSubmap, bool& isSuccess)
 {
   // Submap the generate.
   GridMap submap(types_);

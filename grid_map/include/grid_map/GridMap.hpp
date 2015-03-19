@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "grid_map/TypeDefs.hpp"
 #include <grid_map_core/GridMap.hpp>
 #include <grid_map_msgs/GridMap.h>
 
@@ -58,11 +59,21 @@ class GridMap : public grid_map_core::GridMap
    * location and length.
    * @param[in] position the requested position of the submap (usually the center).
    * @param[in] length the requested length of the submap.
+   * @param[out] isSuccess true if successful, false otherwise.
+   * @return submap (is empty if success is false).
+   */
+  GridMap getSubmap(const Position& position, const Length& length, bool& isSuccess);
+
+  /*!
+   * Gets a submap from the map. The requested submap is specified with the requested
+   * location and length.
+   * @param[in] position the requested position of the submap (usually the center).
+   * @param[in] length the requested length of the submap.
    * @param[out] indexInSubmap the index of the requested position in the submap.
    * @param[out] isSuccess true if successful, false otherwise.
    * @return submap (is empty if success is false).
    */
-  GridMap getSubmap(const Eigen::Vector2d& position, const Eigen::Array2d& length, Eigen::Array2i& indexInSubmap, bool& isSuccess);
+  GridMap getSubmap(const Position& position, const Length& length, Index& indexInSubmap, bool& isSuccess);
 
   /*!
    * Puts the all contents to a ROS message of type GridMap.

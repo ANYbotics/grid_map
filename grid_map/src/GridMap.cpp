@@ -46,7 +46,13 @@ GridMap::~GridMap()
 
 }
 
-GridMap GridMap::getSubmap(const Eigen::Vector2d& position, const Eigen::Array2d& length, Eigen::Array2i& indexInSubmap, bool& isSuccess)
+GridMap GridMap::getSubmap(const Position& position, const Length& length, bool& isSuccess)
+{
+  Index index;
+  return getSubmap(position, length, isSuccess);
+}
+
+GridMap GridMap::getSubmap(const Position& position, const Length& length, Index& indexInSubmap, bool& isSuccess)
 {
   grid_map_core::GridMap subMap = grid_map_core::GridMap::getSubmap(position, length, indexInSubmap, isSuccess);
   return *static_cast<grid_map::GridMap*>(&subMap);

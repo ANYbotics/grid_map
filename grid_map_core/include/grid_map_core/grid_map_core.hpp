@@ -10,4 +10,5 @@
 
 #include "grid_map_core/TypeDefs.hpp"
 #include "grid_map_core/GridMap.hpp"
+#include "grid_map_core/GridMapMath.hpp"
 #include "grid_map_core/iterators/iterators.hpp"

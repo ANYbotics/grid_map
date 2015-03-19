@@ -6,8 +6,8 @@
  	<!-- Launch the grid map visualizer -->
     <node pkg="grid_map_visualization" type="grid_map_visualization" name="grid_map_visualization" output="screen">
  		 <param name="grid_map_topic" value="/grid_map_simple_demo/grid_map" />
- 		 <param name="point_cloud/point_type" value="height" />
- 		 <param name="occupancy_grid/type" value="height" />
+ 		 <param name="point_cloud/point_type" value="filtered" />
+ 		 <param name="occupancy_grid/type" value="original" />
  		 <param name="occupancy_grid/data_min" value="-0.14" />
  		 <param name="occupancy_grid/data_max" value="0.14" />
     </node>
