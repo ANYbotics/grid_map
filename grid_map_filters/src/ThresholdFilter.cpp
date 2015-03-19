@@ -41,7 +41,7 @@ bool ThresholdFilter<T>::configure()
 {
   // Load Parameters
   if (!FilterBase<T>::getParam(std::string("lowerThreshold"), lowerThreshold_)) {
-    ROS_ERROR("ThresholdFilter did not find param sumType");
+    ROS_ERROR("ThresholdFilter did not find param lowerThreshold");
     return false;
   }
 

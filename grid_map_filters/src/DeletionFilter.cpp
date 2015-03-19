@@ -34,7 +34,7 @@ bool DeletionFilter<T>::configure()
 {
   // Load Parameters
   if (!FilterBase<T>::getParam(std::string("deletionTypes"), delTypes_)) {
-    ROS_ERROR("MinFilter did not find param deletionTypes");
+    ROS_ERROR("DeletionFilter did not find param deletionTypes");
     return false;
   }
 
