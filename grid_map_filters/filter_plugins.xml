@@ -15,5 +15,10 @@
         This is a threshold filter for a grid map.
       </description>
     </class>
+    <class name="filters/DeletionFilter" type="filters::DeletionFilter<grid_map::GridMap>" base_class_type="filters::FilterBase<grid_map::GridMap>" >
+      <description>
+        This is a deletion filter for a grid map.
+      </description>
+    </class>
   </library>
 </class_libraries>

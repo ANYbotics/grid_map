@@ -66,15 +66,15 @@ bool WeightedSumFilter<T>::configure()
 
   if (normalize_) {
     // Normalize weights
-      double sumWeights = 0.0;
+    double sumWeights = 0.0;
 
-      for (std::vector<double>::iterator it=additionWeights_.begin(); it!=additionWeights_.end(); ++it) {
-        sumWeights += *it;
-      }
+    for (std::vector<double>::iterator it=additionWeights_.begin(); it!=additionWeights_.end(); ++it) {
+      sumWeights += *it;
+    }
 
-      for (std::vector<double>::iterator it=additionWeights_.begin(); it!=additionWeights_.end(); ++it) {
-        *it /= sumWeights;
-      }
+    for (std::vector<double>::iterator it=additionWeights_.begin(); it!=additionWeights_.end(); ++it) {
+      *it /= sumWeights;
+    }
   }
   else {
     ROS_WARN("No normalization of the weights");
@@ -93,6 +93,7 @@ bool WeightedSumFilter<T>::update(const T& mapIn, T& mapOut)
   Eigen::MatrixXf sum, newSummand;
 
   for (int i=0; i<additionTypes_.size(); i++) {
+    // Check if layer exists.
     if (!mapOut.exists(additionTypes_.at(i))) {
       ROS_ERROR("Check your addition types! Type %s does not exist",additionTypes_.at(i).c_str());
       return false;

@@ -54,6 +54,7 @@ add_library(${PROJECT_NAME}
    src/WeightedSumFilter.cpp
    src/MinFilter.cpp
    src/ThresholdFilter.cpp
+   src/DeletionFilter.cpp
 )
 
 target_link_libraries(${PROJECT_NAME}

@@ -23,7 +23,7 @@ namespace filters {
 
 template<typename T>
 MinFilter<T>::MinFilter()
-      : typeOut_("traversability")
+    : typeOut_("traversability")
 {
 
 }
@@ -60,17 +60,18 @@ bool MinFilter<T>::update(const T& mapIn, T& mapOut)
 
   Eigen::MatrixXf minMatrix;
 
-  for (int i=0; i<minTypes_.size(); i++) {
+  for (int i = 0; i < minTypes_.size(); i++) {
+    // Check if layer exists.
     if (!mapOut.exists(minTypes_.at(i))) {
-      ROS_ERROR("Check your min types! Type %s does not exist",minTypes_.at(i).c_str());
+      ROS_ERROR("Check your min types! Type %s does not exist",
+                minTypes_.at(i).c_str());
       return false;
     }
 
     if (!hasMin) {
       minMatrix = mapOut.get(minTypes_.at(i));
       hasMin = true;
-    }
-    else {
+    } else {
       minMatrix = minMatrix.cwiseMin(mapOut.get(minTypes_.at(i)));
     }
   }
