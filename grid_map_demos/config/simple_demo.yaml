@@ -1,0 +1,17 @@
+grid_map_topic: "/grid_map_simple_demo/grid_map"
+
+grid_map_visualizations:
+  - name: "height_cloud"
+    type: point_cloud
+    params:
+     layer: "filtered"
+  - name: "cloud2"
+    type: point_cloud
+    params:
+     layer: "original"
+  - name: "original"
+    type: occupancy_grid
+    params:
+     layer: "original"
+     data_min: -0.14
+     data_max: 0.14

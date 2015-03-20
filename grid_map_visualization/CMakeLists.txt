@@ -68,6 +68,8 @@ add_executable(
 	src/grid_map_visualization_node.cpp
 	src/GridMapVisualization.cpp
 	src/GridMapVisualizationHelpers.cpp
+	src/visualizations/VisualizationBase.cpp
+	src/visualizations/VisualizationFactory.cpp
 	src/visualizations/PointCloudVisualization.cpp
 	src/visualizations/MapRegionVisualization.cpp
 	src/visualizations/VectorVisualization.cpp

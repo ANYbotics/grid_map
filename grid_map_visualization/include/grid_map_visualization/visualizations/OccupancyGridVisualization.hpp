@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <grid_map_visualization/visualizations/VisualizationBase.hpp>
 #include <grid_map/GridMap.hpp>
 
 // ROS
@@ -15,14 +16,16 @@
 
 namespace grid_map_visualization {
 
-class OccupancyGridVisualization
+class OccupancyGridVisualization : public VisualizationBase
 {
  public:
+
   /*!
    * Constructor.
    * @param nodeHandle the ROS node handle.
+   * @param name the name of the visualization.
    */
-  OccupancyGridVisualization(ros::NodeHandle& nodeHandle);
+  OccupancyGridVisualization(ros::NodeHandle& nodeHandle, const std::string& name);
 
   /*!
    * Destructor.
@@ -31,9 +34,10 @@ class OccupancyGridVisualization
 
   /*!
    * Read parameters from ROS.
+   * @param config the parameters as XML.
    * @return true if successful.
    */
-  bool readParameters();
+  bool readParameters(XmlRpc::XmlRpcValue& config);
 
   /*!
    * Initialization.
@@ -49,14 +53,8 @@ class OccupancyGridVisualization
 
  private:
 
-  //! ROS nodehandle.
-  ros::NodeHandle& nodeHandle_;
-
-  //! ROS publisher of the occupancy grid.
-  ros::Publisher occupancyGridPublisher_;
-
   //! Type that is transformed to the occupancy grid.
-  std::string gridType_;
+  std::string layer_;
 
   //! Minimum and maximum value of the grid map data (used to normalize the cell data in [min, max]).
   double dataMin_, dataMax_;
