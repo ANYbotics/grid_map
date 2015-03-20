@@ -33,8 +33,8 @@ template<typename T>
 bool DeletionFilter<T>::configure()
 {
   // Load Parameters
-  if (!FilterBase<T>::getParam(std::string("deletionTypes"), delTypes_)) {
-    ROS_ERROR("DeletionFilter did not find param deletionTypes");
+  if (!FilterBase<T>::getParam(std::string("deletion_types"), delTypes_)) {
+    ROS_ERROR("DeletionFilter did not find param deletion_types");
     return false;
   }
 

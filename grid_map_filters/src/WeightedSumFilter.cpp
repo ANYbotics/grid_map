@@ -39,17 +39,17 @@ template<typename T>
 bool WeightedSumFilter<T>::configure()
 {
   // Load Parameters
-  if (!FilterBase<T>::getParam(std::string("typeOut"), typeOut_)) {
-    ROS_ERROR("WeightedSumFilter did not find param typeOut");
+  if (!FilterBase<T>::getParam(std::string("type_out"), typeOut_)) {
+    ROS_ERROR("WeightedSumFilter did not find param type_out");
     return false;
   }
 
-  if (!FilterBase<T>::getParam(std::string("filterTypes"), additionTypes_)) {
-    ROS_ERROR("WeightedSumFilter did not find param filterTypes");
+  if (!FilterBase<T>::getParam(std::string("filter_types"), additionTypes_)) {
+    ROS_ERROR("WeightedSumFilter did not find param filter_types");
     return false;
   }
 
-  if (!FilterBase<T>::getParam(std::string("filterWeights"), additionWeights_)) {
+  if (!FilterBase<T>::getParam(std::string("filter_weights"), additionWeights_)) {
     ROS_ERROR("WeightedSumFilter did not find param filterWeights");
     return false;
   }

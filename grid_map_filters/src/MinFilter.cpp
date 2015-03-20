@@ -38,13 +38,13 @@ template<typename T>
 bool MinFilter<T>::configure()
 {
   // Load Parameters
-  if (!FilterBase<T>::getParam(std::string("typeOut"), typeOut_)) {
-    ROS_ERROR("MinFilter did not find param typeOut");
+  if (!FilterBase<T>::getParam(std::string("type_out"), typeOut_)) {
+    ROS_ERROR("MinFilter did not find param type_out");
     return false;
   }
 
-  if (!FilterBase<T>::getParam(std::string("filterTypes"), minTypes_)) {
-    ROS_ERROR("MinFilter did not find param filterTypes");
+  if (!FilterBase<T>::getParam(std::string("filter_types"), minTypes_)) {
+    ROS_ERROR("MinFilter did not find param filter_types");
     return false;
   }
 

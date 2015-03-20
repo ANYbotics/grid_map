@@ -24,8 +24,8 @@ namespace filters {
 
 template<typename T>
 ThresholdFilter<T>::ThresholdFilter()
-    : lowerThreshold_(0.1),
-      upperThreshold_(0.9)
+  : useLowerThreshold_(false),
+    useUpperThreshold_(false)
 {
 
 }
@@ -40,36 +40,33 @@ template<typename T>
 bool ThresholdFilter<T>::configure()
 {
   // Load Parameters
-  if (!FilterBase<T>::getParam(std::string("lowerThreshold"), lowerThreshold_)) {
-    ROS_ERROR("ThresholdFilter did not find param lowerThreshold");
+  if (FilterBase<T>::getParam(std::string("lower_threshold"), lowerThreshold_)) {
+    useLowerThreshold_ = true;
+    ROS_INFO("lower threshold = %f", lowerThreshold_);
+  }
+
+  if (FilterBase<T>::getParam(std::string("upper_threshold"), upperThreshold_)) {
+    useUpperThreshold_ = true;
+    ROS_INFO("upper threshold = %f", upperThreshold_);
+  }
+
+  if (!useLowerThreshold_ && !useUpperThreshold_) {
+    ROS_ERROR("ThresholdFilter did not find param lower_threshold or upper_threshold");
     return false;
   }
 
-  if (!FilterBase<T>::getParam(std::string("upperThreshold"), upperThreshold_)) {
-    ROS_ERROR("ThresholdFilter did not find param upperThreshold");
+  if (useLowerThreshold_ && useUpperThreshold_) {
+    ROS_ERROR("Set either lower_threshold or upper_threshold! Only one threshold can be used!");
     return false;
   }
 
-  if (lowerThreshold_ < 0.0) {
-    ROS_ERROR("The lower threshold must be greater than zero");
+  if (!FilterBase<T>::getParam(std::string("set_to"), setTo_)) {
+    ROS_ERROR("ThresholdFilter did not find param set_to");
     return false;
   }
 
-  if (upperThreshold_ > 1.0) {
-    ROS_ERROR("The upper threshold must be smaller than 1.0");
-    return false;
-  }
-
-  if (lowerThreshold_ > upperThreshold_) {
-    ROS_ERROR("The upper threshold must be greater than the lower threshold");
-    return false;
-  }
-
-  ROS_INFO("lower threshold = %f", lowerThreshold_);
-  ROS_INFO("upper threshold = %f", upperThreshold_);
-
-  if (!FilterBase<T>::getParam(std::string("thresholdTypes"), thresholdTypes_)) {
-    ROS_ERROR("ThresholdFilter did not find param thresholdTypes");
+  if (!FilterBase<T>::getParam(std::string("threshold_types"), thresholdTypes_)) {
+    ROS_ERROR("ThresholdFilter did not find param threshold_types");
     return false;
   }
 
@@ -98,10 +95,12 @@ bool ThresholdFilter<T>::update(const T& mapIn, T& mapOut)
         continue;
 
       double value = mapOut.at(thresholdTypes_.at(i), *iterator);
-      if (value > upperThreshold_)
-        value = 1.0;
-      if (value < lowerThreshold_)
-        value = 0.0;
+      if (useLowerThreshold_) {
+        if (value < lowerThreshold_) value = setTo_;
+      }
+      if (useUpperThreshold_) {
+        if (value > upperThreshold_) value = setTo_;
+      }
       mapOut.at(thresholdTypes_.at(i), *iterator) = value;
     }
 

@@ -41,8 +41,8 @@ class ThresholdFilter : public FilterBase<T>
   virtual bool configure();
 
   /*!
-   * Sets values below a lower threshold to 0  an values above an upper
-   * threshold to 1
+   * Uses either an upper or lower threshold. If the threshold is exceeded
+   * the cell value is set to the predefined value setTo_.
    * @param mapIn gridMap with the different layers to apply a threshold.
    * @param mapOut gridMap with the threshold applied to the layers.
    */
@@ -58,6 +58,12 @@ class ThresholdFilter : public FilterBase<T>
 
   //! Upper Threshold
   double upperThreshold_;
+
+  //! If threshold triggered set to this value
+  double setTo_;
+
+  //! Booleans to decide which threshold should be used.
+  bool useLowerThreshold_, useUpperThreshold_;
 };
 
 } /* namespace */
