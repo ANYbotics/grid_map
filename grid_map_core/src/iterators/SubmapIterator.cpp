@@ -11,7 +11,7 @@
 
 using namespace std;
 
-namespace grid_map_core {
+namespace grid_map {
 
 SubmapIterator::SubmapIterator(const grid_map_core::GridMap& gridMap,
                                const Eigen::Array2i& submapStartIndex,

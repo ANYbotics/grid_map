@@ -37,9 +37,9 @@ class GridMap
  public:
   /*!
    * Constructor.
-   * @param types a vector of strings containing the definition/description of the data.
+   * @param layers a vector of strings containing the definition/description of the data layer.
    */
-  GridMap(const std::vector<std::string>& types);
+  GridMap(const std::vector<std::string>& layers);
 
   /*!
    * Destructor.
@@ -52,91 +52,98 @@ class GridMap
    * @param resolution the cell size in [m/cell].
    * @param position the 2d position of the grid map in the grid map frame [m].
    */
-  void setGeometry(const Eigen::Array2d& length, const double resolution, const Eigen::Vector2d& position = Eigen::Vector2d::Zero());
+  void setGeometry(const grid_map::Length& length, const double resolution,
+                   const grid_map::Position& position = grid_map::Position::Zero());
 
   /*!
-   * Set the basic types that define which layers need to be valid for a cell to be considered as valid.
-   * Also, the basic types determine which layers are set to NAN when clearing the cells with `clear()`.
-   * By default the list is empty.
-   * @param basicTypes the list of types that are the basic types of the map.
+   * Set the basic layers that need to be valid for a cell to be considered as valid.
+   * Also, the basic layers are set to NAN when clearing the cells with `clear()`.
+   * By default the list of basic layers is empty.
+   * @param basicLayers the list of types that are the basic types of the map.
    */
-  void setBasicTypes(const std::vector<std::string>& basicTypes);
+  void setBasicLayers(const std::vector<std::string>& basicLayers);
 
-  void add(const std::string& type);
+  void add(const std::string& layer);
 
   /*!
-   * Add new data (if the type exists already, overwrite its data, otherwise add type and data).
-   * @param type the type identifier of the data.
+   * Add new data layer (if the layer already exists, overwrite its data, otherwise add layer and data).
+   * @param layer the name of the layer.
    * @param data the data to be added.
    */
-  void add(const std::string& type, const Eigen::MatrixXf& data);
+  void add(const std::string& layer, const grid_map::Matrix& data);
 
   /*!
-   * Checks if data type exists.
-   * @param type the type identifier of the data.
+   * Checks if data layer exists.
+   * @param layer the name of the layer.
    * @return true if type exists, false otherwise.
    */
-  bool exists(const std::string& type) const;
+  bool exists(const std::string& layer) const;
 
   /*!
-   * Returns the grid map data for a type.
-   * @param type the data to be returned.
-   * @return grid map data.
-   * @throw std::out_of_range If no map layer of type `type` is present.
+   * Returns the grid map data for a layer as matrix.
+   * @param layer the name of the layer to be returned.
+   * @return grid map data as matrix.
+   * @throw std::out_of_range if no map layer with name `layer` is present.
    */
-  const Matrix& get(const std::string& type) const;
+  const grid_map::Matrix& get(const std::string& layer) const;
 
   /*!
    * Returns the grid map data for a type as non-const. Use this function
    * with great care!
-   * @param type the data to be returned.
+   * @param layer the name of the layer to be returned.
    * @return grid map data.
-   * @throw std::out_of_range If no map layer of type `type` is present.
+   * @throw std::out_of_range if no map layer with name `layer` is present.
    */
-  Matrix& get(const std::string& type);
+  grid_map::Matrix& get(const std::string& layer);
 
   /*!
-   * Removes the data for a certain kind.
-   * @param type the data to be removed.
+   * Removes a layer from the grid map.
+   * @param layer the name of the layer to be removed.
    * @return true if successful.
    */
-  bool remove(const std::string& type);
+  bool remove(const std::string& layer);
+
+  /*!
+   * Gets the names of the layers.
+   * @param[out] layers the names of the layers.
+   */
+  void getLayers(std::vector<std::string>& layers) const;
 
   /*!
    * Get cell data at requested position.
-   * @param type the type of the map to be accessed.
+   * @param layer the name of the layer to be accessed.
    * @param position the requested position.
    * @return the data of the cell.
-   * @throw std::out_of_range If no map layer of type `type` is present.
+   * @throw std::out_of_range if no map layer with name `layer` is present.
    */
-  float& atPosition(const std::string& type, const Eigen::Vector2d& position);
+  float& atPosition(const std::string& layer, const grid_map::Position& position);
 
   /*!
    * Get cell data at requested position. Const version form above.
-   * @param type the type of the map to be accessed.
+   * @param layer the name of the layer to be accessed.
    * @param position the requested position.
    * @return the data of the cell.
-   * @throw std::out_of_range If no map layer of type `type` is present.
+   * @throw std::out_of_range if no map layer with name `layer` is present.
    */
-  float atPosition(const std::string& type, const Eigen::Vector2d& position) const;
+  float atPosition(const std::string& layer, const grid_map::Position& position) const;
 
   /*!
    * Get cell data for requested index.
-   * @param type the type of the map to be accessed.
+   * @param layer the name of the layer to be accessed.
    * @param index the requested index.
    * @return the data of the cell.
-   * @throw std::out_of_range If no map layer of type `type` is present.
+   * @throw std::out_of_range if no map layer with name `layer` is present.
    */
-  float& at(const std::string& type, const Eigen::Array2i& index);
+  float& at(const std::string& layer, const grid_map::Index& index);
 
   /*!
    * Get cell data for requested index. Const version form above.
-   * @param type the type of the map to be accessed.
+   * @param layer the name of the layer to be accessed.
    * @param index the requested index.
    * @return the data of the cell.
-   * @throw std::out_of_range If no map layer of type `type` is present.
+   * @throw std::out_of_range if no map layer with name `layer` is present.
    */
-  float at(const std::string& type, const Eigen::Array2i& index) const;
+  float at(const std::string& layer, const grid_map::Index& index) const;
 
   /*!
    * Gets the corresponding cell index for a position.
@@ -144,7 +151,7 @@ class GridMap
    * @param[out] index the corresponding index.
    * @return true if successful, false if position outside of map.
    */
-  bool getIndex(const Eigen::Vector2d& position, Eigen::Array2i& index) const;
+  bool getIndex(const grid_map::Position& position, grid_map::Index& index) const;
 
   /*!
    * Gets the 2d position of cell specified by the index (x, y of cell position) in
@@ -153,14 +160,14 @@ class GridMap
    * @param[out] position the position of the data point in the parent frame.
    * @return true if successful, false if index not within range of buffer.
    */
-  bool getPosition(const Eigen::Array2i& index, Eigen::Vector2d& position) const;
+  bool getPosition(const grid_map::Index& index, grid_map::Position& position) const;
 
   /*!
    * Check if position is within the map boundaries.
    * @param position the position to be checked.
    * @return true if position is within map, false otherwise.
    */
-  bool isInside(const Eigen::Vector2d& position);
+  bool isInside(const grid_map::Position& position);
 
   /*!
    * Checks if the index of all layers defined as basic types are valid,
@@ -168,42 +175,44 @@ class GridMap
    * @param index the index to check.
    * @return true if cell is valid, false otherwise.
    */
-  bool isValid(const Eigen::Array2i& index) const;
+  bool isValid(const grid_map::Index& index) const;
 
   /*!
-   * Checks if cell at index is a valid (finite) for a certain type.
+   * Checks if cell at index is a valid (finite) for a certain layer.
    * @param index the index to check.
-   * @param type the type to be checked for validity.
+   * @param layer the name of the layer to be checked for validity.
    * @return true if cell is valid, false otherwise.
    */
-  bool isValid(const Eigen::Array2i& index, const std::string& type) const;
+  bool isValid(const grid_map::Index& index, const std::string& layer) const;
 
   /*!
-   * Checks if cell at index is a valid (finite) for certain types.
+   * Checks if cell at index is a valid (finite) for certain layers.
    * @param index the index to check.
-   * @param types the types to be checked for validity.
+   * @param layers the layers to be checked for validity.
    * @return true if cell is valid, false otherwise.
    */
-  bool isValid(const Eigen::Array2i& index, const std::vector<std::string>& types) const;
+  bool isValid(const grid_map::Index& index, const std::vector<std::string>& layers) const;
 
   /*!
    * Gets the 3d position of a data point (x, y of cell position & cell value as z) in
-   * the grid map frame. This makes sense for data types such as elevation.
-   * @param type the type of the map to be accessed.
+   * the grid map frame. This is useful for data layers such as elevation.
+   * @param layer the name of the layer to be accessed.
    * @param index the index of the requested cell.
    * @param position the position of the data point in the parent frame.
    * @return true if successful, false if no valid data available.
    */
-  bool getPosition3(const std::string& type, const Index& index, Position3& position) const;
+  bool getPosition3(const std::string& layer, const grid_map::Index& index,
+                    grid_map::Position3& position) const;
 
   /*!
-   * Gets the 3d vector of three data types with suffixes 'x', 'y', and 'z'.
-   * @param typePrefix the prefix for the type to bet get as vector.
+   * Gets the 3d vector of three layers with suffixes 'x', 'y', and 'z'.
+   * @param layerPrefix the prefix for the layer to bet get as vector.
    * @param index the index of the requested cell.
    * @param vector the vector with the values of the data type.
    * @return true if successful, false if no valid data available.
    */
-  bool getVector(const std::string& typePrefix, const Eigen::Array2i& index, Eigen::Vector3d& vector) const;
+  bool getVector(const std::string& layerPrefix, const grid_map::Index& index,
+                 Eigen::Vector3d& vector) const;
 
   /*!
    * Gets a submap from the map. The requested submap is specified with the requested
@@ -213,7 +222,8 @@ class GridMap
    * @param[out] isSuccess true if successful, false otherwise.
    * @return submap (is empty if success is false).
    */
-  GridMap getSubmap(const Position& position, const Length& length, bool& isSuccess);
+  GridMap getSubmap(const grid_map::Position& position, const grid_map::Length& length,
+                    bool& isSuccess);
 
   /*!
    * Gets a submap from the map. The requested submap is specified with the requested
@@ -224,7 +234,8 @@ class GridMap
    * @param[out] isSuccess true if successful, false otherwise.
    * @return submap (is empty if success is false).
    */
-  GridMap getSubmap(const Position& position, const Length& length, Index& indexInSubmap, bool& isSuccess);
+  GridMap getSubmap(const grid_map::Position& position, const grid_map::Length& length,
+                    grid_map::Index& indexInSubmap, bool& isSuccess);
 
   /*!
    * Move the grid map w.r.t. to the grid map frame. Use this to move the grid map
@@ -232,7 +243,7 @@ class GridMap
    * such that the grid map data is stationary in the grid map frame.
    * @param position the new location of the grid map in the map frame.
    */
-  void move(const Eigen::Vector2d& position);
+  void move(const grid_map::Position& position);
 
   /*!
    * Clears all cells (set to NAN) for all types defined as basic type.
@@ -280,13 +291,13 @@ class GridMap
    * Get the side length of the grid map.
    * @return side length of the grid map.
    */
-  const Eigen::Array2d& getLength() const;
+  const grid_map::Length& getLength() const;
 
   /*!
    * Get the 2d position of the grid map in the grid map frame.
    * @return position of the grid map in the grid map frame.
    */
-  const Eigen::Vector2d& getPosition() const;
+  const grid_map::Position& getPosition() const;
 
   /*!
    * Get the resolution of the grid map.
@@ -298,13 +309,13 @@ class GridMap
    * Get the grid map size (rows and cols of the data structure).
    * @return grid map size.
    */
-  const grid_map_core::Size& getSize() const;
+  const grid_map::Size& getSize() const;
 
   /*!
    * Get the start index of the circular buffer.
    * @return buffer start index.
    */
-  const Eigen::Array2i& getStartIndex() const;
+  const grid_map::Index& getStartIndex() const;
 
  protected:
 
@@ -339,31 +350,31 @@ class GridMap
   //! Timestamp of the grid map (nanoseconds).
   uint64_t timestamp_;
 
-  //! Grid map data as matrix.
+  //! Grid map data stored as layers of matrices.
   std::unordered_map<std::string, Eigen::MatrixXf> data_;
 
-  //! Definition/description of the data types.
-  std::vector<std::string> types_;
+  //! Names of the data layers.
+  std::vector<std::string> layers_;
 
-  //! List of types from `types_` that are the basic grid map layers.
-  //! This means that for a cell to be valid, all basic types need to be valid.
-  //! Also, the basic types are set to NAN when clearing the map with `clear()`.
-  std::vector<std::string> basicTypes_;
+  //! List of layers from `data_` that are the basic grid map layers.
+  //! This means that for a cell to be valid, all basic layers need to be valid.
+  //! Also, the basic layers are set to NAN when clearing the map with `clear()`.
+  std::vector<std::string> basicLayers_;
 
   //! Side length of the map in x- and y-direction [m].
-  grid_map_core::Length length_;
+  grid_map::Length length_;
 
   //! Map resolution in xy plane [m/cell].
   double resolution_;
 
   //! Map position in the grid map frame [m].
-  grid_map_core::Position position_;
+  grid_map::Position position_;
 
   //! Size of the buffer (rows and cols of the data structure).
-  grid_map_core::Size size_;
+  grid_map::Size size_;
 
   //! Circular buffer start indeces.
-  grid_map_core::Index startIndex_;
+  grid_map::Index startIndex_;
 };
 
 } /* namespace */

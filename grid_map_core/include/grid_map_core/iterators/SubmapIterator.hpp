@@ -13,7 +13,7 @@
 // Eigen
 #include <Eigen/Core>
 
-namespace grid_map_core {
+namespace grid_map {
 
 /*!
  * Iterator class to iterate through a rectangular part of the map (submap).

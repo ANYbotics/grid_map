@@ -23,7 +23,7 @@
 
 using namespace std;
 using namespace Eigen;
-using namespace grid_map_core;
+using namespace grid_map;
 
 TEST(checkPolygonIterator, FullCover)
 {

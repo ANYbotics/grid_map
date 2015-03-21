@@ -9,7 +9,7 @@
 #include "grid_map_core/iterators/GridMapIterator.hpp"
 #include "grid_map_core/GridMapMath.hpp"
 
-namespace grid_map_core {
+namespace grid_map {
 
 GridMapIterator::GridMapIterator(const grid_map_core::GridMap& gridMap)
 {

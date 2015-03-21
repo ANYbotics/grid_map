@@ -14,7 +14,7 @@
 // Eigen
 #include <Eigen/Core>
 
-namespace grid_map_core {
+namespace grid_map {
 
 /*!
  * Iterator class to iterate over a line in the map.

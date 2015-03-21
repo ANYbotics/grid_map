@@ -11,7 +11,7 @@
 
 using namespace std;
 
-namespace grid_map_core {
+namespace grid_map {
 
 CircleIterator::CircleIterator(const grid_map_core::GridMap& gridMap, const Eigen::Vector2d& center,
                                const double radius)

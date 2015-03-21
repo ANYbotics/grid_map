@@ -17,7 +17,7 @@
 // unique_ptr
 #include <memory>
 
-namespace grid_map_core {
+namespace grid_map {
 
 /*!
  * Iterator class to iterate through a circular area of the map.

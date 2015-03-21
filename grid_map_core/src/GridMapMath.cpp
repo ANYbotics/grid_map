@@ -17,7 +17,7 @@
 using namespace Eigen;
 using namespace std;
 
-namespace grid_map_core {
+namespace grid_map {
 
 namespace internal {
 

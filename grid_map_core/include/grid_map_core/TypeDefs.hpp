@@ -11,7 +11,7 @@
 
 #pragma once
 
-namespace grid_map_core {
+namespace grid_map {
 
   typedef Eigen::MatrixXf Matrix;
   typedef Eigen::Vector2d Position;

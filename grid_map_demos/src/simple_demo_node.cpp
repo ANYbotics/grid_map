@@ -37,7 +37,7 @@ int main(int argc, char** argv)
   while (nodeHandle.ok()) {
 
     // Add height (iterating through grid map).
-    for (grid_map_core::GridMapIterator iterator(map); !iterator.isPassedEnd(); ++iterator) {
+    for (grid_map::GridMapIterator iterator(map); !iterator.isPassedEnd(); ++iterator) {
       Position position;
       map.getPosition(*iterator, position);
       double time = ros::Time::now().toSec();
@@ -56,7 +56,7 @@ int main(int argc, char** argv)
     }
 
 
-    for (grid_map_core::LineIterator iterator(map, Index(5, 6), Index(30, 30));
+    for (grid_map::LineIterator iterator(map, Index(5, 6), Index(30, 30));
               !iterator.isPassedEnd(); ++iterator) {
       map.at("raw", *iterator) = 0.02;
     }
@@ -64,14 +64,14 @@ int main(int argc, char** argv)
     // Filter values for submap (iterators).
     map.add("filtered", map.get("raw"));
     Position topLeftCorner(1.0, 0.4);
-    grid_map_core::limitPositionToRange(topLeftCorner, map.getLength(), map.getPosition());
+    grid_map::limitPositionToRange(topLeftCorner, map.getLength(), map.getPosition());
     Index startIndex;
     map.getIndex(topLeftCorner, startIndex);
     ROS_INFO("Top left corner was limited from (1.0, 0.2) to (%f, %f) and corresponds to index (%i, %i).",
              topLeftCorner.x(), topLeftCorner.y(), startIndex(0), startIndex(1));
 
     Size size = (Length(1.2, 0.8) / map.getResolution()).cast<int>();
-    grid_map_core::SubmapIterator submapIterator(map, startIndex, size);
+    grid_map::SubmapIterator submapIterator(map, startIndex, size);
     for (; !submapIterator.isPassedEnd(); ++submapIterator) {
       Position currentPosition;
       map.getPosition(*submapIterator, currentPosition);
@@ -80,7 +80,7 @@ int main(int argc, char** argv)
       double sumOfWeights = 0.0;
 
       // Compute weighted mean.
-      for (grid_map_core::CircleIterator circleIterator(map, currentPosition, radius);
+      for (grid_map::CircleIterator circleIterator(map, currentPosition, radius);
           !circleIterator.isPassedEnd(); ++circleIterator) {
         if (!map.isValid(*circleIterator, "raw")) continue;
         Position currentPositionInCircle;

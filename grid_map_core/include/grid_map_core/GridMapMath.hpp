@@ -12,7 +12,7 @@
 #include <vector>
 #include <map>
 
-namespace grid_map_core {
+namespace grid_map {
 
 /*!
  * Gets the position of a cell specified by its index in the map frame.

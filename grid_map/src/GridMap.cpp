@@ -29,8 +29,8 @@ GridMap::GridMap()
 
 }
 
-GridMap::GridMap(const std::vector<std::string>& types)
- : grid_map_core::GridMap(types)
+GridMap::GridMap(const std::vector<std::string>& layers)
+ : grid_map_core::GridMap(layers)
 {
 
 }
@@ -49,7 +49,7 @@ GridMap::~GridMap()
 GridMap GridMap::getSubmap(const Position& position, const Length& length, bool& isSuccess)
 {
   Index index;
-  return getSubmap(position, length, isSuccess);
+  return getSubmap(position, length, index, isSuccess);
 }
 
 GridMap GridMap::getSubmap(const Position& position, const Length& length, Index& indexInSubmap, bool& isSuccess)
@@ -60,10 +60,10 @@ GridMap GridMap::getSubmap(const Position& position, const Length& length, Index
 
 void GridMap::toMessage(grid_map_msgs::GridMap& message) const
 {
-  toMessage(types_, message);
+  toMessage(layers_, message);
 }
 
-void GridMap::toMessage(const std::vector<std::string>& types, grid_map_msgs::GridMap& message) const
+void GridMap::toMessage(const std::vector<std::string>& layers, grid_map_msgs::GridMap& message) const
 {
   message.info.header.stamp.fromNSec(timestamp_);
   message.info.header.frame_id = frameId_;
@@ -73,10 +73,10 @@ void GridMap::toMessage(const std::vector<std::string>& types, grid_map_msgs::Gr
   message.info.positionX = position_.x();
   message.info.positionY = position_.y();
 
-  for (const auto& type : types) {
-    message.dataDefinition.push_back(type);
+  for (const auto& layer : layers) {
+    message.dataDefinition.push_back(layer);
     std_msgs::Float32MultiArray dataArray;
-    matrixEigenCopyToMultiArrayMessage(data_.at(type), dataArray);
+    matrixEigenCopyToMultiArrayMessage(data_.at(layer), dataArray);
     message.data.push_back(dataArray);
   }
 
@@ -102,24 +102,23 @@ bool GridMap::fromMessage(const grid_map_msgs::GridMap& message)
   for (unsigned int i = 0; i < message.dataDefinition.size(); i++) {
     Eigen::MatrixXf dataMatrix;
     multiArrayMessageCopyToMatrixEigen(message.data[i], dataMatrix); // TODO Could we use the data mapping (instead of copying) method here?
-    data_.insert(std::pair<std::string, Eigen::MatrixXf>(message.dataDefinition[i], dataMatrix));
-    types_.push_back(message.dataDefinition[i]);
+    data_.insert(std::pair<std::string, Matrix>(message.dataDefinition[i], dataMatrix));
   }
 
-  basicTypes_ = types_;
+  basicLayers_ = layers_;
   size_ << getRows(message.data[0]), getCols(message.data[0]);
   startIndex_(0) = message.outerStartIndex;
   startIndex_(1) = message.innerStartIndex;
   return true;
 }
 
-void GridMap::toPointCloud(sensor_msgs::PointCloud2& pointCloud, const std::string& pointType) const
+void GridMap::toPointCloud(sensor_msgs::PointCloud2& pointCloud, const std::string& pointLayer) const
 {
-  toPointCloud(pointCloud, pointType, types_);
+  toPointCloud(pointCloud, pointLayer, layers_);
 }
 
-void GridMap::toPointCloud(sensor_msgs::PointCloud2& pointCloud, const std::string& pointType,
-                           const std::vector<std::string>& typesToAdd) const
+void GridMap::toPointCloud(sensor_msgs::PointCloud2& pointCloud, const std::string& pointLayer,
+                           const std::vector<std::string>& layersToAdd) const
 {
   // Header.
   pointCloud.header.frame_id = frameId_;
@@ -129,15 +128,15 @@ void GridMap::toPointCloud(sensor_msgs::PointCloud2& pointCloud, const std::stri
   // Fields.
   std::vector<std::string> fieldNames;
 
-  for (const auto& type : typesToAdd) {
-    if (type == pointType) {
+  for (const auto& layer : layersToAdd) {
+    if (layer == pointLayer) {
       fieldNames.push_back("x");
       fieldNames.push_back("y");
       fieldNames.push_back("z");
-    } else if (type == "color") {
+    } else if (layer == "color") {
       fieldNames.push_back("rgb");
     } else {
-      fieldNames.push_back(type);
+      fieldNames.push_back(layer);
     }
   }
 
@@ -170,12 +169,12 @@ void GridMap::toPointCloud(sensor_msgs::PointCloud2& pointCloud, const std::stri
                           (name, sensor_msgs::PointCloud2Iterator<float>(pointCloud, name)));
   }
 
-  grid_map_core::GridMapIterator mapIterator(*this);
+  GridMapIterator mapIterator(*this);
 
   for (size_t i = 0; i < nPoints; ++i) {
-    Eigen::Vector3d position;
+    Position3 position;
     position.setConstant(NAN);
-    getPosition3(pointType, *mapIterator, position);
+    getPosition3(pointLayer, *mapIterator, position);
 
     for (auto& iterator : fieldIterators) {
       if (iterator.first == "x") {
@@ -198,7 +197,7 @@ void GridMap::toPointCloud(sensor_msgs::PointCloud2& pointCloud, const std::stri
   }
 }
 
-void GridMap::toOccupancyGrid(nav_msgs::OccupancyGrid& occupancyGrid, const std::string& cellType,
+void GridMap::toOccupancyGrid(nav_msgs::OccupancyGrid& occupancyGrid, const std::string& layer,
                               float dataMin, float dataMax) const
 {
   occupancyGrid.header.frame_id = frameId_;
@@ -207,8 +206,8 @@ void GridMap::toOccupancyGrid(nav_msgs::OccupancyGrid& occupancyGrid, const std:
   occupancyGrid.info.resolution = resolution_;
   occupancyGrid.info.width = size_(0);
   occupancyGrid.info.height = size_(1);
-  Eigen::Vector2d positionOfOrigin;
-  grid_map_core::getPositionOfDataStructureOrigin(position_, length_, positionOfOrigin);
+  Position positionOfOrigin;
+  getPositionOfDataStructureOrigin(position_, length_, positionOfOrigin);
   occupancyGrid.info.origin.position.x = positionOfOrigin.x();
   occupancyGrid.info.origin.position.y = positionOfOrigin.y();
   occupancyGrid.info.origin.position.z = 0.0;
@@ -225,13 +224,13 @@ void GridMap::toOccupancyGrid(nav_msgs::OccupancyGrid& occupancyGrid, const std:
   const float cellMax = 100;
   const float cellRange = cellMax - cellMin;
 
-  for (grid_map_core::GridMapIterator iterator(*this); !iterator.isPassedEnd(); ++iterator) {
-    float value = (at(cellType, *iterator) - dataMin) / (dataMax - dataMin);
+  for (GridMapIterator iterator(*this); !iterator.isPassedEnd(); ++iterator) {
+    float value = (at(layer, *iterator) - dataMin) / (dataMax - dataMin);
     if (isnan(value)) value = -1;
     else value = cellMin + min(max(0.0f, value), 1.0f) * cellRange;
     // Occupancy grid claims to be row-major order, but it does not seem that way.
     // http://docs.ros.org/api/nav_msgs/html/msg/OccupancyGrid.html.
-    unsigned int index = grid_map_core::get1dIndexFrom2dIndex(*iterator, size_, false);
+    unsigned int index = get1dIndexFrom2dIndex(*iterator, size_, false);
     occupancyGrid.data[index] = value;
   }
 }

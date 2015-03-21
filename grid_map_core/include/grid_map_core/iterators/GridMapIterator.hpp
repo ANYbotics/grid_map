@@ -13,7 +13,7 @@
 // Eigen
 #include <Eigen/Core>
 
-namespace grid_map_core {
+namespace grid_map {
 
 /*!
  * Iterator class to iterate trough the entire grid map.
@@ -51,7 +51,7 @@ public:
    * Dereference the iterator with const.
    * @return the value to which the iterator is pointing.
    */
-  const Eigen::Array2i& operator *() const;
+  const Index& operator *() const;
 
   /*!
    * Increase the iterator to the next element.
@@ -74,16 +74,16 @@ public:
 private:
 
   //! Size of the buffer.
-  Eigen::Array2i size_;
+  Size size_;
 
   //! Start index of the circular buffer.
-  Eigen::Array2i startIndex_;
+  Index startIndex_;
 
   //! End index of the circular buffer.
-  Eigen::Array2i endIndex_;
+  Index endIndex_;
 
   //! Current index.
-  Eigen::Array2i index_;
+  Index index_;
 
   //! Is iterator out of scope.
   bool isPassedEnd_;

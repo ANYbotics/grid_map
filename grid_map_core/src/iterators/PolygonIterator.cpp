@@ -11,9 +11,9 @@
 
 using namespace std;
 
-namespace grid_map_core {
+namespace grid_map {
 
-PolygonIterator::PolygonIterator(const grid_map_core::GridMap& gridMap, const Polygon& polygon)
+PolygonIterator::PolygonIterator(const grid_map_core::GridMap& gridMap, const grid_map_core::Polygon& polygon)
     : polygon_(polygon)
 {
   mapLength_ = gridMap.getLength();
@@ -74,7 +74,7 @@ bool PolygonIterator::isInside()
   return polygon_.isInside(position);
 }
 
-void PolygonIterator::findSubmapParameters(const Polygon& polygon, Eigen::Array2i& startIndex, Eigen::Array2i& bufferSize) const
+void PolygonIterator::findSubmapParameters(const grid_map_core::Polygon& polygon, Eigen::Array2i& startIndex, Eigen::Array2i& bufferSize) const
 {
   Eigen::Vector2d topLeft = polygon_.getVertices()[0];
   Eigen::Vector2d bottomRight = topLeft;
