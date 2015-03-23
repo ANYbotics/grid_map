@@ -20,12 +20,18 @@
 #include <Eigen/Core>
 #include <Eigen/Dense>
 
+// ROS
+#include <ros/ros.h>
+
 namespace filters {
 
 template<typename T>
 ThresholdFilter<T>::ThresholdFilter()
   : useLowerThreshold_(false),
-    useUpperThreshold_(false)
+    useUpperThreshold_(false),
+    lowerThreshold_(0.0),
+    upperThreshold_(1.0),
+    setTo_(0.5)
 {
 
 }
