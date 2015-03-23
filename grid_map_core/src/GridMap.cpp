@@ -29,8 +29,9 @@ GridMap::GridMap(const std::vector<std::string>& layers)
   size_.setZero();
   startIndex_.setZero();
   timestamp_ = 0;
+  layers_ = layers;
 
-  for (auto& layer : layers) {
+  for (auto& layer : layers_) {
     data_.insert(std::pair<std::string, Matrix>(layer, Matrix()));
   }
 }
@@ -129,9 +130,9 @@ bool GridMap::remove(const std::string& layer)
   return true;
 }
 
-void GridMap::getLayers(std::vector<std::string>& layers) const
+const std::vector<std::string>& GridMap::getLayers() const
 {
-  for (const auto& data : data_) layers.push_back(data.first);
+  return layers_;
 }
 
 float& GridMap::atPosition(const std::string& layer, const grid_map::Position& position)

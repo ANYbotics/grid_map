@@ -68,20 +68,25 @@ void GridMap::toMessage(const std::vector<std::string>& layers, grid_map_msgs::G
   message.info.header.stamp.fromNSec(timestamp_);
   message.info.header.frame_id = frameId_;
   message.info.resolution = resolution_;
-  message.info.lengthX = length_.x();
-  message.info.lengthY = length_.y();
-  message.info.positionX = position_.x();
-  message.info.positionY = position_.y();
+  message.info.length_x = length_.x();
+  message.info.length_y = length_.y();
+  message.info.pose.position.x = position_.x();
+  message.info.pose.position.y = position_.y();
+  message.info.pose.position.z = 0.0;
+  message.info.pose.orientation.x = 0.0;
+  message.info.pose.orientation.y = 0.0;
+  message.info.pose.orientation.z = 0.0;
+  message.info.pose.orientation.w = 1.0;
 
   for (const auto& layer : layers) {
-    message.dataDefinition.push_back(layer);
+    message.layers.push_back(layer);
     std_msgs::Float32MultiArray dataArray;
     matrixEigenCopyToMultiArrayMessage(data_.at(layer), dataArray);
     message.data.push_back(dataArray);
   }
 
-  message.outerStartIndex = startIndex_(0);
-  message.innerStartIndex = startIndex_(1);
+  message.outer_start_index = startIndex_(0);
+  message.inner_start_index = startIndex_(1);
 }
 
 bool GridMap::fromMessage(const grid_map_msgs::GridMap& message)
@@ -89,26 +94,27 @@ bool GridMap::fromMessage(const grid_map_msgs::GridMap& message)
   timestamp_ = message.info.header.stamp.toNSec();
   frameId_ = message.info.header.frame_id;
   resolution_ = message.info.resolution;
-  length_.x() = message.info.lengthX;
-  length_.y() = message.info.lengthY;
-  position_.x() = message.info.positionX;
-  position_.y() = message.info.positionY;
+  length_.x() = message.info.length_x;
+  length_.y() = message.info.length_y;
+  position_.x() = message.info.pose.position.x;
+  position_.y() = message.info.pose.position.y;
 
-  if (message.dataDefinition.size() != message.data.size()) {
-    ROS_ERROR("Different number of data definition and data in grid map message.");
+  if (message.layers.size() != message.data.size()) {
+    ROS_ERROR("Different number of layers and data in grid map message.");
     return false;
   }
 
-  for (unsigned int i = 0; i < message.dataDefinition.size(); i++) {
+  for (unsigned int i = 0; i < message.layers.size(); i++) {
     Eigen::MatrixXf dataMatrix;
     multiArrayMessageCopyToMatrixEigen(message.data[i], dataMatrix); // TODO Could we use the data mapping (instead of copying) method here?
-    data_.insert(std::pair<std::string, Matrix>(message.dataDefinition[i], dataMatrix));
+    data_.insert(std::pair<std::string, Matrix>(message.layers[i], dataMatrix));
+    layers_.push_back(message.layers[i]);
   }
 
   basicLayers_ = layers_;
   size_ << getRows(message.data[0]), getCols(message.data[0]);
-  startIndex_(0) = message.outerStartIndex;
-  startIndex_(1) = message.innerStartIndex;
+  startIndex_(0) = message.outer_start_index;
+  startIndex_(1) = message.inner_start_index;
   return true;
 }
 

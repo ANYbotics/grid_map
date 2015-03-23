@@ -55,7 +55,6 @@ int main(int argc, char** argv)
         map.atPosition("raw", randomPosition) = std::numeric_limits<float>::infinity();
     }
 
-
     for (grid_map::LineIterator iterator(map, Index(5, 6), Index(30, 30));
               !iterator.isPassedEnd(); ++iterator) {
       map.at("raw", *iterator) = 0.02;

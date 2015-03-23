@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <grid_map_visualization/visualizations/VisualizationBase.hpp>
 #include <grid_map/GridMap.hpp>
 
 // ROS
@@ -20,14 +21,19 @@
 
 namespace grid_map_visualization {
 
-class VectorVisualization
+/*!
+ * Visualization a combination of three layers of the grid map as a vector field.
+ */
+class VectorVisualization : public VisualizationBase
 {
  public:
+
   /*!
    * Constructor.
    * @param nodeHandle the ROS node handle.
+   * @param name the name of the visualization.
    */
-  VectorVisualization(ros::NodeHandle& nodeHandle);
+  VectorVisualization(ros::NodeHandle& nodeHandle, const std::string& name);
 
   /*!
    * Destructor.
@@ -36,9 +42,10 @@ class VectorVisualization
 
   /*!
    * Read parameters from ROS.
+   * @param config the parameters as XML.
    * @return true if successful.
    */
-  bool readParameters();
+  bool readParameters(XmlRpc::XmlRpcValue& config);
 
   /*!
    * Initialization.
@@ -54,12 +61,6 @@ class VectorVisualization
 
  private:
 
-  //! ROS nodehandle.
-  ros::NodeHandle& nodeHandle_;
-
-  //! ROS publisher of the marker for the vectors.
-  ros::Publisher markerPublisher_;
-
   //! Marker to be published.
   visualization_msgs::Marker marker_;
 
@@ -67,7 +68,7 @@ class VectorVisualization
   std::vector<std::string> types_;
 
   //! Type that is the position of the vectors.
-  std::string positionType_;
+  std::string positionLayer_;
 
   //! Scaling of the vectors.
   double scale_;

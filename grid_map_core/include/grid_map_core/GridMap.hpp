@@ -105,9 +105,9 @@ class GridMap
 
   /*!
    * Gets the names of the layers.
-   * @param[out] layers the names of the layers.
+   * @return layers the names of the layers.
    */
-  void getLayers(std::vector<std::string>& layers) const;
+  const std::vector<std::string>& getLayers() const;
 
   /*!
    * Get cell data at requested position.

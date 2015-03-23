@@ -5,13 +5,10 @@ Header header
 float64 resolution
 
 # Length in x-direction [m].
-float64 lengthX
+float64 length_x
 
-# Width in y-direction [m].
-float64 lengthY
+# Length in y-direction [m].
+float64 length_y
 
-# Position of the grid map in x-direction in the parent frame [m].
-float64 positionX
-
-# Position of the grid map in y-direction in the parent frame [m].
-float64 positionY
+# Pose of the grid map center in the frame defined in `header` [m].
+geometry_msgs/Pose pose

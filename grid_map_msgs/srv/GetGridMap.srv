@@ -1,19 +1,22 @@
+# Frame id of the submap position request.
+string frame_id
+
 # Requested submap position in x-direction [m].
-float64 positionX
+float64 position_x
   
 # Requested submap position in y-direction [m].
-float64 positionY
+float64 position_y
 
 # Requested submap length in x-direction [m].
-float64 lengthX
+float64 length_x
   
 # Requested submap width in y-direction [m].
-float64 lengthY
+float64 length_y
 
-# Requested data. If empty, get all available data.
-string[] dataDefinition
+# Requested layers. If empty, get all layers.
+string[] layers
 
 ---
 
 # Submap
-grid_map_msgs/GridMap gridMap
+grid_map_msgs/GridMap map

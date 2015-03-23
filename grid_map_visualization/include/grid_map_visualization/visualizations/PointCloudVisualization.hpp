@@ -16,6 +16,9 @@
 
 namespace grid_map_visualization {
 
+/*!
+ * Visualization of the grid map as a point cloud.
+ */
 class PointCloudVisualization : public VisualizationBase
 {
  public:

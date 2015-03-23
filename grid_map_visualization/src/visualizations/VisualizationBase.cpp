@@ -53,10 +53,6 @@ bool VisualizationBase::getParam(const std::string& name, std::string& value)
   return true;
 }
 
-/** \brief Get a filter parameter as a double
- * \param name The name of the parameter
- * \param value The double to set with the value
- * \return Whether or not the parameter of name/type was set */
 bool VisualizationBase::getParam(const std::string& name, double& value)
 {
   StringMap::iterator it = parameters_.find(name);
@@ -68,28 +64,15 @@ bool VisualizationBase::getParam(const std::string& name, double& value)
   return true;
 }
 
+bool VisualizationBase::getParam(const std::string&name, int& value)
+{
+  StringMap::iterator it = parameters_.find(name);
+  if (it == parameters_.end()) return false;
+  if(it->second.getType() != XmlRpc::XmlRpcValue::TypeInt) return false;
+  value = it->second;
+  return true;
+}
 
-///** \brief Get a filter parameter as a int
-// * \param name The name of the parameter
-// * \param value The int to set with the value
-// * \return Whether or not the parameter of name/type was set */
-//bool VisualizationBase::getParam(const std::string&name, int& value)
-//{
-//  string_map_t::iterator it = params_.find(name);
-//  if (it == params_.end())
-//  {
-//    return false;
-//  }
-//
-//  if(it->second.getType() != XmlRpc::XmlRpcValue::TypeInt)
-//  {
-//    return false;
-//  }
-//
-//  value = it->second;
-//  return true;
-//}
-//
 ///** \brief Get a filter parameter as an unsigned int
 // * \param name The name of the parameter
 // * \param value The int to set with the value

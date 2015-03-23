@@ -47,12 +47,17 @@ bool OccupancyGridVisualization::readParameters(XmlRpc::XmlRpcValue& config)
 
 bool OccupancyGridVisualization::initialize()
 {
+  publisher_ = nodeHandle_.advertise<nav_msgs::OccupancyGrid>(name_, 1, true);
   return true;
 }
 
 bool OccupancyGridVisualization::visualize(const grid_map::GridMap& map)
 {
   if (publisher_.getNumSubscribers () < 1) return true;
+  if (!map.exists(layer_)) {
+    ROS_WARN_STREAM("OccupancyGridVisualization::visualize: No grid map layer with name '" << layer_ << "' found.");
+    return false;
+  }
   nav_msgs::OccupancyGrid occupancyGrid;
   map.toOccupancyGrid(occupancyGrid, layer_, dataMin_, dataMax_);
   publisher_.publish(occupancyGrid);

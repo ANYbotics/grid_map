@@ -40,9 +40,9 @@ std::shared_ptr<VisualizationBase> VisualizationFactory::getInstance(const std::
 {
   // TODO: Make this nicer: http://stackoverflow.com/questions/9975672/c-automatic-factory-registration-of-derived-types
   if (type == "point_cloud") return std::shared_ptr<VisualizationBase>(new PointCloudVisualization(nodeHandle_, name));
-//  if (type == "vectors") return std::shared_ptr<VisualizationBase>(new VectorVisualization(nodeHandle_, name));
+  if (type == "vectors") return std::shared_ptr<VisualizationBase>(new VectorVisualization(nodeHandle_, name));
   if (type == "occupancy_grid") return std::shared_ptr<VisualizationBase>(new OccupancyGridVisualization(nodeHandle_, name));
-//  if (type == "map_region") return std::shared_ptr<VisualizationBase>(new MapRegionVisualization(nodeHandle_, name));
+  if (type == "map_region") return std::shared_ptr<VisualizationBase>(new MapRegionVisualization(nodeHandle_, name));
   return std::shared_ptr<VisualizationBase>();
 }
 

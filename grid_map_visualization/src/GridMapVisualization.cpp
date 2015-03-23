@@ -84,7 +84,7 @@ bool GridMapVisualization::readParameters()
         std::string namei = config[i]["name"];
         std::string namej = config[j]["name"];
         if (namei == namej) {
-          ROS_ERROR("%s: A visualization with the name %s already exists",
+          ROS_ERROR("%s: A visualization with the name '%s' already exists.",
                     visualizationsParameter_.c_str(), namei.c_str());
           return false;
         }
@@ -93,7 +93,7 @@ bool GridMapVisualization::readParameters()
 
     // Make sure the filter chain has a valid type.
     if (!factory_.isValidType(config[i]["type"])) {
-      ROS_ERROR("Couldn't find visualization of type %s", std::string(config[i]["type"]).c_str());
+      ROS_ERROR("Could not find visualization of type '%s'.", std::string(config[i]["type"]).c_str());
       return false;
     }
   }

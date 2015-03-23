@@ -7,7 +7,6 @@
  */
 
 #include "grid_map_visualization/visualizations/MapRegionVisualization.hpp"
-
 #include <grid_map_visualization/GridMapVisualizationHelpers.hpp>
 
 // ROS
@@ -15,25 +14,30 @@
 
 namespace grid_map_visualization {
 
-MapRegionVisualization::MapRegionVisualization(ros::NodeHandle& nodeHandle)
-    : nodeHandle_(nodeHandle),
+MapRegionVisualization::MapRegionVisualization(ros::NodeHandle& nodeHandle, const std::string& name)
+    : VisualizationBase(nodeHandle, name),
       nVertices_(5),
       lineWidth_(0.01)
 {
-  markerPublisher_ = nodeHandle_.advertise<visualization_msgs::Marker>("region", 1, true);
 }
 
 MapRegionVisualization::~MapRegionVisualization()
 {
-
 }
 
-bool MapRegionVisualization::readParameters()
+bool MapRegionVisualization::readParameters(XmlRpc::XmlRpcValue& config)
 {
-  nodeHandle_.param("map_region/line_width", lineWidth_, 0.003);
+  VisualizationBase::readParameters(config);
 
-  int colorValue;
-  nodeHandle_.param("map_region/color", colorValue, 16777215); // white, http://www.wolframalpha.com/input/?i=BitOr%5BBitShiftLeft%5Br%2C16%5D%2C+BitShiftLeft%5Bg%2C8%5D%2C+b%5D+where+%7Br%3D20%2C+g%3D50%2C+b%3D230%7D
+  lineWidth_ = 0.003;
+  if (!getParam("line_width", lineWidth_)) {
+    ROS_INFO("MapRegionVisualization with name '%s' did not find a 'line_width' parameter. Using default.", name_.c_str());
+  }
+
+  int colorValue = 16777215; // white, http://www.wolframalpha.com/input/?i=BitOr%5BBitShiftLeft%5Br%2C16%5D%2C+BitShiftLeft%5Bg%2C8%5D%2C+b%5D+where+%7Br%3D20%2C+g%3D50%2C+b%3D230%7D
+  if (!getParam("color", colorValue)) {
+    ROS_INFO("MapRegionVisualization with name '%s' did not find a 'color' parameter. Using default.", name_.c_str());
+  }
   setColorFromColorValue(color_, colorValue, true);
 
   return true;
@@ -48,12 +52,13 @@ bool MapRegionVisualization::initialize()
   marker_.scale.x = lineWidth_;
   marker_.points.resize(nVertices_); // Initialized to [0.0, 0.0, 0.0]
   marker_.colors.resize(nVertices_, color_);
+  publisher_ = nodeHandle_.advertise<visualization_msgs::Marker>(name_, 1, true);
   return true;
 }
 
 bool MapRegionVisualization::visualize(const grid_map::GridMap& map)
 {
-  if (markerPublisher_.getNumSubscribers () < 1) return true;
+  if (publisher_.getNumSubscribers () < 1) return true;
 
   // Set marker info.
   marker_.header.frame_id = map.getFrameId();
@@ -74,8 +79,7 @@ bool MapRegionVisualization::visualize(const grid_map::GridMap& map)
   marker_.points[4].x = marker_.points[0].x;
   marker_.points[4].y = marker_.points[0].y;
 
-  markerPublisher_.publish(marker_);
-
+  publisher_.publish(marker_);
   return true;
 }
 
