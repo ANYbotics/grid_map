@@ -13,6 +13,12 @@
 
 // ROS
 #include <sensor_msgs/point_cloud2_iterator.h>
+#include <rosbag/bag.h>
+#include <rosbag/view.h>
+
+// Boost
+#include <boost/foreach.hpp>
+#define foreach BOOST_FOREACH
 
 // STL
 #include <limits>
@@ -228,6 +234,31 @@ void GridMap::toOccupancyGrid(nav_msgs::OccupancyGrid& occupancyGrid, const std:
     unsigned int index = grid_map_lib::get1dIndexFrom2dIndex(*iterator, bufferSize_, false);
     occupancyGrid.data[index] = value;
   }
+}
+
+void GridMap::toRosbag(const grid_map_msg::GridMap& message, const std::string& bagName, const std::string& topicName, const double& bagTime)
+{
+  rosbag::Bag bag;
+  bag.open(bagName + ".bag", rosbag::bagmode::Write);
+
+  bag.write(topicName, ros::Time::now(), message);
+
+  bag.close();
+}
+
+void GridMap::fromRosbag(grid_map_msg::GridMap& message, const std::string& bagName, const std::string& topicName)
+{
+  rosbag::Bag bag;
+  bag.open(bagName + ".bag", rosbag::bagmode::Read);
+  rosbag::View view(bag, rosbag::TopicQuery(topicName));
+
+  foreach(rosbag::MessageInstance const m, view)
+  {
+    grid_map_msg::GridMap::ConstPtr s = m.instantiate<grid_map_msg::GridMap>();
+    if (s != NULL) message = s->data;
+  }
+
+  bag.close();
 }
   
 } /* namespace */
