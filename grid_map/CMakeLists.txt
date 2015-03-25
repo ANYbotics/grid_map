@@ -19,6 +19,7 @@ find_package(catkin REQUIRED COMPONENTS
   grid_map_msg
   sensor_msgs
   nav_msgs
+  rosbag
 )
 
 ## System dependencies are found with CMake's conventions
@@ -67,3 +68,14 @@ add_dependencies(
   ${PROJECT_NAME}
   grid_map_msg_generate_messages_cpp
 )
+
+#############
+## Testing ##
+#############
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
+## Add gtest based cpp test target and link libraries
+catkin_add_gtest(${PROJECT_NAME}-test test/test_grid_map.cpp test/GridMapTest.cpp)
+if(TARGET ${PROJECT_NAME}-test)
+  target_link_libraries(${PROJECT_NAME}-test grid_map)
+endif()
