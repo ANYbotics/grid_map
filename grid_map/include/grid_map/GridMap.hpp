@@ -113,7 +113,7 @@ class GridMap : public grid_map_lib::GridMap
    * Put the ROS message of type GridMap into a Rosbag.
    * @param[in] message the GridMap message that is saved in the Rosbag.
    */
-  bool toRosbag(const std::string& bagName, const std::string& topicName);
+  bool toRosbag(const std::string& bagName, const std::string& topicName, double bagTime = 0.0);
 
   /*!
    * Loads the ROS message of type GridMap from a Rosbag.

@@ -236,15 +236,23 @@ void GridMap::toOccupancyGrid(nav_msgs::OccupancyGrid& occupancyGrid, const std:
   }
 }
 
-bool GridMap::toRosbag(const std::string& bagName, const std::string& topicName)
+bool GridMap::toRosbag(const std::string& bagName, const std::string& topicName, double bagTime)
 {
   grid_map_msg::GridMap message;
   toMessage(message);
 
+//  if (!ros::Time::isValid()) ros::Time::init();
+  ros::Time time(bagTime);
+
+  if (time.toSec() == 0.0) {
+    if (!ros::Time::isValid()) ros::Time::init();
+    time = ros::Time::now();
+  }
+
   rosbag::Bag bag;
   bag.open(bagName + ".bag", rosbag::bagmode::Write);
 
-  bag.write(topicName, ros::Time::now(), message);
+  bag.write(topicName, time, message);
 
   bag.close();
   return true;
@@ -259,7 +267,14 @@ bool GridMap::fromRosbag(const std::string& bagName, const std::string& topicNam
   foreach(rosbag::MessageInstance const m, view)
   {
     grid_map_msg::GridMap::ConstPtr s = m.instantiate<grid_map_msg::GridMap>();
-    if (s != NULL) fromMessage(*s);
+    if (s != NULL) {
+      fromMessage(*s);
+    }
+    else {
+      bag.close();
+      ROS_WARN("Unable to load data from Rosbag.");
+      return false;
+    }
   }
 
   bag.close();
