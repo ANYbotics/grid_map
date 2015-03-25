@@ -19,8 +19,8 @@ using namespace grid_map;
 int main(int argc, char** argv)
 {
   ros::init(argc, argv, "grid_map_tutorial_demo");
-  ros::NodeHandle nodeHandle("~");
-  ros::Publisher publisher = nodeHandle.advertise<grid_map_msgs::GridMap>("grid_map", 1, true);
+  ros::NodeHandle nh("~");
+  ros::Publisher publisher = nh.advertise<grid_map_msgs::GridMap>("grid_map", 1, true);
 
   // Create grid map.
   GridMap map({"original", "normal_x", "normal_y", "normal_z"});
@@ -30,19 +30,19 @@ int main(int argc, char** argv)
            map.getLength().y(), map.getSize()(0), map.getSize()(1));
 
   ros::Rate rate(30.0);
-  while (nodeHandle.ok()) {
+  while (nh.ok()) {
 
     // Add height and surface normal (iterating through grid map).
-    for (grid_map::GridMapIterator iterator(map); !iterator.isPassedEnd(); ++iterator) {
+    for (grid_map::GridMapIterator it(map); !it.isPassedEnd(); ++it) {
       Position position;
-      map.getPosition(*iterator, position);
+      map.getPosition(*it, position);
       double time = ros::Time::now().toSec();
-      map.at("original", *iterator) = -0.04 + 0.2 * sin(3.0 * time + 5.0 * position.y()) * position.x();
+      map.at("original", *it) = -0.04 + 0.2 * sin(3.0 * time + 5.0 * position.y()) * position.x();
       Eigen::Vector3d normal(-0.2 * sin(3.0 * time + 5.0 * position.y()), -position.x() * cos(3.0 * time + 5.0 * position.y()), 1.0);
       normal.normalize();
-      map.at("normal_x", *iterator) = normal.x();
-      map.at("normal_y", *iterator) = normal.y();
-      map.at("normal_z", *iterator) = normal.z();
+      map.at("normal_x", *it) = normal.x();
+      map.at("normal_y", *it) = normal.y();
+      map.at("normal_z", *it) = normal.z();
     }
 
     // Add noise and outliers (using Eigen operators).
@@ -70,29 +70,29 @@ int main(int argc, char** argv)
              topLeftCorner.x(), topLeftCorner.y(), startIndex(0), startIndex(1));
 
     Size size = (Length(1.2, 0.8) / map.getResolution()).cast<int>();
-    grid_map::SubmapIterator submapIterator(map, startIndex, size);
-    for (; !submapIterator.isPassedEnd(); ++submapIterator) {
+    grid_map::SubmapIterator it(map, startIndex, size);
+    for (; !it.isPassedEnd(); ++it) {
       Position currentPosition;
-      map.getPosition(*submapIterator, currentPosition);
+      map.getPosition(*it, currentPosition);
       double radius = 0.1;
       double mean = 0.0;
       double sumOfWeights = 0.0;
 
       // Compute weighted mean.
-      for (grid_map::CircleIterator circleIterator(map, currentPosition, radius);
-          !circleIterator.isPassedEnd(); ++circleIterator) {
-        if (!map.isValid(*circleIterator, "raw")) continue;
+      for (grid_map::CircleIterator circleIt(map, currentPosition, radius);
+          !circleIt.isPassedEnd(); ++circleIt) {
+        if (!map.isValid(*circleIt, "raw")) continue;
         Position currentPositionInCircle;
-        map.getPosition(*circleIterator, currentPositionInCircle);
+        map.getPosition(*circleIt, currentPositionInCircle);
 
         // Computed weighted mean based on Euclidian distance.
         double distance = (currentPosition - currentPositionInCircle).norm();
         double weight = pow(radius - distance, 2);
-        mean += weight * map.at("raw", *circleIterator);
+        mean += weight * map.at("raw", *circleIt);
         sumOfWeights += weight;
       }
 
-      map.at("filtered", *submapIterator) = mean / sumOfWeights;
+      map.at("filtered", *it) = mean / sumOfWeights;
     }
 
     // Show absolute difference.
