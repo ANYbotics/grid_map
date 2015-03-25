@@ -26,15 +26,15 @@ TEST(RosbagHandling, saveLoad)
   dataIn << 1.0, 2.0,
             3.0, 4.0;
   string type = "type";
-  string bagName = "bagName";
+  string bagName = "bagName.bag";
   string topicName = "topicName";
   grid_map::GridMap gridMapIn, gridMapOut;
   gridMapIn.add(type, dataIn);
 
   EXPECT_FALSE(gridMapOut.exists(type));
 
-  EXPECT_TRUE(gridMapIn.toRosbag(bagName, topicName));
-  EXPECT_TRUE(gridMapOut.fromRosbag(bagName, topicName));
+  EXPECT_TRUE(gridMapIn.saveToBag(bagName, topicName));
+  EXPECT_TRUE(gridMapOut.loadFromBag(bagName, topicName));
 
   EXPECT_TRUE(gridMapOut.exists(type));
 

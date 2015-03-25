@@ -23,9 +23,6 @@
 #include <sensor_msgs/PointCloud2.h>
 #include <nav_msgs/OccupancyGrid.h>
 
-#include <rosbag/bag.h>
-#include <rosbag/view.h>
-
 namespace grid_map {
 
 /*!
@@ -110,16 +107,20 @@ class GridMap : public grid_map_lib::GridMap
                        float dataMin, float dataMax) const;
 
   /*!
-   * Put the ROS message of type GridMap into a Rosbag.
-   * @param[in] message the GridMap message that is saved in the Rosbag.
+   * Puts a GridMap into a Rosbag.
+   * @param[in] bagName the name and directory of the Rosbag.
+   * @param[in] topicName topic of the GridMap in the Rosbag.
+   * @param[in] bagTime timestamp of the GridMap in the Rosbag. Default value 0.0 is not a valid bag Time and
+   * will be overwritten by the current time.
    */
-  bool toRosbag(const std::string& bagName, const std::string& topicName, double bagTime = 0.0);
+  bool saveToBag(const std::string& pathToBag, const std::string& topicName, ros::Time time = ros::Time(0.0));
 
   /*!
-   * Loads the ROS message of type GridMap from a Rosbag.
-   * @param[out] message the GridMap message that is loaded from the Rosbag.
+   * Loads a GridMap from a Rosbag.
+   * @param[in] bagName the name and directory of the Rosbag.
+   * @param[in] topicName topic of the GridMap in the Rosbag.
    */
-  bool fromRosbag(const std::string& bagName, const std::string& topicName);
+  bool loadFromBag(const std::string& pathToBag, const std::string& topicName);
 
  private:
   /*!

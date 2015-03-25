@@ -16,10 +16,6 @@
 #include <rosbag/bag.h>
 #include <rosbag/view.h>
 
-// Boost
-#include <boost/foreach.hpp>
-#define foreach BOOST_FOREACH
-
 // STL
 #include <limits>
 #include <algorithm>
@@ -236,21 +232,18 @@ void GridMap::toOccupancyGrid(nav_msgs::OccupancyGrid& occupancyGrid, const std:
   }
 }
 
-bool GridMap::toRosbag(const std::string& bagName, const std::string& topicName, double bagTime)
+bool GridMap::saveToBag(const std::string& pathToBag, const std::string& topicName, ros::Time time)
 {
   grid_map_msg::GridMap message;
   toMessage(message);
 
-//  if (!ros::Time::isValid()) ros::Time::init();
-  ros::Time time(bagTime);
-
-  if (time.toSec() == 0.0) {
+  if (time == ros::Time(0.0)) {
     if (!ros::Time::isValid()) ros::Time::init();
     time = ros::Time::now();
   }
 
   rosbag::Bag bag;
-  bag.open(bagName + ".bag", rosbag::bagmode::Write);
+  bag.open(pathToBag, rosbag::bagmode::Write);
 
   bag.write(topicName, time, message);
 
@@ -258,21 +251,21 @@ bool GridMap::toRosbag(const std::string& bagName, const std::string& topicName,
   return true;
 }
 
-bool GridMap::fromRosbag(const std::string& bagName, const std::string& topicName)
+bool GridMap::loadFromBag(const std::string& pathToBag, const std::string& topicName)
 {
   rosbag::Bag bag;
-  bag.open(bagName + ".bag", rosbag::bagmode::Read);
+  bag.open(pathToBag, rosbag::bagmode::Read);
   rosbag::View view(bag, rosbag::TopicQuery(topicName));
 
-  foreach(rosbag::MessageInstance const m, view)
+  for(const auto& message : view)
   {
-    grid_map_msg::GridMap::ConstPtr s = m.instantiate<grid_map_msg::GridMap>();
+    grid_map_msg::GridMap::ConstPtr s = message.instantiate<grid_map_msg::GridMap>();
     if (s != NULL) {
       fromMessage(*s);
     }
     else {
       bag.close();
-      ROS_WARN("Unable to load data from Rosbag.");
+      ROS_WARN("Unable to load data from ROS bag.");
       return false;
     }
   }
