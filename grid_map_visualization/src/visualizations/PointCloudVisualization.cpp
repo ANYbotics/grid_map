@@ -6,7 +6,8 @@
  *   Institute: ETH Zurich, Autonomous Systems Lab
  */
 
-#include "grid_map_visualization/visualizations/PointCloudVisualization.hpp"
+#include <grid_map_visualization/visualizations/PointCloudVisualization.hpp>
+#include <grid_map/GridMapRosConverter.hpp>
 
 #include <sensor_msgs/PointCloud2.h>
 
@@ -39,13 +40,13 @@ bool PointCloudVisualization::initialize()
 
 bool PointCloudVisualization::visualize(const grid_map::GridMap& map)
 {
-  if (publisher_.getNumSubscribers () < 1) return true;
+  if (publisher_.getNumSubscribers() < 1) return true;
   if (!map.exists(layer_)) {
     ROS_WARN_STREAM("PointCloudVisualization::visualize: No grid map layer with name '" << layer_ << "' found.");
     return false;
   }
   sensor_msgs::PointCloud2 pointCloud;
-  map.toPointCloud(pointCloud, layer_);
+  grid_map::GridMapRosConverter::toPointCloud(map, layer_, pointCloud);
   publisher_.publish(pointCloud);
   return true;
 }

@@ -13,7 +13,7 @@ using namespace std;
 
 namespace grid_map {
 
-LineIterator::LineIterator(const grid_map_core::GridMap& gridMap, const Eigen::Array2i& start, const Eigen::Array2i& end)
+LineIterator::LineIterator(const grid_map::GridMap& gridMap, const Eigen::Array2i& start, const Eigen::Array2i& end)
     : start_(start),
       end_(end)
 {
@@ -27,7 +27,7 @@ LineIterator::LineIterator(const grid_map_core::GridMap& gridMap, const Eigen::A
   initializeParameters();
 }
 
-LineIterator::LineIterator(const grid_map_core::GridMap& gridMap, const Eigen::Vector2d& start, const Eigen::Vector2d& end)
+LineIterator::LineIterator(const grid_map::GridMap& gridMap, const Eigen::Vector2d& start, const Eigen::Vector2d& end)
 {
   // TODO Implement this constructor with range checking.
 }

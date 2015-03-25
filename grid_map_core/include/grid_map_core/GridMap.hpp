@@ -17,7 +17,7 @@
 // Eigen
 #include <Eigen/Core>
 
-namespace grid_map_core {
+namespace grid_map {
 
 /*!
  * Grid map managing multiple overlaying maps holding float values.
@@ -42,6 +42,11 @@ class GridMap
   GridMap(const std::vector<std::string>& layers);
 
   /*!
+   * Emtpy constructor.
+   */
+  GridMap();
+
+  /*!
    * Destructor.
    */
   virtual ~GridMap();
@@ -56,17 +61,13 @@ class GridMap
                    const grid_map::Position& position = grid_map::Position::Zero());
 
   /*!
-   * Set the basic layers that need to be valid for a cell to be considered as valid.
-   * Also, the basic layers are set to NAN when clearing the cells with `clear()`.
-   * By default the list of basic layers is empty.
-   * @param basicLayers the list of types that are the basic types of the map.
+   * Add a new empty data layer.
+   * @param layer the name of the layer.
    */
-  void setBasicLayers(const std::vector<std::string>& basicLayers);
-
   void add(const std::string& layer);
 
   /*!
-   * Add new data layer (if the layer already exists, overwrite its data, otherwise add layer and data).
+   * Add a new data layer (if the layer already exists, overwrite its data, otherwise add layer and data).
    * @param layer the name of the layer.
    * @param data the data to be added.
    */
@@ -88,13 +89,30 @@ class GridMap
   const grid_map::Matrix& get(const std::string& layer) const;
 
   /*!
-   * Returns the grid map data for a type as non-const. Use this function
-   * with great care!
+   * Returns the grid map data for a type as non-const. Use this method
+   * with care!
    * @param layer the name of the layer to be returned.
    * @return grid map data.
    * @throw std::out_of_range if no map layer with name `layer` is present.
    */
   grid_map::Matrix& get(const std::string& layer);
+
+  /*!
+   * Returns the grid map data for a layer as matrix.
+   * @param layer the name of the layer to be returned.
+   * @return grid map data as matrix.
+   * @throw std::out_of_range if no map layer with name `layer` is present.
+   */
+  const grid_map::Matrix& operator [](const std::string& layer);
+
+  /*!
+   * Returns the grid map data for a type as non-const. Use this method
+   * with care!
+   * @param layer the name of the layer to be returned.
+   * @return grid map data.
+   * @throw std::out_of_range if no map layer with name `layer` is present.
+   */
+  grid_map::Matrix& operator [](const std::string& layer) const;
 
   /*!
    * Removes a layer from the grid map.
@@ -105,9 +123,23 @@ class GridMap
 
   /*!
    * Gets the names of the layers.
-   * @return layers the names of the layers.
+   * @return the names of the layers.
    */
   const std::vector<std::string>& getLayers() const;
+
+  /*!
+   * Set the basic layers that need to be valid for a cell to be considered as valid.
+   * Also, the basic layers are set to NAN when clearing the cells with `clear()`.
+   * By default the list of basic layers is empty.
+   * @param basicLayers the list of types that are the basic types of the map.
+   */
+  void setBasicLayers(const std::vector<std::string>& basicLayers);
+
+  /*!
+   * Gets the names of the basic layers.
+   * @return the names of the basic layers.
+   */
+  const std::vector<std::string>& getBasicLayers() const;
 
   /*!
    * Get cell data at requested position.
@@ -262,13 +294,13 @@ class GridMap
    * Set the timestamp of the grid map.
    * @param timestamp the timestamp to set (in  nanoseconds).
    */
-  void setTimestamp(const uint64_t& timestamp);
+  void setTimestamp(const uint64_t timestamp);
 
   /*!
    * Get the timestamp of the grid map.
    * @return timestamp in nanoseconds.
    */
-  const uint64_t& getTimestamp() const;
+  uint64_t getTimestamp() const;
 
   /*!
    * Resets the timestamp of the grid map (to zero).
@@ -312,17 +344,19 @@ class GridMap
   const grid_map::Size& getSize() const;
 
   /*!
+   * Set the start index of the circular buffer.
+   * Use this method with caution!
+   * @return buffer start index.
+   */
+  void setStartIndex(const grid_map::Index& startIndex);
+
+  /*!
    * Get the start index of the circular buffer.
    * @return buffer start index.
    */
   const grid_map::Index& getStartIndex() const;
 
- protected:
-
-  /*!
-   * Emtpy constructor.
-   */
-  GridMap();
+ private:
 
   /*!
    * Clear a number of columns of the grid map.

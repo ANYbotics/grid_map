@@ -10,7 +10,7 @@
 #include <grid_map_visualization/GridMapVisualizationHelpers.hpp>
 
 // ROS
-#include "geometry_msgs/Point.h"
+#include <geometry_msgs/Point.h>
 
 namespace grid_map_visualization {
 

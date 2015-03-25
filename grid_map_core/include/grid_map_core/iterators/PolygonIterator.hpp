@@ -32,7 +32,7 @@ public:
    * @param gridMap the grid map to iterate on.
    * @param polygon the polygonal area to iterate on.
    */
-  PolygonIterator(const grid_map_core::GridMap& gridMap, const grid_map_core::Polygon& polygon);
+  PolygonIterator(const grid_map::GridMap& gridMap, const grid_map::Polygon& polygon);
 
   /*!
    * Assignment operator.
@@ -79,10 +79,10 @@ private:
    * @param[out] startIndex the start index of the submap.
    * @param[out] bufferSize the buffer size of the submap.
    */
-  void findSubmapParameters(const grid_map_core::Polygon& polygon, Eigen::Array2i& startIndex, Eigen::Array2i& bufferSize) const;
+  void findSubmapParameters(const grid_map::Polygon& polygon, Eigen::Array2i& startIndex, Eigen::Array2i& bufferSize) const;
 
   //! Polygon to iterate on.
-  grid_map_core::Polygon polygon_;
+  grid_map::Polygon polygon_;
 
   //! Grid submap iterator.
   std::shared_ptr<SubmapIterator> internalIterator_;

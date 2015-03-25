@@ -1,8 +1,13 @@
 # Grid map header
 GridMapInfo info
 
-# Grid map layers names.
+# Grid map layer names.
 string[] layers
+
+# Grid map basic layer names (optional). The basic layers
+# determine which layers from `layers` need to be valid
+# in order for a cell of the grid map to be valid.
+string[] basic_layers
 
 # Grid map data.
 std_msgs/Float32MultiArray[] data

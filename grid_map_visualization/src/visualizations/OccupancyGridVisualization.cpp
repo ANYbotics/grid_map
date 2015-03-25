@@ -7,7 +7,7 @@
  */
 
 #include "grid_map_visualization/visualizations/OccupancyGridVisualization.hpp"
-
+#include <grid_map/GridMapRosConverter.hpp>
 #include <nav_msgs/OccupancyGrid.h>
 
 namespace grid_map_visualization {
@@ -59,7 +59,7 @@ bool OccupancyGridVisualization::visualize(const grid_map::GridMap& map)
     return false;
   }
   nav_msgs::OccupancyGrid occupancyGrid;
-  map.toOccupancyGrid(occupancyGrid, layer_, dataMin_, dataMax_);
+  grid_map::GridMapRosConverter::toOccupancyGrid(map, layer_, dataMin_, dataMax_, occupancyGrid);
   publisher_.publish(occupancyGrid);
   return true;
 }

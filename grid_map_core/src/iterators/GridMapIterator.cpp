@@ -11,7 +11,7 @@
 
 namespace grid_map {
 
-GridMapIterator::GridMapIterator(const grid_map_core::GridMap& gridMap)
+GridMapIterator::GridMapIterator(const grid_map::GridMap& gridMap)
 {
   size_ = gridMap.getSize();
   startIndex_ = gridMap.getStartIndex();

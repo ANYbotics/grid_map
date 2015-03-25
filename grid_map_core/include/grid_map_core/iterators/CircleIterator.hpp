@@ -32,7 +32,7 @@ public:
    * @param center the position of the circle center.
    * @param radius the radius of the circle.
    */
-  CircleIterator(const grid_map_core::GridMap& gridMap, const Eigen::Vector2d& center, const double radius);
+  CircleIterator(const grid_map::GridMap& gridMap, const Eigen::Vector2d& center, const double radius);
 
   /*!
    * Assignment operator.

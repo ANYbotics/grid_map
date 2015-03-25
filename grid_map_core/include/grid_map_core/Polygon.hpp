@@ -8,13 +8,12 @@
 
 #pragma once
 
+#include <grid_map_core/TypeDefs.hpp>
+
 // STD
 #include <vector>
 
-// Eigen
-#include <Eigen/Core>
-
-namespace grid_map_core {
+namespace grid_map {
 
 class Polygon
 {
@@ -29,7 +28,7 @@ class Polygon
    * Constructor with vertices.
    * @param vertices the points of the polygon.
    */
-  Polygon(std::vector<Eigen::Vector2d> vertices);
+  Polygon(std::vector<Position> vertices);
 
   /*!
    * Destructor.
@@ -41,27 +40,33 @@ class Polygon
    * @param point the point to be checked.
    * @return true if inside, false otherwise.
    */
-  bool isInside(const Eigen::Vector2d& point);
+  bool isInside(const Position& point);
 
   /*!
    * Add a vertex to the polygon
    * @param vertex the point to be added.
    */
-  void addVertex(const Eigen::Vector2d& vertex);
+  void addVertex(const Position& vertex);
 
   /*!
    * Get the vertex with index.
    * @param index the index of the requested vertex.
    * @return the requested vertex.
-   * TODO: Make this accessible trough [] operator.
    */
-  const Eigen::Vector2d& getVertex(const size_t index) const;
+  const Position& getVertex(const size_t index) const;
+
+  /*!
+   * Get vertex operator overload.
+   * @param index the index of the requested vertex.
+   * @return the requested vertex.
+   */
+  const Position& operator [](const size_t index) const;
 
   /*!
    * Returns the vertices of the polygon.
    * @return the vertices of the polygon.
    */
-  const std::vector<Eigen::Vector2d>& getVertices() const;
+  const std::vector<Position>& getVertices() const;
 
   /*!
    * Returns the number of vertices.
@@ -69,10 +74,45 @@ class Polygon
    */
   const size_t nVertices() const;
 
+  /*!
+   * Set the timestamp of the polygon.
+   * @param timestamp the timestamp to set (in  nanoseconds).
+   */
+  void setTimestamp(const uint64_t timestamp);
+
+  /*!
+   * Get the timestamp of the polygon.
+   * @return timestamp in nanoseconds.
+   */
+  uint64_t getTimestamp() const;
+
+  /*!
+   * Resets the timestamp of the polygon (to zero).
+   */
+  void resetTimestamp();
+
+  /*!
+   * Set the frame id of the polygon.
+   * @param frameId the frame id to set.
+   */
+  void setFrameId(const std::string& frameId);
+
+  /*!
+   * Get the frameId of the polygon.
+   * @return frameId.
+   */
+  const std::string& getFrameId() const;
+
  protected:
 
+  //! Frame id of the polygon.
+  std::string frameId_;
+
+  //! Timestamp of the polygon (nanoseconds).
+  uint64_t timestamp_;
+
   //! Vertices of the polygon.
-  std::vector<Eigen::Vector2d> vertices_;
+  std::vector<Position> vertices_;
 };
 
 } /* namespace grid_map */

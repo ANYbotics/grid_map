@@ -8,18 +8,18 @@
 
 #include <grid_map_core/Polygon.hpp>
 
-namespace grid_map_core {
+namespace grid_map {
 
 Polygon::Polygon() {}
 
-Polygon::Polygon(std::vector<Eigen::Vector2d> vertices)
+Polygon::Polygon(std::vector<Position> vertices)
 {
   vertices_ = vertices;
 }
 
 Polygon::~Polygon() {}
 
-bool Polygon::isInside(const Eigen::Vector2d& point)
+bool Polygon::isInside(const Position& point)
 {
   int cross = 0;
   for (int i = 0, j = vertices_.size() - 1; i < vertices_.size(); j = i++) {
@@ -33,17 +33,22 @@ bool Polygon::isInside(const Eigen::Vector2d& point)
   return bool(cross % 2);
 }
 
-void Polygon::addVertex(const Eigen::Vector2d& vertex)
+void Polygon::addVertex(const Position& vertex)
 {
   vertices_.push_back(vertex);
 }
 
-const Eigen::Vector2d& Polygon::getVertex(const size_t index) const
+const Position& Polygon::getVertex(const size_t index) const
 {
   return vertices_.at(index);
 }
 
-const std::vector<Eigen::Vector2d>& Polygon::getVertices() const
+const Position& Polygon::operator [](const size_t index) const
+{
+  return getVertex(index);
+}
+
+const std::vector<Position>& Polygon::getVertices() const
 {
   return vertices_;
 }
@@ -51,6 +56,31 @@ const std::vector<Eigen::Vector2d>& Polygon::getVertices() const
 const size_t Polygon::nVertices() const
 {
   return vertices_.size();
+}
+
+const std::string& Polygon::getFrameId() const
+{
+  return frameId_;
+}
+
+void Polygon::setFrameId(const std::string& frameId)
+{
+  frameId_ = frameId;
+}
+
+uint64_t Polygon::getTimestamp() const
+{
+  return timestamp_;
+}
+
+void Polygon::setTimestamp(const uint64_t timestamp)
+{
+  timestamp_ = timestamp;
+}
+
+void Polygon::resetTimestamp()
+{
+  timestamp_ = 0.0;
 }
 
 } /* namespace grid_map */

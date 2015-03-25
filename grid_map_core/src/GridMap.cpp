@@ -19,7 +19,7 @@
 using namespace std;
 using namespace grid_map;
 
-namespace grid_map_core {
+namespace grid_map {
 
 GridMap::GridMap(const std::vector<std::string>& layers)
 {
@@ -69,6 +69,11 @@ void GridMap::setGeometry(const grid_map::Length& length, const double resolutio
 void GridMap::setBasicLayers(const std::vector<std::string>& basicLayers)
 {
   basicLayers_ = basicLayers;
+}
+
+const std::vector<std::string>& GridMap::getBasicLayers() const
+{
+  return basicLayers_;
 }
 
 void GridMap::add(const std::string& layer)
@@ -337,12 +342,12 @@ void GridMap::move(const grid_map::Position& position)
 //    ROS_DEBUG("Grid map has been moved to position (%f, %f).", position_.x(), position_.y());
 }
 
-void GridMap::setTimestamp(const uint64_t& timestamp)
+void GridMap::setTimestamp(const uint64_t timestamp)
 {
   timestamp_ = timestamp;
 }
 
-const uint64_t& GridMap::getTimestamp() const
+uint64_t GridMap::getTimestamp() const
 {
   return timestamp_;
 }
@@ -380,6 +385,10 @@ double GridMap::getResolution() const
 const grid_map::Size& GridMap::getSize() const
 {
   return size_;
+}
+
+void GridMap::setStartIndex(const grid_map::Index& startIndex) {
+  startIndex_ = startIndex;
 }
 
 const Eigen::Array2i& GridMap::getStartIndex() const

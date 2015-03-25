@@ -8,7 +8,6 @@
 
 #include <ros/ros.h>
 #include <grid_map/grid_map.hpp>
-#include <grid_map_msgs/GridMap.h>
 #include <vector>
 #include <string>
 #include <cmath>
@@ -66,7 +65,7 @@ int main(int argc, char** argv)
     grid_map::limitPositionToRange(topLeftCorner, map.getLength(), map.getPosition());
     Index startIndex;
     map.getIndex(topLeftCorner, startIndex);
-    ROS_INFO("Top left corner was limited from (1.0, 0.2) to (%f, %f) and corresponds to index (%i, %i).",
+    ROS_INFO_ONCE("Top left corner was limited from (1.0, 0.2) to (%f, %f) and corresponds to index (%i, %i).",
              topLeftCorner.x(), topLeftCorner.y(), startIndex(0), startIndex(1));
 
     Size size = (Length(1.2, 0.8) / map.getResolution()).cast<int>();
@@ -102,9 +101,9 @@ int main(int argc, char** argv)
     // Publish grid map.
     map.setTimestamp(ros::Time::now().toNSec());
     grid_map_msgs::GridMap message;
-    map.toMessage(message);
+    GridMapRosConverter::toMessage(map, message);
     publisher.publish(message);
-    ROS_INFO("Grid map (timestamp %f) published.", message.info.header.stamp.toSec());
+    ROS_INFO_ONCE("Grid map (timestamp %f) published.", message.info.header.stamp.toSec());
 
     rate.sleep();
   }

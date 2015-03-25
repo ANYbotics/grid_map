@@ -19,6 +19,7 @@ find_package(catkin REQUIRED COMPONENTS
   grid_map_msgs
   sensor_msgs
   nav_msgs
+  std_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -54,9 +55,9 @@ include_directories(
 ## Declare a cpp library
 add_library(
   ${PROJECT_NAME}
-  src/GridMap.cpp
+  src/GridMapRosConverter.cpp
   src/GridMapMsgHelpers.cpp
-  src/Polygon.cpp
+  src/PolygonRosConverter.cpp
 )
 
 target_link_libraries(${PROJECT_NAME}

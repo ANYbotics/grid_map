@@ -7,13 +7,6 @@
  */
 
 #include "grid_map_demos/IteratorsDemo.hpp"
-#include <grid_map_msgs/GridMap.h>
-#include <grid_map_core/iterators/GridMapIterator.hpp>
-#include <grid_map_core/iterators/SubmapIterator.hpp>
-#include <grid_map_core/iterators/CircleIterator.hpp>
-#include <grid_map_core/iterators/PolygonIterator.hpp>
-#include <grid_map_core/iterators/LineIterator.hpp>
-#include <grid_map/Polygon.hpp>
 
 // ROS
 #include <geometry_msgs/PolygonStamped.h>
@@ -151,9 +144,9 @@ void IteratorsDemo::demoPolygonIterator()
   polygon.addVertex(Eigen::Vector2d( 0.164, -0.155));
   polygon.addVertex(Eigen::Vector2d( 0.480,  0.000));
 
-  geometry_msgs::PolygonStamped polygonMsg;
-  polygon.toMessage(polygonMsg);
-  polygonPublisher_.publish(polygonMsg);
+  geometry_msgs::PolygonStamped message;
+  grid_map::PolygonRosConverter::toMessage(polygon, message);
+  polygonPublisher_.publish(message);
 
   for (grid_map::PolygonIterator iterator(map_, polygon);
       !iterator.isPassedEnd(); ++iterator) {
@@ -171,7 +164,7 @@ void IteratorsDemo::publish()
 {
   map_.setTimestamp(ros::Time::now().toNSec());
   grid_map_msgs::GridMap message;
-  map_.toMessage(message);
+  grid_map::GridMapRosConverter::toMessage(map_, message);
   gridMapPublisher_.publish(message);
   ROS_DEBUG("Grid map (timestamp %f) published.", message.info.header.stamp.toSec());
 }

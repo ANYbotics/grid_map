@@ -9,4 +9,5 @@
 #pragma once
 
 #include <grid_map_core/grid_map_core.hpp>
-#include <grid_map/GridMap.hpp>
+#include <grid_map/GridMapRosConverter.hpp>
+#include <grid_map/PolygonRosConverter.hpp>

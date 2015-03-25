@@ -9,7 +9,7 @@
 #pragma once
 
 #include <grid_map_visualization/visualizations/VisualizationBase.hpp>
-#include <grid_map/GridMap.hpp>
+#include <grid_map_core/GridMap.hpp>
 
 // ROS
 #include <ros/ros.h>

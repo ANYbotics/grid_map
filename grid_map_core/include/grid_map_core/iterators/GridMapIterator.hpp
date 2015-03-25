@@ -26,7 +26,7 @@ public:
    * Constructor.
    * @param gridMap the grid map to iterate on.
    */
-  GridMapIterator(const grid_map_core::GridMap &gridMap);
+  GridMapIterator(const grid_map::GridMap &gridMap);
 
   /*!
    * Copy constructor.

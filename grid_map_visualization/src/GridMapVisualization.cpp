@@ -8,6 +8,7 @@
 
 #include "grid_map_visualization/GridMapVisualization.hpp"
 #include <grid_map_core/GridMap.hpp>
+#include <grid_map/GridMapRosConverter.hpp>
 
 using namespace std;
 using namespace ros;
@@ -123,7 +124,8 @@ bool GridMapVisualization::initialize()
 void GridMapVisualization::callback(const grid_map_msgs::GridMap& message)
 {
   ROS_DEBUG("Grid map visualization received a map (timestamp %f) for visualization.", message.info.header.stamp.toSec());
-  grid_map::GridMap map(message);
+  grid_map::GridMap map;
+  grid_map::GridMapRosConverter::fromMessage(message, map);
 
   for (auto& visualization : visualizations_) {
     visualization->visualize(map);
