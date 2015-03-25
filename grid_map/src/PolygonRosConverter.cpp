@@ -46,13 +46,13 @@ void PolygonRosConverter::toMarker(const grid_map::Polygon& polygon,
     unsigned int nVertices = polygon.nVertices() + 1;
     unsigned int nTotalVertices = marker.points.size() + nVertices;
     marker.points.resize(nTotalVertices);
-  //  marker.colors.resize(nTotalVertices, color);
+    marker.colors.resize(nTotalVertices, color);
 
     unsigned int i = startIndex;
     for( ; i < nTotalVertices - 1; i++) {
       marker.points[i].x = polygon[i].x();
       marker.points[i].y = polygon[i].y();
-      marker.points[i].z = plane.getHeight(polygon[i]) + visualizationOffset_;
+      marker.points[i].z = 0.0; // TODO: Consider adding option for offset.
     }
     marker.points[i].x = marker.points[startIndex].x;
     marker.points[i].y = marker.points[startIndex].y;

@@ -50,7 +50,7 @@ bool GridMapRosConverter::fromMessage(const grid_map_msgs::GridMap& message, gri
     gridMap.add(message.layers[i], data);
   }
 
-  gridMap.setBasicLayers(message.layers);
+  gridMap.setBasicLayers(message.basic_layers);
   gridMap.setStartIndex(Index(message.outer_start_index, message.inner_start_index));
   return true;
 }

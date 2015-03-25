@@ -62,6 +62,11 @@ add_executable(
 )
 
 add_executable(
+	tutorial_demo
+	src/simple_demo_node.cpp
+)
+
+add_executable(
 	iterators_demo
 	src/iterators_demo_node.cpp
 	src/IteratorsDemo.cpp
@@ -70,6 +75,11 @@ add_executable(
 ## Specify libraries to link a library or executable target against
 target_link_libraries(
   simple_demo
+  ${catkin_LIBRARIES}
+)
+
+target_link_libraries(
+  tutorial_demo
   ${catkin_LIBRARIES}
 )
 

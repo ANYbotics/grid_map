@@ -6,39 +6,3 @@ grid_map_visualizations:
     type: point_cloud
     params:
      layer: original
-     
-  - name: raw
-    type: point_cloud
-    params:
-     layer: raw
-     
-  - name: filtered
-    type: point_cloud
-    params:
-     layer: filtered
-     
-  - name: map_region
-    type: map_region
-    params:
-     color: 3289650
-     line_width: 0.003
-    
-  - name: original_occupancy
-    type: occupancy_grid
-    params:
-     layer: "original"
-     data_min: 0.1
-     data_max: -0.18
-     
-  - name: error
-    type: occupancy_grid
-    params:
-     layer: error
-     data_min: -0.15
-     data_max: 0.15
-     
-#  - name: surface_normal
-#    type: vectors
-#    params:
-#     layer_prefix: error
-#     position_layer: original

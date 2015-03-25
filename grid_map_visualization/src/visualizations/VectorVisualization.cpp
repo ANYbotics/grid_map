@@ -99,8 +99,7 @@ bool VectorVisualization::visualize(const grid_map::GridMap& map)
 
   for (grid_map::GridMapIterator iterator(map); !iterator.isPassedEnd(); ++iterator)
   {
-    if (!map.isValid(*iterator) || !map.isValid(*iterator, types_)) continue;
-
+    if (!map.isValid(*iterator, positionLayer_) || !map.isValid(*iterator, types_)) continue;
     geometry_msgs::Vector3 vector;
     vector.x = map.at(types_[0], *iterator);
     vector.y = map.at(types_[1], *iterator);
