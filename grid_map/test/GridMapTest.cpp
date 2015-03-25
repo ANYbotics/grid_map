@@ -31,8 +31,6 @@ TEST(RosbagHandling, saveLoad)
   grid_map::GridMap gridMapIn, gridMapOut;
   gridMapIn.add(type, dataIn);
 
-//  ros::Time::init();
-
   EXPECT_FALSE(gridMapOut.exists(type));
 
   EXPECT_TRUE(gridMapIn.toRosbag(bagName, topicName));
@@ -40,7 +38,6 @@ TEST(RosbagHandling, saveLoad)
 
   EXPECT_TRUE(gridMapOut.exists(type));
 
-//  gridMapOut.fromMessage(messageOut);
   dataOut = gridMapOut.get(type);
 
   EXPECT_DOUBLE_EQ(dataIn(0,0), dataOut(0,0));
