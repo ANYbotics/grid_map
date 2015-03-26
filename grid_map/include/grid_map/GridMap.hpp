@@ -113,7 +113,7 @@ class GridMap : public grid_map_lib::GridMap
    * @param[in] bagTime timestamp of the GridMap in the Rosbag. Default value 0.0 is not a valid bag Time and
    * will be overwritten by the current time.
    */
-  bool saveToBag(const std::string& pathToBag, const std::string& topicName, ros::Time time = ros::Time(0.0));
+  bool saveToBag(const std::string& pathToBag, const std::string& topicName, ros::Time time = ros::Time(0));
 
   /*!
    * Loads a GridMap from a Rosbag.

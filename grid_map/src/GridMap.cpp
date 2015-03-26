@@ -237,7 +237,7 @@ bool GridMap::saveToBag(const std::string& pathToBag, const std::string& topicNa
   grid_map_msg::GridMap message;
   toMessage(message);
 
-  if (time == ros::Time(0.0)) {
+  if (!time.isValid()) {
     if (!ros::Time::isValid()) ros::Time::init();
     time = ros::Time::now();
   }
