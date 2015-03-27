@@ -63,7 +63,7 @@ add_executable(
 
 add_executable(
 	tutorial_demo
-	src/simple_demo_node.cpp
+	src/tutorial_demo_node.cpp
 )
 
 add_executable(

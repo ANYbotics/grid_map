@@ -2,20 +2,20 @@ grid_map_topic: /grid_map_tutorial_demo/grid_map
 
 grid_map_visualizations:
 
-  - name: original
+  - name: elevation_points
     type: point_cloud
     params:
-     layer: original
+     layer: elevation
      
-  - name: raw
+  - name: noisy_points
     type: point_cloud
     params:
-     layer: raw
+     layer: elevation_noisy
      
-  - name: filtered
+  - name: filtered_points
     type: point_cloud
     params:
-     layer: filtered
+     layer: elevation_filtered
      
   - name: map_region
     type: map_region
@@ -23,25 +23,25 @@ grid_map_visualizations:
      color: 3289650
      line_width: 0.003
     
-  - name: original_occupancy
+  - name: elevation_grid
     type: occupancy_grid
     params:
-     layer: "original"
+     layer: elevation
      data_min: 0.1
      data_max: -0.18
      
-  - name: error
+  - name: error_grid
     type: occupancy_grid
     params:
      layer: error
      data_min: -0.15
      data_max: 0.15
      
-  - name: surface_normal
+  - name: surface_normals
     type: vectors
     params:
      layer_prefix: normal_
-     position_layer: original
+     position_layer: elevation
      scale: 0.06
      line_width: 0.003
      color: 65280

@@ -119,6 +119,16 @@ grid_map::Matrix& GridMap::get(const std::string& layer)
   }
 }
 
+const grid_map::Matrix& GridMap::operator [](const std::string& layer) const
+{
+  return get(layer);
+}
+
+grid_map::Matrix& GridMap::operator [](const std::string& layer)
+{
+  return get(layer);
+}
+
 bool GridMap::remove(const std::string& layer)
 {
   const auto dataIterator = data_.find(layer);

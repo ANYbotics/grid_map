@@ -103,7 +103,7 @@ class GridMap
    * @return grid map data as matrix.
    * @throw std::out_of_range if no map layer with name `layer` is present.
    */
-  const grid_map::Matrix& operator [](const std::string& layer);
+  const grid_map::Matrix& operator [](const std::string& layer) const;
 
   /*!
    * Returns the grid map data for a type as non-const. Use this method
@@ -112,7 +112,7 @@ class GridMap
    * @return grid map data.
    * @throw std::out_of_range if no map layer with name `layer` is present.
    */
-  grid_map::Matrix& operator [](const std::string& layer) const;
+  grid_map::Matrix& operator [](const std::string& layer);
 
   /*!
    * Removes a layer from the grid map.
