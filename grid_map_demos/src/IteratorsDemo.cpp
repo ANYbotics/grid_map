@@ -23,7 +23,7 @@ IteratorsDemo::IteratorsDemo(ros::NodeHandle& nodeHandle)
     : nodeHandle_(nodeHandle),
       map_(vector<string>({"type"}))
 {
-  ROS_INFO("Grid map example node started.");
+  ROS_INFO("Grid map iterators demo node started.");
   gridMapPublisher_ = nodeHandle_.advertise<grid_map_msgs::GridMap>("grid_map", 1, true);
   polygonPublisher_ = nodeHandle_.advertise<geometry_msgs::PolygonStamped>("polygon", 1, true);
 

@@ -18,17 +18,18 @@ int main(int argc, char** argv)
   // Create grid map.
   GridMap map({"elevation", "normal_x", "normal_y", "normal_z"});
   map.setFrameId("map");
-  map.setGeometry(Length(1.2, 2.0), 0.03);
-  ROS_INFO("Created map with size %f x %f m (%i x %i cells).",
+  map.setGeometry(Length(1.2, 2.0), 0.03, Position(0.0, -0.1));
+  ROS_INFO("Created map with size %f x %f m (%i x %i cells).\n The center of the map is located at (%f, %f) in the %s frame.",
     map.getLength().x(), map.getLength().y(),
-    map.getSize()(0), map.getSize()(1));
+    map.getSize()(0), map.getSize()(1),
+    map.getPosition().x(), map.getPosition().y(), map.getFrameId().c_str());
 
   // Work with grid map in a loop.
   ros::Rate rate(30.0);
   while (nh.ok()) {
 
     // Add elevation and surface normal (iterating through grid map and adding data).
-    for (grid_map::GridMapIterator it(map); !it.isPassedEnd(); ++it) {
+    for (GridMapIterator it(map); !it.isPassedEnd(); ++it) {
       Position position;
       map.getPosition(*it, position);
       double time = ros::Time::now().toSec();
@@ -42,7 +43,7 @@ int main(int argc, char** argv)
 
     // Add noise (using Eigen operators).
     map.add("noise", Matrix::Random(map.getSize()(0), map.getSize()(1)) * 0.015);
-    map.add("elevation_noisy", map["elevation"] + map["noise"]);
+    map.add("elevation_noisy", map.get("elevation") + map["noise"]);
 
     // Adding outliers (accessing cell by position).
     for (unsigned int i = 0; i < 500; ++i) {
@@ -51,24 +52,17 @@ int main(int argc, char** argv)
         map.atPosition("elevation_noisy", randomPosition) = std::numeric_limits<float>::infinity();
     }
 
-    // Iterators.
-
-    //    for (grid_map::LineIterator iterator(map, Index(5, 6), Index(30, 30));
-    //              !iterator.isPassedEnd(); ++iterator) {
-    //      map.at("elevation_noisy", *iterator) = 0.02;
-    //    }
-
     // Filter values for submap (iterators).
     map.add("elevation_filtered", map.get("elevation_noisy"));
     Position topLeftCorner(1.0, 0.4);
-    grid_map::limitPositionToRange(topLeftCorner, map.getLength(), map.getPosition());
+    limitPositionToRange(topLeftCorner, map.getLength(), map.getPosition());
     Index startIndex;
     map.getIndex(topLeftCorner, startIndex);
     ROS_INFO_ONCE("Top left corner was limited from (1.0, 0.2) to (%f, %f) and corresponds to index (%i, %i).",
              topLeftCorner.x(), topLeftCorner.y(), startIndex(0), startIndex(1));
 
     Size size = (Length(1.2, 0.8) / map.getResolution()).cast<int>();
-    grid_map::SubmapIterator it(map, startIndex, size);
+    SubmapIterator it(map, startIndex, size);
     for (; !it.isPassedEnd(); ++it) {
       Position currentPosition;
       map.getPosition(*it, currentPosition);
@@ -77,7 +71,7 @@ int main(int argc, char** argv)
       double sumOfWeights = 0.0;
 
       // Compute weighted mean.
-      for (grid_map::CircleIterator circleIt(map, currentPosition, radius);
+      for (CircleIterator circleIt(map, currentPosition, radius);
           !circleIt.isPassedEnd(); ++circleIt) {
         if (!map.isValid(*circleIt, "elevation_noisy")) continue;
         Position currentPositionInCircle;
@@ -96,8 +90,7 @@ int main(int argc, char** argv)
     // Show absolute difference and compute mean squared error.
     map.add("error", (map.get("elevation_filtered") - map.get("elevation")).cwiseAbs());
     unsigned int nCells = map.getSize().prod();
-    double rootMeanSquaredError = (map["error"].array().pow(2).sum()) / nCells;
-
+    double rootMeanSquaredError = sqrt((map["error"].array().pow(2).sum()) / nCells);
 
     // Publish grid map.
     map.setTimestamp(ros::Time::now().toNSec());

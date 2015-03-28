@@ -1,11 +1,10 @@
 <launch>
-	<env name="ROSCONSOLE_CONFIG_FILE" value="$(find grid_map_demos)/launch/custom_rosconsole.conf"/>
- 	<node pkg="grid_map_demos" type="grid_map_iterators_demo" name="grid_map_iterators_demo" output="screen" />
-    <node pkg="grid_map_visualization" type="grid_map_visualization" name="grid_map_visualization" output="screen">
- 		 <param name="grid_map_topic" value="/grid_map_iterators_demo/grid_map" />
- 		 <param name="occupancy_grid/type" value="type" />
- 		 <param name="occupancy_grid/data_min" value="0.0" />
- 		 <param name="occupancy_grid/data_max" value="1.0" />
-    </node>
-	<node name="rviz" pkg="rviz" type="rviz" args="-d $(find grid_map_demos)/rviz/grid_map_iterators_demo.rviz" />
+  <!-- Launch the grid map iterators demo node -->
+  <node pkg="grid_map_demos" type="iterators_demo" name="grid_map_iterators_demo" output="screen" />
+  <!-- Launch the grid map visualizer -->
+  <node pkg="grid_map_visualization" type="grid_map_visualization" name="grid_map_visualization" output="screen">
+    <rosparam command="load" file="$(find grid_map_demos)/config/iterators_demo.yaml" />
+  </node>
+  <!-- Launch RViz with the demo configuration -->
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find grid_map_demos)/rviz/grid_map_iterators_demo.rviz" />
 </launch>

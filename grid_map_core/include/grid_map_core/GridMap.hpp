@@ -63,8 +63,9 @@ class GridMap
   /*!
    * Add a new empty data layer.
    * @param layer the name of the layer.
+   * @value value the value to initialize the cells with.
    */
-  void add(const std::string& layer);
+  void add(const std::string& layer, const double value = NAN);
 
   /*!
    * Add a new data layer (if the layer already exists, overwrite its data, otherwise add layer and data).
@@ -119,7 +120,7 @@ class GridMap
    * @param layer the name of the layer to be removed.
    * @return true if successful.
    */
-  bool remove(const std::string& layer);
+  bool erase(const std::string& layer);
 
   /*!
    * Gets the names of the layers.

@@ -71,9 +71,10 @@ add_executable(
 	src/visualizations/VisualizationBase.cpp
 	src/visualizations/VisualizationFactory.cpp
 	src/visualizations/PointCloudVisualization.cpp
-	src/visualizations/MapRegionVisualization.cpp
 	src/visualizations/VectorVisualization.cpp
 	src/visualizations/OccupancyGridVisualization.cpp
+	src/visualizations/GridCellsVisualization.cpp
+	src/visualizations/MapRegionVisualization.cpp
 )
 
 ## Add cmake target dependencies of the executable/library

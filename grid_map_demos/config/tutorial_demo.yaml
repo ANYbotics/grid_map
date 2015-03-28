@@ -27,8 +27,8 @@ grid_map_visualizations:
     type: occupancy_grid
     params:
      layer: elevation
-     data_min: 0.1
-     data_max: -0.18
+     data_min: 0.08
+     data_max: -0.16
      
   - name: error_grid
     type: occupancy_grid
@@ -43,5 +43,12 @@ grid_map_visualizations:
      layer_prefix: normal_
      position_layer: elevation
      scale: 0.06
-     line_width: 0.003
-     color: 65280
+     line_width: 0.005
+     color: 15600153 # red
+
+  - name: elevation_cells
+    type: grid_cells
+    params:
+     layer: elevation
+     lower_threshold: -0.08
+     upper_threshold: 0.0

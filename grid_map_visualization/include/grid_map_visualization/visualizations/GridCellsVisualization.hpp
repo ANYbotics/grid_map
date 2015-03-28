@@ -1,7 +1,7 @@
 /*
- * PointCloudOccupancyGrid.hpp
+ * GridCellsVisualization.hpp
  *
- *  Created on: Nov 3, 2014
+ *  Created on: Mar 28, 2015
  *      Author: Péter Fankhauser
  *   Institute: ETH Zurich, Autonomous Systems Lab
  */
@@ -16,7 +16,7 @@
 
 namespace grid_map_visualization {
 
-class OccupancyGridVisualization : public VisualizationBase
+class GridCellsVisualization : public VisualizationBase
 {
  public:
 
@@ -25,12 +25,12 @@ class OccupancyGridVisualization : public VisualizationBase
    * @param nodeHandle the ROS node handle.
    * @param name the name of the visualization.
    */
-  OccupancyGridVisualization(ros::NodeHandle& nodeHandle, const std::string& name);
+  GridCellsVisualization(ros::NodeHandle& nodeHandle, const std::string& name);
 
   /*!
    * Destructor.
    */
-  virtual ~OccupancyGridVisualization();
+  virtual ~GridCellsVisualization();
 
   /*!
    * Read parameters from ROS.
@@ -56,8 +56,8 @@ class OccupancyGridVisualization : public VisualizationBase
   //! Type that is transformed to the occupancy grid.
   std::string layer_;
 
-  //! Minimum and maximum value of the grid map data (used to normalize the cell data in [min, max]).
-  float dataMin_, dataMax_;
+  //! Values that are between lower and upper threshold are shown.
+  float lowerThreshold_, upperThreshold_;
 };
 
 } /* namespace */

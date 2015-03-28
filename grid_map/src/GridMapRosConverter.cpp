@@ -13,6 +13,7 @@
 
 // ROS
 #include <sensor_msgs/point_cloud2_iterator.h>
+#include <geometry_msgs/Point.h>
 
 // STL
 #include <limits>
@@ -93,12 +94,12 @@ void GridMapRosConverter::toPointCloud(const grid_map::GridMap& gridMap,
                                        const std::string& pointLayer,
                                        sensor_msgs::PointCloud2& pointCloud)
 {
-  toPointCloud(gridMap, pointLayer, gridMap.getLayers(), pointCloud);
+  toPointCloud(gridMap, gridMap.getLayers(), pointLayer, pointCloud);
 }
 
 void GridMapRosConverter::toPointCloud(const grid_map::GridMap& gridMap,
+                                       const std::vector<std::string>& layers,
                                        const std::string& pointLayer,
-                                       const std::vector<std::string>& layersToAdd,
                                        sensor_msgs::PointCloud2& pointCloud)
 {
 // Header.
@@ -109,7 +110,7 @@ void GridMapRosConverter::toPointCloud(const grid_map::GridMap& gridMap,
 // Fields.
   std::vector <std::string> fieldNames;
 
-  for (const auto& layer : layersToAdd) {
+  for (const auto& layer : layers) {
     if (layer == pointLayer) {
       fieldNames.push_back("x");
       fieldNames.push_back("y");
@@ -216,6 +217,28 @@ void GridMapRosConverter::toOccupancyGrid(const grid_map::GridMap& gridMap,
     // http://docs.ros.org/api/nav_msgs/html/msg/OccupancyGrid.html.
     unsigned int index = get1dIndexFrom2dIndex(*iterator, gridMap.getSize(), false);
     occupancyGrid.data[index] = value;
+  }
+}
+
+void GridMapRosConverter::toGridCells(const grid_map::GridMap& gridMap, const std::string& layer, float lowerThreshold,
+                 float upperThreshold, nav_msgs::GridCells& gridCells)
+{
+  gridCells.header.frame_id = gridMap.getFrameId();
+  gridCells.header.stamp.fromNSec(gridMap.getTimestamp());
+  gridCells.cell_width = gridMap.getResolution();
+  gridCells.cell_height = gridMap.getResolution();
+
+  for (GridMapIterator iterator(gridMap); !iterator.isPassedEnd(); ++iterator) {
+    if (!gridMap.isValid(*iterator, layer)) continue;
+    if (gridMap.at(layer, *iterator) >= lowerThreshold
+        && gridMap.at(layer, *iterator) <= upperThreshold) {
+      Position position;
+      gridMap.getPosition(*iterator, position);
+      geometry_msgs::Point point;
+      point.x = position.x();
+      point.y = position.y();
+      gridCells.cells.push_back(point);
+    }
   }
 }
   

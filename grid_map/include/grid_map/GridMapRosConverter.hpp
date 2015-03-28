@@ -23,6 +23,7 @@
 #include <ros/ros.h>
 #include <sensor_msgs/PointCloud2.h>
 #include <nav_msgs/OccupancyGrid.h>
+#include <nav_msgs/GridCells.h>
 
 namespace grid_map {
 
@@ -82,13 +83,12 @@ class GridMapRosConverter
    * as the points of the point cloud with `pointLayer` and all other types to be added as
    * additional layers with `layersToAdd`.
    * @param[in] gridMap the grid map object.
+   * @param[in] layers the layers that should be added as fields to the point cloud. Must include the pointLayer.
    * @param[in] pointLayer the layer that is transformed to points.
-   * @param[in] layersToAdd the layers that should be added as fields to the point cloud. Must include the pointLayer.
    * @param[out] pointCloud the message to be populated.
    */
-  static void toPointCloud(const grid_map::GridMap& gridMap, const std::string& pointLayer,
-                           const std::vector<std::string>& layersToAdd,
-                           sensor_msgs::PointCloud2& pointCloud);
+  static void toPointCloud(const grid_map::GridMap& gridMap, const std::vector<std::string>& layers,
+                           const std::string& pointLayer, sensor_msgs::PointCloud2& pointCloud);
 
   /*!
    * Converts a grid map object to a ROS OccupancyGrid message. Set the layer to be transformed
@@ -101,6 +101,10 @@ class GridMapRosConverter
    */
   static void toOccupancyGrid(const grid_map::GridMap& gridMap, const std::string& layer,
                               float dataMin, float dataMax, nav_msgs::OccupancyGrid& occupancyGrid);
+
+  static void toGridCells(const grid_map::GridMap& gridMap, const std::string& layer,
+                          float lowerThreshold, float upperThreshold,
+                          nav_msgs::GridCells& gridCells);
 };
 
 } /* namespace */

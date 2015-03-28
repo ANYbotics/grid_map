@@ -64,6 +64,14 @@ bool VisualizationBase::getParam(const std::string& name, double& value)
   return true;
 }
 
+bool VisualizationBase::getParam(const std::string& name, float& value)
+{
+  double valueDouble;
+  bool isSuccess = getParam(name, valueDouble);
+  if (isSuccess) value = static_cast<float>(valueDouble);
+  return isSuccess;
+}
+
 bool VisualizationBase::getParam(const std::string&name, int& value)
 {
   StringMap::iterator it = parameters_.find(name);

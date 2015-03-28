@@ -76,9 +76,9 @@ const std::vector<std::string>& GridMap::getBasicLayers() const
   return basicLayers_;
 }
 
-void GridMap::add(const std::string& layer)
+void GridMap::add(const std::string& layer, const double value)
 {
-  add(layer, Matrix::Constant(size_(0), size_(1), NAN));
+  add(layer, Matrix::Constant(size_(0), size_(1), value));
 }
 
 void GridMap::add(const std::string& layer, const Matrix& data)
@@ -129,7 +129,7 @@ grid_map::Matrix& GridMap::operator [](const std::string& layer)
   return get(layer);
 }
 
-bool GridMap::remove(const std::string& layer)
+bool GridMap::erase(const std::string& layer)
 {
   const auto dataIterator = data_.find(layer);
   if (dataIterator == data_.end()) return false;

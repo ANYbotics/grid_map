@@ -8,5 +8,5 @@ grid_map_visualizations:
     type: occupancy_grid
     params:
      layer: elevation
-     data_min: 0.1
-     data_max: -0.18
+     data_min: 0.08
+     data_max: -0.16
