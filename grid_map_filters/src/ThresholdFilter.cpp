@@ -23,7 +23,7 @@
 // ROS
 #include <ros/ros.h>
 
-namespace filters {
+namespace grid_map_filters {
 
 template<typename T>
 ThresholdFilter<T>::ThresholdFilter()
@@ -117,4 +117,4 @@ bool ThresholdFilter<T>::update(const T& mapIn, T& mapOut)
 
 } /* namespace */
 
-PLUGINLIB_REGISTER_CLASS(ThresholdFilter, filters::ThresholdFilter<grid_map::GridMap>, filters::FilterBase<grid_map::GridMap>)
+PLUGINLIB_REGISTER_CLASS(ThresholdFilter, grid_map_filters::ThresholdFilter<grid_map::GridMap>, grid_map_filters::FilterBase<grid_map::GridMap>)

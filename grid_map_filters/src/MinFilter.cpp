@@ -19,7 +19,7 @@
 #include <Eigen/Core>
 #include <Eigen/Dense>
 
-namespace filters {
+namespace grid_map_filters {
 
 template<typename T>
 MinFilter<T>::MinFilter()
@@ -82,4 +82,4 @@ bool MinFilter<T>::update(const T& mapIn, T& mapOut)
 
 } /* namespace */
 
-PLUGINLIB_REGISTER_CLASS(MinFilter, filters::MinFilter<grid_map::GridMap>, filters::FilterBase<grid_map::GridMap>)
+PLUGINLIB_REGISTER_CLASS(MinFilter, grid_map_filters::MinFilter<grid_map::GridMap>, grid_map_filters::FilterBase<grid_map::GridMap>)

@@ -14,7 +14,7 @@
 #include <vector>
 #include <string>
 
-namespace filters {
+namespace grid_map_filters {
 
 /*!
  * Min Filter class that takes the minimum out of different layers of a grid map.

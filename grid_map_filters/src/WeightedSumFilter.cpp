@@ -10,74 +10,69 @@
 #include <pluginlib/class_list_macros.h>
 
 // Grid Map
-#include <grid_map/GridMap.hpp>
+#include <grid_map_core/GridMap.hpp>
 
-// Grid Map lib
-#include <grid_map_lib/GridMap.hpp>
+using namespace filters;
 
-// Eigen
-#include <Eigen/Core>
-#include <Eigen/Dense>
-
-namespace filters {
+namespace grid_map_filters {
 
 template<typename T>
 WeightedSumFilter<T>::WeightedSumFilter()
-      : typeOut_("traversability"),
-        normalize_(1)
+      : layerOut_("traversability"),
+        normalize_(true)
 {
-
 }
 
 template<typename T>
 WeightedSumFilter<T>::~WeightedSumFilter()
 {
-
 }
 
 template<typename T>
 bool WeightedSumFilter<T>::configure()
 {
   // Load Parameters
-  if (!FilterBase<T>::getParam(std::string("type_out"), typeOut_)) {
-    ROS_ERROR("WeightedSumFilter did not find param type_out");
+  if (!FilterBase<T>::getParam(std::string("layer_out"), layerOut_)) {
+    ROS_ERROR("WeightedSumFilter did not find parameter 'layer_out'.");
     return false;
   }
 
-  if (!FilterBase<T>::getParam(std::string("filter_types"), additionTypes_)) {
-    ROS_ERROR("WeightedSumFilter did not find param filter_types");
+  if (!FilterBase<T>::getParam(std::string("layers"), layers_)) {
+    ROS_ERROR("WeightedSumFilter did not find parameter 'layers'");
     return false;
   }
 
-  if (!FilterBase<T>::getParam(std::string("filter_weights"), additionWeights_)) {
-    ROS_ERROR("WeightedSumFilter did not find param filterWeights");
+  if (!FilterBase<T>::getParam(std::string("weights"), weights_)) {
+    ROS_ERROR("WeightedSumFilter did not find parameter 'weights'.");
     return false;
   }
 
-  if (additionTypes_.size() != additionWeights_.size()) {
+  if (layers_.size() != weights_.size()) {
     ROS_ERROR("Number of weights must correspond number of layers!");
     return false;
   }
 
-  if (!FilterBase<T>::getParam(std::string("normalize"), normalize_)) {
-    ROS_ERROR("WeightedSumFilter did not find param normalize");
+  int normalizeParameter;
+  if (!FilterBase<T>::getParam(std::string("normalize"), normalizeParameter)) {
+    ROS_ERROR("WeightedSumFilter did not find parameter 'normalize'");
     return false;
   }
+  normalize_ = normalizeParameter==1 ? true : false;
 
   if (normalize_) {
-    // Normalize weights
+    // Normalize weights.
     double sumWeights = 0.0;
 
-    for (std::vector<double>::iterator it=additionWeights_.begin(); it!=additionWeights_.end(); ++it) {
+    for (std::vector<double>::iterator it=weights_.begin(); it!=weights_.end(); ++it) {
       sumWeights += *it;
     }
 
-    for (std::vector<double>::iterator it=additionWeights_.begin(); it!=additionWeights_.end(); ++it) {
+    for (std::vector<double>::iterator it=weights_.begin(); it!=weights_.end(); ++it) {
       *it /= sumWeights;
     }
   }
   else {
-    ROS_WARN("No normalization of the weights");
+    ROS_WARN("No normalization of the weights.");
   }
 
   return true;
@@ -87,51 +82,50 @@ template<typename T>
 bool WeightedSumFilter<T>::update(const T& mapIn, T& mapOut)
 {
   mapOut = mapIn;
-  mapOut.add(typeOut_, mapIn.get("elevation"));
+  mapOut.add(layerOut_);
   bool hasSum = false;
 
-  Eigen::MatrixXf sum, newSummand;
+  grid_map::Matrix sum, newSummand;
 
-  for (int i=0; i<additionTypes_.size(); i++) {
+  int i = 0;
+  for (const auto& layer : layers_) {
     // Check if layer exists.
-    if (!mapOut.exists(additionTypes_.at(i))) {
-      ROS_ERROR("Check your addition types! Type %s does not exist",additionTypes_.at(i).c_str());
+    if (!mapOut.exists(layer)) {
+      ROS_ERROR("Check your addition layers! Layer '%s' does not exist.", layer.c_str());
       return false;
     }
 
     if (!hasSum) {
-      sum = additionWeights_.at(i)*mapOut.get(additionTypes_.at(i));
+      sum = weights_.at(i) * mapOut.get(layer);
       hasSum = true;
     }
     else {
-      newSummand = additionWeights_.at(i)*mapOut.get(additionTypes_.at(i));
-      if (typeOut_ != "traversability") {
+      newSummand = weights_.at(i) * mapOut.get(layer);
+      if (layerOut_ != "traversability") {
         sum += newSummand;
-      }
-      else {
+      } else {
         // Mark the addition of a non-traversable cell as non-traversable (set to zero)
         // Iterate through the rows
-        for (int j=0; j<sum.rows(); j++) {
+        for (int j = 0; j < sum.rows(); j++) {
           // Iterate through the cols
-          for (int k=0; k<sum.cols(); k++) {
+          for (int k = 0; k < sum.cols(); k++) {
             // Check if there are non-traversable cells
-            if (sum(j,k) == 0.0 || newSummand(j,k) == 0.0) {
-              sum(j,k) = 0.0;
-            }
-            else {
-              sum(j,k) += newSummand(j,k);
+            if (sum(j, k) == 0.0 || newSummand(j, k) == 0.0) {
+              sum(j, k) = 0.0;
+            } else {
+              sum(j, k) += newSummand(j, k);
             }
           }
         }
       }
     }
-
+    ++i;
   }
-  mapOut.add(typeOut_, sum);
+  mapOut.add(layerOut_, sum);
 
   return true;
 }
 
 } /* namespace */
 
-PLUGINLIB_REGISTER_CLASS(WeightedSumFilter, filters::WeightedSumFilter<grid_map::GridMap>, filters::FilterBase<grid_map::GridMap>)
+PLUGINLIB_REGISTER_CLASS(WeightedSumFilter, grid_map_filters::WeightedSumFilter<grid_map::GridMap>, filters::FilterBase<grid_map::GridMap>)

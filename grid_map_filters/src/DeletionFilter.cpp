@@ -15,7 +15,7 @@
 // Grid Map lib
 #include <grid_map_lib/GridMap.hpp>
 
-namespace filters {
+namespace grid_map_filters {
 
 template<typename T>
 DeletionFilter<T>::DeletionFilter()
@@ -64,4 +64,4 @@ bool DeletionFilter<T>::update(const T& mapIn, T& mapOut)
 
 } /* namespace */
 
-PLUGINLIB_REGISTER_CLASS(DeletionFilter, filters::DeletionFilter<grid_map::GridMap>, filters::FilterBase<grid_map::GridMap>)
+PLUGINLIB_REGISTER_CLASS(DeletionFilter, grid_map_filters::DeletionFilter<grid_map::GridMap>, grid_map_filters::FilterBase<grid_map::GridMap>)

@@ -14,6 +14,8 @@
 // ROS
 #include <sensor_msgs/point_cloud2_iterator.h>
 #include <geometry_msgs/Point.h>
+#include <rosbag/bag.h>
+#include <rosbag/view.h>
 
 // STL
 #include <limits>
@@ -246,8 +248,9 @@ void GridMapRosConverter::toGridCells(const grid_map::GridMap& gridMap, const st
 bool GridMapRosConverter::saveToBag(const grid_map::GridMap& gridMap, const std::string& pathToBag,
                                     const std::string& topic)
 {
-  grid_map_msg::GridMap message;
-  toMessage(message);
+  grid_map_msgs::GridMap message;
+  toMessage(gridMap, message);
+  ros::Time time(gridMap.getTimestamp());
 
   if (!time.isValid()) {
     if (!ros::Time::isValid()) ros::Time::init();
@@ -256,9 +259,7 @@ bool GridMapRosConverter::saveToBag(const grid_map::GridMap& gridMap, const std:
 
   rosbag::Bag bag;
   bag.open(pathToBag, rosbag::bagmode::Write);
-
-  bag.write(topicName, time, message);
-
+  bag.write(topic, time, message);
   bag.close();
   return true;
 }
@@ -268,21 +269,18 @@ bool GridMapRosConverter::loadFromBag(const std::string& pathToBag, const std::s
 {
   rosbag::Bag bag;
   bag.open(pathToBag, rosbag::bagmode::Read);
-  rosbag::View view(bag, rosbag::TopicQuery(topicName));
+  rosbag::View view(bag, rosbag::TopicQuery(topic));
 
-  for(const auto& message : view)
-  {
-    grid_map_msg::GridMap::ConstPtr s = message.instantiate<grid_map_msg::GridMap>();
-    if (s != NULL) {
-      fromMessage(*s);
-    }
-    else {
+  for (const auto& messageInstance : view) {
+    grid_map_msgs::GridMap::ConstPtr message = messageInstance.instantiate<grid_map_msgs::GridMap>();
+    if (message != NULL) {
+      fromMessage(*message, gridMap);
+    } else {
       bag.close();
       ROS_WARN("Unable to load data from ROS bag.");
       return false;
     }
   }
-
   bag.close();
   return true;
 }

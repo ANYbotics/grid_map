@@ -14,7 +14,7 @@
 #include <vector>
 #include <string>
 
-namespace filters {
+namespace grid_map_filters {
 
 /*!
  * Threshold Filter class that sets values below a lower threshold to 0 and
