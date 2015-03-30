@@ -14,13 +14,13 @@
 #include <vector>
 #include <string>
 
-namespace filters {
+namespace grid_map_filters {
 
 /*!
  * Weighted Sum Filter class to compute the weighted sum of different layers of a grid map.
  */
 template<typename T>
-class WeightedSumFilter : public FilterBase<T>
+class WeightedSumFilter : public filters::FilterBase<T>
 {
 
  public:
@@ -48,17 +48,17 @@ class WeightedSumFilter : public FilterBase<T>
 
  private:
 
-  //! List of types that are added together
-  std::vector<std::string> additionTypes_;
+  //! List of layers that are added together.
+  std::vector<std::string> layers_;
 
   //! List of weights of the types that are added together
-  std::vector<double> additionWeights_;
+  std::vector<double> weights_;
 
-  //! map type for output of the summation.
-  std::string typeOut_;
+  //! Map layer for output of the summation.
+  std::string layerOut_;
 
-  //! Traversability map type.
-  int normalize_;
+  //! If true normalize weights.
+  bool normalize_;
 };
 
 } /* namespace */

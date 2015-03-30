@@ -14,13 +14,13 @@
 #include <vector>
 #include <string>
 
-namespace filters {
+namespace grid_map_filters {
 
 /*!
  * Deletion Filter class that deletes layers of a grid map.
  */
 template<typename T>
-class DeletionFilter : public FilterBase<T>
+class DeletionFilter : public filters::FilterBase<T>
 {
 
  public:
@@ -49,7 +49,7 @@ class DeletionFilter : public FilterBase<T>
  private:
 
   //! List of layers that should be deleted
-  std::vector<std::string> delTypes_;
+  std::vector<std::string> layers_;
 
 };
 

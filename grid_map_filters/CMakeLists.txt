@@ -15,7 +15,7 @@ set(CMAKE_BUILD_TYPE RelWithDebInfo)
 find_package(catkin REQUIRED COMPONENTS
   cmake_modules
   grid_map
-  grid_map_lib
+  grid_map_core
   grid_map_msg
   filters
 )

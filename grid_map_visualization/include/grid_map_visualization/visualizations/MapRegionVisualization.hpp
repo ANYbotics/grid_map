@@ -8,7 +8,8 @@
 
 #pragma once
 
-#include <grid_map/GridMap.hpp>
+#include <grid_map_visualization/visualizations/VisualizationBase.hpp>
+#include <grid_map_core/GridMap.hpp>
 
 // ROS
 #include <ros/ros.h>
@@ -20,15 +21,16 @@ namespace grid_map_visualization {
 /*!
  * Visualization of the region of the grid map as border line.
  */
-class MapRegionVisualization
+class MapRegionVisualization : public VisualizationBase
 {
  public:
 
   /*!
    * Constructor.
    * @param nodeHandle the ROS node handle.
+   * @param name the name of the visualization.
    */
-  MapRegionVisualization(ros::NodeHandle& nodeHandle);
+  MapRegionVisualization(ros::NodeHandle& nodeHandle, const std::string& name);
 
   /*!
    * Destructor.
@@ -37,9 +39,10 @@ class MapRegionVisualization
 
   /*!
    * Read parameters from ROS.
+   * @param config the parameters as XML.
    * @return true if successful.
    */
-  bool readParameters();
+  bool readParameters(XmlRpc::XmlRpcValue& config);
 
   /*!
    * Initialization.
@@ -54,12 +57,6 @@ class MapRegionVisualization
   bool visualize(const grid_map::GridMap& map);
 
  private:
-
-  //! ROS nodehandle.
-  ros::NodeHandle& nodeHandle_;
-
-  //! ROS publisher of the marker for the map region.
-  ros::Publisher markerPublisher_;
 
   //! Marker to be published.
   visualization_msgs::Marker marker_;

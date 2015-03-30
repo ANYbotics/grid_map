@@ -12,7 +12,7 @@
 #include <grid_map_visualization/GridMapVisualizationHelpers.hpp>
 
 // Iterator
-#include <grid_map_lib/iterators/GridMapIterator.hpp>
+#include <grid_map_core/iterators/GridMapIterator.hpp>
 
 // ROS
 #include <geometry_msgs/Point.h>
@@ -20,34 +20,47 @@
 
 namespace grid_map_visualization {
 
-VectorVisualization::VectorVisualization(ros::NodeHandle& nodeHandle)
-    : nodeHandle_(nodeHandle)
+VectorVisualization::VectorVisualization(ros::NodeHandle& nodeHandle, const std::string& name)
+    : VisualizationBase(nodeHandle, name)
 {
-  markerPublisher_ = nodeHandle_.advertise<visualization_msgs::Marker>("vector", 1, true);
 }
 
 VectorVisualization::~VectorVisualization()
 {
-
 }
 
-bool VectorVisualization::readParameters()
+bool VectorVisualization::readParameters(XmlRpc::XmlRpcValue& config)
 {
+  VisualizationBase::readParameters(config);
+
   std::string typePrefix;
-  nodeHandle_.param("vector/type_prefix", typePrefix, std::string(""));
-  if (typePrefix.empty()) return true;
+  if (!getParam("layer_prefix", typePrefix)) {
+    ROS_ERROR("VectorVisualization with name '%s' did not find a 'layer_prefix' parameter.", name_.c_str());
+    return false;
+  }
+  types_.push_back(typePrefix + "x");
+  types_.push_back(typePrefix + "y");
+  types_.push_back(typePrefix + "z");
 
-  types_.push_back(typePrefix + "_x");
-  types_.push_back(typePrefix + "_y");
-  types_.push_back(typePrefix + "_z");
+  if (!getParam("position_layer", positionLayer_)) {
+    ROS_ERROR("VectorVisualization with name '%s' did not find a 'position_layer' parameter.", name_.c_str());
+    return false;
+  }
 
-  nodeHandle_.param("vector/position_type", positionType_, std::string(""));
+  scale_ = 1.0;
+  if (!getParam("scale", scale_)) {
+    ROS_INFO("VectorVisualization with name '%s' did not find a 'scale' parameter. Using default.", name_.c_str());
+  }
 
-  nodeHandle_.param("vector/scale", scale_, 0.02);
-  nodeHandle_.param("vector/line_width", lineWidth_, 0.001);
+  lineWidth_ = 0.003;
+  if (!getParam("line_width", lineWidth_)) {
+    ROS_INFO("VectorVisualization with name '%s' did not find a 'line_width' parameter. Using default.", name_.c_str());
+  }
 
-  int colorValue;
-  nodeHandle_.param("vector/color", colorValue, 65280); // green
+  int colorValue = 65280; // green
+  if (!getParam("color", colorValue)) {
+    ROS_INFO("VectorVisualization with name '%s' did not find a 'color' parameter. Using default.", name_.c_str());
+  }
   setColorFromColorValue(color_, colorValue, true);
 
   return true;
@@ -60,12 +73,21 @@ bool VectorVisualization::initialize()
   marker_.action = visualization_msgs::Marker::ADD;
   marker_.type = visualization_msgs::Marker::LINE_LIST;
   marker_.scale.x = lineWidth_;
+  publisher_ = nodeHandle_.advertise<visualization_msgs::Marker>(name_, 1, true);
   return true;
 }
 
 bool VectorVisualization::visualize(const grid_map::GridMap& map)
 {
-  if (markerPublisher_.getNumSubscribers () < 1) return true;
+  if (publisher_.getNumSubscribers () < 1) return true;
+
+  for (const auto& type : types_) {
+    if (!map.exists(type)) {
+      ROS_WARN_STREAM(
+          "VectorVisualization::visualize: No grid map layer with name '" << type << "' found.");
+      return false;
+    }
+  }
 
   // Set marker info.
   marker_.header.frame_id = map.getFrameId();
@@ -75,17 +97,16 @@ bool VectorVisualization::visualize(const grid_map::GridMap& map)
   marker_.points.clear();
   marker_.colors.clear();
 
-  for (grid_map_lib::GridMapIterator iterator(map); !iterator.isPassedEnd(); ++iterator)
+  for (grid_map::GridMapIterator iterator(map); !iterator.isPassedEnd(); ++iterator)
   {
-    if (!map.isValid(*iterator) || !map.isValid(*iterator, types_)) continue;
-
+    if (!map.isValid(*iterator, positionLayer_) || !map.isValid(*iterator, types_)) continue;
     geometry_msgs::Vector3 vector;
     vector.x = map.at(types_[0], *iterator);
     vector.y = map.at(types_[1], *iterator);
     vector.z = map.at(types_[2], *iterator);
 
     Eigen::Vector3d position;
-    map.getPosition3d(positionType_, *iterator, position);
+    map.getPosition3(positionLayer_, *iterator, position);
     geometry_msgs::Point startPoint;
     startPoint.x = position.x();
     startPoint.y = position.y();
@@ -102,7 +123,7 @@ bool VectorVisualization::visualize(const grid_map::GridMap& map)
     marker_.colors.push_back(color_);
   }
 
-  markerPublisher_.publish(marker_);
+  publisher_.publish(marker_);
   return true;
 }
 
