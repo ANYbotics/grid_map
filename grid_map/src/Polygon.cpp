@@ -77,4 +77,45 @@ void Polygon::toMarker(visualization_msgs::Marker& marker) const
 //    marker.points[i].z = marker.points[startIndex].z;
 }
 
+Polygon Polygon::convexHull(Polygon& polygon1, Polygon& polygon2)
+{
+  std::vector<Eigen::Vector2d> vertices1 = polygon1.getVertices();
+  std::vector<Eigen::Vector2d> vertices2 = polygon2.getVertices();
+  std::vector<Eigen::Vector2d> vertices(vertices1, vertices2);
+  ROS_DEBUG_STREAM(vertices.size());
+
+  // Sort points lexicographically
+  std::sort(vertices.begin(), vertices.end(), sortVertices);
+
+  int k = 0;
+  // Build lower hull
+  for (int i = 0; i < vertices.size(); ++i) {
+    while (k >= 2 && computeCrossProduct2D() cross(H[k-2], H[k-1], P[i]) <= 0) k--;
+    H[k++] = P[i];
+  }
+
+  // Build upper hull
+  for (int i = n-2, t = k+1; i >= 0; i--) {
+    while (k >= t && cross(H[k-2], H[k-1], P[i]) <= 0) k--;
+    H[k++] = P[i];
+  }
+  return polygon1;
+}
+
+bool Polygon::sortVertices(const Eigen::Vector2d& vector1, const Eigen::Vector2d& vector2)
+{
+  bool isSmaller;
+  if (vector1.x() < vector2.x()) isSmaller = true;
+  else if (vector1.x() == vector2.x()) {
+    if (vector1.y() < vector2.y()) isSmaller = true;
+  }
+  else isSmaller = false;
+  return isSmaller;
+}
+
+double Polygon::computeCrossProduct2D(const Eigen::Vector2d& vector1, const Eigen::Vector2d& vector2)
+{
+  return (vector1.x()*vector2.y()-vector1.y()*vector2.x());
+}
+
 } /* namespace grid_map */
