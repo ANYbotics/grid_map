@@ -1,0 +1,24 @@
+<class_libraries>
+  <library path="lib/libgrid_map_filters">
+    <class name="gridMapFilters/WeightedSumFilter" type="filters::WeightedSumFilter<grid_map::GridMap>" base_class_type="filters::FilterBase<grid_map::GridMap>" >
+      <description>
+        This is a weighted sum filter for a grid map.
+      </description>
+    </class>
+    <class name="gridMapFilters/MinFilter" type="filters::MinFilter<grid_map::GridMap>" base_class_type="filters::FilterBase<grid_map::GridMap>" >
+      <description>
+        This is a min filter for a grid map.
+      </description>
+    </class>
+    <class name="gridMapFilters/ThresholdFilter" type="filters::ThresholdFilter<grid_map::GridMap>" base_class_type="filters::FilterBase<grid_map::GridMap>" >
+      <description>
+        This is a threshold filter for a grid map.
+      </description>
+    </class>
+    <class name="gridMapFilters/DeletionFilter" type="filters::DeletionFilter<grid_map::GridMap>" base_class_type="filters::FilterBase<grid_map::GridMap>" >
+      <description>
+        This is a deletion filter for a grid map.
+      </description>
+    </class>
+  </library>
+</class_libraries>

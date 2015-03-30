@@ -242,4 +242,49 @@ void GridMapRosConverter::toGridCells(const grid_map::GridMap& gridMap, const st
   }
 }
   
+
+bool GridMapRosConverter::saveToBag(const grid_map::GridMap& gridMap, const std::string& pathToBag,
+                                    const std::string& topic)
+{
+  grid_map_msg::GridMap message;
+  toMessage(message);
+
+  if (!time.isValid()) {
+    if (!ros::Time::isValid()) ros::Time::init();
+    time = ros::Time::now();
+  }
+
+  rosbag::Bag bag;
+  bag.open(pathToBag, rosbag::bagmode::Write);
+
+  bag.write(topicName, time, message);
+
+  bag.close();
+  return true;
+}
+
+bool GridMapRosConverter::loadFromBag(const std::string& pathToBag, const std::string& topic,
+                                      grid_map::GridMap& gridMap)
+{
+  rosbag::Bag bag;
+  bag.open(pathToBag, rosbag::bagmode::Read);
+  rosbag::View view(bag, rosbag::TopicQuery(topicName));
+
+  for(const auto& message : view)
+  {
+    grid_map_msg::GridMap::ConstPtr s = message.instantiate<grid_map_msg::GridMap>();
+    if (s != NULL) {
+      fromMessage(*s);
+    }
+    else {
+      bag.close();
+      ROS_WARN("Unable to load data from ROS bag.");
+      return false;
+    }
+  }
+
+  bag.close();
+  return true;
+}
+
 } /* namespace */

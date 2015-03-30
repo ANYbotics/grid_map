@@ -102,9 +102,43 @@ class GridMapRosConverter
   static void toOccupancyGrid(const grid_map::GridMap& gridMap, const std::string& layer,
                               float dataMin, float dataMax, nav_msgs::OccupancyGrid& occupancyGrid);
 
+  /*!
+   * Converts a grid map object to a ROS GridCells message. Set the layer to be transformed
+   * as grid cells with `layer`, all other layers will be neglected. Values that are between
+   * the lower and upper threshold are converted to grid cells, other data is neglected.
+   * @param gridMap the grid map object.
+   * @param layer the layer that is transformed as grid cells.
+   * @param lowerThreshold the lower threshold.
+   * @param upperThreshold the upper threshold.
+   * @param gridCells the message to be populated.
+   */
   static void toGridCells(const grid_map::GridMap& gridMap, const std::string& layer,
                           float lowerThreshold, float upperThreshold,
                           nav_msgs::GridCells& gridCells);
+
+  /*!
+   * Saves a grid map into a ROS bag. The timestamp of the grid map
+   * is used as time for storing the message in the ROS bag. The time
+   * value 0.0 is not a valid bag time and will be replaced by the
+   * current time.
+   * @param[in] gridMap the grid map object to be saved in the ROS bag.
+   * @param[in] pathToBag the path to the ROS bag file.
+   * @param[in] topic the name of the topic in the ROS bag.
+   * @return true if successful, false otherwise.
+   */
+  static bool saveToBag(const grid_map::GridMap& gridMap, const std::string& pathToBag,
+                        const std::string& topic);
+
+  /*!
+   * Loads a GridMap from a ROS bag.
+   * @param[in] pathToBag the path to the ROS bag file.
+   * @param[in] topic the topic name of the grid map in the ROS bag.
+   * @param[out] gridMap the grid map object to be initialized.
+   * @return true if successful, false otherwise.
+   */
+  static bool loadFromBag(const std::string& pathToBag, const std::string& topic,
+                          grid_map::GridMap& gridMap);
+
 };
 
 } /* namespace */
