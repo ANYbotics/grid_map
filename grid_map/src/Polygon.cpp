@@ -90,7 +90,7 @@ Polygon Polygon::convexHull(Polygon& polygon1, Polygon& polygon2)
   std::vector<Eigen::Vector2d> hull;
 
   // Sort points lexicographically
-  std::sort (vertices.begin(), vertices.end(), sortVertices());
+  std::sort (vertices.begin(), vertices.end(), sortVertices);
 
   int k = 0;
   // Build lower hull
@@ -104,10 +104,15 @@ Polygon Polygon::convexHull(Polygon& polygon1, Polygon& polygon2)
     while (k >= t && computeCrossProduct2D(hull.at(k-1) - hull.at(k-2), vertices.at(i) - hull.at(k-2)) <= 0) k--;
     hull.at(k++) = vertices.at(i);
   }
-  return Polygon(hull);
+
+  Polygon polygonOut;
+  for (const auto& vertice : hull) {
+    vertices.push_back(vertice);
+  }
+  return polygonOut;
 }
 
-bool Polygon::sortVertices(Eigen::Vector2d vector1, Eigen::Vector2d vector2)
+bool Polygon::sortVertices(const Eigen::Vector2d& vector1, const Eigen::Vector2d& vector2)
 {
   bool isSmaller;
   if (vector1.x() < vector2.x()) isSmaller = true;

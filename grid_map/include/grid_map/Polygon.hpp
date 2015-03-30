@@ -84,7 +84,7 @@ class Polygon : public grid_map_lib::Polygon
    * @param[in] vector1 the first input vector.
    * @param[in] vector2 the second input vector.
    */
-  bool sortVertices(Eigen::Vector2d vector1, Eigen::Vector2d vector2);
+  static bool sortVertices(const Eigen::Vector2d& vector1, const Eigen::Vector2d& vector2);
 
   /*!
    * Returns the 2D cross product of vector1 and vector2.
