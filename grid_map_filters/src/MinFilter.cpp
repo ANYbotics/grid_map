@@ -9,21 +9,16 @@
 #include "filters/MinFilter.hpp"
 #include <pluginlib/class_list_macros.h>
 
-// Grid Map
-#include <grid_map/GridMap.hpp>
-
 // Grid Map lib
-#include <grid_map_lib/GridMap.hpp>
+#include <grid_map_core/GridMap.hpp>
 
-// Eigen
-#include <Eigen/Core>
-#include <Eigen/Dense>
+using namespace filters;
 
 namespace grid_map_filters {
 
 template<typename T>
 MinFilter<T>::MinFilter()
-    : typeOut_("traversability")
+    : layerOut_("traversability")
 {
 
 }
@@ -38,13 +33,13 @@ template<typename T>
 bool MinFilter<T>::configure()
 {
   // Load Parameters
-  if (!FilterBase<T>::getParam(std::string("type_out"), typeOut_)) {
-    ROS_ERROR("MinFilter did not find param type_out");
+  if (!FilterBase<T>::getParam(std::string("layer_out"), layerOut_)) {
+    ROS_ERROR("MinFilter did not find param 'layer_out'");
     return false;
   }
 
-  if (!FilterBase<T>::getParam(std::string("filter_types"), minTypes_)) {
-    ROS_ERROR("MinFilter did not find param filter_types");
+  if (!FilterBase<T>::getParam(std::string("layers"), layers_)) {
+    ROS_ERROR("MinFilter did not find param 'layers'");
     return false;
   }
 
@@ -55,31 +50,32 @@ template<typename T>
 bool MinFilter<T>::update(const T& mapIn, T& mapOut)
 {
   mapOut = mapIn;
-  mapOut.add(typeOut_, mapIn.get("elevation"));
+  mapOut.add(layerOut_);
   bool hasMin = false;
 
-  Eigen::MatrixXf minMatrix;
+  grid_map::Matrix minMatrix;
 
-  for (int i = 0; i < minTypes_.size(); i++) {
+  for (const auto& layer : layers_) {
     // Check if layer exists.
-    if (!mapOut.exists(minTypes_.at(i))) {
-      ROS_ERROR("Check your min types! Type %s does not exist",
-                minTypes_.at(i).c_str());
+    if (!mapOut.exists(layer)) {
+      ROS_ERROR("Check your min types! Type %s does not exist", layer.c_str());
       return false;
     }
 
     if (!hasMin) {
-      minMatrix = mapOut.get(minTypes_.at(i));
+      minMatrix = mapOut.get(layer);
       hasMin = true;
     } else {
-      minMatrix = minMatrix.cwiseMin(mapOut.get(minTypes_.at(i)));
+      minMatrix = minMatrix.cwiseMin(mapOut.get(layer));
     }
   }
-  mapOut.add(typeOut_, minMatrix);
+  mapOut.add(layerOut_, minMatrix);
 
   return true;
 }
 
 } /* namespace */
 
-PLUGINLIB_REGISTER_CLASS(MinFilter, grid_map_filters::MinFilter<grid_map::GridMap>, grid_map_filters::FilterBase<grid_map::GridMap>)
+PLUGINLIB_REGISTER_CLASS(MinFilter,
+                         grid_map_filters::MinFilter<grid_map::GridMap>,
+                         filters::FilterBase<grid_map::GridMap>)

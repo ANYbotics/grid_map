@@ -20,7 +20,7 @@ namespace grid_map_filters {
  * Min Filter class that takes the minimum out of different layers of a grid map.
  */
 template<typename T>
-class MinFilter : public FilterBase<T>
+class MinFilter : public filters::FilterBase<T>
 {
 
  public:
@@ -48,11 +48,11 @@ class MinFilter : public FilterBase<T>
 
  private:
 
-  //! List of types that are added together
-  std::vector<std::string> minTypes_;
+  //! List of layers that are added together.
+  std::vector<std::string> layers_;
 
-  //! map type for summation.
-  std::string typeOut_;
+  //! Layer type for summation.
+  std::string layerOut_;
 
 };
 
