@@ -106,6 +106,22 @@ class GridMap : public grid_map_lib::GridMap
   void toOccupancyGrid(nav_msgs::OccupancyGrid& occupancyGrid, const std::string& cellType,
                        float dataMin, float dataMax) const;
 
+  /*!
+   * Puts a GridMap into a Rosbag.
+   * @param[in] bagName the name and directory of the Rosbag.
+   * @param[in] topicName topic of the GridMap in the Rosbag.
+   * @param[in] bagTime timestamp of the GridMap in the Rosbag. Default value 0.0 is not a valid bag Time and
+   * will be overwritten by the current time.
+   */
+  bool saveToBag(const std::string& pathToBag, const std::string& topicName, ros::Time time = ros::Time(0));
+
+  /*!
+   * Loads a GridMap from a Rosbag.
+   * @param[in] bagName the name and directory of the Rosbag.
+   * @param[in] topicName topic of the GridMap in the Rosbag.
+   */
+  bool loadFromBag(const std::string& pathToBag, const std::string& topicName);
+
  private:
   /*!
    * Sets the contents from a ROS message of type GridMap.
