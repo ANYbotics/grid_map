@@ -4,7 +4,7 @@
   <version>0.1.0</version>
   <description>General library for handling of grid maps.</description>
   <maintainer email="pfankhauser@ethz.ch">Peter Fankhauser</maintainer>
-  <license>MIT</license>
+  <license>BSD</license>
   <url type="website">http://github.com/ethz-asl/grid_map</url>
   <url type="bugtracker">http://github.com/ethz-asl/grid_map/issues</url>
   <author email="pfankhauser@ethz.ch">Peter Fankhauser</author>
