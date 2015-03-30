@@ -55,7 +55,7 @@ bool ThresholdFilter<T>::configure()
 
   if (!useLowerThreshold_ && !useUpperThreshold_) {
     ROS_ERROR(
-        "ThresholdFilter did not find param 'lower_threshold' or 'upper_threshold'");
+        "ThresholdFilter did not find parameter 'lower_threshold' or 'upper_threshold',");
     return false;
   }
 
@@ -66,12 +66,12 @@ bool ThresholdFilter<T>::configure()
   }
 
   if (!FilterBase<T>::getParam(std::string("set_to"), setTo_)) {
-    ROS_ERROR("ThresholdFilter did not find param 'set_to'");
+    ROS_ERROR("ThresholdFilter did not find parameter 'set_to'.");
     return false;
   }
 
-  if (!FilterBase<T>::getParam(std::string("layers_"), layers_)) {
-    ROS_ERROR("ThresholdFilter did not find param 'layers'");
+  if (!FilterBase<T>::getParam(std::string("layers"), layers_)) {
+    ROS_ERROR("ThresholdFilter did not find parameter 'layers'.");
     return false;
   }
 

@@ -34,12 +34,12 @@ bool MinFilter<T>::configure()
 {
   // Load Parameters
   if (!FilterBase<T>::getParam(std::string("layer_out"), layerOut_)) {
-    ROS_ERROR("MinFilter did not find param 'layer_out'");
+    ROS_ERROR("MinFilter did not find parameter 'layer_out'.");
     return false;
   }
 
   if (!FilterBase<T>::getParam(std::string("layers"), layers_)) {
-    ROS_ERROR("MinFilter did not find param 'layers'");
+    ROS_ERROR("MinFilter did not find parameter 'layers'.");
     return false;
   }
 
@@ -58,7 +58,7 @@ bool MinFilter<T>::update(const T& mapIn, T& mapOut)
   for (const auto& layer : layers_) {
     // Check if layer exists.
     if (!mapOut.exists(layer)) {
-      ROS_ERROR("Check your min types! Type %s does not exist", layer.c_str());
+      ROS_ERROR("Check your min layers! Type %s does not exist.", layer.c_str());
       return false;
     }
 

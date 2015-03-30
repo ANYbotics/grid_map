@@ -33,7 +33,7 @@ bool DeletionFilter<T>::configure()
 {
   // Load Parameters
   if (!FilterBase<T>::getParam(std::string("layers"), layers_)) {
-    ROS_ERROR("DeletionFilter did not find param 'layers'");
+    ROS_ERROR("DeletionFilter did not find parameter 'layers'.");
     return false;
   }
 
@@ -48,13 +48,13 @@ bool DeletionFilter<T>::update(const T& mapIn, T& mapOut)
   for (const auto& layer : layers_) {
     // Check if layer exists.
     if (!mapOut.exists(layer)) {
-      ROS_ERROR("Check your deletion types! Type %s does not exist",
+      ROS_ERROR("Check your deletion layers! Type %s does not exist.",
                 layer.c_str());
       continue;
     }
 
     if (!mapOut.erase(layer)) {
-      ROS_ERROR("Could not remove type %s", layer.c_str());
+      ROS_ERROR("Could not remove type %s.", layer.c_str());
     }
   }
 
