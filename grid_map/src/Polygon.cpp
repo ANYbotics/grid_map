@@ -9,6 +9,8 @@
 
 // ROS
 #include <geometry_msgs/Point32.h>
+#include <vector>
+#include <algorithm>
 
 namespace grid_map {
 
@@ -81,28 +83,31 @@ Polygon Polygon::convexHull(Polygon& polygon1, Polygon& polygon2)
 {
   std::vector<Eigen::Vector2d> vertices1 = polygon1.getVertices();
   std::vector<Eigen::Vector2d> vertices2 = polygon2.getVertices();
-  std::vector<Eigen::Vector2d> vertices(vertices1, vertices2);
-  ROS_DEBUG_STREAM(vertices.size());
+  std::vector<Eigen::Vector2d> vertices = vertices1;
+  for (const auto& vertice : vertices2) {
+    vertices.push_back(vertice);
+  }
+  std::vector<Eigen::Vector2d> hull;
 
   // Sort points lexicographically
-  std::sort(vertices.begin(), vertices.end(), sortVertices);
+  std::sort (vertices.begin(), vertices.end(), sortVertices());
 
   int k = 0;
   // Build lower hull
   for (int i = 0; i < vertices.size(); ++i) {
-    while (k >= 2 && computeCrossProduct2D() cross(H[k-2], H[k-1], P[i]) <= 0) k--;
-    H[k++] = P[i];
+    while (k >= 2 && computeCrossProduct2D(hull.at(k-1) - hull.at(k-2), vertices.at(i) - hull.at(k-2)) <= 0) k--;
+    hull.at(k++) = vertices.at(i);
   }
 
   // Build upper hull
-  for (int i = n-2, t = k+1; i >= 0; i--) {
-    while (k >= t && cross(H[k-2], H[k-1], P[i]) <= 0) k--;
-    H[k++] = P[i];
+  for (int i = vertices.size()-2, t = k+1; i >= 0; i--) {
+    while (k >= t && computeCrossProduct2D(hull.at(k-1) - hull.at(k-2), vertices.at(i) - hull.at(k-2)) <= 0) k--;
+    hull.at(k++) = vertices.at(i);
   }
-  return polygon1;
+  return Polygon(hull);
 }
 
-bool Polygon::sortVertices(const Eigen::Vector2d& vector1, const Eigen::Vector2d& vector2)
+bool Polygon::sortVertices(Eigen::Vector2d vector1, Eigen::Vector2d vector2)
 {
   bool isSmaller;
   if (vector1.x() < vector2.x()) isSmaller = true;
