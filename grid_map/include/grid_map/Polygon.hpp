@@ -71,27 +71,7 @@ class Polygon : public grid_map_lib::Polygon
    */
   void toMarker(visualization_msgs::Marker& marker) const;
 
-  /*!
-   * Computes the convex hull of two polygons and returns it as polygon.
-   * @param[in] polygon1 the first input polygon.
-   * @param[in] polygon2 the second input polygon.
-   */
-  Polygon convexHull(Polygon& polygon1, Polygon& polygon2);
-
  private:
-  /*!
-   * Returns true if the vector1 and vector2 are sorted lexicographically.
-   * @param[in] vector1 the first input vector.
-   * @param[in] vector2 the second input vector.
-   */
-  bool sortVertices(const Eigen::Vector2d& vector1, const Eigen::Vector2d& vector2);
-
-  /*!
-   * Returns the 2D cross product of vector1 and vector2.
-   * @param[in] vector1 the first input vector.
-   * @param[in] vector2 the second input vector.
-   */
-  double computeCrossProduct2D(const Eigen::Vector2d& vector1, const Eigen::Vector2d& vector2);
 
   //! Frame id of the polygon.
   std::string frameId_;
