@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<package>
+<package format="2">
   <name>grid_map_core</name>
   <version>0.1.0</version>
   <description>General library for handling of grid maps.</description>
@@ -10,5 +10,5 @@
   <author email="pfankhauser@ethz.ch">Peter Fankhauser</author>
   <author email="ralf.kaestner@gmail.com">Ralf Kaestner</author>
   <buildtool_depend>catkin</buildtool_depend>
-  <build_depend>cmake_modules</build_depend>
+  <depend>cmake_modules</depend>
 </package>
