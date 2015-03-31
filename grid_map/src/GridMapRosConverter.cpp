@@ -82,6 +82,7 @@ void GridMapRosConverter::toMessage(const grid_map::GridMap& gridMap, const std:
   message.layers = layers;
   message.basic_layers = gridMap.getBasicLayers();
 
+  message.data.clear();
   for (const auto& layer : layers) {
     std_msgs::Float32MultiArray dataArray;
     matrixEigenCopyToMultiArrayMessage(gridMap.get(layer), dataArray);
