@@ -2,9 +2,20 @@
 
 ## Overview
 
-This is a C++ library to manage two-dimensional grid maps with multiple data layers. It is designed with mobile robots in mind and typical usage including storing local data such as `elevation`, `variance`, `color`, `friction_coefficient`, `quality`, `surface_normal_x`, `surface_normal_y`, `surface_normal_z` etc. It is used in the [Robot-Centric Elevation Mapping](https://github.com/ethz-asl/elevation_mapping) framework.
+This is a C++ library with [ROS] interface to manage two-dimensional grid maps with multiple data layers. It is designed for mobile robotic mapping to store data such as elevation, variance, color, friction coefficient, foothold quality, surface normal, traversability etc. It is used in the [Robot-Centric Elevation Mapping](https://github.com/ethz-asl/elevation_mapping) package designed rough terrain navigation.
 
-The storage structure is implemented as two-dimensional circular buffer so the map can be moved efficiently while the data keeps its correspodance to a fixed reference frame. This library builds on the [Eigen] library and provides interfaces and message definitions for [ROS]. Currently, only float data can be stored in the grid map.
+Features:
+
+* **Multi-layered:** Developed for universal 2.5-dimensional grid mapping with support for any number of layers.
+* **Efficient map re-positioning:** Data storage is implemented as two-dimensional circular buffer. This allows for non-destructive shifting of the map's position (e.g. to follow the robot) without copying data in memory.
+* **Based on Eigen:** Grid map data is stored as [Eigen] data types. Users can apply available Eigen algorithms directly to the map data for versatile and efficient data manipulation.
+* **Convenience functions:** Several helper methods allow for convenient and memory safe cell data access. For example, iterator functions for rectangular, circular, polygonal regions and lines are implemented.
+* **ROS interface:** Grid maps can be directly converted to ROS message types such as PointCloud2, OccupancyGrid, GridCells, and our custom GridMap message.
+* **Visualizations:** The *grid_map_visualization* package helps to visualize grid maps in various form in [RViz].
+
+The grid map package has been tested under [ROS] Indigo and Ubuntu 14.04. This is research code, expect that it changes often and any fitness for a particular purpose is disclaimed.
+
+The source code is released under a [BSD 3-Clause license](LICENSE).
 
 **Author: Péter Fankhauser, pfankhauser@ethz.ch<br />
 Affiliation: Autonomous Systems Lab, ETH Zurich**
@@ -12,37 +23,54 @@ Affiliation: Autonomous Systems Lab, ETH Zurich**
 ![Grid map example in rviz](grid_map_visualization/doc/point_cloud.jpg)
 
 
-## Citing
+## Publications
 
-The methods used in this software are described in the following paper (available [here](http://dx.doi.org/10.3929/ethz-a-010173654)):
+If you use this work in an academic context, please cite the following publication(s):
 
-P. Fankhauser, M. Bloesch, C. Gehring, M. Hutter, and R. Siegwart,
+* P. Fankhauser, M. Bloesch, C. Gehring, M. Hutter, and R. Siegwart,
 **"Robot-Centric Elevation Mapping with Uncertainty Estimates"**,
-in International Conference on Climbing and Walking Robots (CLAWAR), 2014.
+in International Conference on Climbing and Walking Robots (CLAWAR), 2014. ([PDF](http://dx.doi.org/10.3929/ethz-a-010173654))
 
-    @inproceedings{Fankhauser2014RobotCentricElevationMapping,
-      author = {Fankhauser, Péter and Bloesch, Michael and Gehring, Christian and Hutter, Marco and Siegwart, Roland},
-      title = {Robot-Centric Elevation Mapping with Uncertainty Estimates},
-      booktitle = {International Conference on Climbing and Walking Robots (CLAWAR)},
-      year = {2014}
-    }
+
+        @inproceedings{Fankhauser2014RobotCentricElevationMapping,
+            author = {Fankhauser, Péter and Bloesch, Michael and Gehring, Christian and Hutter, Marco and Siegwart, Roland},
+            title = {Robot-Centric Elevation Mapping with Uncertainty Estimates},
+            booktitle = {International Conference on Climbing and Walking Robots (CLAWAR)},
+            year = {2014}
+        }
 
 
 ## Installation
 
 ### Dependencies
 
+Except for ROS packages that are part of the standard installation (*cmake-modules*, *roscpp*, *sensor_msgs*, and *nav_msgs*), the grid map library depends only on the linear algebra library [Eigen].
+
 - [Eigen](http://eigen.tuxfamily.org) (linear algebra library).
+
+        sudo apt-get install libeigen3-dev
 
 
 ### Building
 
-In order to install, clone the latest version from this repository into your catkin workspace and compile the package using
+To install, clone the latest version from this repository into your catkin workspace and compile the package using
 
-    cd catkin_workspace/src
+    cd catkin_ws/src
     git clone https://github.com/ethz-asl/grid_map.git
     cd ../
     catkin_make
+    
+
+### Packages Overview
+
+This repository consists of following packages:
+
+* ***grid_map_core*** implements the algorithms of the grid map library. It provides the `GridMap` class and several helper classes such as the iterators. This package is implemented without [ROS] dependencies.
+* ***grid_map*** is the main package for [ROS] dependent projects using the grid map library. It provides the interfaces to convert the base classes to several ROS] message types.
+* ***grid_map_msgs*** holds the [ROS] message and service definitions around the [grid_map_msg/GridMap] message type.
+* ***grid_map_visualization*** contains a node written to convert GridMap messages to other [ROS] message types for visualization in [RViz]. The visualization parameters are configurable through [ROS] parameters.
+* ***grid_map_filters*** TODO
+* ***grid_map_demos*** contains several nodes for demonstration purposes. The *simple_demo* node demonstrates a simple example for using the grid map library. An extended demonstration of the library's functionalities is given in the *tutorial_demo* node. Finally, the *iterators_demo* showcases the usage of the grid map iterators.
 
 
 ### Unit Tests
@@ -51,13 +79,13 @@ Run the unit tests with
 
     catkin_make run_tests_grid_map_core run_tests_grid_map_core
     catkin_make run_tests_grid_map run_tests_grid_map
-
+    
 
 ## Usage
 
 ### Conventions & Definitions
 
-[![Grid map conventions](grid_map_lib/doc/grid_map_conventions.png)](grid_map_lib/doc/grid_map_conventions.pdf)
+[![Grid map conventions](grid_map_core/doc/grid_map_conventions.png)](grid_map_core/doc/grid_map_conventions.pdf)
 
 
 ### Iterators
@@ -188,7 +216,7 @@ Please report bugs and request features using the [Issue Tracker](https://github
 
 
 [ROS]: http://www.ros.org
-[rviz]: http://wiki.ros.org/rviz
+[RViz]: http://wiki.ros.org/rviz
 [Eigen]: http://eigen.tuxfamily.org
 [grid_map_msg/GridMapInfo]: grid_map_msg/msg/GridMapInfo.msg
 [grid_map_msg/GridMap]: grid_map_msg/msg/GridMap.msg
