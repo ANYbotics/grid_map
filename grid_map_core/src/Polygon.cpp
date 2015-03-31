@@ -8,6 +8,9 @@
 
 #include <grid_map_core/Polygon.hpp>
 
+// Eigen
+#include <Eigen/Dense>
+
 namespace grid_map {
 
 Polygon::Polygon() {}
@@ -81,6 +84,56 @@ void Polygon::setTimestamp(const uint64_t timestamp)
 void Polygon::resetTimestamp()
 {
   timestamp_ = 0.0;
+}
+
+Polygon Polygon::convexHull(Polygon& polygon1, Polygon& polygon2)
+{
+  std::vector<Eigen::Vector2d> vertices1 = polygon1.getVertices();
+  std::vector<Eigen::Vector2d> vertices2 = polygon2.getVertices();
+  std::vector<Eigen::Vector2d> vertices = vertices1;
+  for (const auto& vertice : vertices2) {
+    vertices.push_back(vertice);
+  }
+  std::vector<Eigen::Vector2d> hull(vertices.size());
+
+  // Sort points lexicographically
+  std::sort (vertices.begin(), vertices.end(), sortVertices);
+
+  int k = 0;
+  // Build lower hull
+  for (int i = 0; i < vertices.size(); ++i) {
+    while (k >= 2 && computeCrossProduct2D(hull.at(k-1) - hull.at(k-2), vertices.at(i) - hull.at(k-2)) <= 0) k--;
+    hull.at(k++) = vertices.at(i);
+  }
+
+  // Build upper hull
+  for (int i = vertices.size()-2, t = k+1; i >= 0; i--) {
+    while (k >= t && computeCrossProduct2D(hull.at(k-1) - hull.at(k-2), vertices.at(i) - hull.at(k-2)) <= 0) k--;
+    hull.at(k++) = vertices.at(i);
+  }
+  hull.resize(k-1);
+
+  Polygon polygonOut;
+  for (const auto& vertex : hull) {
+    polygonOut.addVertex(vertex);
+  }
+  return polygonOut;
+}
+
+bool Polygon::sortVertices(const Eigen::Vector2d& vector1, const Eigen::Vector2d& vector2)
+{
+  bool isSmaller = false;
+
+  if (vector1.x() < vector2.x() || (vector1.x() == vector2.x() && vector1.y() < vector2.y())) {
+    isSmaller = true;
+  }
+
+  return isSmaller;
+}
+
+double Polygon::computeCrossProduct2D(const Eigen::Vector2d& vector1, const Eigen::Vector2d& vector2)
+{
+  return (vector1.x()*vector2.y()-vector1.y()*vector2.x());
 }
 
 } /* namespace grid_map */
