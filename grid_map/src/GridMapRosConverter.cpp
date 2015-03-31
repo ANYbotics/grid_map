@@ -79,7 +79,7 @@ void GridMapRosConverter::toMessage(const grid_map::GridMap& gridMap, const std:
   message.info.pose.orientation.z = 0.0;
   message.info.pose.orientation.w = 1.0;
 
-  message.layers = gridMap.getLayers();
+  message.layers = layers;
   message.basic_layers = gridMap.getBasicLayers();
 
   for (const auto& layer : layers) {
