@@ -18,6 +18,8 @@
 #include <geometry_msgs/PolygonStamped.h>
 #include <visualization_msgs/Marker.h>
 
+#include <Eigen/Core>
+
 namespace grid_map {
 
 class Polygon : public grid_map_lib::Polygon
@@ -79,19 +81,22 @@ class Polygon : public grid_map_lib::Polygon
   Polygon convexHull(Polygon& polygon1, Polygon& polygon2);
 
  private:
+
   /*!
    * Returns true if the vector1 and vector2 are sorted lexicographically.
    * @param[in] vector1 the first input vector.
    * @param[in] vector2 the second input vector.
    */
-  static bool sortVertices(const Eigen::Vector2d& vector1, const Eigen::Vector2d& vector2);
+  static bool sortVertices(const Eigen::Vector2d& vector1,
+                           const Eigen::Vector2d& vector2);
 
   /*!
    * Returns the 2D cross product of vector1 and vector2.
    * @param[in] vector1 the first input vector.
    * @param[in] vector2 the second input vector.
    */
-  double computeCrossProduct2D(const Eigen::Vector2d& vector1, const Eigen::Vector2d& vector2);
+  double computeCrossProduct2D(const Eigen::Vector2d& vector1,
+                               const Eigen::Vector2d& vector2);
 
   //! Frame id of the polygon.
   std::string frameId_;
