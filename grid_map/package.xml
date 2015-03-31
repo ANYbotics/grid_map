@@ -4,20 +4,24 @@
   <version>0.1.0</version>
   <description>ROS interface for the grid map library.</description>
   <maintainer email="pfankhauser@ethz.ch">Peter Fankhauser</maintainer>
-  <license>MIT</license>
+  <license>BSD</license>
   <url type="website">http://github.com/ethz-asl/grid_map</url>
   <url type="bugtracker">http://github.com/ethz-asl/grid_map/issues</url>
   <author email="pfankhauser@ethz.ch">Peter Fankhauser</author>
   <buildtool_depend>catkin</buildtool_depend>
   <build_depend>cmake_modules</build_depend>
   <build_depend>roscpp</build_depend>
-  <build_depend>grid_map_lib</build_depend>
-  <build_depend>grid_map_msg</build_depend>
+  <build_depend>grid_map_core</build_depend>
+  <build_depend>grid_map_msgs</build_depend>
   <build_depend>sensor_msgs</build_depend>
   <build_depend>nav_msgs</build_depend>
+  <build_depend>std_msgs</build_depend>
+  <build_depend>geometry_msgs</build_depend>
   <run_depend>roscpp</run_depend>
-  <run_depend>grid_map_lib</run_depend>
-  <run_depend>grid_map_msg</run_depend>
+  <run_depend>grid_map_core</run_depend>
+  <run_depend>grid_map_msgs</run_depend>
   <run_depend>sensor_msgs</run_depend>
   <run_depend>nav_msgs</run_depend>
+  <run_depend>std_msgs</run_depend>
+  <run_depend>geometry_msgs</run_depend>
 </package>

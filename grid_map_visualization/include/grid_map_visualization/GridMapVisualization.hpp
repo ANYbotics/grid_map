@@ -9,7 +9,8 @@
 
 #pragma once
 
-#include <grid_map_msg/GridMap.h>
+#include <grid_map_msgs/GridMap.h>
+#include <grid_map_visualization/visualizations/VisualizationFactory.hpp>
 #include <grid_map_visualization/visualizations/MapRegionVisualization.hpp>
 #include <grid_map_visualization/visualizations/PointCloudVisualization.hpp>
 #include <grid_map_visualization/visualizations/VectorVisualization.hpp>
@@ -17,6 +18,10 @@
 
 // ROS
 #include <ros/ros.h>
+
+// STD
+#include <vector>
+#include <memory>
 
 namespace grid_map_visualization {
 
@@ -31,7 +36,7 @@ class GridMapVisualization
    * Constructor.
    * @param nodeHandle the ROS node handle.
    */
-  GridMapVisualization(ros::NodeHandle& nodeHandle);
+  GridMapVisualization(ros::NodeHandle& nodeHandle, const std::string& parameterName);
 
   /*!
    * Destructor.
@@ -42,7 +47,7 @@ class GridMapVisualization
    * Callback function for the grid map.
    * @param message the grid map message to be visualized.
    */
-  void callback(const grid_map_msg::GridMap& message);
+  void callback(const grid_map_msgs::GridMap& message);
 
  private:
 
@@ -61,23 +66,20 @@ class GridMapVisualization
   //! ROS nodehandle.
   ros::NodeHandle& nodeHandle_;
 
+  //! Parameter name of the visualizer configuration list.
+  std::string visualizationsParameter_;
+
   //! ROS subscriber to the grid map.
   ros::Subscriber mapSubscriber_;
 
   //! Topic name of the grid map to be visualized.
   std::string mapTopic_;
 
-  //! Map region visualization.
-  MapRegionVisualization mapRegionVisualization_;
+  //! List of visualizations.
+  std::vector<std::shared_ptr<VisualizationBase>> visualizations_;
 
-  //! Visualizing map as point cloud.
-  PointCloudVisualization pointCloudVisualization_;
-
-  //! Visualizing data as vectors.
-  VectorVisualization vectorVisualization_;
-
-  //! Occupancy grid visualization.
-  OccupancyGridVisualization occupancyGridVisualization_;
+  //! Visualization factory.
+  VisualizationFactory factory_;
 };
 
 } /* namespace */

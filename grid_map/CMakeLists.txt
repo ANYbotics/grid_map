@@ -15,10 +15,12 @@ set(CMAKE_BUILD_TYPE RelWithDebInfo)
 find_package(catkin REQUIRED COMPONENTS
   cmake_modules
   roscpp
-  grid_map_lib
-  grid_map_msg
+  grid_map_core
+  grid_map_msgs
   sensor_msgs
   nav_msgs
+  std_msgs
+  geometry_msgs
   rosbag
 )
 
@@ -37,7 +39,7 @@ find_package(Eigen REQUIRED)
 catkin_package(
     INCLUDE_DIRS include
     LIBRARIES ${PROJECT_NAME}
-    CATKIN_DEPENDS grid_map_lib grid_map_msg
+    CATKIN_DEPENDS grid_map_core grid_map_msgs
     DEPENDS Eigen
 )
 
@@ -55,9 +57,9 @@ include_directories(
 ## Declare a cpp library
 add_library(
   ${PROJECT_NAME}
-  src/GridMap.cpp
+  src/GridMapRosConverter.cpp
   src/GridMapMsgHelpers.cpp
-  src/Polygon.cpp
+  src/PolygonRosConverter.cpp
 )
 
 target_link_libraries(${PROJECT_NAME}
@@ -66,7 +68,7 @@ target_link_libraries(${PROJECT_NAME}
 
 add_dependencies(
   ${PROJECT_NAME}
-  grid_map_msg_generate_messages_cpp
+  grid_map_msgs_generate_messages_cpp
 )
 
 #############

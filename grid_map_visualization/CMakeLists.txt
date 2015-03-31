@@ -17,7 +17,8 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   tf
   grid_map
-  grid_map_msg
+  grid_map_core
+  grid_map_msgs
   visualization_msgs
   sensor_msgs
   nav_msgs
@@ -41,7 +42,7 @@ find_package(Eigen REQUIRED)
 catkin_package(
   INCLUDE_DIRS include
 #  LIBRARIES ${PROJECT_NAME}
-  CATKIN_DEPENDS grid_map_msg visualization_msgs
+  CATKIN_DEPENDS grid_map_msgs visualization_msgs
 #  DEPENDS system_lib
 )
 
@@ -67,10 +68,13 @@ add_executable(
 	src/grid_map_visualization_node.cpp
 	src/GridMapVisualization.cpp
 	src/GridMapVisualizationHelpers.cpp
+	src/visualizations/VisualizationBase.cpp
+	src/visualizations/VisualizationFactory.cpp
 	src/visualizations/PointCloudVisualization.cpp
-	src/visualizations/MapRegionVisualization.cpp
 	src/visualizations/VectorVisualization.cpp
 	src/visualizations/OccupancyGridVisualization.cpp
+	src/visualizations/GridCellsVisualization.cpp
+	src/visualizations/MapRegionVisualization.cpp
 )
 
 ## Add cmake target dependencies of the executable/library

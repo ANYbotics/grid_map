@@ -15,7 +15,7 @@ int main(int argc, char** argv)
 
   ros::NodeHandle nodeHandle("~");
 
-  grid_map_visualization::GridMapVisualization gridMapVisualization(nodeHandle);
+  grid_map_visualization::GridMapVisualization gridMapVisualization(nodeHandle, "grid_map_visualizations");
 
   ros::spin();
   return 0;

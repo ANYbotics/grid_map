@@ -49,7 +49,8 @@ In order to install, clone the latest version from this repository into your cat
 
 Run the unit tests with
 
-    catkin_make run_tests_grid_map_lib run_tests_grid_map_lib
+    catkin_make run_tests_grid_map_core run_tests_grid_map_core
+    catkin_make run_tests_grid_map run_tests_grid_map
 
 
 ## Usage

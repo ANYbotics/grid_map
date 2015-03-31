@@ -14,14 +14,14 @@
 #include <vector>
 #include <string>
 
-namespace filters {
+namespace grid_map_filters {
 
 /*!
  * Threshold Filter class that sets values below a lower threshold to 0 and
  * values above an upper threshold to 1.
  */
 template<typename T>
-class ThresholdFilter : public FilterBase<T>
+class ThresholdFilter : public filters::FilterBase<T>
 {
 
  public:
@@ -43,15 +43,15 @@ class ThresholdFilter : public FilterBase<T>
   /*!
    * Uses either an upper or lower threshold. If the threshold is exceeded
    * the cell value is set to the predefined value setTo_.
-   * @param mapIn gridMap with the different layers to apply a threshold.
-   * @param mapOut gridMap with the threshold applied to the layers.
+   * @param mapIn GridMap with the different layers to apply a threshold.
+   * @param mapOut GridMap with the threshold applied to the layers.
    */
   virtual bool update(const T& mapIn, T& mapOut);
 
  private:
 
   //! List of layers the threshold should be applied
-  std::vector<std::string> thresholdTypes_;
+  std::vector<std::string> layers_;
 
   //! Lower Threshold
   double lowerThreshold_;

@@ -8,21 +8,27 @@
 
 #pragma once
 
-#include <grid_map/GridMap.hpp>
+#include <grid_map_visualization/visualizations/VisualizationBase.hpp>
+#include <grid_map_core/GridMap.hpp>
 
 // ROS
 #include <ros/ros.h>
 
 namespace grid_map_visualization {
 
-class PointCloudVisualization
+/*!
+ * Visualization of the grid map as a point cloud.
+ */
+class PointCloudVisualization : public VisualizationBase
 {
  public:
+
   /*!
    * Constructor.
    * @param nodeHandle the ROS node handle.
+   * @param name the name of the visualization.
    */
-  PointCloudVisualization(ros::NodeHandle& nodeHandle);
+  PointCloudVisualization(ros::NodeHandle& nodeHandle, const std::string& name);
 
   /*!
    * Destructor.
@@ -31,9 +37,10 @@ class PointCloudVisualization
 
   /*!
    * Read parameters from ROS.
+   * @param config the parameters as XML.
    * @return true if successful.
    */
-  bool readParameters();
+  bool readParameters(XmlRpc::XmlRpcValue& config);
 
   /*!
    * Initialization.
@@ -49,14 +56,8 @@ class PointCloudVisualization
 
  private:
 
-  //! ROS nodehandle.
-  ros::NodeHandle& nodeHandle_;
-
-  //! ROS publisher of the point cloud.
-  ros::Publisher pointCloudPublisher_;
-
   //! Type that is transformed to points.
-  std::string pointType_;
+  std::string layer_;
 };
 
 } /* namespace */
