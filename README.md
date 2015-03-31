@@ -46,9 +46,7 @@ in International Conference on Climbing and Walking Robots (CLAWAR), 2014. ([PDF
 
 Except for ROS packages that are part of the standard installation (*cmake-modules*, *roscpp*, *sensor_msgs*, and *nav_msgs*), the grid map library depends only on the linear algebra library [Eigen].
 
-- [Eigen](http://eigen.tuxfamily.org) (linear algebra library).
-
-        sudo apt-get install libeigen3-dev
+    sudo apt-get install libeigen3-dev
 
 
 ### Building
@@ -85,6 +83,7 @@ Run the unit tests with
 
 ### Conventions & Definitions
 
+[![Grid map layers](grid_map_core/doc/grid_map_layers.png)](grid_map_core/doc/grid_map_layers.pdf)
 [![Grid map conventions](grid_map_core/doc/grid_map_conventions.png)](grid_map_core/doc/grid_map_conventions.pdf)
 
 
@@ -94,7 +93,7 @@ The grid map library contains various iterators for convenience.
 
 Grid map | Submap | Circle | Line | Polygon
 --- | --- | --- | --- | ---
-[![Grid map iterator](grid_map_lib/doc/iterators/grid_map_iterator_preview.gif)](grid_map_lib/doc/iterators/grid_map_iterator.gif) | [![Submap iterator](grid_map_lib/doc/iterators/submap_iterator_preview.gif)](grid_map_lib/doc/iterators/submap_iterator.gif) | [![Circle iterator](grid_map_lib/doc/iterators/circle_iterator_preview.gif)](grid_map_lib/doc/iterators/circle_iterator.gif) | [![Line iterator](grid_map_lib/doc/iterators/line_iterator_preview.gif)](grid_map_lib/doc/iterators/line_iterator.gif) | [![Polygon iterator](grid_map_lib/doc/iterators/polygon_iterator_preview.gif)](grid_map_lib/doc/iterators/polygon_iterator.gif)
+[![Grid map iterator](grid_map_core/doc/iterators/grid_map_iterator_preview.gif)](grid_map_core/doc/iterators/grid_map_iterator.gif) | [![Submap iterator](grid_map_core/doc/iterators/submap_iterator_preview.gif)](grid_map_core/doc/iterators/submap_iterator.gif) | [![Circle iterator](grid_map_core/doc/iterators/circle_iterator_preview.gif)](grid_map_core/doc/iterators/circle_iterator.gif) | [![Line iterator](grid_map_core/doc/iterators/line_iterator_preview.gif)](grid_map_core/doc/iterators/line_iterator.gif) | [![Polygon iterator](grid_map_core/doc/iterators/polygon_iterator_preview.gif)](grid_map_core/doc/iterators/polygon_iterator.gif)
 
 The simplest way to iterate over the entire grid map is to use the `GridMapIterator` as
 
