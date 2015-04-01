@@ -17,7 +17,6 @@
 
 using namespace std;
 using namespace Eigen;
-using namespace grid_map_lib;
 using namespace grid_map;
 
 //TEST(checkSortVertices, checkSortVertices)
