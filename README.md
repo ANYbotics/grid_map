@@ -67,25 +67,41 @@ This repository consists of following packages:
 * ***grid_map*** is the main package for [ROS] dependent projects using the grid map library. It provides the interfaces to convert the base classes to several ROS] message types.
 * ***grid_map_msgs*** holds the [ROS] message and service definitions around the [grid_map_msg/GridMap] message type.
 * ***grid_map_visualization*** contains a node written to convert GridMap messages to other [ROS] message types for visualization in [RViz]. The visualization parameters are configurable through [ROS] parameters.
-* ***grid_map_filters*** TODO
-* ***grid_map_demos*** contains several nodes for demonstration purposes. The *simple_demo* node demonstrates a simple example for using the grid map library. An extended demonstration of the library's functionalities is given in the *tutorial_demo* node. Finally, the *iterators_demo* showcases the usage of the grid map iterators.
+* ***grid_map_filters*** builds on the ROS [filters](http://wiki.ros.org/filters) package to process grid maps as a sequence of filters. 
+* ***grid_map_demos*** contains several nodes for demonstration purposes.
 
 
 ### Unit Tests
 
 Run the unit tests with
 
-    catkin_make run_tests_grid_map_core run_tests_grid_map_core
-    catkin_make run_tests_grid_map run_tests_grid_map
+    catkin_make run_tests_grid_map*
     
 
 ## Usage
 
+### Demonstrations
+
+The *grid_map_demos* package contains several demonstration nodes. Use this code to verify your installation of the grid map packages and to get you started with own usage of the library.
+
+* *[simple_demo](grid_map_demos/src/simple_demo_node.cpp)* demonstrates a simple example for using the grid map library. This ROS node creates a grid map, adds data to it, and publishes it. To see the result in RViz, execute the command
+
+        roslaunch grid_map_demos simple_demo.launch
+        
+* *[tutorial_demo](grid_map_demos/src/tutorial_demo_node.cpp)* is an extended demonstration of the library's functionalities. Launch the *tutorial_demo* with
+        
+        roslaunch grid_map_demos tutorial_demo.launch
+
+* *[iterators_demo](grid_map_demos/src/iterators_demo_node.cpp)* showcases the usage of the grid map iterators. Launch it with
+
+        roslaunch grid_map_demos iterators_demo.launch
+
+
 ### Conventions & Definitions
 
 [![Grid map layers](grid_map_core/doc/grid_map_layers.png)](grid_map_core/doc/grid_map_layers.pdf)
-[![Grid map conventions](grid_map_core/doc/grid_map_conventions.png)](grid_map_core/doc/grid_map_conventions.pdf)
 
+[![Grid map conventions](grid_map_core/doc/grid_map_conventions.png)](grid_map_core/doc/grid_map_conventions.pdf)
 
 ### Iterators
 
@@ -95,133 +111,112 @@ Grid map | Submap | Circle | Line | Polygon
 --- | --- | --- | --- | ---
 [![Grid map iterator](grid_map_core/doc/iterators/grid_map_iterator_preview.gif)](grid_map_core/doc/iterators/grid_map_iterator.gif) | [![Submap iterator](grid_map_core/doc/iterators/submap_iterator_preview.gif)](grid_map_core/doc/iterators/submap_iterator.gif) | [![Circle iterator](grid_map_core/doc/iterators/circle_iterator_preview.gif)](grid_map_core/doc/iterators/circle_iterator.gif) | [![Line iterator](grid_map_core/doc/iterators/line_iterator_preview.gif)](grid_map_core/doc/iterators/line_iterator.gif) | [![Polygon iterator](grid_map_core/doc/iterators/polygon_iterator_preview.gif)](grid_map_core/doc/iterators/polygon_iterator.gif)
 
-The simplest way to iterate over the entire grid map is to use the `GridMapIterator` as
+Using the iterator in a `for` loop is common. For example, iterate over the entire grid map with the `GridMapIterator` with
 
-    for (grid_map_lib::GridMapIterator iterator(map); !iterator.isPassedEnd(); ++iterator) {
-        cout << "The value at index " << *iterator << " is " << map.at("type", *iterator) << endl;
+    for (grid_map::GridMapIterator iterator(map); !iterator.isPassedEnd(); ++iterator) {
+        cout << "The value at index " << *iterator << " is " << map.at("layer", *iterator) << endl;
     }
 
-You can find more examples on how to use the different interators in the [GridMapExample] file.
+The other grid map iterators follow the same form. You can find more examples on how to use the different iterators in the *[iterators_demo](grid_map_demo/src/IteratorsDemo.cpp)* node.
 
 
 ## Nodes
 
-### Node: grid_map_lib
+### grid_map_visualization
 
-ROS-independent implementation of the grid map algorithms.
+This node subscribes to a topic of type [grid_map_msgs/GridMap] and publishes messages that can be visualized in [RViz]. The published topics of the visualizer can be fully configure with a YAML parameter file. Any number of visualizations with different parameters can be added. An example is [here](grid_map_demos/config/tutorial_demo.yaml) for the configuration file of the *tutorial_demo*.
 
+Point cloud | Vectors | Occupancy grid | Grid cells
+--- | --- | --- | ---
+[![Point cloud](grid_map_visualization/doc/point_cloud_preview.jpg)](grid_map_visualization/doc/point_cloud.jpg) | [![Vectors](grid_map_visualization/doc/vectors_preview.jpg)](grid_map_visualization/doc/vectors.jpg) | [![Occupancy grid](grid_map_visualization/doc/occupancy_grid_preview.jpg)](grid_map_visualization/doc/occupancy_grid.jpg) | [![Grid cells](grid_map_visualization/doc/grid_cells_preview.jpg)](grid_map_visualization/doc/grid_cells.jpg)
 
-### Node: grid_map
+#### Parameters
 
-ROS interfaces and conversions for the `grid_map_lib`.
+* **`grid_map_topic`** (string, default: "/grid_map")
 
-
-### Node: grid_map_visualization
-
-This node subscribes to a grid map topic and publishes messages that can be visualized in [rviz].
-
-Point cloud | Occupancy grid
---- | ---
-[![Point cloud](grid_map_visualization/doc/point_cloud_preview.jpg)](grid_map_visualization/doc/point_cloud.jpg) | [![Occupancy grid](grid_map_visualization/doc/occupancy_grid_preview.jpg)](grid_map_visualization/doc/occupancy_grid.jpg)
-
+    The name of the grid map topic to be visualized. See below for the description of the visualizers.
+    
 
 #### Subscribed Topics
 
-* **`/grid_map`** ([grid_map_msg/GridMap])
+* **`/grid_map`** ([grid_map_msgs/GridMap])
 
     The grid map to visualize.
 
 
 #### Published Topics
 
+The published topics are configured with the [YAML parameter file](grid_map_demos/config/tutorial_demo.yaml). Possible topics are:
+
 * **`point_cloud`** ([sensor_msgs/PointCloud2])
 
-    TODO.
+    Shows the grid map as a point cloud. Select which layer to transform as points with the `layer` parameter.
 
-* **`region`** ([visualization_msgs/Marker])
-
-    TODO.
+        name: elevation
+        type: point_cloud
+        params:
+        layer: elevation
 
 * **`vector`** ([visualization_msgs/Marker])
 
-    TODO.
+    Visualizes vector data of the grid map as visual markers. Specify the layers which hold the *x*-, *y*-, and *z*-components of the vectors with the `layer_prefix` parameter. The parameter `position_layer` defines the layer to be used as start point of the vectors.
+    
+        name: surface_normals
+        type: vectors
+        params:
+         layer_prefix: normal_
+         position_layer: elevation
+         scale: 0.06
+         line_width: 0.005
+         color: 15600153 # red
     
 * **`occupancy_grid`** ([nav_msgs/OccupancyGrid])
+
+    Visualizes a layer of the grid map as occupancy grid. Specify the layer to be visualized with the `layer` parameter, and the upper and lower bound with `data_min` and `data_max`.
+        
+        name: traversability_grid
+        type: occupancy_grid
+        params:
+         layer: traversability
+         data_min: -0.15
+         data_max: 0.15
+
+* **`grid_cells`** ([nav_msgs/GridCells])
+
+    Visualizes a layer of the grid map as grid cells. Specify the layer to be visualized with the `layer` parameter, and the upper and lower bounds with `lower_threshold` and `upper_threshold`.
     
-    TODO.
-
-
-#### Parameters
+        name: elevation_cells
+        type: grid_cells
+        params:
+         layer: elevation
+         lower_threshold: -0.08 # optional, default: -inf
+         upper_threshold: 0.08 # optional, default: inf
+    
+* **`region`** ([visualization_msgs/Marker])
+    
+    Shows the boundary of the grid map.
+    
+        name: map_region
+        type: map_region
+        params:
+         color: 3289650
+         line_width: 0.003
 
 *Note: Color values are in RGB form as concatenated integers (for each channel value 0-255). The values can be generated like [this](http://www.wolframalpha.com/input/?i=BitOr%5BBitShiftLeft%5Br%2C16%5D%2C+BitShiftLeft%5Bg%2C8%5D%2C+b%5D+where+%7Br%3D0%2C+g%3D255%2C+b%3D0%7D) as an example for the color green (red: 0, green: 255, blue: 0).*
-
-* **`grid_map_topic`** (string, default: "/grid_map")
- 
-    The name of the grid map topic to be visualized.
-
-* **`point_cloud/point_type`** (string)
- 
-    The type of the grid map to be transformed to the 3d points of the point cloud.
-
-* **`map_region/line_width`** (double, default: 0.003)
- 
-    The line width of the map region marker (in m).
-
-* **`map_region/color`** (int, default: 16777215 (white))
- 
-    The color of the map region visualization.
-
-* **`vector/type_prefix`** (string)
- 
-    Prefix of the types that are transformed to the vector value. The types with endings `x`, `y`, and `z` have to exist.
-
-* **`vector/position_type`** (string)
- 
-    The type of the grid map that is used as starting points of the vectors.
-
-* **`vector/scale`** (double, default: 0.03)
- 
-    Scaling of the vectors.
-
-* **`vector/line_width`** (double, default: 0.001)
- 
-    The line width of the vectors.
-
-* **`vector/color`** (int, default: 16777215 (white))
- 
-    The color of the vectors.
-
-
-### Package: grid_map_msg
-
-Definition of the grid map message type and services.
-
-* **`GridMapInfo`** ([grid_map_msg/GridMapInfo])
-
-    Definition of the grid map meta information message type.
-
-* **`GridMap`** ([grid_map_msg/GridMap])
-
-    Definition of the grid map message type.
-
-* **`GetGridMap`** ([grid_map_msg/GetGridMap])
-
-    Definition of the service call for requesting a grid map.
 
 
 ## Bugs & Feature Requests
 
 Please report bugs and request features using the [Issue Tracker](https://github.com/ethz-asl/grid_map/issues).
 
-
 [ROS]: http://www.ros.org
 [RViz]: http://wiki.ros.org/rviz
 [Eigen]: http://eigen.tuxfamily.org
-[grid_map_msg/GridMapInfo]: grid_map_msg/msg/GridMapInfo.msg
-[grid_map_msg/GridMap]: grid_map_msg/msg/GridMap.msg
-[grid_map_msg/GetGridMap]: grid_map_msg/srv/GetGridMap.srv
-[GridMapExample]: grid_map_example/src/GridMapExample.cpp
+[grid_map_msgs/GridMapInfo]: grid_map_msg/msg/GridMapInfo.msg
+[grid_map_msgs/GridMap]: grid_map_msg/msg/GridMap.msg
+[grid_map_msgs/GetGridMap]: grid_map_msg/srv/GetGridMap.srv
 [sensor_msgs/PointCloud2]: http://docs.ros.org/api/sensor_msgs/html/msg/PointCloud2.html
 [visualization_msgs/Marker]: http://docs.ros.org/api/visualization_msgs/html/msg/Marker.html
 [geometry_msgs/PolygonStamped]: http://docs.ros.org/api/geometry_msgs/html/msg/PolygonStamped.html
 [nav_msgs/OccupancyGrid]: http://docs.ros.org/api/nav_msgs/html/msg/OccupancyGrid.html
+[nav_msgs/GridCells]: http://docs.ros.org/api/nav_msgs/html/msg/GridCells.html
