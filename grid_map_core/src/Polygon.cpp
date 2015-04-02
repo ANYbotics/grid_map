@@ -10,6 +10,7 @@
 
 // Eigen
 #include <Eigen/Dense>
+#include <Eigen/Geometry>
 
 namespace grid_map {
 
@@ -84,6 +85,30 @@ void Polygon::setTimestamp(const uint64_t timestamp)
 void Polygon::resetTimestamp()
 {
   timestamp_ = 0.0;
+}
+
+Polygon Polygon::convexHullCircles(const Position center1, const Position center2, const double radius)
+{
+  Eigen::Vector2d centerToVertex, centerToVertexTemp;
+  centerToVertex = center2 - center1;
+  centerToVertex.normalize();
+  centerToVertex *= radius;
+  const int nVertices = 10;
+
+  grid_map::Polygon polygon;
+  for (int j=0; j<nVertices; j++) {
+    double theta = M_PI_2 + j*M_PI/(nVertices-1);
+    Eigen::Rotation2D<double> rot2d(theta);
+    centerToVertexTemp = rot2d.toRotationMatrix()*centerToVertex;
+    polygon.addVertex(center1+centerToVertexTemp);
+  }
+  for (int j=0; j<nVertices; j++) {
+    double theta = 3*M_PI_2 + j*M_PI/(nVertices-1);
+    Eigen::Rotation2D<double> rot2d(theta);
+    centerToVertexTemp = rot2d.toRotationMatrix()*centerToVertex;
+    polygon.addVertex(center2+centerToVertexTemp);
+  }
+  return polygon;
 }
 
 Polygon Polygon::convexHull(Polygon& polygon1, Polygon& polygon2)
