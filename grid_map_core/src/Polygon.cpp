@@ -111,6 +111,21 @@ Polygon Polygon::convexHullCircles(const Position center1, const Position center
   return polygon;
 }
 
+Polygon Polygon::convexHullCircle(const Position center, const double radius)
+{
+  Eigen::Vector2d centerToVertex(radius, 0.0), centerToVertexTemp;
+  const int nVertices = 20;
+
+  grid_map::Polygon polygon;
+  for (int j=0; j<nVertices; j++) {
+    double theta = j*2*M_PI/(nVertices-1);
+    Eigen::Rotation2D<double> rot2d(theta);
+    centerToVertexTemp = rot2d.toRotationMatrix()*centerToVertex;
+    polygon.addVertex(center+centerToVertexTemp);
+  }
+  return polygon;
+}
+
 Polygon Polygon::convexHull(Polygon& polygon1, Polygon& polygon2)
 {
   std::vector<Eigen::Vector2d> vertices1 = polygon1.getVertices();

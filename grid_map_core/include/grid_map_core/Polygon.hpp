@@ -117,8 +117,16 @@ class Polygon
    * Approximates the convex hull of two circles and returns it as polygon.
    * @param[in] center1 the center position of the first circle.
    * @param[in] center2 the center position of the second circle.
+   * @param[in] radius radius of the circles.
    */
   Polygon convexHullCircles(const Position center1, const Position center2, const double radius);
+
+  /*!
+   * Approximates a circle with a convex hull polygon.
+   * @param[in] center the center position of the circle.
+   * @param[in] radius radius of the circle.
+   */
+  Polygon convexHullCircle(const Position center, const double radius);
 
  protected:
 
