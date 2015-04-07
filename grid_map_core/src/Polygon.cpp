@@ -159,11 +159,7 @@ Polygon Polygon::convexHull(Polygon& polygon1, Polygon& polygon2)
   }
   hull.resize(k - 1);
 
-  Polygon polygonOut;
-  for (const auto& vertex : hull) {
-    polygonOut.addVertex(vertex);
-  }
-  return polygonOut;
+  return Polygon(hull);
 }
 
 bool Polygon::sortVertices(const Eigen::Vector2d& vector1,
