@@ -121,7 +121,7 @@ class Polygon
    * @param[in] radius radius of the circles.
    * @return convex hull as Polygon.
    */
-  Polygon convexHullCircles(const Position center1, const Position center2, const double radius);
+  Polygon convexHullCircles(const Position center1, const Position center2, const double radius, const int nVertices = 20);
 
   /*!
    * Approximates a circle with a convex hull polygon.
@@ -129,7 +129,7 @@ class Polygon
    * @param[in] radius radius of the circle.
    * @return convex hull as Polygon.
    */
-  Polygon convexHullCircle(const Position center, const double radius);
+  Polygon convexHullCircle(const Position center, const double radius, const int nVertices = 20);
 
  protected:
 

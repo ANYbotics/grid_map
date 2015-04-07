@@ -36,7 +36,6 @@ TEST(checkConvexHull, createHull)
   grid_map::Polygon hull;
   hull = hull.convexHull(polygon1, polygon2);
 
-
   EXPECT_EQ(6, hull.nVertices());
   EXPECT_TRUE(hull.isInside(Vector2d(0.5, 0.5)));
   EXPECT_FALSE(hull.isInside(Vector2d(0.01, 1.49)));
@@ -47,12 +46,19 @@ TEST(checkConvexHullCircles, createHull)
   Position center1(0.0, 0.0);
   Position center2(1.0, 0.0);
   double radius = 0.5;
+  const int nVertices = 15;
 
   grid_map::Polygon hull;
   hull = hull.convexHullCircles(center1, center2, radius);
-
-
   EXPECT_EQ(20, hull.nVertices());
+  EXPECT_TRUE(hull.isInside(Vector2d(-0.25, 0.0)));
+  EXPECT_TRUE(hull.isInside(Vector2d(0.5, 0.0)));
+  EXPECT_TRUE(hull.isInside(Vector2d(0.5, 0.4)));
+  EXPECT_FALSE(hull.isInside(Vector2d(0.5, 0.6)));
+  EXPECT_FALSE(hull.isInside(Vector2d(1.5, 0.2)));
+
+  hull = hull.convexHullCircles(center1, center2, radius, nVertices);
+  EXPECT_EQ(nVertices + 1, hull.nVertices());
   EXPECT_TRUE(hull.isInside(Vector2d(-0.25, 0.0)));
   EXPECT_TRUE(hull.isInside(Vector2d(0.5, 0.0)));
   EXPECT_TRUE(hull.isInside(Vector2d(0.5, 0.4)));
@@ -64,12 +70,19 @@ TEST(checkConvexHullCircle, createHull)
 {
   Position center(0.0, 0.0);
   double radius = 0.5;
+  const int nVertices = 15;
 
   grid_map::Polygon hull;
   hull = hull.convexHullCircle(center, radius);
 
-
   EXPECT_EQ(20, hull.nVertices());
+  EXPECT_TRUE(hull.isInside(Vector2d(-0.25, 0.0)));
+  EXPECT_TRUE(hull.isInside(Vector2d(0.49, 0.0)));
+  EXPECT_FALSE(hull.isInside(Vector2d(0.5, 0.4)));
+  EXPECT_FALSE(hull.isInside(Vector2d(1.0, 0.0)));
+
+  hull = hull.convexHullCircle(center, radius, nVertices);
+  EXPECT_EQ(nVertices, hull.nVertices());
   EXPECT_TRUE(hull.isInside(Vector2d(-0.25, 0.0)));
   EXPECT_TRUE(hull.isInside(Vector2d(0.49, 0.0)));
   EXPECT_FALSE(hull.isInside(Vector2d(0.5, 0.4)));

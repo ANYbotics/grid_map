@@ -87,71 +87,79 @@ void Polygon::resetTimestamp()
   timestamp_ = 0.0;
 }
 
-Polygon Polygon::convexHullCircles(const Position center1, const Position center2, const double radius)
+Polygon Polygon::convexHullCircles(const Position center1,
+                                   const Position center2, const double radius,
+                                   const int nVertices)
 {
   Eigen::Vector2d centerToVertex, centerToVertexTemp;
   centerToVertex = center2 - center1;
   centerToVertex.normalize();
   centerToVertex *= radius;
-  const int nVertices = 10;
 
   grid_map::Polygon polygon;
-  for (int j=0; j<nVertices; j++) {
-    double theta = M_PI_2 + j*M_PI/(nVertices-1);
+  for (int j = 0; j < ceil(nVertices / 2.0); j++) {
+    double theta = M_PI_2 + j * M_PI / (ceil(nVertices / 2.0) - 1);
     Eigen::Rotation2D<double> rot2d(theta);
-    centerToVertexTemp = rot2d.toRotationMatrix()*centerToVertex;
-    polygon.addVertex(center1+centerToVertexTemp);
+    centerToVertexTemp = rot2d.toRotationMatrix() * centerToVertex;
+    polygon.addVertex(center1 + centerToVertexTemp);
   }
-  for (int j=0; j<nVertices; j++) {
-    double theta = 3*M_PI_2 + j*M_PI/(nVertices-1);
+  for (int j = 0; j < ceil(nVertices / 2.0); j++) {
+    double theta = 3 * M_PI_2 + j * M_PI / (ceil(nVertices / 2.0) - 1);
     Eigen::Rotation2D<double> rot2d(theta);
-    centerToVertexTemp = rot2d.toRotationMatrix()*centerToVertex;
-    polygon.addVertex(center2+centerToVertexTemp);
+    centerToVertexTemp = rot2d.toRotationMatrix() * centerToVertex;
+    polygon.addVertex(center2 + centerToVertexTemp);
   }
   return polygon;
 }
 
-Polygon Polygon::convexHullCircle(const Position center, const double radius)
+Polygon Polygon::convexHullCircle(const Position center, const double radius,
+                                  const int nVertices)
 {
   Eigen::Vector2d centerToVertex(radius, 0.0), centerToVertexTemp;
-  const int nVertices = 20;
 
   grid_map::Polygon polygon;
-  for (int j=0; j<nVertices; j++) {
-    double theta = j*2*M_PI/(nVertices-1);
+  for (int j = 0; j < nVertices; j++) {
+    double theta = j * 2 * M_PI / (nVertices - 1);
     Eigen::Rotation2D<double> rot2d(theta);
-    centerToVertexTemp = rot2d.toRotationMatrix()*centerToVertex;
-    polygon.addVertex(center+centerToVertexTemp);
+    centerToVertexTemp = rot2d.toRotationMatrix() * centerToVertex;
+    polygon.addVertex(center + centerToVertexTemp);
   }
   return polygon;
 }
 
 Polygon Polygon::convexHull(Polygon& polygon1, Polygon& polygon2)
 {
-  std::vector<Eigen::Vector2d> vertices1 = polygon1.getVertices();
-  std::vector<Eigen::Vector2d> vertices2 = polygon2.getVertices();
-  std::vector<Eigen::Vector2d> vertices = vertices1;
-  for (const auto& vertice : vertices2) {
-    vertices.push_back(vertice);
-  }
-  std::vector<Eigen::Vector2d> hull(vertices.size());
+  std::vector<Position> vertices1 = polygon1.getVertices();
+  std::vector<Position> vertices2 = polygon2.getVertices();
+  std::vector<Position> vertices;
+  vertices.reserve(vertices1.size() + vertices2.size());
+  vertices.insert(vertices.end(), vertices1.begin(), vertices1.end());
+  vertices.insert(vertices.end(), vertices2.begin(), vertices2.end());
+
+  std::vector<Position> hull(vertices.size());
 
   // Sort points lexicographically
-  std::sort (vertices.begin(), vertices.end(), sortVertices);
+  std::sort(vertices.begin(), vertices.end(), sortVertices);
 
   int k = 0;
   // Build lower hull
   for (int i = 0; i < vertices.size(); ++i) {
-    while (k >= 2 && computeCrossProduct2D(hull.at(k-1) - hull.at(k-2), vertices.at(i) - hull.at(k-2)) <= 0) k--;
+    while (k >= 2
+        && computeCrossProduct2D(hull.at(k - 1) - hull.at(k - 2),
+                                 vertices.at(i) - hull.at(k - 2)) <= 0)
+      k--;
     hull.at(k++) = vertices.at(i);
   }
 
   // Build upper hull
-  for (int i = vertices.size()-2, t = k+1; i >= 0; i--) {
-    while (k >= t && computeCrossProduct2D(hull.at(k-1) - hull.at(k-2), vertices.at(i) - hull.at(k-2)) <= 0) k--;
+  for (int i = vertices.size() - 2, t = k + 1; i >= 0; i--) {
+    while (k >= t
+        && computeCrossProduct2D(hull.at(k - 1) - hull.at(k - 2),
+                                 vertices.at(i) - hull.at(k - 2)) <= 0)
+      k--;
     hull.at(k++) = vertices.at(i);
   }
-  hull.resize(k-1);
+  hull.resize(k - 1);
 
   Polygon polygonOut;
   for (const auto& vertex : hull) {
@@ -160,20 +168,17 @@ Polygon Polygon::convexHull(Polygon& polygon1, Polygon& polygon2)
   return polygonOut;
 }
 
-bool Polygon::sortVertices(const Eigen::Vector2d& vector1, const Eigen::Vector2d& vector2)
+bool Polygon::sortVertices(const Eigen::Vector2d& vector1,
+                           const Eigen::Vector2d& vector2)
 {
-  bool isSmaller = false;
-
-  if (vector1.x() < vector2.x() || (vector1.x() == vector2.x() && vector1.y() < vector2.y())) {
-    isSmaller = true;
-  }
-
-  return isSmaller;
+  return (vector1.x() < vector2.x()
+      || (vector1.x() == vector2.x() && vector1.y() < vector2.y()));
 }
 
-double Polygon::computeCrossProduct2D(const Eigen::Vector2d& vector1, const Eigen::Vector2d& vector2)
+double Polygon::computeCrossProduct2D(const Eigen::Vector2d& vector1,
+                                      const Eigen::Vector2d& vector2)
 {
-  return (vector1.x()*vector2.y()-vector1.y()*vector2.x());
+  return (vector1.x() * vector2.y() - vector1.y() * vector2.x());
 }
 
 } /* namespace grid_map */
