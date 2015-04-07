@@ -13,6 +13,9 @@
 // STD
 #include <vector>
 
+// Eigen
+#include <Eigen/Core>
+
 namespace grid_map {
 
 class Polygon
@@ -103,7 +106,50 @@ class Polygon
    */
   const std::string& getFrameId() const;
 
+  /*!
+   * Computes the convex hull of two polygons and returns it as polygon.
+   * @param[in] polygon1 the first input polygon.
+   * @param[in] polygon2 the second input polygon.
+   * @return convex hull as Polygon.
+   */
+  Polygon convexHull(Polygon& polygon1, Polygon& polygon2);
+
+  /*!
+   * Approximates the convex hull of two circles and returns it as polygon.
+   * @param[in] center1 the center position of the first circle.
+   * @param[in] center2 the center position of the second circle.
+   * @param[in] radius radius of the circles.
+   * @param[in] nVertices number of vertices of the approximation polygon. Default = 20.
+   * @return convex hull as Polygon.
+   */
+  Polygon convexHullCircles(const Position center1, const Position center2, const double radius, const int nVertices = 20);
+
+  /*!
+   * Approximates a circle with a convex hull polygon.
+   * @param[in] center the center position of the circle.
+   * @param[in] radius radius of the circle.
+   * @param[in] nVertices number of vertices of the approximation polygon. Default = 20.
+   * @return convex hull as Polygon.
+   */
+  Polygon convexHullCircle(const Position center, const double radius, const int nVertices = 20);
+
  protected:
+
+  /*!
+   * Returns true if the vector1 and vector2 are sorted lexicographically.
+   * @param[in] vector1 the first input vector.
+   * @param[in] vector2 the second input vector.
+   */
+  static bool sortVertices(const Eigen::Vector2d& vector1,
+                           const Eigen::Vector2d& vector2);
+
+  /*!
+   * Returns the 2D cross product of vector1 and vector2.
+   * @param[in] vector1 the first input vector.
+   * @param[in] vector2 the second input vector.
+   */
+  double computeCrossProduct2D(const Eigen::Vector2d& vector1,
+                               const Eigen::Vector2d& vector2);
 
   //! Frame id of the polygon.
   std::string frameId_;
