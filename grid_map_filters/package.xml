@@ -2,13 +2,13 @@
 <package format="2">
   <name>grid_map_filters</name>
   <version>0.1.0</version>
-  <description>library for filtering gri maps.</description>
-  <maintainer email="pfankhauser@ethz.ch">Peter Fankhauser</maintainer>
+  <description>Processing grid maps as a sequence of ROS filters.</description>
+  <maintainer email="pfankhauser@ethz.ch">Péter Fankhauser</maintainer>
   <license>BSD</license>
   <url type="website">http://github.com/ethz-asl/grid_map</url>
   <url type="bugtracker">http://github.com/ethz-asl/grid_map/issues</url>
   <author email="martiwer@student.ethz.ch">Martin Wermelinger</author>
-  <author email="pfankhauser@ethz.ch">Peter Fankhauser</author>
+  <author email="pfankhauser@ethz.ch">Péter Fankhauser</author>
   <buildtool_depend>catkin</buildtool_depend>
   <depend>cmake_modules</depend>
   <depend>grid_map</depend>

@@ -64,7 +64,7 @@ To install, clone the latest version from this repository into your catkin works
 This repository consists of following packages:
 
 * ***grid_map_core*** implements the algorithms of the grid map library. It provides the `GridMap` class and several helper classes such as the iterators. This package is implemented without [ROS] dependencies.
-* ***grid_map*** is the main package for [ROS] dependent projects using the grid map library. It provides the interfaces to convert the base classes to several ROS] message types.
+* ***grid_map*** is the main package for [ROS] dependent projects using the grid map library. It provides the interfaces to convert the base classes to several [ROS] message types.
 * ***grid_map_msgs*** holds the [ROS] message and service definitions around the [grid_map_msg/GridMap] message type.
 * ***grid_map_visualization*** contains a node written to convert GridMap messages to other [ROS] message types for visualization in [RViz]. The visualization parameters are configurable through [ROS] parameters.
 * ***grid_map_filters*** builds on the ROS [filters](http://wiki.ros.org/filters) package to process grid maps as a sequence of filters. 
