@@ -129,12 +129,10 @@ Polygon Polygon::convexHullCircle(const Position center, const double radius,
 
 Polygon Polygon::convexHull(Polygon& polygon1, Polygon& polygon2)
 {
-  std::vector<Position> vertices1 = polygon1.getVertices();
-  std::vector<Position> vertices2 = polygon2.getVertices();
   std::vector<Position> vertices;
-  vertices.reserve(vertices1.size() + vertices2.size());
-  vertices.insert(vertices.end(), vertices1.begin(), vertices1.end());
-  vertices.insert(vertices.end(), vertices2.begin(), vertices2.end());
+  vertices.reserve(polygon1.nVertices() + polygon2.nVertices());
+  vertices.insert(vertices.end(), polygon1.getVertices().begin(), polygon1.getVertices().end());
+  vertices.insert(vertices.end(), polygon2.getVertices().begin(), polygon2.getVertices().end());
 
   std::vector<Position> hull(vertices.size());
 
