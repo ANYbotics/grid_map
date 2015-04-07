@@ -110,6 +110,7 @@ class Polygon
    * Computes the convex hull of two polygons and returns it as polygon.
    * @param[in] polygon1 the first input polygon.
    * @param[in] polygon2 the second input polygon.
+   * @return convex hull as Polygon.
    */
   Polygon convexHull(Polygon& polygon1, Polygon& polygon2);
 
@@ -118,6 +119,7 @@ class Polygon
    * @param[in] center1 the center position of the first circle.
    * @param[in] center2 the center position of the second circle.
    * @param[in] radius radius of the circles.
+   * @return convex hull as Polygon.
    */
   Polygon convexHullCircles(const Position center1, const Position center2, const double radius);
 
@@ -125,6 +127,7 @@ class Polygon
    * Approximates a circle with a convex hull polygon.
    * @param[in] center the center position of the circle.
    * @param[in] radius radius of the circle.
+   * @return convex hull as Polygon.
    */
   Polygon convexHullCircle(const Position center, const double radius);
 
