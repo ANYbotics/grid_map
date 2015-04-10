@@ -23,6 +23,7 @@ GridMapVisualization::GridMapVisualization(ros::NodeHandle& nodeHandle, const st
   ROS_INFO("Grid map visualization node started.");
   readParameters();
   mapSubscriber_ = nodeHandle_.subscribe(mapTopic_, 1, &GridMapVisualization::callback, this);
+  mapSubscriber_.shutdown();
   initialize();
 }
 
