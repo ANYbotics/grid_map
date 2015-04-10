@@ -58,7 +58,9 @@ bool MapRegionVisualization::initialize()
 
 bool MapRegionVisualization::visualize(const grid_map::GridMap& map)
 {
-  if (publisher_.getNumSubscribers () < 1) return true;
+  if (!isActive()) return true;
+
+  // TODO Replace this with ploygon?
 
   // Set marker info.
   marker_.header.frame_id = map.getFrameId();

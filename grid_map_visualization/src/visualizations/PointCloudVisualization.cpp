@@ -40,7 +40,7 @@ bool PointCloudVisualization::initialize()
 
 bool PointCloudVisualization::visualize(const grid_map::GridMap& map)
 {
-  if (publisher_.getNumSubscribers() < 1) return true;
+  if (!isActive()) return true;
   if (!map.exists(layer_)) {
     ROS_WARN_STREAM("PointCloudVisualization::visualize: No grid map layer with name '" << layer_ << "' found.");
     return false;

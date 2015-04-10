@@ -20,6 +20,12 @@ VisualizationBase::~VisualizationBase()
 {
 }
 
+bool VisualizationBase::isActive() const
+{
+  if (publisher_.getNumSubscribers() > 0) return true;
+  return false;
+}
+
 bool VisualizationBase::readParameters(XmlRpc::XmlRpcValue& config)
 {
   if (config.getType() != XmlRpc::XmlRpcValue::TypeStruct) {
@@ -80,87 +86,5 @@ bool VisualizationBase::getParam(const std::string&name, int& value)
   value = it->second;
   return true;
 }
-
-///** \brief Get a filter parameter as an unsigned int
-// * \param name The name of the parameter
-// * \param value The int to set with the value
-// * \return Whether or not the parameter of name/type was set */
-//bool VisualizationBase::getParam(const std::string&name, unsigned  int& value)
-//{
-//  int signed_value;
-//  if (!getParam(name, signed_value))
-//    return false;
-//  if (signed_value < 0)
-//    return false;
-//  value = signed_value;
-//  return true;
-//};
-//
-///** \brief Get a filter parameter as a std::vector<double>
-// * \param name The name of the parameter
-// * \param value The std::vector<double> to set with the value
-// * \return Whether or not the parameter of name/type was set */
-//bool VisualizationBase::getParam(const std::string&name, std::vector<double>& value)
-//{
-//  string_map_t::iterator it = params_.find(name);
-//  if (it == params_.end())
-//  {
-//    return false;
-//  }
-//
-//  value.clear();
-//
-//  if(it->second.getType() != XmlRpc::XmlRpcValue::TypeArray)
-//  {
-//    return false;
-//  }
-//
-//  XmlRpc::XmlRpcValue double_array = it->second;
-//
-//  for (int i = 0; i < double_array.size(); ++i){
-//    if(double_array[i].getType() != XmlRpc::XmlRpcValue::TypeDouble && double_array[i].getType() != XmlRpc::XmlRpcValue::TypeInt)
-//    {
-//      return false;
-//    }
-//
-//    double double_value = double_array[i].getType() == XmlRpc::XmlRpcValue::TypeInt ? (int)(double_array[i]) : (double)(double_array[i]);
-//    value.push_back(double_value);
-//  }
-//
-//  return true;
-//}
-//
-///** \brief Get a filter parameter as a std::vector<string>
-// * \param name The name of the parameter
-// * \param value The std::vector<sgring> to set with the value
-// * \return Whether or not the parameter of name/type was set */
-//bool VisualizationBase::getParam(const std::string&name, std::vector<std::string>& value)
-//{
-//  string_map_t::iterator it = params_.find(name);
-//  if (it == params_.end())
-//  {
-//    return false;
-//  }
-//
-//  value.clear();
-//
-//  if(it->second.getType() != XmlRpc::XmlRpcValue::TypeArray)
-//  {
-//    return false;
-//  }
-//
-//  XmlRpc::XmlRpcValue string_array = it->second;
-//
-//  for (unsigned int i = 0; i < string_array.size(); ++i){
-//    if(string_array[i].getType() != XmlRpc::XmlRpcValue::TypeString)
-//    {
-//      return false;
-//    }
-//
-//    value.push_back(string_array[i]);
-//  }
-//
-//  return true;
-//}
 
 } /* namespace */

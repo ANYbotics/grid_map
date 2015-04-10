@@ -53,6 +53,12 @@ class VisualizationBase
    */
   virtual bool visualize(const grid_map::GridMap& map) = 0;
 
+  /*!
+   * Checks if visualization is active (if somebody has actually subscribed).
+   * @return true if active, false otherwise.
+   */
+  bool isActive() const;
+
  protected:
 
   /*!

@@ -79,7 +79,7 @@ bool VectorVisualization::initialize()
 
 bool VectorVisualization::visualize(const grid_map::GridMap& map)
 {
-  if (publisher_.getNumSubscribers () < 1) return true;
+  if (!isActive()) return true;
 
   for (const auto& type : types_) {
     if (!map.exists(type)) {

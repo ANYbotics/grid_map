@@ -63,6 +63,14 @@ class GridMapVisualization
    */
   bool initialize();
 
+  /*!
+   * Check if visualizations are active (subscribed to),
+   * and accordingly cancels/activates the subscription to the
+   * grid map to safe bandwidth.
+   * @param timerEvent the timer event.
+   */
+  void updateSubscriptionCallback(const ros::TimerEvent& timerEvent);
+
   //! ROS nodehandle.
   ros::NodeHandle& nodeHandle_;
 
@@ -80,6 +88,15 @@ class GridMapVisualization
 
   //! Visualization factory.
   VisualizationFactory factory_;
+
+  //! Timer to check the activity of the visualizations.
+  ros::Timer activityCheckTimer_;
+
+  //! Duration of checking the activity of the visualizations.
+  ros::Duration activityCheckDuration_;
+
+  //! If the grid map visualization is subscribed to the grid map.
+  bool isSubscribed_;
 };
 
 } /* namespace */

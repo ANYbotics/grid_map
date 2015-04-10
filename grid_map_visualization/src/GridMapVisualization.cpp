@@ -15,15 +15,18 @@ using namespace ros;
 
 namespace grid_map_visualization {
 
-GridMapVisualization::GridMapVisualization(ros::NodeHandle& nodeHandle, const std::string& parameterName)
+GridMapVisualization::GridMapVisualization(ros::NodeHandle& nodeHandle,
+                                           const std::string& parameterName)
     : nodeHandle_(nodeHandle),
       visualizationsParameter_(parameterName),
-      factory_(nodeHandle_)
+      factory_(nodeHandle_),
+      isSubscribed_(false)
 {
   ROS_INFO("Grid map visualization node started.");
   readParameters();
-  mapSubscriber_ = nodeHandle_.subscribe(mapTopic_, 1, &GridMapVisualization::callback, this);
-  mapSubscriber_.shutdown();
+  activityCheckTimer_ = nodeHandle_.createTimer(activityCheckDuration_,
+                                                &GridMapVisualization::updateSubscriptionCallback,
+                                                this);
   initialize();
 }
 
@@ -35,11 +38,17 @@ bool GridMapVisualization::readParameters()
 {
   nodeHandle_.param("grid_map_topic", mapTopic_, string("/grid_map"));
 
+  double activityCheckRate;
+  nodeHandle_.param("activity_check_rate", activityCheckRate, 2.0);
+  activityCheckDuration_.fromSec(1.0 / activityCheckRate);
+  ROS_ASSERT(!maxNoUpdateDuration_.isZero());
+
   // Configure the visualizations from a configuration stored on the parameter server.
   XmlRpc::XmlRpcValue config;
   if (!nodeHandle_.getParam(visualizationsParameter_, config)) {
     ROS_WARN(
-        "Could not load the visualizations configuration from parameter %s, are you sure it was pushed to the parameter server? Assuming that you meant to leave it empty.",
+        "Could not load the visualizations configuration from parameter %s,are you sure it"
+        "was pushed to the parameter server? Assuming that you meant to leave it empty.",
         visualizationsParameter_.c_str());
     return false;
   }
@@ -93,7 +102,7 @@ bool GridMapVisualization::readParameters()
       }
     }
 
-    // Make sure the filter chain has a valid type.
+    // Make sure the visualization has a valid type.
     if (!factory_.isValidType(config[i]["type"])) {
       ROS_ERROR("Could not find visualization of type '%s'.", std::string(config[i]["type"]).c_str());
       return false;
@@ -106,7 +115,8 @@ bool GridMapVisualization::readParameters()
     auto visualization = factory_.getInstance(type, name);
     visualization->readParameters(config[i]);
     visualizations_.push_back(visualization);
-    ROS_INFO("%s: Configured visualization of type '%s' with name '%s'.", visualizationsParameter_.c_str(), type.c_str(), name.c_str());
+    ROS_INFO("%s: Configured visualization of type '%s' with name '%s'.",
+             visualizationsParameter_.c_str(), type.c_str(), name.c_str());
   }
 
   return true;
@@ -117,21 +127,44 @@ bool GridMapVisualization::initialize()
   for (auto& visualization : visualizations_) {
     visualization->initialize();
   }
-
+  updateSubscriptionCallback(ros::TimerEvent());
   ROS_INFO("Grid map visualization initialized.");
   return true;
 }
 
+void GridMapVisualization::updateSubscriptionCallback(const ros::TimerEvent&)
+{
+  bool isActive = false;
+
+  for (auto& visualization : visualizations_) {
+    if (visualization->isActive()) {
+      isActive = true;
+      break;
+    }
+  }
+
+  if (!isSubscribed_ && isActive) {
+    mapSubscriber_ = nodeHandle_.subscribe(mapTopic_, 1, &GridMapVisualization::callback, this);
+    isSubscribed_ = true;
+    ROS_DEBUG("Subscribed to grid map at '%s'.", mapTopic_.c_str());
+  }
+  if (isSubscribed_ && !isActive) {
+    mapSubscriber_.shutdown();
+    isSubscribed_ = false;
+    ROS_DEBUG("Cancelled subscription to grid map.");
+  }
+}
+
 void GridMapVisualization::callback(const grid_map_msgs::GridMap& message)
 {
-  ROS_DEBUG("Grid map visualization received a map (timestamp %f) for visualization.", message.info.header.stamp.toSec());
+  ROS_DEBUG("Grid map visualization received a map (timestamp %f) for visualization.",
+            message.info.header.stamp.toSec());
   grid_map::GridMap map;
   grid_map::GridMapRosConverter::fromMessage(message, map);
 
   for (auto& visualization : visualizations_) {
     visualization->visualize(map);
   }
-
 }
 
 } /* namespace */
