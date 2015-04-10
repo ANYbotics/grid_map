@@ -22,6 +22,7 @@
 // ROS
 #include <ros/ros.h>
 #include <sensor_msgs/PointCloud2.h>
+#include <sensor_msgs/Image.h>
 #include <nav_msgs/OccupancyGrid.h>
 #include <nav_msgs/GridCells.h>
 
@@ -106,15 +107,38 @@ class GridMapRosConverter
    * Converts a grid map object to a ROS GridCells message. Set the layer to be transformed
    * as grid cells with `layer`, all other layers will be neglected. Values that are between
    * the lower and upper threshold are converted to grid cells, other data is neglected.
-   * @param gridMap the grid map object.
-   * @param layer the layer that is transformed as grid cells.
-   * @param lowerThreshold the lower threshold.
-   * @param upperThreshold the upper threshold.
-   * @param gridCells the message to be populated.
+   * @param[in] gridMap the grid map object.
+   * @param[in] layer the layer that is transformed as grid cells.
+   * @param[in] lowerThreshold the lower threshold.
+   * @param[in] upperThreshold the upper threshold.
+   * @param[out] gridCells the message to be populated.
    */
   static void toGridCells(const grid_map::GridMap& gridMap, const std::string& layer,
                           float lowerThreshold, float upperThreshold,
                           nav_msgs::GridCells& gridCells);
+
+  /*!
+   * Initializes a grid map from a image messages and adds the image data
+   * to a layer of the grid map. This changes the geometry
+   * of the map and deletes all contents of the layers!
+   * @param[in] image the image.
+   * @param[in] layer the layer that is filled with the image.
+   * @param[in] lengthX the desired length in x-direction of the grid map.
+   * @param[out] gridMap the grid map to be initialized.
+   * @return true if successful, false otherwise.
+   */
+  static bool fromImage(const sensor_msgs::Image& image, const std::string& layer,
+                        const double lengthX, grid_map::GridMap& gridMap);
+
+  /*!
+   * Adds a layers with data from an image.
+   * @param[in] image the image to be added.
+   * @param[in] layer the layer that is filled with the image.
+   * @param[out] gridMap the grid map to be populated.
+   * @return true if successful, false otherwise.
+   */
+  static bool addLayerFromImage(const sensor_msgs::Image& image, const std::string& layer,
+                                grid_map::GridMap& gridMap);
 
   /*!
    * Saves a grid map into a ROS bag. The timestamp of the grid map

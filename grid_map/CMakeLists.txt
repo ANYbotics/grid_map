@@ -21,6 +21,7 @@ find_package(catkin REQUIRED COMPONENTS
   nav_msgs
   std_msgs
   geometry_msgs
+  cv_bridge
   rosbag
 )
 
@@ -37,9 +38,18 @@ find_package(Eigen REQUIRED)
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-    INCLUDE_DIRS include
-    LIBRARIES ${PROJECT_NAME}
-    CATKIN_DEPENDS grid_map_core grid_map_msgs
+    INCLUDE_DIRS
+      include
+    LIBRARIES
+      ${PROJECT_NAME}
+    CATKIN_DEPENDS
+      roscpp
+      grid_map_core
+      grid_map_msgs
+      sensor_msgs
+      nav_msgs
+      std_msgs
+      geometry_msgs
     DEPENDS Eigen
 )
 
