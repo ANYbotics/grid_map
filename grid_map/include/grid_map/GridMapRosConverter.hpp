@@ -131,7 +131,7 @@ class GridMapRosConverter
                         const double lengthX, grid_map::GridMap& gridMap);
 
   /*!
-   * Adds a layers with data from an image.
+   * Adds a layer with data from an image.
    * @param[in] image the image to be added.
    * @param[in] layer the layer that is filled with the image.
    * @param[out] gridMap the grid map to be populated.
