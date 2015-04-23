@@ -59,6 +59,11 @@ class Polygon
   const Position& getVertex(const size_t index) const;
 
   /*!
+   * Removes all vertices from the polygon.
+   */
+  void removeVertices();
+
+  /*!
    * Get vertex operator overload.
    * @param index the index of the requested vertex.
    * @return the requested vertex.

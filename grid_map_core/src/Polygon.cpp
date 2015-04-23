@@ -47,6 +47,11 @@ const Position& Polygon::getVertex(const size_t index) const
   return vertices_.at(index);
 }
 
+void Polygon::removeVertices()
+{
+  vertices_.clear();
+}
+
 const Position& Polygon::operator [](const size_t index) const
 {
   return getVertex(index);
