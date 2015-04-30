@@ -131,14 +131,30 @@ class GridMapRosConverter
                         const double lengthX, grid_map::GridMap& gridMap);
 
   /*!
-   * Adds a layer with data from an image.
+   * Adds a layer with data from a color image.
    * @param[in] image the image to be added.
    * @param[in] layer the layer that is filled with the image.
    * @param[out] gridMap the grid map to be populated.
    * @return true if successful, false otherwise.
    */
-  static bool addLayerFromImage(const sensor_msgs::Image& image, const std::string& layer,
-                                grid_map::GridMap& gridMap);
+  static bool addLayerFromColorImage(const sensor_msgs::Image& image,
+                                     const std::string& layer,
+                                     grid_map::GridMap& gridMap);
+
+  /*!
+   * Adds a layer with data from a grayscale image.
+   * @param[in] image the image to be added.
+   * @param[in] layer the layer that is filled with the image.
+   * @param[in] lowerValue value of the layer corresponding to black.
+   * @param[in] upperValue value of the layer corresponding to white.
+   * @param[out] gridMap the grid map to be populated.
+   * @return true if successful, false otherwise.
+   */
+  static bool addLayerFromGrayscaleImage(const sensor_msgs::Image& image,
+                                         const std::string& layer,
+                                         grid_map::GridMap& gridMap,
+                                         const double lowerValue = 0.0,
+                                         const double upperValue = 1.0);
 
   /*!
    * Saves a grid map into a ROS bag. The timestamp of the grid map

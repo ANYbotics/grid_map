@@ -255,10 +255,10 @@ bool GridMapRosConverter::fromImage(const sensor_msgs::Image& image, const std::
   const double lengthY = resolution * image.width;
   Length length(lengthX, lengthY);
   gridMap.setGeometry(length, resolution);
-  return addLayerFromImage(image, layer, gridMap);
+  return addLayerFromColorImage(image, layer, gridMap);
 }
 
-bool GridMapRosConverter::addLayerFromImage(const sensor_msgs::Image& image, const std::string& layer,
+bool GridMapRosConverter::addLayerFromColorImage(const sensor_msgs::Image& image, const std::string& layer,
                                             grid_map::GridMap& gridMap)
 {
   cv_bridge::CvImagePtr cvPtr;
@@ -286,6 +286,58 @@ bool GridMapRosConverter::addLayerFromImage(const sensor_msgs::Image& image, con
     colorVector(1) = cvColor[1];
     colorVector(0) = cvColor[2];
     colorVectorToValue(colorVector, gridMap.at(layer, *iterator));
+  }
+
+  return true;
+}
+
+bool GridMapRosConverter::addLayerFromGrayscaleImage(
+    const sensor_msgs::Image& image, const std::string& layer,
+    grid_map::GridMap& gridMap, const double lowerValue,
+    const double upperValue)
+{
+  cv_bridge::CvImagePtr cvPtrBGRA, cvPtrMONO;
+  try {
+    cvPtrBGRA = cv_bridge::toCvCopy(image, image.encoding);
+  } catch (cv_bridge::Exception& e) {
+    ROS_ERROR("cv_bridge exception: %s", e.what());
+    return false;
+  }
+
+  try {
+    if (image.encoding == sensor_msgs::image_encodings::BGRA8) {
+      cvPtrMONO = cv_bridge::toCvCopy(image,
+                                      sensor_msgs::image_encodings::MONO8);
+    } else if (image.encoding == sensor_msgs::image_encodings::BGRA16) {
+      cvPtrMONO = cv_bridge::toCvCopy(image,
+                                      sensor_msgs::image_encodings::MONO16);
+    } else {
+      cvPtrMONO = cv_bridge::toCvCopy(image,
+                                      sensor_msgs::image_encodings::MONO16);
+    }
+  } catch (cv_bridge::Exception& e) {
+    ROS_ERROR("cv_bridge exception: %s", e.what());
+    return false;
+  }
+
+  gridMap.add(layer);
+
+  if (gridMap.getSize()(0) != image.height
+      || gridMap.getSize()(1) != image.width) {
+    ROS_ERROR("Image size does not correspond to grid map size!");
+    return false;
+  }
+
+  // TODO: Distinguish between 8 bit and 16 bit.
+  GridMapIterator iterator(gridMap);
+  for (GridMapIterator iterator(gridMap); !iterator.isPassedEnd(); ++iterator) {
+    const auto& cvColor = cvPtrBGRA->image.at<cv::Vec4i>((*iterator)(0),
+                                                         (*iterator)(1));
+    if (cvColor[3] < 128)
+      continue;
+    int cvGrayscale = cvPtrMONO->image.at((*iterator)(0), (*iterator)(1));
+    gridMap.at(layer, *iterator) = lowerValue
+        + (upperValue - lowerValue) * ((double) cvGrayscale / 255.0);
   }
 
   return true;
