@@ -12,8 +12,8 @@ def callback(self):
     """ Convert a image to a ROS compatible message
         (sensor_msgs.Image).
     """
-    img = cv2.imread(IMAGE_PATH)
-	
+    img = cv2.imread(IMAGE_PATH, -1)
+
     rosimage = sensor_msgs.msg.Image()
     rosimage.encoding = 'mono16'
     rosimage.width = img.shape[1]
@@ -21,7 +21,7 @@ def callback(self):
     rosimage.step = img.strides[0]
     rosimage.data = img.tostring()
 #    rosimage.data = img.flatten().tolist()
-    
+
     publisher.publish(rosimage)
 
 
@@ -32,7 +32,7 @@ def main_program():
     publisher = rospy.Publisher(IMAGE_MESSAGE_TOPIC, sensor_msgs.msg.Image, queue_size=10)
     rospy.Timer(rospy.Duration(0.5), callback)
     rospy.spin()
-        
+
 if __name__ == '__main__':
     try:
         main_program()
