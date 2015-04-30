@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # simple script to publish a image from a file.
 import rospy
+import time
 import cv2
 import sensor_msgs.msg
 
@@ -12,7 +13,7 @@ def callback(self):
     """ Convert a image to a ROS compatible message
         (sensor_msgs.Image).
     """
-    img = cv2.imread(IMAGE_PATH, -1)
+    img = cv2.imread(IMAGE_PATH, 0)
 
     rosimage = sensor_msgs.msg.Image()
     rosimage.encoding = 'mono16'
@@ -20,6 +21,8 @@ def callback(self):
     rosimage.height = img.shape[0]
     rosimage.step = img.strides[0]
     rosimage.data = img.tostring()
+    rosimage.header.stamp = rospy.Time.now()
+    rosimage.header.frame_id = ''
 #    rosimage.data = img.flatten().tolist()
 
     publisher.publish(rosimage)
