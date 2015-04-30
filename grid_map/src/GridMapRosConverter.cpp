@@ -335,7 +335,9 @@ bool GridMapRosConverter::addLayerFromGrayscaleImage(
                                                          (*iterator)(1));
     if (cvColor[3] < 128)
       continue;
-    int cvGrayscale = cvPtrMONO->image.at((*iterator)(0), (*iterator)(1));
+    const auto& cvGrayscale = cvPtrMONO->image.at<uchar>((*iterator)(0),
+                                                         (*iterator)(1));
+    ROS_INFO_STREAM(cvGrayscale);
     gridMap.at(layer, *iterator) = lowerValue
         + (upperValue - lowerValue) * ((double) cvGrayscale / 255.0);
   }
