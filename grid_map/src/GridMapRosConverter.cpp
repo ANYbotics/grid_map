@@ -304,16 +304,21 @@ bool GridMapRosConverter::addLayerFromGrayscaleImage(
     return false;
   }
 
+  unsigned int depth;
+  // Convert color image to grayscale.
   try {
     if (image.encoding == sensor_msgs::image_encodings::BGRA8) {
       cvPtrMONO = cv_bridge::toCvCopy(image,
                                       sensor_msgs::image_encodings::MONO8);
+      depth = std::pow(2,8);
     } else if (image.encoding == sensor_msgs::image_encodings::BGRA16) {
       cvPtrMONO = cv_bridge::toCvCopy(image,
                                       sensor_msgs::image_encodings::MONO16);
+      depth = std::pow(2,16);
     } else {
       cvPtrMONO = cv_bridge::toCvCopy(image,
                                       sensor_msgs::image_encodings::MONO16);
+      depth = std::pow(2,16);
     }
   } catch (cv_bridge::Exception& e) {
     ROS_ERROR("cv_bridge exception: %s", e.what());
@@ -328,22 +333,22 @@ bool GridMapRosConverter::addLayerFromGrayscaleImage(
     return false;
   }
 
-  // TODO: Distinguish between 8 bit and 16 bit.
   GridMapIterator iterator(gridMap);
   for (GridMapIterator iterator(gridMap); !iterator.isPassedEnd(); ++iterator) {
     const auto& cvColor = cvPtrBGRA->image.at<cv::Vec4b>((*iterator)(0),
                                                          (*iterator)(1));
 
-    int alpha = cvColor[3];
-    if (alpha < 128)
-      continue;
+    if (image.encoding == sensor_msgs::image_encodings::BGRA8 || image.encoding == sensor_msgs::image_encodings::BGRA16) {
+      int alpha = cvColor[3];
+      if (alpha < 128)
+        continue;
+    }
 
     uchar cvGrayscale = cvPtrMONO->image.at<uchar>((*iterator)(0),
                                                    (*iterator)(1));
     int grayValue = cvGrayscale;
 
-    double height = lowerValue
-        + (upperValue - lowerValue) * ((double) grayValue / 255.0);
+    double height = lowerValue + (upperValue - lowerValue) * ((double)grayValue / (double)depth);
     gridMap.at(layer, *iterator) = height;
   }
 
