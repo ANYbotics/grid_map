@@ -331,15 +331,20 @@ bool GridMapRosConverter::addLayerFromGrayscaleImage(
   // TODO: Distinguish between 8 bit and 16 bit.
   GridMapIterator iterator(gridMap);
   for (GridMapIterator iterator(gridMap); !iterator.isPassedEnd(); ++iterator) {
-    const auto& cvColor = cvPtrBGRA->image.at<cv::Vec4i>((*iterator)(0),
+    const auto& cvColor = cvPtrBGRA->image.at<cv::Vec4b>((*iterator)(0),
                                                          (*iterator)(1));
-    if (cvColor[3] < 128)
+
+    int alpha = cvColor[3];
+    if (alpha < 128)
       continue;
-    const auto& cvGrayscale = cvPtrMONO->image.at<uchar>((*iterator)(0),
-                                                         (*iterator)(1));
-    ROS_INFO_STREAM(cvGrayscale);
-    gridMap.at(layer, *iterator) = lowerValue
-        + (upperValue - lowerValue) * ((double) cvGrayscale / 255.0);
+
+    uchar cvGrayscale = cvPtrMONO->image.at<uchar>((*iterator)(0),
+                                                   (*iterator)(1));
+    int grayValue = cvGrayscale;
+
+    double height = lowerValue
+        + (upperValue - lowerValue) * ((double) grayValue / 255.0);
+    gridMap.at(layer, *iterator) = height;
   }
 
   return true;
