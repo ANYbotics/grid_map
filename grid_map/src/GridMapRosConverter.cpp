@@ -296,29 +296,39 @@ bool GridMapRosConverter::addLayerFromGrayscaleImage(
     grid_map::GridMap& gridMap, const double lowerValue,
     const double upperValue)
 {
-  cv_bridge::CvImagePtr cvPtrBGRA, cvPtrMONO;
-  try {
-    cvPtrBGRA = cv_bridge::toCvCopy(image, image.encoding);
-  } catch (cv_bridge::Exception& e) {
-    ROS_ERROR("cv_bridge exception: %s", e.what());
-    return false;
+  cv_bridge::CvImagePtr cvPtrAlpha, cvPtrMono;
+
+  // If alpha channel exist, read it.
+  if (image.encoding == sensor_msgs::image_encodings::BGRA8
+      || image.encoding == sensor_msgs::image_encodings::BGRA16) {
+    try {
+      cvPtrAlpha = cv_bridge::toCvCopy(image, image.encoding);
+    } catch (cv_bridge::Exception& e) {
+      ROS_ERROR("cv_bridge exception: %s", e.what());
+      return false;
+    }
   }
 
   unsigned int depth;
   // Convert color image to grayscale.
   try {
-    if (image.encoding == sensor_msgs::image_encodings::BGRA8) {
-      cvPtrMONO = cv_bridge::toCvCopy(image,
+    if (image.encoding == sensor_msgs::image_encodings::BGRA8
+        || image.encoding == sensor_msgs::image_encodings::BGR8
+        || image.encoding == sensor_msgs::image_encodings::MONO8) {
+      cvPtrMono = cv_bridge::toCvCopy(image,
                                       sensor_msgs::image_encodings::MONO8);
-      depth = std::pow(2,8);
-    } else if (image.encoding == sensor_msgs::image_encodings::BGRA16) {
-      cvPtrMONO = cv_bridge::toCvCopy(image,
+      depth = std::pow(2, 8);
+      ROS_INFO("Color image converted to mono8");
+    } else if (image.encoding == sensor_msgs::image_encodings::BGRA16
+        || image.encoding == sensor_msgs::image_encodings::BGR16
+        || image.encoding == sensor_msgs::image_encodings::MONO16) {
+      cvPtrMono = cv_bridge::toCvCopy(image,
                                       sensor_msgs::image_encodings::MONO16);
-      depth = std::pow(2,16);
+      depth = std::pow(2, 16);
+      ROS_INFO("Color image converted to mono16");
     } else {
-      cvPtrMONO = cv_bridge::toCvCopy(image,
-                                      sensor_msgs::image_encodings::MONO16);
-      depth = std::pow(2,16);
+      ROS_ERROR("Expected BGR, BGRA, or MONO image encoding.");
+      return false;
     }
   } catch (cv_bridge::Exception& e) {
     ROS_ERROR("cv_bridge exception: %s", e.what());
@@ -335,20 +345,37 @@ bool GridMapRosConverter::addLayerFromGrayscaleImage(
 
   GridMapIterator iterator(gridMap);
   for (GridMapIterator iterator(gridMap); !iterator.isPassedEnd(); ++iterator) {
-    const auto& cvColor = cvPtrBGRA->image.at<cv::Vec4b>((*iterator)(0),
-                                                         (*iterator)(1));
-
-    if (image.encoding == sensor_msgs::image_encodings::BGRA8 || image.encoding == sensor_msgs::image_encodings::BGRA16) {
-      int alpha = cvColor[3];
-      if (alpha < 128)
+    // Set transparent values.
+    if (image.encoding == sensor_msgs::image_encodings::BGRA8) {
+      const auto& cvAlpha = cvPtrAlpha->image.at<cv::Vec4b>((*iterator)(0),
+                                                            (*iterator)(1));
+      unsigned int alpha = cvAlpha[3];
+      if (cvAlpha[3] < depth / 2)
+        continue;
+    }
+    if (image.encoding == sensor_msgs::image_encodings::BGRA16) {
+      const auto& cvAlpha = cvPtrAlpha->image.at<cv::Vec<uchar, 8>>(
+          (*iterator)(0), (*iterator)(1));
+      int alpha = (cvAlpha[6] << 8) + cvAlpha[7];
+      if (alpha < depth / 2)
         continue;
     }
 
-    uchar cvGrayscale = cvPtrMONO->image.at<uchar>((*iterator)(0),
-                                                   (*iterator)(1));
-    int grayValue = cvGrayscale;
+    // Compute height.
+    unsigned int grayValue;
+    if (depth == std::pow(2, 8)) {
+      uchar cvGrayscale = cvPtrMono->image.at<uchar>((*iterator)(0),
+                                                     (*iterator)(1));
+      grayValue = cvGrayscale;
+    }
+    if (depth == std::pow(2, 16)) {
+      const auto& cvGrayscale = cvPtrMono->image.at<cv::Vec2b>((*iterator)(0),
+                                                               (*iterator)(1));
+      grayValue = (cvGrayscale[0] << 8) + cvGrayscale[1];
+    }
 
-    double height = lowerValue + (upperValue - lowerValue) * ((double)grayValue / (double)depth);
+    double height = lowerValue
+        + (upperValue - lowerValue) * ((double) grayValue / (double) depth);
     gridMap.at(layer, *iterator) = height;
   }
 
