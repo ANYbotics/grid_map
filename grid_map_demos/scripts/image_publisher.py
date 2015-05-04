@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # simple script to publish a image from a file.
 import rospy
+import rospkg
 import time
 import cv2
 import sensor_msgs.msg
@@ -9,16 +10,18 @@ import sensor_msgs.msg
 IMAGE_MESSAGE_TOPIC = 'grid_map_image'
 
 #define here the image path and name.
-#IMAGE_PATH = 'example_image_16bit.tif'
-#IMAGE_PATH = 'bgra8.png'
-#IMAGE_PATH = 'bgr8.png'
-IMAGE_PATH = 'grayscale8.png'
+IMAGE_NAME = 'boxes.png'
+#IMAGE_NAME = 'bgra8.png'
+#IMAGE_NAME = 'bgr8.png'
+#IMAGE_NAME = 'grayscale8.png'
 
 def callback(self):
     """ Convert a image to a ROS compatible message
         (sensor_msgs.Image).
     """
-    img = cv2.imread(IMAGE_PATH, -1)
+    global publisher, imagePath
+    
+    img = cv2.imread(imagePath + IMAGE_NAME, cv2.IMREAD_UNCHANGED)
     
 #    print img.shape
 #    print img.size
@@ -55,7 +58,9 @@ def callback(self):
 
 #Main function initializes node and subscribers and starts the ROS loop
 def main_program():
-    global publisher
+    global publisher, imagePath
+    rospack = rospkg.RosPack()
+    imagePath = rospack.get_path('grid_map_demos') + '/scripts/'
     rospy.init_node('image_publisher')
     publisher = rospy.Publisher(IMAGE_MESSAGE_TOPIC, sensor_msgs.msg.Image, queue_size=10)
     rospy.Timer(rospy.Duration(2), callback)
