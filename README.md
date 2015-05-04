@@ -17,7 +17,8 @@ The grid map package has been tested under [ROS] Indigo and Ubuntu 14.04. This i
 
 The source code is released under a [BSD 3-Clause license](LICENSE).
 
-**Author: Péter Fankhauser, pfankhauser@ethz.ch<br />
+**Authors: Péter Fankhauser, Martin Wermelinger<br />
+Maintainer: Péter Fankhauser, pfankhauser@ethz.ch<br />
 Affiliation: Autonomous Systems Lab, ETH Zurich**
 
 ![Grid map example in rviz](grid_map_visualization/doc/point_cloud.jpg)
@@ -44,7 +45,7 @@ in International Conference on Climbing and Walking Robots (CLAWAR), 2014. ([PDF
 
 ### Dependencies
 
-Except for ROS packages that are part of the standard installation (*cmake-modules*, *roscpp*, *sensor_msgs*, and *nav_msgs*), the grid map library depends only on the linear algebra library [Eigen].
+Except for ROS packages that are part of the standard installation (*roscpp*, *tf*, *filters*, *sensor_msgs*, *nav_msgs*, and *cv_bridge*), the grid map library depends only on the linear algebra library [Eigen].
 
     sudo apt-get install libeigen3-dev
 
