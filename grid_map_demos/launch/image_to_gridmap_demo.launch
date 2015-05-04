@@ -1,0 +1,5 @@
+<launch>
+  <!-- Launch the grid map simple demo node -->
+  <node pkg="grid_map_demos" type="image_publisher.py" name="image_publisher" output="screen" />
+  <node pkg="starleth_elevation_mapping" type="ground_truth_pose_publisher.py" name="ground_truth_pose_publisher" output="screen" />
+</launch>
