@@ -41,7 +41,7 @@ bool GridMapVisualization::readParameters()
   double activityCheckRate;
   nodeHandle_.param("activity_check_rate", activityCheckRate, 2.0);
   activityCheckDuration_.fromSec(1.0 / activityCheckRate);
-  ROS_ASSERT(!maxNoUpdateDuration_.isZero());
+  ROS_ASSERT(!activityCheckDuration_.isZero());
 
   // Configure the visualizations from a configuration stored on the parameter server.
   XmlRpc::XmlRpcValue config;

@@ -11,11 +11,9 @@
 // ROS
 #include <geometry_msgs/PolygonStamped.h>
 
-// Eigen
-#include <Eigen/Core>
-
 using namespace std;
 using namespace ros;
+using namespace grid_map;
 
 namespace grid_map_demos {
 
@@ -28,7 +26,7 @@ IteratorsDemo::IteratorsDemo(ros::NodeHandle& nodeHandle)
   polygonPublisher_ = nodeHandle_.advertise<geometry_msgs::PolygonStamped>("polygon", 1, true);
 
   // Setting up map.
-  map_.setGeometry(Eigen::Array2d(1.0, 1.0), 0.05, Eigen::Vector2d(0.0, 0.0));
+  map_.setGeometry(Length(1.0, 1.0), 0.05, Position(0.0, 0.0));
   map_.setFrameId("map");
 
   publish();
@@ -67,8 +65,8 @@ void IteratorsDemo::demoSubmapIterator()
   map_.clear();
   publish();
 
-  Eigen::Array2i submapStartIndex(3, 5);
-  Eigen::Array2i submapBufferSize(12, 7);
+  Index submapStartIndex(3, 5);
+  Index submapBufferSize(12, 7);
 
   for (grid_map::SubmapIterator iterator(map_, submapStartIndex, submapBufferSize);
       !iterator.isPassedEnd(); ++iterator) {
@@ -88,7 +86,7 @@ void IteratorsDemo::demoCircleIterator()
   map_.clear();
   publish();
 
-  Eigen::Vector2d center(0.0, -0.15);
+  Position center(0.0, -0.15);
   double radius = 0.4;
 
   for (grid_map::CircleIterator iterator(map_, center, radius);
@@ -109,8 +107,8 @@ void IteratorsDemo::demoLineIterator()
   map_.clear();
   publish();
 
-  Eigen::Array2i start(18, 2);
-  Eigen::Array2i end(2, 13);
+  Index start(18, 2);
+  Index end(2, 13);
 
   for (grid_map::LineIterator iterator(map_, start, end);
       !iterator.isPassedEnd(); ++iterator) {
@@ -132,17 +130,17 @@ void IteratorsDemo::demoPolygonIterator()
 
   grid_map::Polygon polygon;
   polygon.setFrameId(map_.getFrameId());
-  polygon.addVertex(Eigen::Vector2d( 0.480,  0.000));
-  polygon.addVertex(Eigen::Vector2d( 0.164,  0.155));
-  polygon.addVertex(Eigen::Vector2d( 0.116,  0.500));
-  polygon.addVertex(Eigen::Vector2d(-0.133,  0.250));
-  polygon.addVertex(Eigen::Vector2d(-0.480,  0.399));
-  polygon.addVertex(Eigen::Vector2d(-0.316,  0.000));
-  polygon.addVertex(Eigen::Vector2d(-0.480, -0.399));
-  polygon.addVertex(Eigen::Vector2d(-0.133, -0.250));
-  polygon.addVertex(Eigen::Vector2d( 0.116, -0.500));
-  polygon.addVertex(Eigen::Vector2d( 0.164, -0.155));
-  polygon.addVertex(Eigen::Vector2d( 0.480,  0.000));
+  polygon.addVertex(Position( 0.480,  0.000));
+  polygon.addVertex(Position( 0.164,  0.155));
+  polygon.addVertex(Position( 0.116,  0.500));
+  polygon.addVertex(Position(-0.133,  0.250));
+  polygon.addVertex(Position(-0.480,  0.399));
+  polygon.addVertex(Position(-0.316,  0.000));
+  polygon.addVertex(Position(-0.480, -0.399));
+  polygon.addVertex(Position(-0.133, -0.250));
+  polygon.addVertex(Position( 0.116, -0.500));
+  polygon.addVertex(Position( 0.164, -0.155));
+  polygon.addVertex(Position( 0.480,  0.000));
 
   geometry_msgs::PolygonStamped message;
   grid_map::PolygonRosConverter::toMessage(polygon, message);

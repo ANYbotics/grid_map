@@ -13,7 +13,6 @@ set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
 
 ## Find catkin macros and libraries
 find_package(catkin REQUIRED COMPONENTS
-  cmake_modules
   roscpp
   tf
   grid_map
@@ -22,13 +21,8 @@ find_package(catkin REQUIRED COMPONENTS
   visualization_msgs
   sensor_msgs
   nav_msgs
-  eigen_stl_containers
   sensor_msgs
-  nav_msgs
 )
-
-## System dependencies are found with CMake's conventions
-find_package(Eigen REQUIRED)
 
 ###################################
 ## catkin specific configuration ##
@@ -52,11 +46,7 @@ catkin_package(
     visualization_msgs
     sensor_msgs
     nav_msgs
-    eigen_stl_containers
     sensor_msgs
-    nav_msgs
-  DEPENDS
-    Eigen
 )
 
 ###########
@@ -68,6 +58,7 @@ catkin_package(
 include_directories(
   include
   ${catkin_INCLUDE_DIRS}
+  ${EIGEN3_INCLUDE_DIR}
 )
 
 ## Declare a cpp library
