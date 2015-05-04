@@ -9,11 +9,11 @@
 
 #pragma once
 
-#include <grid_map/grid_map.hpp>
-
 // ROS
 #include <ros/ros.h>
 #include <sensor_msgs/Image.h>
+
+#include <grid_map/grid_map.hpp>
 
 #include <string>
 
