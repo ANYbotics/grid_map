@@ -64,9 +64,6 @@ def main_program():
     rospy.spin()
 
 if __name__ == '__main__':
-    # Initialize the node and name it.
-    #rospy.init_node('image_publisher', anonymous = True)
-    # Go to the main loop.
     try:
         main_program()
     except rospy.ROSInterruptException: pass
