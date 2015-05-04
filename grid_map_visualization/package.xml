@@ -18,5 +18,4 @@
   <depend>visualization_msgs</depend>
   <depend>sensor_msgs</depend>
   <depend>nav_msgs</depend>
-  <depend>eigen_stl_containers</depend>
 </package>
