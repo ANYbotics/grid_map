@@ -258,8 +258,9 @@ bool GridMapRosConverter::fromImage(const sensor_msgs::Image& image, const std::
   return addLayerFromColorImage(image, layer, gridMap);
 }
 
-bool GridMapRosConverter::addLayerFromColorImage(const sensor_msgs::Image& image, const std::string& layer,
-                                            grid_map::GridMap& gridMap)
+bool GridMapRosConverter::addLayerFromColorImage(
+    const sensor_msgs::Image& image, const std::string& layer,
+    grid_map::GridMap& gridMap)
 {
   cv_bridge::CvImagePtr cvPtr;
   try {
@@ -272,16 +273,18 @@ bool GridMapRosConverter::addLayerFromColorImage(const sensor_msgs::Image& image
 
   gridMap.add(layer);
 
-  if (gridMap.getSize()(0) != image.height || gridMap.getSize()(1) != image.width) {
+  if (gridMap.getSize()(0) != image.height
+      || gridMap.getSize()(1) != image.width) {
     ROS_ERROR("Image size does not correspond to grid map size!");
     return false;
   }
 
   for (GridMapIterator iterator(gridMap); !iterator.isPassedEnd(); ++iterator) {
-    const auto& cvColor = cvPtr->image.at<cv::Vec3b>((*iterator)(0), (*iterator)(1));
+    const auto& cvColor = cvPtr->image.at<cv::Vec3b>((*iterator)(0),
+                                                     (*iterator)(1));
     Eigen::Vector3i colorVector;
     // TODO Add cases for different image encodings.
-    colorVector(2) = cvColor[0]; // From BGR to RGB.
+    colorVector(2) = cvColor[0];  // From BGR to RGB.
     colorVector(1) = cvColor[1];
     colorVector(0) = cvColor[2];
     colorVectorToValue(colorVector, gridMap.at(layer, *iterator));
@@ -379,7 +382,6 @@ bool GridMapRosConverter::addLayerFromGrayscaleImage(
 
   return true;
 }
-
 
 bool GridMapRosConverter::saveToBag(const grid_map::GridMap& gridMap, const std::string& pathToBag,
                                     const std::string& topic)

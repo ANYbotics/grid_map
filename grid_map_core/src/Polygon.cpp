@@ -11,7 +11,6 @@
 // Eigen
 #include <Eigen/Dense>
 #include <Eigen/Geometry>
-#include <iostream>
 
 namespace grid_map {
 
