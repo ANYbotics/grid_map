@@ -1,7 +1,7 @@
 <launch>
   <!-- Launch the grid map simple demo node -->
   <node pkg="grid_map_demos" type="image_publisher.py" name="image_publisher" output="screen" />
-  <node pkg="grid_map_demos" type="ground_truth_pose_publisher.py" name="ground_truth_pose_publisher" output="screen" />
+
   <node pkg="grid_map_demos" type="image_to_gridmap_demo" name="image_to_gridmap" output="screen">
     <rosparam command="load" file="$(find grid_map_demos)/config/image_to_gridmap_demo.yaml" />
   </node>

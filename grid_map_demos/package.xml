@@ -13,4 +13,5 @@
   <depend>grid_map</depend>
   <depend>grid_map_msgs</depend>
   <depend>geometry_msgs</depend>
+  <depend>sensor_msgs</depend>
 </package>

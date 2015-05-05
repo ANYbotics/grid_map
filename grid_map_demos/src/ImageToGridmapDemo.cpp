@@ -8,7 +8,6 @@
 
 #include "grid_map_demos/ImageToGridmapDemo.hpp"
 
-#include <cv_bridge/cv_bridge.h>
 #include <sensor_msgs/PointCloud2.h>
 
 namespace grid_map_demos {

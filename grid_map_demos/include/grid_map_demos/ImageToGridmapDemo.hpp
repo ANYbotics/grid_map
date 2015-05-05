@@ -20,7 +20,8 @@
 namespace grid_map_demos {
 
 /*!
- * Visualizes a grid map by publishing different topics that can be viewed in Rviz.
+ * Loads an image and saves it as layer 'elevation' of a grid map.
+ * The grid map is published and can be viewed in Rviz.
  */
 class ImageToGridmapDemo
 {
