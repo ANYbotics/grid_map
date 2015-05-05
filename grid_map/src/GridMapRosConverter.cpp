@@ -277,7 +277,6 @@ bool GridMapRosConverter::addLayerFromColorImage(const sensor_msgs::Image& image
     return false;
   }
 
-  GridMapIterator iterator(gridMap);
   for (GridMapIterator iterator(gridMap); !iterator.isPassedEnd(); ++iterator) {
     const auto& cvColor = cvPtr->image.at<cv::Vec3b>((*iterator)(0), (*iterator)(1));
     Eigen::Vector3i colorVector;
@@ -318,14 +317,14 @@ bool GridMapRosConverter::addLayerFromGrayscaleImage(
       cvPtrMono = cv_bridge::toCvCopy(image,
                                       sensor_msgs::image_encodings::MONO8);
       depth = std::pow(2, 8);
-      ROS_INFO("Color image converted to mono8");
+      ROS_DEBUG("Color image converted to mono8");
     } else if (image.encoding == sensor_msgs::image_encodings::BGRA16
         || image.encoding == sensor_msgs::image_encodings::BGR16
         || image.encoding == sensor_msgs::image_encodings::MONO16) {
       cvPtrMono = cv_bridge::toCvCopy(image,
                                       sensor_msgs::image_encodings::MONO16);
       depth = std::pow(2, 16);
-      ROS_INFO("Color image converted to mono16");
+      ROS_DEBUG("Color image converted to mono16");
     } else {
       ROS_ERROR("Expected BGR, BGRA, or MONO image encoding.");
       return false;
@@ -343,7 +342,6 @@ bool GridMapRosConverter::addLayerFromGrayscaleImage(
     return false;
   }
 
-  GridMapIterator iterator(gridMap);
   for (GridMapIterator iterator(gridMap); !iterator.isPassedEnd(); ++iterator) {
     // Set transparent values.
     if (image.encoding == sensor_msgs::image_encodings::BGRA8) {

@@ -143,11 +143,11 @@ class GridMapRosConverter
 
   /*!
    * Adds a layer with data from a grayscale image.
-   * @param[in] image the image to be added. A color image (bgra8 and
-   * bgra16 encoding) will be transformed in a grayscale image.
-   * @param[in] layer the layer that is filled with the image.
-   * @param[in] lowerValue value of the layer corresponding to black.
-   * @param[in] upperValue value of the layer corresponding to white.
+   * @param[in] image the image to be added. If it is a color image
+   * (bgr, or bgra encoding), it will be transformed in a grayscale image.
+   * @param[in] layer the layer that is filled with the image data.
+   * @param[in] lowerValue value of the layer corresponding to black pixels.
+   * @param[in] upperValue value of the layer corresponding to white pixels.
    * @param[out] gridMap the grid map to be populated.
    * @return true if successful, false otherwise.
    */

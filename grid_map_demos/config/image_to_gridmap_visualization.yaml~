@@ -1,12 +1,9 @@
-grid_map_topic: /grid_map_iterators_demo/grid_map
-
+grid_map_topic: /image_to_gridmap_demo/grid_map
 grid_map_visualizations:
-
-  - name: elevation_cloud
+  - name: elevation_points
     type: point_cloud
     params:
      layer: elevation
-
   - name: map_region
     type: map_region
     params:

@@ -10,7 +10,7 @@ import sensor_msgs.msg
 IMAGE_MESSAGE_TOPIC = 'grid_map_image'
 
 #define here the image path and name.
-IMAGE_NAME = 'demo_noise.png'
+IMAGE_NAME = 'example_image.png'
 
 def callback(self):
     """ Convert a image to a ROS compatible message
@@ -41,7 +41,7 @@ def callback(self):
            	   rosimage.encoding = 'bgra8'
        else:
            rosimage.encoding = 'mono8'
-    print "Encoding: ", rosimage.encoding
+#    print "Encoding: ", rosimage.encoding
     
     rosimage.width = img.shape[1]
     rosimage.height = img.shape[0]

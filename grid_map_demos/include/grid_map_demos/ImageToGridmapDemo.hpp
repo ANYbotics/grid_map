@@ -45,7 +45,6 @@ class ImageToGridmapDemo
   bool readParameters();
 
   void imageCallback(const sensor_msgs::Image& msg);
-  void maskCallback(const sensor_msgs::Image& msg);
 
  private:
 
@@ -55,13 +54,10 @@ class ImageToGridmapDemo
   //! Grid map publisher.
   ros::Publisher gridMapPublisher_;
 
-  //! Point cloud publisher.
-  ros::Publisher pointCloudPublisher_;
-
   //! Grid map data.
   grid_map::GridMap map_;
 
-  ros::Subscriber grayscaleMaskSub_;
+  //! Image subscriber
   ros::Subscriber imageSub_;
 
   //! Name of the grid map topic.
@@ -69,6 +65,8 @@ class ImageToGridmapDemo
 
   //! Length of the grid map in x direction.
   double mapLengthX_;
+
+  //! Resolution of the grid map.
   double resolution_;
 
   //! Range of the height values.
