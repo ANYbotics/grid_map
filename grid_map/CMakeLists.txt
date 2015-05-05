@@ -78,7 +78,7 @@ target_link_libraries(${PROJECT_NAME}
 
 add_dependencies(
   ${PROJECT_NAME}
-  grid_map_msgs_generate_messages_cpp
+  ${catkin_EXPORTED_TARGETS}
 )
 
 #############
