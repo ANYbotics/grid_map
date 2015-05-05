@@ -10,7 +10,7 @@ import sensor_msgs.msg
 IMAGE_MESSAGE_TOPIC = 'grid_map_image'
 
 #define here the image path and name.
-IMAGE_NAME = 'gradient_noise.png'
+IMAGE_NAME = 'demo_noise.png'
 
 def callback(self):
     """ Convert a image to a ROS compatible message

@@ -29,7 +29,8 @@ ImageToGridmapDemo::~ImageToGridmapDemo() {}
 bool ImageToGridmapDemo::readParameters()
 {
   nodeHandle_.param("elevation_map_topic", imageTopic_, std::string("/grid_map_image"));
-  nodeHandle_.param("map_length_x", mapLengthX_, 1.0);
+//  nodeHandle_.param("map_length_x", mapLengthX_, 1.0);
+  nodeHandle_.param("resolution", resolution_, 0.03);
   nodeHandle_.param("map_frame_id", mapFrameId_, std::string("map"));
   nodeHandle_.param("min_height", minHeight_, 0.0);
   nodeHandle_.param("max_height", maxHeight_, 1.0);
@@ -40,6 +41,7 @@ bool ImageToGridmapDemo::readParameters()
 void ImageToGridmapDemo::maskCallback(const sensor_msgs::Image& msg)
 {
   map_.setFrameId(mapFrameId_);
+  mapLengthX_ = resolution_ * msg.width;
   grid_map::GridMapRosConverter::fromImage(msg, std::string("mask"), mapLengthX_, map_);
   //std::cout << map_["mask"];
   ROS_INFO("Initialized map with size %f x %f m (%i x %i cells).",

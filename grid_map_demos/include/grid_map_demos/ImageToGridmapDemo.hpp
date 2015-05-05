@@ -69,6 +69,7 @@ class ImageToGridmapDemo
 
   //! Length of the grid map in x direction.
   double mapLengthX_;
+  double resolution_;
 
   //! Range of the height values.
   double minHeight_;
