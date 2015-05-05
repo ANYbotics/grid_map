@@ -1,5 +1,14 @@
 <launch>
   <!-- Launch the grid map simple demo node -->
   <node pkg="grid_map_demos" type="image_publisher.py" name="image_publisher" output="screen" />
-  <node pkg="starleth_elevation_mapping" type="ground_truth_pose_publisher.py" name="ground_truth_pose_publisher" output="screen" />
+  <node pkg="grid_map_demos" type="ground_truth_pose_publisher.py" name="ground_truth_pose_publisher" output="screen" />
+  <node pkg="grid_map_demos" type="image_to_gridmap_demo" name="image_to_gridmap" output="screen">
+    <rosparam command="load" file="$(find grid_map_demos)/config/image_to_gridmap_demo.yaml" />
+  </node>
+  <!-- Launch the grid map visualizer -->
+  <node pkg="grid_map_visualization" type="grid_map_visualization" name="image_to_gridmap_visualization" output="screen">
+    <rosparam command="load" file="$(find grid_map_demos)/config/image_to_gridmap_visualization.yaml" />
+  </node>
+  <!-- Launch RViz with the demo configuration -->
+  <!-- node name="rviz" pkg="rviz" type="rviz" args="-d $(find grid_map_demos)/rviz/grid_map_demo.rviz" / -->
 </launch>

@@ -1,0 +1,5 @@
+elevation_map_topic: "/grid_map_image"
+map_length_x: 5.0
+map_frame_id: "map"
+min_height: 0.0
+max_height: 0.5
