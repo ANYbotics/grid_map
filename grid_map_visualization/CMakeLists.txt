@@ -24,6 +24,8 @@ find_package(catkin REQUIRED COMPONENTS
   sensor_msgs
 )
 
+find_package(Eigen3 REQUIRED)
+
 ###################################
 ## catkin specific configuration ##
 ###################################
