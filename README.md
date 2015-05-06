@@ -93,9 +93,15 @@ The *grid_map_demos* package contains several demonstration nodes. Use this code
         
         roslaunch grid_map_demos tutorial_demo.launch
 
-* *[iterators_demo](grid_map_demos/src/iterators_demo_node.cpp)* showcases the usage of the grid map iterators. Launch it with
+* *[iterators_demo](grid_map_demos/src/IteratorsDemo.cpp)* showcases the usage of the grid map iterators. Launch it with
 
         roslaunch grid_map_demos iterators_demo.launch
+        
+* *[image_to_gridmap_demo](grid_map_demos/src/ImageToGridMapDemo.cpp)* demonstrates how to convert data from an [image](grid_map_demos/scripts/example_image.png) to a grid map. Start the demonstration with
+        
+        roslaunch grid_map_demos image_to_gridmap_demo.launch
+
+    ![Image to grid map demo result](grid_map_demos/doc/image_to_grid_map_demo_result.png)
 
 
 ### Conventions & Definitions

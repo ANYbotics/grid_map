@@ -1,0 +1,13 @@
+<launch>
+  <rosparam command="load" file="$(find grid_map_demos)/config/image_to_gridmap_demo.yaml" />
+  
+  <!-- Launch the grid map simple demo node -->
+  <node pkg="grid_map_demos" type="image_publisher.py" name="image_publisher" output="screen" />
+  <node pkg="grid_map_demos" type="image_to_gridmap_demo" name="image_to_gridmap_demo" output="screen" />
+  
+  <!-- Launch the grid map visualizer -->
+  <node pkg="grid_map_visualization" type="grid_map_visualization" name="grid_map_visualization" output="screen" />
+  
+  <!-- Launch RViz with the demo configuration -->
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find grid_map_demos)/rviz/grid_map_demo.rviz" />
+</launch>

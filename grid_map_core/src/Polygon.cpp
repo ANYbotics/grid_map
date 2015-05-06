@@ -47,6 +47,11 @@ const Position& Polygon::getVertex(const size_t index) const
   return vertices_.at(index);
 }
 
+void Polygon::removeVertices()
+{
+  vertices_.clear();
+}
+
 const Position& Polygon::operator [](const size_t index) const
 {
   return getVertex(index);
@@ -134,7 +139,7 @@ Polygon Polygon::convexHull(Polygon& polygon1, Polygon& polygon2)
   vertices.insert(vertices.end(), polygon1.getVertices().begin(), polygon1.getVertices().end());
   vertices.insert(vertices.end(), polygon2.getVertices().begin(), polygon2.getVertices().end());
 
-  std::vector<Position> hull(vertices.size());
+  std::vector<Position> hull(vertices.size()+1);
 
   // Sort points lexicographically
   std::sort(vertices.begin(), vertices.end(), sortVertices);
