@@ -7,7 +7,7 @@ import cv2
 import sensor_msgs.msg
 
 #change this to fit the expected topic name.
-IMAGE_MESSAGE_TOPIC = 'grid_map_image'
+IMAGE_MESSAGE_TOPIC = 'image'
 
 #define here the image path and name.
 IMAGE_NAME = 'example_image.png'
@@ -48,7 +48,7 @@ def callback(self):
     rosimage.step = img.strides[0]
     rosimage.data = img.tostring()
     rosimage.header.stamp = rospy.Time.now()
-    rosimage.header.frame_id = ''
+    rosimage.header.frame_id = 'map'
 
     publisher.publish(rosimage)
 

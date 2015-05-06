@@ -1,17 +1,20 @@
-elevation_map_topic: "/grid_map_image"
-resolution: 0.03
-map_frame_id: "map"
-min_height: -0.2
-max_height: 0.2
+image_to_gridmap_demo:
+  image_topic: "/image"
+  resolution: 0.03
+  map_frame_id: "map"
+  min_height: -0.2
+  max_height: 0.2
 
-grid_map_topic: /image_to_gridmap_demo/grid_map
-grid_map_visualizations:
-  - name: elevation_points
-    type: point_cloud
-    params:
-     layer: elevation
-  - name: map_region
-    type: map_region
-    params:
-     color: 16777215
-     line_width: 0.003
+grid_map_visualization:
+  grid_map_topic: /image_to_gridmap_demo/grid_map
+  grid_map_visualizations:
+    - name: elevation_points
+      type: point_cloud
+      params:
+        layer: elevation
+    - name: elevation_grid
+      type: occupancy_grid
+      params:
+        layer: elevation
+        data_min: -0.2
+        data_max: 0.2

@@ -118,44 +118,39 @@ class GridMapRosConverter
                           nav_msgs::GridCells& gridCells);
 
   /*!
-   * Initializes a grid map from a image messages and adds the image data
-   * to a layer of the grid map. This changes the geometry
+   * Initializes a grid map from a image messages. This changes the geometry
    * of the map and deletes all contents of the layers!
    * @param[in] image the image.
-   * @param[in] layer the layer that is filled with the image.
-   * @param[in] lengthX the desired length in x-direction of the grid map.
+   * @param[in] resolution the desired resolution of the grid map [m/cell].
    * @param[out] gridMap the grid map to be initialized.
    * @return true if successful, false otherwise.
    */
-  static bool fromImage(const sensor_msgs::Image& image, const std::string& layer,
-                        const double lengthX, grid_map::GridMap& gridMap);
+  static bool initializeFromImage(const sensor_msgs::Image& image, const double resolution,
+                                  grid_map::GridMap& gridMap);
 
   /*!
-   * Adds a layer with data from a color image.
-   * @param[in] image the image to be added.
-   * @param[in] layer the layer that is filled with the image.
-   * @param[out] gridMap the grid map to be populated.
-   * @return true if successful, false otherwise.
-   */
-  static bool addLayerFromColorImage(const sensor_msgs::Image& image,
-                                     const std::string& layer,
-                                     grid_map::GridMap& gridMap);
-
-  /*!
-   * Adds a layer with data from a grayscale image.
+   * Adds a layer with data from image.
    * @param[in] image the image to be added. If it is a color image
-   * (bgr, or bgra encoding), it will be transformed in a grayscale image.
+   * (bgr or bgra encoding), it will be transformed in a grayscale image.
    * @param[in] layer the layer that is filled with the image data.
    * @param[in] lowerValue value of the layer corresponding to black pixels.
    * @param[in] upperValue value of the layer corresponding to white pixels.
    * @param[out] gridMap the grid map to be populated.
    * @return true if successful, false otherwise.
    */
-  static bool addLayerFromGrayscaleImage(const sensor_msgs::Image& image,
-                                         const std::string& layer,
-                                         grid_map::GridMap& gridMap,
-                                         const double lowerValue = 0.0,
-                                         const double upperValue = 1.0);
+  static bool addLayerFromImage(const sensor_msgs::Image& image, const std::string& layer,
+                                grid_map::GridMap& gridMap, const double lowerValue = 0.0,
+                                const double upperValue = 1.0);
+
+  /*!
+   * Adds a color layer with data from an image.
+   * @param[in] image the image to be added.
+   * @param[in] layer the layer that is filled with the image.
+   * @param[out] gridMap the grid map to be populated.
+   * @return true if successful, false otherwise.
+   */
+  static bool addColorLayerImage(const sensor_msgs::Image& image, const std::string& layer,
+                                 grid_map::GridMap& gridMap);
 
   /*!
    * Saves a grid map into a ROS bag. The timestamp of the grid map

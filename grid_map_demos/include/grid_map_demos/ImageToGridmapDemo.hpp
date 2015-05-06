@@ -58,7 +58,7 @@ class ImageToGridmapDemo
   grid_map::GridMap map_;
 
   //! Image subscriber
-  ros::Subscriber imageSub_;
+  ros::Subscriber imageSubscriber_;
 
   //! Name of the grid map topic.
   std::string imageTopic_;
