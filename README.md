@@ -101,7 +101,7 @@ The *grid_map_demos* package contains several demonstration nodes. Use this code
         
         roslaunch grid_map_demos image_to_gridmap_demo.launch
 
-    ![Image to grid map demo result](grid_map_demo/doc/image_to_grid_map_demo_result.png)
+    ![Image to grid map demo result](grid_map_demos/doc/image_to_grid_map_demo_result.png)
 
 
 ### Conventions & Definitions
