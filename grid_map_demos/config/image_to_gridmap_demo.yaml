@@ -2,8 +2,8 @@ image_to_gridmap_demo:
   image_topic: "/image"
   resolution: 0.03
   map_frame_id: "map"
-  min_height: -0.2
-  max_height: 0.2
+  min_height: -0.1
+  max_height: 0.1
 
 grid_map_visualization:
   grid_map_topic: /image_to_gridmap_demo/grid_map
