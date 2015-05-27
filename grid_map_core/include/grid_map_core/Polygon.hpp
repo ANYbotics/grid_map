@@ -112,6 +112,13 @@ class Polygon
   const std::string& getFrameId() const;
 
   /*!
+   * Get the area of the polygon. The polygon has to be
+   * "simple", i.e. not crossing itself.
+   * @return area of the polygon.
+   */
+  const double getArea() const;
+
+  /*!
    * Computes the convex hull of two polygons and returns it as polygon.
    * @param[in] polygon1 the first input polygon.
    * @param[in] polygon2 the second input polygon.

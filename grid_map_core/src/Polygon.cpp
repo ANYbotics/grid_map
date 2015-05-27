@@ -92,6 +92,18 @@ void Polygon::resetTimestamp()
   timestamp_ = 0.0;
 }
 
+const double Polygon::getArea() const
+{
+  double area = 0.0;
+  int j = vertices_.size() - 1;
+  for (int i = 0; i < vertices_.size(); i++) {
+    area += (vertices_.at(j).x() + vertices_.at(i).x())
+        * (vertices_.at(j).y() - vertices_.at(i).y());
+    j = i;
+  }
+  return std::abs(area / 2.0);
+}
+
 Polygon Polygon::convexHullCircles(const Position center1,
                                    const Position center2, const double radius,
                                    const int nVertices)
