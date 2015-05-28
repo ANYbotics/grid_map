@@ -149,8 +149,8 @@ class GridMapRosConverter
    * @param[out] gridMap the grid map to be populated.
    * @return true if successful, false otherwise.
    */
-  static bool addColorLayerImage(const sensor_msgs::Image& image, const std::string& layer,
-                                 grid_map::GridMap& gridMap);
+  static bool addColorLayerFromImage(const sensor_msgs::Image& image, const std::string& layer,
+                                     grid_map::GridMap& gridMap);
 
   /*!
    * Saves a grid map into a ROS bag. The timestamp of the grid map

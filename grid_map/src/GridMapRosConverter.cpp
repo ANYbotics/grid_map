@@ -349,8 +349,9 @@ bool GridMapRosConverter::addLayerFromImage(const sensor_msgs::Image& image,
   return true;
 }
 
-bool GridMapRosConverter::addColorLayerImage(const sensor_msgs::Image& image,
-                                             const std::string& layer, grid_map::GridMap& gridMap)
+bool GridMapRosConverter::addColorLayerFromImage(const sensor_msgs::Image& image,
+                                                 const std::string& layer,
+                                                 grid_map::GridMap& gridMap)
 {
   cv_bridge::CvImagePtr cvPtr;
   try {
