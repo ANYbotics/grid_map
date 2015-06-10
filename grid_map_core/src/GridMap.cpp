@@ -250,7 +250,7 @@ GridMap GridMap::getSubmap(const grid_map::Position& position, const grid_map::L
                            bool& isSuccess)
 {
   Index index;
-  return getSubmap(position, length, isSuccess);
+  return getSubmap(position, length, index, isSuccess);
 }
 
 GridMap GridMap::getSubmap(const grid_map::Position& position, const grid_map::Length& length,
