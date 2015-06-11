@@ -8,9 +8,8 @@
 
 #include <grid_map_core/Polygon.hpp>
 
-#include <iostream>
 // Eigen
-#include <Eigen/Dense>
+#include <Eigen/Core>
 #include <Eigen/Geometry>
 
 namespace grid_map {
