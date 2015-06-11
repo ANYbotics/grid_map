@@ -45,9 +45,11 @@ bool PointCloudVisualization::visualize(const grid_map::GridMap& map)
     ROS_WARN_STREAM("PointCloudVisualization::visualize: No grid map layer with name '" << layer_ << "' found.");
     return false;
   }
-  sensor_msgs::PointCloud2 pointCloud;
-  grid_map::GridMapRosConverter::toPointCloud(map, layer_, pointCloud);
-  publisher_.publish(pointCloud);
+  if (publisher_.getNumSubscribers() > 0) {
+    sensor_msgs::PointCloud2 pointCloud;
+    grid_map::GridMapRosConverter::toPointCloud(map, layer_, pointCloud);
+    publisher_.publish(pointCloud);
+  }
   return true;
 }
 

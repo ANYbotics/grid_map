@@ -173,7 +173,6 @@ void GridMapRosConverter::toPointCloud(const grid_map::GridMap& gridMap,
         *iterator.second = (float) position.z();
       } else if (iterator.first == "rgb") {
         *iterator.second = gridMap.at("color", *mapIterator);
-        ;
       } else {
         *iterator.second = gridMap.at(iterator.first, *mapIterator);
       }
