@@ -122,3 +122,15 @@ TEST(convertToInequalityConstraints, triangle2)
   EXPECT_NEAR( 1.5000, b(1), 1e-4);
   EXPECT_NEAR( 0.0000, b(2), 1e-4);
 }
+
+TEST(offsetInward, triangle)
+{
+  grid_map::Polygon polygon({Position(1.0, 1.0), Position(0.0, 0.0), Position(1.0, -1.0)});
+  polygon.offsetInward(0.1);
+  EXPECT_NEAR(0.9, polygon.getVertex(0)(0), 1e-4);
+  EXPECT_NEAR(0.758579, polygon.getVertex(0)(1), 1e-4);
+  EXPECT_NEAR(0.141421, polygon.getVertex(1)(0), 1e-4);
+  EXPECT_NEAR(0.0, polygon.getVertex(1)(1), 1e-4);
+  EXPECT_NEAR(0.9, polygon.getVertex(2)(0), 1e-4);
+  EXPECT_NEAR(-0.758579, polygon.getVertex(2)(1), 1e-4);
+}

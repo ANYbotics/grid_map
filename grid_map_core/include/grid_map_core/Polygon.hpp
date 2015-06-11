@@ -158,6 +158,14 @@ class Polygon
    */
   bool convertToInequalityConstraints(Eigen::MatrixXd& A, Eigen::VectorXd& b);
 
+  /*!
+   * Offsets the polygon inward (buffering) by a margin.
+   * Use a negative margin to offset the polygon outward.
+   * @param margin the margin to offset the polygon by (in [m]).
+   * @return true if succesful, false otherwise.
+   */
+  bool offsetInward(const double margin);
+
  protected:
 
   /*!

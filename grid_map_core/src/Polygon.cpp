@@ -8,6 +8,7 @@
 
 #include <grid_map_core/Polygon.hpp>
 
+#include <iostream>
 // Eigen
 #include <Eigen/Dense>
 #include <Eigen/Geometry>
@@ -228,4 +229,29 @@ bool Polygon::convertToInequalityConstraints(Eigen::MatrixXd& A, Eigen::VectorXd
   return true;
 }
 
+bool Polygon::offsetInward(const double margin)
+{
+  // Create a list of indices of the neighbours of each vertex.
+  // TODO: Assuming counter-clockwise ordered convex polygon.
+  std::vector<Eigen::Array2i> neighbourIndices;
+  const unsigned int n = nVertices();
+  neighbourIndices.resize(n);
+  for (unsigned int i = 0; i < n; ++i) {
+    neighbourIndices[i] << (i > 0 ? (i-1)%n : n-1), (i + 1) % n;
+  }
+
+  std::vector<Position> copy(vertices_);
+  for (unsigned int i = 0; i < neighbourIndices.size(); ++i) {
+    Eigen::Vector2d v1 = vertices_[neighbourIndices[i](0)] - vertices_[i];
+    Eigen::Vector2d v2 = vertices_[neighbourIndices[i](1)] - vertices_[i];
+    v1.normalize();
+    v2.normalize();
+    const double angle = acos(v1.dot(v2));
+    copy[i] += margin / sin(angle) * (v1 + v2);
+  }
+  vertices_ = copy;
+  return true;
+}
+
 } /* namespace grid_map */
+
