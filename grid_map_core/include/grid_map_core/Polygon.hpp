@@ -145,6 +145,19 @@ class Polygon
    */
   Polygon convexHullCircle(const Position center, const double radius, const int nVertices = 20);
 
+  /*!
+   * Convert polygon to inequality constraints which most tightly contain the points; i.e.,
+   * create constraints to bound the convex hull of polygon. The inequality constraints are
+   * represented as A and b, a set of constraints such that A*x <= b defining the region of
+   * space enclosing the convex hull.
+   * Based on the VERT2CON MATLAB method by Michael Kleder:
+   * http://www.mathworks.com/matlabcentral/fileexchange/7895-vert2con-vertices-to-constraints
+   * @param A the A matrix in of the inequality constraint.
+   * @param b the b matrix in of the inequality constraint.
+   * @return true if conversion successful, false otherwise.
+   */
+  bool convertToInequalityConstraints(Eigen::MatrixXd& A, Eigen::VectorXd& b);
+
  protected:
 
   /*!

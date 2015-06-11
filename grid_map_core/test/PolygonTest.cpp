@@ -2,7 +2,7 @@
  * GridMapTest.cpp
  *
  *  Created on: Mar 24, 2015
- *      Author: Martin Wermelinger
+ *      Author: Martin Wermelinger, Péter Fankhauser
  *	 Institute: ETH Zurich, Autonomous Systems Lab
  */
 
@@ -87,4 +87,21 @@ TEST(checkConvexHullCircle, createHull)
   EXPECT_TRUE(hull.isInside(Vector2d(0.49, 0.0)));
   EXPECT_FALSE(hull.isInside(Vector2d(0.5, 0.4)));
   EXPECT_FALSE(hull.isInside(Vector2d(1.0, 0.0)));
+}
+
+TEST(convertToInequalityConstraints, triangle)
+{
+  grid_map::Polygon polygon({Position(1.0, 1.0), Position(0.0, 0.0), Position(1.1, -1.1)});
+  MatrixXd A;
+  VectorXd b;
+  EXPECT_TRUE(polygon.convertToInequalityConstraints(A, b));
+  EXPECT_NEAR(-1.3636, A(0, 0), 1e-4);
+  EXPECT_NEAR( 1.3636, A(0, 1), 1e-4);
+  EXPECT_NEAR(-1.5000, A(1, 0), 1e-4);
+  EXPECT_NEAR(-1.5000, A(1, 1), 1e-4);
+  EXPECT_NEAR( 2.8636, A(2, 0), 1e-4);
+  EXPECT_NEAR( 0.1364, A(2, 1), 1e-4);
+  EXPECT_NEAR( 0.0000, b(0), 1e-4);
+  EXPECT_NEAR( 0.0000, b(1), 1e-4);
+  EXPECT_NEAR( 3.0000, b(2), 1e-4);
 }
