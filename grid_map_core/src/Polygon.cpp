@@ -9,7 +9,7 @@
 #include <grid_map_core/Polygon.hpp>
 
 // Eigen
-#include <Eigen/Dense>
+#include <Eigen/Core>
 #include <Eigen/Geometry>
 
 namespace grid_map {
@@ -192,4 +192,65 @@ double Polygon::computeCrossProduct2D(const Eigen::Vector2d& vector1,
   return (vector1.x() * vector2.y() - vector1.y() * vector2.x());
 }
 
+bool Polygon::convertToInequalityConstraints(Eigen::MatrixXd& A, Eigen::VectorXd& b)
+{
+  Eigen::MatrixXd V(nVertices(), 2);
+  for (unsigned int i = 0; i < nVertices(); ++i)
+    V.row(i) = vertices_[i];
+
+  // Create k, a list of indices from V forming the convex hull.
+  // TODO: Assuming counter-clockwise ordered convex polygon.
+  // MATLAB: k = convhulln(V);
+  Eigen::MatrixXi k;
+  k.resizeLike(V);
+  for (unsigned int i = 0; i < V.rows(); ++i)
+    k.row(i) << i, (i+1) % V.rows();
+  Eigen::RowVectorXd c = V.colwise().mean();
+  V.rowwise() -= c;
+  A = Eigen::MatrixXd::Constant(k.rows(), V.cols(), NAN);
+
+  unsigned int rc = 0;
+  for (unsigned int ix = 0; ix < k.rows(); ++ix) {
+    Eigen::MatrixXd F(2, V.cols());
+    F.row(0) << V.row(k(ix, 0));
+    F.row(1) << V.row(k(ix, 1));
+    Eigen::FullPivLU<Eigen::MatrixXd> luDecomp(F);
+    if (luDecomp.rank() == F.rows()) {
+      A.row(rc) = F.colPivHouseholderQr().solve(Eigen::VectorXd::Ones(F.rows()));
+      ++rc;
+    }
+  }
+
+  A = A.topRows(rc);
+  b = Eigen::VectorXd::Ones(A.rows());
+  b = b + A * c.transpose();
+
+  return true;
+}
+
+bool Polygon::offsetInward(const double margin)
+{
+  // Create a list of indices of the neighbours of each vertex.
+  // TODO: Assuming counter-clockwise ordered convex polygon.
+  std::vector<Eigen::Array2i> neighbourIndices;
+  const unsigned int n = nVertices();
+  neighbourIndices.resize(n);
+  for (unsigned int i = 0; i < n; ++i) {
+    neighbourIndices[i] << (i > 0 ? (i-1)%n : n-1), (i + 1) % n;
+  }
+
+  std::vector<Position> copy(vertices_);
+  for (unsigned int i = 0; i < neighbourIndices.size(); ++i) {
+    Eigen::Vector2d v1 = vertices_[neighbourIndices[i](0)] - vertices_[i];
+    Eigen::Vector2d v2 = vertices_[neighbourIndices[i](1)] - vertices_[i];
+    v1.normalize();
+    v2.normalize();
+    const double angle = acos(v1.dot(v2));
+    copy[i] += margin / sin(angle) * (v1 + v2);
+  }
+  vertices_ = copy;
+  return true;
+}
+
 } /* namespace grid_map */
+
