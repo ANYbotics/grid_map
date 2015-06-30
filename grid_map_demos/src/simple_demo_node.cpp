@@ -3,7 +3,6 @@
 #include <grid_map_msgs/GridMap.h>
 #include <cmath>
 
-using namespace std;
 using namespace grid_map;
 
 int main(int argc, char** argv)
@@ -30,7 +29,7 @@ int main(int argc, char** argv)
     for (GridMapIterator it(map); !it.isPastEnd(); ++it) {
       Position position;
       map.getPosition(*it, position);
-      map.at("elevation", *it) = -0.04 + 0.2 * sin(3.0 * time + 5.0 * position.y()) * position.x();
+      map.at("elevation", *it) = -0.04 + 0.2 * std::sin(3.0 * time + 5.0 * position.y()) * position.x();
     }
 
     // Publish grid map.
