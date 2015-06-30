@@ -5,7 +5,6 @@
 #include <cmath>
 #include <limits>
 
-using namespace std;
 using namespace grid_map;
 
 int main(int argc, char** argv)
@@ -33,8 +32,8 @@ int main(int argc, char** argv)
     for (GridMapIterator it(map); !it.isPastEnd(); ++it) {
       Position position;
       map.getPosition(*it, position);
-      map.at("elevation", *it) = -0.04 + 0.2 * sin(3.0 * time + 5.0 * position.y()) * position.x();
-      Eigen::Vector3d normal(-0.2 * sin(3.0 * time + 5.0 * position.y()), -position.x() * cos(3.0 * time + 5.0 * position.y()), 1.0);
+      map.at("elevation", *it) = -0.04 + 0.2 * std::sin(3.0 * time + 5.0 * position.y()) * position.x();
+      Eigen::Vector3d normal(-0.2 * std::sin(3.0 * time + 5.0 * position.y()), -position.x() * std::cos(3.0 * time + 5.0 * position.y()), 1.0);
       normal.normalize();
       map.at("normal_x", *it) = normal.x();
       map.at("normal_y", *it) = normal.y();
