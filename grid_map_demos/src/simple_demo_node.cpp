@@ -25,7 +25,7 @@ int main(int argc, char** argv)
   while (nh.ok()) {
 
     // Add data to grid map.
-    double time = ros::Time::now().toSec();
+    double time = ros::Time::now().toNSec();
     for (GridMapIterator it(map); !it.isPastEnd(); ++it) {
       Position position;
       map.getPosition(*it, position);
