@@ -26,7 +26,7 @@ int main(int argc, char** argv)
   // Work with grid map in a loop.
   ros::Rate rate(30.0);
   while (nh.ok()) {
-    double time = ros::Time::now().toSec();
+    double time = ros::Time::now().toNSec();
 
     // Add elevation and surface normal (iterating through grid map and adding data).
     for (GridMapIterator it(map); !it.isPastEnd(); ++it) {
