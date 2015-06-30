@@ -39,49 +39,49 @@ TEST(checkSubmapIterator, Simple)
 
   SubmapIterator iterator(map, submapTopLeftIndex, submapBufferSize);
 
-  EXPECT_FALSE(iterator.isPassedEnd());
+  EXPECT_FALSE(iterator.isPastEnd());
   EXPECT_EQ(submapTopLeftIndex(0), (*iterator)(0));
   EXPECT_EQ(submapTopLeftIndex(1), (*iterator)(1));
   EXPECT_EQ(0, iterator.getSubmapIndex()(0));
   EXPECT_EQ(0, iterator.getSubmapIndex()(1));
 
   ++iterator;
-  EXPECT_FALSE(iterator.isPassedEnd());
+  EXPECT_FALSE(iterator.isPastEnd());
   EXPECT_EQ(3, (*iterator)(0));
   EXPECT_EQ(2, (*iterator)(1));
   EXPECT_EQ(0, iterator.getSubmapIndex()(0));
   EXPECT_EQ(1, iterator.getSubmapIndex()(1));
 
   ++iterator;
-  EXPECT_FALSE(iterator.isPassedEnd());
+  EXPECT_FALSE(iterator.isPastEnd());
   EXPECT_EQ(4, (*iterator)(0));
   EXPECT_EQ(1, (*iterator)(1));
   EXPECT_EQ(1, iterator.getSubmapIndex()(0));
   EXPECT_EQ(0, iterator.getSubmapIndex()(1));
 
   ++iterator;
-  EXPECT_FALSE(iterator.isPassedEnd());
+  EXPECT_FALSE(iterator.isPastEnd());
   EXPECT_EQ(4, (*iterator)(0));
   EXPECT_EQ(2, (*iterator)(1));
   EXPECT_EQ(1, iterator.getSubmapIndex()(0));
   EXPECT_EQ(1, iterator.getSubmapIndex()(1));
 
   ++iterator;
-  EXPECT_FALSE(iterator.isPassedEnd());
+  EXPECT_FALSE(iterator.isPastEnd());
   EXPECT_EQ(5, (*iterator)(0));
   EXPECT_EQ(1, (*iterator)(1));
   EXPECT_EQ(2, iterator.getSubmapIndex()(0));
   EXPECT_EQ(0, iterator.getSubmapIndex()(1));
 
   ++iterator;
-  EXPECT_FALSE(iterator.isPassedEnd());
+  EXPECT_FALSE(iterator.isPastEnd());
   EXPECT_EQ(5, (*iterator)(0));
   EXPECT_EQ(2, (*iterator)(1));
   EXPECT_EQ(2, iterator.getSubmapIndex()(0));
   EXPECT_EQ(1, iterator.getSubmapIndex()(1));
 
   ++iterator;
-  EXPECT_TRUE(iterator.isPassedEnd());
+  EXPECT_TRUE(iterator.isPastEnd());
   EXPECT_EQ(5, (*iterator)(0));
   EXPECT_EQ(2, (*iterator)(1));
   EXPECT_EQ(2, iterator.getSubmapIndex()(0));
@@ -103,63 +103,63 @@ TEST(checkSubmapIterator, CircularBuffer)
 
   SubmapIterator iterator(map, submapTopLeftIndex, submapBufferSize);
 
-  EXPECT_FALSE(iterator.isPassedEnd());
+  EXPECT_FALSE(iterator.isPastEnd());
   EXPECT_EQ(submapTopLeftIndex(0), (*iterator)(0));
   EXPECT_EQ(submapTopLeftIndex(1), (*iterator)(1));
   EXPECT_EQ(0, iterator.getSubmapIndex()(0));
   EXPECT_EQ(0, iterator.getSubmapIndex()(1));
 
   ++iterator;
-  EXPECT_FALSE(iterator.isPassedEnd());
+  EXPECT_FALSE(iterator.isPastEnd());
   EXPECT_EQ(6, (*iterator)(0));
   EXPECT_EQ(4, (*iterator)(1));
   EXPECT_EQ(0, iterator.getSubmapIndex()(0));
   EXPECT_EQ(1, iterator.getSubmapIndex()(1));
 
   ++iterator;
-  EXPECT_FALSE(iterator.isPassedEnd());
+  EXPECT_FALSE(iterator.isPastEnd());
   EXPECT_EQ(6, (*iterator)(0));
   EXPECT_EQ(0, (*iterator)(1));
   EXPECT_EQ(0, iterator.getSubmapIndex()(0));
   EXPECT_EQ(2, iterator.getSubmapIndex()(1));
 
   ++iterator;
-  EXPECT_FALSE(iterator.isPassedEnd());
+  EXPECT_FALSE(iterator.isPastEnd());
   EXPECT_EQ(6, (*iterator)(0));
   EXPECT_EQ(1, (*iterator)(1));
   EXPECT_EQ(0, iterator.getSubmapIndex()(0));
   EXPECT_EQ(3, iterator.getSubmapIndex()(1));
 
   ++iterator;
-  EXPECT_FALSE(iterator.isPassedEnd());
+  EXPECT_FALSE(iterator.isPastEnd());
   EXPECT_EQ(7, (*iterator)(0));
   EXPECT_EQ(3, (*iterator)(1));
   EXPECT_EQ(1, iterator.getSubmapIndex()(0));
   EXPECT_EQ(0, iterator.getSubmapIndex()(1));
 
   ++iterator;
-  EXPECT_FALSE(iterator.isPassedEnd());
+  EXPECT_FALSE(iterator.isPastEnd());
   EXPECT_EQ(7, (*iterator)(0));
   EXPECT_EQ(4, (*iterator)(1));
   EXPECT_EQ(1, iterator.getSubmapIndex()(0));
   EXPECT_EQ(1, iterator.getSubmapIndex()(1));
 
   ++iterator;
-  EXPECT_FALSE(iterator.isPassedEnd());
+  EXPECT_FALSE(iterator.isPastEnd());
   EXPECT_EQ(7, (*iterator)(0));
   EXPECT_EQ(0, (*iterator)(1));
   EXPECT_EQ(1, iterator.getSubmapIndex()(0));
   EXPECT_EQ(2, iterator.getSubmapIndex()(1));
 
   ++iterator;
-  EXPECT_FALSE(iterator.isPassedEnd());
+  EXPECT_FALSE(iterator.isPastEnd());
   EXPECT_EQ(7, (*iterator)(0));
   EXPECT_EQ(1, (*iterator)(1));
   EXPECT_EQ(1, iterator.getSubmapIndex()(0));
   EXPECT_EQ(3, iterator.getSubmapIndex()(1));
 
   ++iterator;
-  EXPECT_TRUE(iterator.isPassedEnd());
+  EXPECT_TRUE(iterator.isPastEnd());
   EXPECT_EQ(7, (*iterator)(0));
   EXPECT_EQ(1, (*iterator)(1));
   EXPECT_EQ(1, iterator.getSubmapIndex()(0));

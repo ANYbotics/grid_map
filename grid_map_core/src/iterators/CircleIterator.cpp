@@ -58,18 +58,18 @@ const Eigen::Array2i& CircleIterator::operator *() const
 CircleIterator& CircleIterator::operator ++()
 {
   ++(*internalIterator_);
-  if (internalIterator_->isPassedEnd()) return *this;
+  if (internalIterator_->isPastEnd()) return *this;
 
-  for ( ; !internalIterator_->isPassedEnd(); ++(*internalIterator_)) {
+  for ( ; !internalIterator_->isPastEnd(); ++(*internalIterator_)) {
     if (isInside()) break;
   }
 
   return *this;
 }
 
-bool CircleIterator::isPassedEnd() const
+bool CircleIterator::isPastEnd() const
 {
-  return internalIterator_->isPassedEnd();
+  return internalIterator_->isPastEnd();
 }
 
 bool CircleIterator::isInside()

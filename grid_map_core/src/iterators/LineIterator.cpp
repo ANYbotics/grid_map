@@ -74,7 +74,7 @@ LineIterator& LineIterator::operator ++()
   return *this;
 }
 
-bool LineIterator::isPassedEnd() const
+bool LineIterator::isPastEnd() const
 {
   return iCell_ >= nCells_;
 }

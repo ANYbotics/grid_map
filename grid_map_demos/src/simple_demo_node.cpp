@@ -26,15 +26,15 @@ int main(int argc, char** argv)
   while (nh.ok()) {
 
     // Add data to grid map.
-    for (GridMapIterator it(map); !it.isPassedEnd(); ++it) {
+    double time = ros::Time::now().toSec();
+    for (GridMapIterator it(map); !it.isPastEnd(); ++it) {
       Position position;
       map.getPosition(*it, position);
-      double t = ros::Time::now().toSec();
-      map.at("elevation", *it) = -0.04 + 0.2 * sin(3.0 * t + 5.0 * position.y()) * position.x();
+      map.at("elevation", *it) = -0.04 + 0.2 * sin(3.0 * time + 5.0 * position.y()) * position.x();
     }
 
     // Publish grid map.
-    map.setTimestamp(ros::Time::now().toNSec());
+    map.setTimestamp(time);
     grid_map_msgs::GridMap message;
     GridMapRosConverter::toMessage(map, message);
     publisher.publish(message);

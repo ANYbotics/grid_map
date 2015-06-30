@@ -97,7 +97,7 @@ bool VectorVisualization::visualize(const grid_map::GridMap& map)
   marker_.points.clear();
   marker_.colors.clear();
 
-  for (grid_map::GridMapIterator iterator(map); !iterator.isPassedEnd(); ++iterator)
+  for (grid_map::GridMapIterator iterator(map); !iterator.isPastEnd(); ++iterator)
   {
     if (!map.isValid(*iterator, positionLayer_) || !map.isValid(*iterator, types_)) continue;
     geometry_msgs::Vector3 vector;

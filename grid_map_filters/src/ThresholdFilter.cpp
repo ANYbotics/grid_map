@@ -94,7 +94,7 @@ bool ThresholdFilter<T>::update(const T& mapIn, T& mapOut)
     std::vector<std::string> validTypes;
     validTypes.push_back(layer);
 
-    for (grid_map::GridMapIterator iterator(mapOut); !iterator.isPassedEnd();
+    for (grid_map::GridMapIterator iterator(mapOut); !iterator.isPastEnd();
         ++iterator) {
       if (!mapOut.isValid(*iterator, validTypes))
         continue;

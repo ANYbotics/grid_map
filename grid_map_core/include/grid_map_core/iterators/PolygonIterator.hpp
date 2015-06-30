@@ -60,10 +60,10 @@ public:
   PolygonIterator& operator ++();
 
   /*!
-   * Indicates if iterator is passed end.
+   * Indicates if iterator is past end.
    * @return true if iterator is out of scope, false if end has not been reached.
    */
-  bool isPassedEnd() const;
+  bool isPastEnd() const;
 
 private:
 

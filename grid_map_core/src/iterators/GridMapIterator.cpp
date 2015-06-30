@@ -18,7 +18,7 @@ GridMapIterator::GridMapIterator(const grid_map::GridMap& gridMap)
   endIndex_ = startIndex_ + gridMap.getSize() - Eigen::Array2i::Ones();
   mapIndexWithinRange(endIndex_, size_);
   index_ = startIndex_;
-  isPassedEnd_ = false;
+  isPastEnd_ = false;
 }
 
 GridMapIterator::GridMapIterator(const GridMapIterator* other)
@@ -27,7 +27,7 @@ GridMapIterator::GridMapIterator(const GridMapIterator* other)
   startIndex_ = other->startIndex_;
   endIndex_ = other->endIndex_;
   index_ = other->index_;
-  isPassedEnd_ = other->isPassedEnd_;
+  isPastEnd_ = other->isPastEnd_;
 }
 
 GridMapIterator& GridMapIterator::operator =(const GridMapIterator& other)
@@ -36,7 +36,7 @@ GridMapIterator& GridMapIterator::operator =(const GridMapIterator& other)
   startIndex_ = other.startIndex_;
   endIndex_ = other.endIndex_;
   index_ = other.index_;
-  isPassedEnd_ = other.isPassedEnd_;
+  isPastEnd_ = other.isPastEnd_;
   return *this;
 }
 
@@ -52,7 +52,7 @@ const Eigen::Array2i& GridMapIterator::operator *() const
 
 GridMapIterator& GridMapIterator::operator ++()
 {
-  isPassedEnd_ = !incrementIndex(index_, size_, startIndex_);
+  isPastEnd_ = !incrementIndex(index_, size_, startIndex_);
   return *this;
 }
 
@@ -63,9 +63,9 @@ GridMapIterator GridMapIterator::end() const
   return res;
 }
 
-bool GridMapIterator::isPassedEnd() const
+bool GridMapIterator::isPastEnd() const
 {
-  return isPassedEnd_;
+  return isPastEnd_;
 }
 
 } /* namespace grid_map */

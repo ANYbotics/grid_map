@@ -41,28 +41,28 @@ TEST(checkPolygonIterator, FullCover)
 
   PolygonIterator iterator(map, polygon);
 
-  EXPECT_FALSE(iterator.isPassedEnd());
+  EXPECT_FALSE(iterator.isPastEnd());
   EXPECT_EQ(0, (*iterator)(0));
   EXPECT_EQ(0, (*iterator)(1));
 
   ++iterator;
-  EXPECT_FALSE(iterator.isPassedEnd());
+  EXPECT_FALSE(iterator.isPastEnd());
   EXPECT_EQ(0, (*iterator)(0));
   EXPECT_EQ(1, (*iterator)(1));
 
   ++iterator;
-  EXPECT_FALSE(iterator.isPassedEnd());
+  EXPECT_FALSE(iterator.isPastEnd());
   EXPECT_EQ(0, (*iterator)(0));
   EXPECT_EQ(2, (*iterator)(1));
 
   for (int i = 0; i < 37; ++i) ++iterator;
 
-  EXPECT_FALSE(iterator.isPassedEnd());
+  EXPECT_FALSE(iterator.isPastEnd());
   EXPECT_EQ(7, (*iterator)(0));
   EXPECT_EQ(4, (*iterator)(1));
 
   ++iterator;
-  EXPECT_TRUE(iterator.isPassedEnd());
+  EXPECT_TRUE(iterator.isPastEnd());
 }
 
 TEST(checkPolygonIterator, Outside)
@@ -78,7 +78,7 @@ TEST(checkPolygonIterator, Outside)
 
   PolygonIterator iterator(map, polygon);
 
-  EXPECT_TRUE(iterator.isPassedEnd());
+  EXPECT_TRUE(iterator.isPastEnd());
 }
 
 TEST(checkPolygonIterator, Square)
@@ -94,37 +94,37 @@ TEST(checkPolygonIterator, Square)
 
   PolygonIterator iterator(map, polygon);
 
-  EXPECT_FALSE(iterator.isPassedEnd());
+  EXPECT_FALSE(iterator.isPastEnd());
   EXPECT_EQ(3, (*iterator)(0));
   EXPECT_EQ(1, (*iterator)(1));
 
   ++iterator;
-  EXPECT_FALSE(iterator.isPassedEnd());
+  EXPECT_FALSE(iterator.isPastEnd());
   EXPECT_EQ(3, (*iterator)(0));
   EXPECT_EQ(2, (*iterator)(1));
 
   ++iterator;
-  EXPECT_FALSE(iterator.isPassedEnd());
+  EXPECT_FALSE(iterator.isPastEnd());
   EXPECT_EQ(3, (*iterator)(0));
   EXPECT_EQ(3, (*iterator)(1));
 
   ++iterator;
-  EXPECT_FALSE(iterator.isPassedEnd());
+  EXPECT_FALSE(iterator.isPastEnd());
   EXPECT_EQ(4, (*iterator)(0));
   EXPECT_EQ(1, (*iterator)(1));
 
   ++iterator;
-  EXPECT_FALSE(iterator.isPassedEnd());
+  EXPECT_FALSE(iterator.isPastEnd());
   EXPECT_EQ(4, (*iterator)(0));
   EXPECT_EQ(2, (*iterator)(1));
 
   ++iterator;
-  EXPECT_FALSE(iterator.isPassedEnd());
+  EXPECT_FALSE(iterator.isPastEnd());
   EXPECT_EQ(4, (*iterator)(0));
   EXPECT_EQ(3, (*iterator)(1));
 
   ++iterator;
-  EXPECT_TRUE(iterator.isPassedEnd());
+  EXPECT_TRUE(iterator.isPastEnd());
 }
 
 TEST(checkPolygonIterator, TopLeftTriangle)
@@ -139,12 +139,12 @@ TEST(checkPolygonIterator, TopLeftTriangle)
 
   PolygonIterator iterator(map, polygon);
 
-  EXPECT_FALSE(iterator.isPassedEnd());
+  EXPECT_FALSE(iterator.isPastEnd());
   EXPECT_EQ(0, (*iterator)(0));
   EXPECT_EQ(0, (*iterator)(1));
 
   ++iterator;
-  EXPECT_FALSE(iterator.isPassedEnd());
+  EXPECT_FALSE(iterator.isPastEnd());
   EXPECT_EQ(1, (*iterator)(0));
   EXPECT_EQ(0, (*iterator)(1));
 

@@ -211,7 +211,7 @@ void GridMapRosConverter::toOccupancyGrid(const grid_map::GridMap& gridMap,
   const float cellMax = 100;
   const float cellRange = cellMax - cellMin;
 
-  for (GridMapIterator iterator(gridMap); !iterator.isPassedEnd(); ++iterator) {
+  for (GridMapIterator iterator(gridMap); !iterator.isPastEnd(); ++iterator) {
     float value = (gridMap.at(layer, *iterator) - dataMin) / (dataMax - dataMin);
     if (isnan(value))
       value = -1;
@@ -233,7 +233,7 @@ void GridMapRosConverter::toGridCells(const grid_map::GridMap& gridMap, const st
   gridCells.cell_width = gridMap.getResolution();
   gridCells.cell_height = gridMap.getResolution();
 
-  for (GridMapIterator iterator(gridMap); !iterator.isPassedEnd(); ++iterator) {
+  for (GridMapIterator iterator(gridMap); !iterator.isPastEnd(); ++iterator) {
     if (!gridMap.isValid(*iterator, layer)) continue;
     if (gridMap.at(layer, *iterator) >= lowerThreshold
         && gridMap.at(layer, *iterator) <= upperThreshold) {
@@ -310,7 +310,7 @@ bool GridMapRosConverter::addLayerFromImage(const sensor_msgs::Image& image,
     return false;
   }
 
-  for (GridMapIterator iterator(gridMap); !iterator.isPassedEnd(); ++iterator) {
+  for (GridMapIterator iterator(gridMap); !iterator.isPastEnd(); ++iterator) {
     // Set transparent values.
     if (image.encoding == sensor_msgs::image_encodings::BGRA8) {
       const auto& cvAlpha = cvPtrAlpha->image.at<cv::Vec4b>((*iterator)(0),
@@ -369,7 +369,7 @@ bool GridMapRosConverter::addColorLayerFromImage(const sensor_msgs::Image& image
     return false;
   }
 
-  for (GridMapIterator iterator(gridMap); !iterator.isPassedEnd(); ++iterator) {
+  for (GridMapIterator iterator(gridMap); !iterator.isPastEnd(); ++iterator) {
     const auto& cvColor = cvPtr->image.at<cv::Vec3b>((*iterator)(0),
                                                      (*iterator)(1));
     Eigen::Vector3i colorVector;

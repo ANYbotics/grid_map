@@ -25,7 +25,7 @@ SubmapIterator::SubmapIterator(const grid_map::GridMap& gridMap,
   submapEndIndex_ = submapStartIndex + submapSize - Eigen::Array2i::Ones();
   mapIndexWithinRange(submapEndIndex_, submapBufferSize_);
   submapIndex_.setZero();
-  isPassedEnd_ = false;
+  isPastEnd_ = false;
 }
 
 SubmapIterator::SubmapIterator(const SubmapIterator* other)
@@ -37,7 +37,7 @@ SubmapIterator::SubmapIterator(const SubmapIterator* other)
   submapEndIndex_ = other->submapEndIndex_;
   index_ = other->index_;
   submapIndex_ = other->submapIndex_;
-  isPassedEnd_ = other->isPassedEnd_;
+  isPastEnd_ = other->isPastEnd_;
 }
 
 SubmapIterator& SubmapIterator::operator =(const SubmapIterator& other)
@@ -49,7 +49,7 @@ SubmapIterator& SubmapIterator::operator =(const SubmapIterator& other)
   submapEndIndex_ = other.submapEndIndex_;
   index_ = other.index_;
   submapIndex_ = other.submapIndex_;
-  isPassedEnd_ = other.isPassedEnd_;
+  isPastEnd_ = other.isPastEnd_;
   return *this;
 }
 
@@ -70,7 +70,7 @@ const Eigen::Array2i& SubmapIterator::getSubmapIndex() const
 
 SubmapIterator& SubmapIterator::operator ++()
 {
-  isPassedEnd_ = !incrementIndexForSubmap(submapIndex_, index_, submapStartIndex_,
+  isPastEnd_ = !incrementIndexForSubmap(submapIndex_, index_, submapStartIndex_,
                                          submapBufferSize_, bufferSize_, startIndex_);
   return *this;
 }
@@ -82,9 +82,9 @@ SubmapIterator SubmapIterator::end() const
   return res;
 }
 
-bool SubmapIterator::isPassedEnd() const
+bool SubmapIterator::isPastEnd() const
 {
-  return isPassedEnd_;
+  return isPastEnd_;
 }
 
 } /* namespace grid_map */

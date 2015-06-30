@@ -27,12 +27,12 @@ int main(int argc, char** argv)
   // Work with grid map in a loop.
   ros::Rate rate(30.0);
   while (nh.ok()) {
+    double time = ros::Time::now().toSec();
 
     // Add elevation and surface normal (iterating through grid map and adding data).
-    for (GridMapIterator it(map); !it.isPassedEnd(); ++it) {
+    for (GridMapIterator it(map); !it.isPastEnd(); ++it) {
       Position position;
       map.getPosition(*it, position);
-      double time = ros::Time::now().toSec();
       map.at("elevation", *it) = -0.04 + 0.2 * sin(3.0 * time + 5.0 * position.y()) * position.x();
       Eigen::Vector3d normal(-0.2 * sin(3.0 * time + 5.0 * position.y()), -position.x() * cos(3.0 * time + 5.0 * position.y()), 1.0);
       normal.normalize();
@@ -42,7 +42,7 @@ int main(int argc, char** argv)
     }
 
     // Add noise (using Eigen operators).
-    map.add("noise", Matrix::Random(map.getSize()(0), map.getSize()(1)) * 0.015);
+    map.add("noise", 0.015 * Matrix::Random(map.getSize()(0), map.getSize()(1)));
     map.add("elevation_noisy", map.get("elevation") + map["noise"]);
 
     // Adding outliers (accessing cell by position).
@@ -63,7 +63,7 @@ int main(int argc, char** argv)
 
     Size size = (Length(1.2, 0.8) / map.getResolution()).cast<int>();
     SubmapIterator it(map, startIndex, size);
-    for (; !it.isPassedEnd(); ++it) {
+    for (; !it.isPastEnd(); ++it) {
       Position currentPosition;
       map.getPosition(*it, currentPosition);
       double radius = 0.1;
@@ -72,7 +72,7 @@ int main(int argc, char** argv)
 
       // Compute weighted mean.
       for (CircleIterator circleIt(map, currentPosition, radius);
-          !circleIt.isPassedEnd(); ++circleIt) {
+          !circleIt.isPastEnd(); ++circleIt) {
         if (!map.isValid(*circleIt, "elevation_noisy")) continue;
         Position currentPositionInCircle;
         map.getPosition(*circleIt, currentPositionInCircle);
@@ -93,7 +93,7 @@ int main(int argc, char** argv)
     double rootMeanSquaredError = sqrt((map["error"].array().pow(2).sum()) / nCells);
 
     // Publish grid map.
-    map.setTimestamp(ros::Time::now().toNSec());
+    map.setTimestamp(time);
     grid_map_msgs::GridMap message;
     GridMapRosConverter::toMessage(map, message);
     publisher.publish(message);

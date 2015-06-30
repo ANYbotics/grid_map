@@ -45,10 +45,10 @@ IteratorsDemo::~IteratorsDemo() {}
 void IteratorsDemo::demoGridMapIterator()
 {
   ROS_INFO("Running grid map iterator demo.");
-  map_.clear();
+  map_.clearAll();
   publish();
 
-  for (grid_map::GridMapIterator iterator(map_); !iterator.isPassedEnd(); ++iterator) {
+  for (grid_map::GridMapIterator iterator(map_); !iterator.isPastEnd(); ++iterator) {
     map_.at("type", *iterator) = 1.0;
     publish();
     ros::Duration duration(0.01);
@@ -62,14 +62,14 @@ void IteratorsDemo::demoGridMapIterator()
 void IteratorsDemo::demoSubmapIterator()
 {
   ROS_INFO("Running submap iterator demo.");
-  map_.clear();
+  map_.clearAll();
   publish();
 
   Index submapStartIndex(3, 5);
   Index submapBufferSize(12, 7);
 
   for (grid_map::SubmapIterator iterator(map_, submapStartIndex, submapBufferSize);
-      !iterator.isPassedEnd(); ++iterator) {
+      !iterator.isPastEnd(); ++iterator) {
     map_.at("type", *iterator) = 1.0;
     publish();
     ros::Duration duration(0.02);
@@ -83,14 +83,14 @@ void IteratorsDemo::demoSubmapIterator()
 void IteratorsDemo::demoCircleIterator()
 {
   ROS_INFO("Running circle iterator demo.");
-  map_.clear();
+  map_.clearAll();
   publish();
 
   Position center(0.0, -0.15);
   double radius = 0.4;
 
   for (grid_map::CircleIterator iterator(map_, center, radius);
-      !iterator.isPassedEnd(); ++iterator) {
+      !iterator.isPastEnd(); ++iterator) {
     map_.at("type", *iterator) = 1.0;
     publish();
     ros::Duration duration(0.02);
@@ -104,14 +104,14 @@ void IteratorsDemo::demoCircleIterator()
 void IteratorsDemo::demoLineIterator()
 {
   ROS_INFO("Running line iterator demo.");
-  map_.clear();
+  map_.clearAll();
   publish();
 
   Index start(18, 2);
   Index end(2, 13);
 
   for (grid_map::LineIterator iterator(map_, start, end);
-      !iterator.isPassedEnd(); ++iterator) {
+      !iterator.isPastEnd(); ++iterator) {
     map_.at("type", *iterator) = 1.0;
     publish();
     ros::Duration duration(0.02);
@@ -125,7 +125,7 @@ void IteratorsDemo::demoLineIterator()
 void IteratorsDemo::demoPolygonIterator()
 {
   ROS_INFO("Running polygon iterator demo.");
-  map_.clear();
+  map_.clearAll();
   publish();
 
   grid_map::Polygon polygon;
@@ -147,7 +147,7 @@ void IteratorsDemo::demoPolygonIterator()
   polygonPublisher_.publish(message);
 
   for (grid_map::PolygonIterator iterator(map_, polygon);
-      !iterator.isPassedEnd(); ++iterator) {
+      !iterator.isPastEnd(); ++iterator) {
     map_.at("type", *iterator) = 1.0;
     publish();
     ros::Duration duration(0.02);

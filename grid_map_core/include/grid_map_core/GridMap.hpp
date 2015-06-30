@@ -77,7 +77,7 @@ class GridMap
   /*!
    * Checks if data layer exists.
    * @param layer the name of the layer.
-   * @return true if type exists, false otherwise.
+   * @return true if layer exists, false otherwise.
    */
   bool exists(const std::string& layer) const;
 
@@ -90,7 +90,7 @@ class GridMap
   const grid_map::Matrix& get(const std::string& layer) const;
 
   /*!
-   * Returns the grid map data for a type as non-const. Use this method
+   * Returns the grid map data for a layer as non-const. Use this method
    * with care!
    * @param layer the name of the layer to be returned.
    * @return grid map data.
@@ -107,7 +107,7 @@ class GridMap
   const grid_map::Matrix& operator [](const std::string& layer) const;
 
   /*!
-   * Returns the grid map data for a type as non-const. Use this method
+   * Returns the grid map data for a layer as non-const. Use this method
    * with care!
    * @param layer the name of the layer to be returned.
    * @return grid map data.
@@ -132,7 +132,7 @@ class GridMap
    * Set the basic layers that need to be valid for a cell to be considered as valid.
    * Also, the basic layers are set to NAN when clearing the cells with `clear()`.
    * By default the list of basic layers is empty.
-   * @param basicLayers the list of types that are the basic types of the map.
+   * @param basicLayers the list of layer that are the basic types of the map.
    */
   void setBasicLayers(const std::vector<std::string>& basicLayers);
 
@@ -279,14 +279,20 @@ class GridMap
   void move(const grid_map::Position& position);
 
   /*!
-   * Clears all cells (set to NAN) for all types defined as basic type.
-   * Clears all types if no basic types are defined.
-   * Header information (geometry etc.) remains valid.
+   * Clears all cells (set to NAN) for a layer.
+   * @param layer the layer to be cleared.
    */
-  void clear();
+  void clear(const std::string& layer);
 
   /*!
-   * Clears all cells of all types of the grid map (less efficient than clear()).
+   * Clears all cells (set to NAN) for all basic layers.
+   * Header information (geometry etc.) remains valid.
+   */
+  void clearBasic();
+
+  /*!
+   * Clears all cells of all layers.
+   * If basic layers are used, clearBasic() is preferred as it is more efficient.
    * Header information (geometry etc.) remains valid.
    */
   void clearAll();

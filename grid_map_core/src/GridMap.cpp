@@ -312,7 +312,7 @@ void GridMap::move(const grid_map::Position& position)
     if (indexShift(i) != 0) {
       if (abs(indexShift(i)) >= getSize()(i)) {
         // Entire map is dropped.
-        clear();
+        clearAll();
       } else {
         // Drop cells out of map.
         int sign = (indexShift(i) > 0 ? 1 : -1);
@@ -406,14 +406,19 @@ const Eigen::Array2i& GridMap::getStartIndex() const
   return startIndex_;
 }
 
-void GridMap::clear()
+void GridMap::clear(const std::string& layer)
 {
-  if (basicLayers_.empty()) {
-    clearAll();
-    return;
+  try {
+    data_.at(layer).setConstant(NAN);
+  } catch (const std::out_of_range& exception) {
+    throw std::out_of_range("GridMap::clear(...) : No map layer '" + layer + "' available.");
   }
-  for (auto& key : basicLayers_) {
-    data_.at(key).setConstant(NAN);
+}
+
+void GridMap::clearBasic()
+{
+  for (auto& layer : basicLayers_) {
+    clear(layer);
   }
 }
 
@@ -426,15 +431,15 @@ void GridMap::clearAll()
 
 void GridMap::clearCols(unsigned int index, unsigned int nCols)
 {
-  for (auto& type : basicLayers_) {
-    data_.at(type).block(index, 0, nCols, getSize()(1)).setConstant(NAN);
+  for (auto& layer : basicLayers_) {
+    data_.at(layer).block(index, 0, nCols, getSize()(1)).setConstant(NAN);
   }
 }
 
 void GridMap::clearRows(unsigned int index, unsigned int nRows)
 {
-  for (auto& type : basicLayers_) {
-    data_.at(type).block(0, index, getSize()(0), nRows).setConstant(NAN);
+  for (auto& layer : basicLayers_) {
+    data_.at(layer).block(0, index, getSize()(0), nRows).setConstant(NAN);
   }
 }
 

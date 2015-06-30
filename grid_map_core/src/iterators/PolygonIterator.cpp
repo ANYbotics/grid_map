@@ -53,18 +53,18 @@ const Eigen::Array2i& PolygonIterator::operator *() const
 PolygonIterator& PolygonIterator::operator ++()
 {
   ++(*internalIterator_);
-  if (internalIterator_->isPassedEnd()) return *this;
+  if (internalIterator_->isPastEnd()) return *this;
 
-  for ( ; !internalIterator_->isPassedEnd(); ++(*internalIterator_)) {
+  for ( ; !internalIterator_->isPastEnd(); ++(*internalIterator_)) {
     if (isInside()) break;
   }
 
   return *this;
 }
 
-bool PolygonIterator::isPassedEnd() const
+bool PolygonIterator::isPastEnd() const
 {
-  return internalIterator_->isPassedEnd();
+  return internalIterator_->isPastEnd();
 }
 
 bool PolygonIterator::isInside()
