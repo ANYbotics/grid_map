@@ -59,6 +59,10 @@ To install, clone the latest version from this repository into your catkin works
     cd ../
     catkin_make
     
+To maximize performance, make sure to build in *Release* mode. You can specify the build type by setting
+
+    catkin_make -DCMAKE_BUILD_TYPE=Release
+    
 
 ### Packages Overview
 
