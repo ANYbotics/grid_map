@@ -26,14 +26,15 @@ int main(int argc, char** argv)
   // Work with grid map in a loop.
   ros::Rate rate(30.0);
   while (nh.ok()) {
-    double time = ros::Time::now().toNSec();
+    ros::Time time = ros::Time::now();
 
     // Add elevation and surface normal (iterating through grid map and adding data).
     for (GridMapIterator it(map); !it.isPastEnd(); ++it) {
       Position position;
       map.getPosition(*it, position);
-      map.at("elevation", *it) = -0.04 + 0.2 * std::sin(3.0 * time + 5.0 * position.y()) * position.x();
-      Eigen::Vector3d normal(-0.2 * std::sin(3.0 * time + 5.0 * position.y()), -position.x() * std::cos(3.0 * time + 5.0 * position.y()), 1.0);
+      map.at("elevation", *it) = -0.04 + 0.2 * std::sin(3.0 * time.toSec() + 5.0 * position.y()) * position.x();
+      Eigen::Vector3d normal(-0.2 * std::sin(3.0 * time.toSec() + 5.0 * position.y()),
+                             -position.x() * std::cos(3.0 * time.toSec() + 5.0 * position.y()), 1.0);
       normal.normalize();
       map.at("normal_x", *it) = normal.x();
       map.at("normal_y", *it) = normal.y();
@@ -92,7 +93,7 @@ int main(int argc, char** argv)
     double rootMeanSquaredError = sqrt((map["error"].array().pow(2).sum()) / nCells);
 
     // Publish grid map.
-    map.setTimestamp(time);
+    map.setTimestamp(time.toSec());
     grid_map_msgs::GridMap message;
     GridMapRosConverter::toMessage(map, message);
     publisher.publish(message);
