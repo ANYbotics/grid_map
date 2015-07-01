@@ -130,9 +130,9 @@ class GridMap
 
   /*!
    * Set the basic layers that need to be valid for a cell to be considered as valid.
-   * Also, the basic layers are set to NAN when clearing the cells with `clear()`.
+   * Also, the basic layers are set to NAN when clearing the cells with `clearBasic()`.
    * By default the list of basic layers is empty.
-   * @param basicLayers the list of layer that are the basic types of the map.
+   * @param basicLayers the list of layers that are the basic layers of the map.
    */
   void setBasicLayers(const std::vector<std::string>& basicLayers);
 
