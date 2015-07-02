@@ -119,6 +119,13 @@ class Polygon
   const double getArea() const;
 
   /*!
+   * Get the centroid of polygon. The polygon has to be
+   * "simple", i.e. not crossing itself.
+   * @return centroid of polygon.
+   */
+  const Position& getCentroid() const;
+
+  /*!
    * Computes the convex hull of two polygons and returns it as polygon.
    * @param[in] polygon1 the first input polygon.
    * @param[in] polygon2 the second input polygon.

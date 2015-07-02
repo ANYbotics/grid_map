@@ -104,6 +104,24 @@ const double Polygon::getArea() const
   return std::abs(area / 2.0);
 }
 
+const Position& Polygon::getCentroid() const
+{
+  Position centroid;
+  std::vector<Position> vertices = getVertices();
+  vertices.push_back(vertices.at(0));
+  double area = 0.0;
+  double a;
+  for (int i = 0; i < vertices.size() - 1; i++) {
+    a = vertices[i].x() * vertices[i+1].y() - vertices[i+1].x() * vertices[i].y();
+    area += a;
+    centroid.x() += a * (vertices[i].x() + vertices[i+1].x());
+    centroid.y() += a * (vertices[i].y() + vertices[i+1].y());
+  }
+  area *= 0.5;
+  centroid /= (6.0 * area);
+  return centroid;
+}
+
 Polygon Polygon::convexHullCircles(const Position center1,
                                    const Position center2, const double radius,
                                    const int nVertices)
