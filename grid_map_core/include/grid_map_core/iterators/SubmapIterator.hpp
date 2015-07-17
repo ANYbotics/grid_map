@@ -82,6 +82,8 @@ public:
    */
   bool isPastEnd() const;
 
+  const Eigen::Array2i& getSubmapSize() const;
+
 private:
 
   //! Size of the buffer.

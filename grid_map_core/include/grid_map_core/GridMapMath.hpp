@@ -123,6 +123,10 @@ void mapIndexWithinRange(Eigen::Array2i& index,
  */
 void mapIndexWithinRange(int& index, const int& bufferSize);
 
+void limitIndexToRange(Eigen::Array2i& index, const Eigen::Array2i& bufferSize);
+
+void limitIndexToRange(int& index, const int& bufferSize);
+
 /*!
  * Limits (cuts off) the position to lie inside the map.
  * @param[in/out] position the position to be limited.

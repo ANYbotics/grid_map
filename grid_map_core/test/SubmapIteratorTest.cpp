@@ -86,6 +86,23 @@ TEST(checkSubmapIterator, Simple)
   EXPECT_EQ(2, (*iterator)(1));
   EXPECT_EQ(2, iterator.getSubmapIndex()(0));
   EXPECT_EQ(1, iterator.getSubmapIndex()(1));
+
+  // check end pointer
+
+  SubmapIterator it(map, submapTopLeftIndex, submapBufferSize);
+  Index last_index;
+  for (;!it.isPastEnd();++it) {
+    last_index = it.getSubmapIndex();
+  }
+  Index idxIt = *it;
+  SubmapIterator itEnd = it.end();
+  Index idxEnd = *itEnd;
+  EXPECT_EQ(idxIt(0),idxEnd(0));
+  EXPECT_EQ(idxIt(1),idxEnd(1));
+
+  std::cout << idxIt << std::endl;
+  std::cout << last_index << std::endl;
+  std::cout << idxEnd  << std::endl;
 }
 
 TEST(checkSubmapIterator, CircularBuffer)
@@ -164,4 +181,42 @@ TEST(checkSubmapIterator, CircularBuffer)
   EXPECT_EQ(1, (*iterator)(1));
   EXPECT_EQ(1, iterator.getSubmapIndex()(0));
   EXPECT_EQ(3, iterator.getSubmapIndex()(1));
+}
+
+TEST(checkSubmapIterator, OutOfRangeRequest)
+{
+  Eigen::Array2i submapTopLeftIndex(3, 1);
+  Eigen::Array2i submapBufferSize(6, 6);
+  Eigen::Array2i index;
+  Eigen::Array2i submapIndex;
+
+  vector<string> types;
+  types.push_back("type");
+  GridMap map(types);
+  map.setGeometry(Array2d(8.1, 5.1), 1.0, Vector2d(0.0, 0.0)); // bufferSize(8, 5)
+
+  SubmapIterator iterator(map, submapTopLeftIndex, submapBufferSize);
+
+  EXPECT_FALSE(iterator.isPastEnd());
+  EXPECT_EQ(submapTopLeftIndex(0), (*iterator)(0));
+  EXPECT_EQ(submapTopLeftIndex(1), (*iterator)(1));
+  EXPECT_EQ(0, iterator.getSubmapIndex()(0));
+  EXPECT_EQ(0, iterator.getSubmapIndex()(1));
+
+  EXPECT_EQ(5, iterator.getSubmapSize()(0));
+  EXPECT_EQ(4, iterator.getSubmapSize()(1));
+
+  Index lastIndex;
+  for (; !iterator.isPastEnd(); ++iterator) {
+    lastIndex = *iterator;
+  }
+  Index idxIt = *iterator;
+  SubmapIterator itEnd = iterator.end();
+  Index idxEnd = *itEnd;
+  EXPECT_EQ(idxIt(0),idxEnd(0));
+  EXPECT_EQ(idxIt(1),idxEnd(1));
+
+  std::cout << idxIt << std::endl;
+  std::cout << lastIndex << std::endl;
+  std::cout << idxEnd  << std::endl;
 }

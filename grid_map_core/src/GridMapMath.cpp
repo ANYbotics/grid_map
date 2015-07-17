@@ -228,6 +228,19 @@ void mapIndexWithinRange(int& index, const int& bufferSize)
   index = index % bufferSize;
 }
 
+void limitIndexToRange(Eigen::Array2i& index, const Eigen::Array2i& bufferSize)
+{
+  for (int i = 0; i < index.size(); i++) {
+    limitIndexToRange(index[i], bufferSize[i]);
+  }
+}
+
+void limitIndexToRange(int& index, const int& bufferSize)
+{
+  if (index < 0) index = 0;
+  else if (index >= bufferSize) index = bufferSize - 1;
+}
+
 void limitPositionToRange(Eigen::Vector2d& position, const Eigen::Array2d& mapLength, const Eigen::Vector2d& mapPosition)
 {
   Vector2d vectorToOrigin;

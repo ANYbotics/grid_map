@@ -20,10 +20,16 @@ SubmapIterator::SubmapIterator(const grid_map::GridMap& gridMap,
   bufferSize_ = gridMap.getSize();
   startIndex_ = gridMap.getStartIndex();
   index_ = submapStartIndex;
-  submapBufferSize_ = submapSize;
   submapStartIndex_ = submapStartIndex;
   submapEndIndex_ = submapStartIndex + submapSize - Eigen::Array2i::Ones();
-  mapIndexWithinRange(submapEndIndex_, submapBufferSize_);
+  printf("start: %i,%i\n",submapStartIndex_(0),submapStartIndex_(1));
+  printf("end: %i,%i\n",submapEndIndex_(0),submapEndIndex_(1));
+  limitIndexToRange(submapEndIndex_, bufferSize_);
+  // readjust submab Buffer Size to mapped end Index
+  printf("start: %i,%i\n",submapStartIndex_(0),submapStartIndex_(1));
+  printf("end: %i,%i\n",submapEndIndex_(0),submapEndIndex_(1));
+  submapBufferSize_ = submapEndIndex_ - submapStartIndex_ + Eigen::Array2i::Ones();
+  // resize the submap here such that it fits my map
   submapIndex_.setZero();
   isPastEnd_ = false;
 }
@@ -85,6 +91,11 @@ SubmapIterator SubmapIterator::end() const
 bool SubmapIterator::isPastEnd() const
 {
   return isPastEnd_;
+}
+
+const Eigen::Array2i& SubmapIterator::getSubmapSize() const
+{
+  return submapBufferSize_;
 }
 
 } /* namespace grid_map */
