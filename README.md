@@ -124,7 +124,7 @@ Grid map | Submap | Circle | Line | Polygon
 
 Using the iterator in a `for` loop is common. For example, iterate over the entire grid map with the `GridMapIterator` with
 
-    for (grid_map::GridMapIterator iterator(map); !iterator.isPassedEnd(); ++iterator) {
+    for (grid_map::GridMapIterator iterator(map); !iterator.isPastEnd(); ++iterator) {
         cout << "The value at index " << *iterator << " is " << map.at("layer", *iterator) << endl;
     }
 
