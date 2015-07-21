@@ -56,6 +56,7 @@ add_library(${PROJECT_NAME}
    src/iterators/GridMapIterator.cpp
    src/iterators/SubmapIterator.cpp
    src/iterators/CircleIterator.cpp
+   src/iterators/SpiralIterator.cpp
    src/iterators/PolygonIterator.cpp
    src/iterators/LineIterator.cpp
 )
