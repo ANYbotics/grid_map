@@ -70,11 +70,6 @@ bool SpiralIterator::isPastEnd() const
   return (distance_ == nRings_ && pointsRing_.empty());
 }
 
-int SpiralIterator::dist(const double dx, const double dy)
-{
-  return (int) std::round(sqrt(dx*dx + dy*dy));
-}
-
 bool SpiralIterator::isInside(const Index index)
 {
   Eigen::Vector2d position;
@@ -94,17 +89,19 @@ void SpiralIterator::generateRing()
     pointInMap.y() = point.y() + indexCenter_.y();
     if (checkIfIndexWithinRange(pointInMap, bufferSize_)) {
       if (distance_ == nRings_ || distance_ == nRings_ - 1) {
-        if (isInside(pointInMap)) pointsRing_.push_back(pointInMap);
+        if (isInside(pointInMap))
+          pointsRing_.push_back(pointInMap);
       } else {
         pointsRing_.push_back(pointInMap);
       }
     }
     normal.x() = -signum(point.y());
     normal.y() = signum(point.x());
-    if (normal.x() != 0 && dist(point.x() + normal.x(), point.y()) == distance_)
+    if (normal.x() != 0
+        && (int) Vector(point.x() + normal.x(), point.y()).norm() == distance_)
       point.x() += normal.x();
     else if (normal.y() != 0
-        && dist(point.x(), point.y() + normal.y()) == distance_)
+        && (int) Vector(point.x(), point.y() + normal.y()).norm() == distance_)
       point.y() += normal.y();
     else {
       point.x() += normal.x();

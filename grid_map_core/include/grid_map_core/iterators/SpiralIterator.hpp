@@ -85,13 +85,6 @@ private:
    */
   void generateRing();
 
-  /*!
-   * Check if index is inside the grid map.
-   * @param[in] index index to be checked.
-   * @return true if inside, false otherwise.
-   */
-  int dist(const double dx, const double dy);
-
   int signum(const int val) {
       return (0 < val) - (val < 0);
   }
