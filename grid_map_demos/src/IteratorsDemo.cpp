@@ -36,6 +36,7 @@ IteratorsDemo::IteratorsDemo(ros::NodeHandle& nodeHandle)
   demoGridMapIterator();
   demoSubmapIterator();
   demoCircleIterator();
+  demoSpiralIterator();
   demoLineIterator();
   demoPolygonIterator();
 }
@@ -90,6 +91,27 @@ void IteratorsDemo::demoCircleIterator()
   double radius = 0.4;
 
   for (grid_map::CircleIterator iterator(map_, center, radius);
+      !iterator.isPastEnd(); ++iterator) {
+    map_.at("type", *iterator) = 1.0;
+    publish();
+    ros::Duration duration(0.02);
+    duration.sleep();
+  }
+
+  ros::Duration duration(1.0);
+  duration.sleep();
+}
+
+void IteratorsDemo::demoSpiralIterator()
+{
+  ROS_INFO("Running spiral iterator demo.");
+  map_.clearAll();
+  publish();
+
+  Position center(0.0, -0.15);
+  double radius = 0.4;
+
+  for (grid_map::SpiralIterator iterator(map_, center, radius);
       !iterator.isPastEnd(); ++iterator) {
     map_.at("type", *iterator) = 1.0;
     publish();
