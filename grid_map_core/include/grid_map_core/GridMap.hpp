@@ -9,6 +9,7 @@
 #pragma once
 
 #include "grid_map_core/TypeDefs.hpp"
+#include "grid_map_core/SubmapGeometry.hpp"
 
 // STL
 #include <vector>
@@ -18,6 +19,8 @@
 #include <Eigen/Core>
 
 namespace grid_map {
+
+class SubmapGeometry;
 
 /*!
  * Grid map managing multiple overlaying maps holding float values.
@@ -59,6 +62,12 @@ class GridMap
    */
   void setGeometry(const grid_map::Length& length, const double resolution,
                    const grid_map::Position& position = grid_map::Position::Zero());
+
+  /*!
+   * Set the geometry of the grid map from submap geometry information.
+   * @param geometry the submap geometry information.
+   */
+  void setGeometry(const SubmapGeometry& geometry);
 
   /*!
    * Add a new empty data layer.
@@ -275,8 +284,21 @@ class GridMap
    * boundaries without moving the grid map data. Takes care of all the data handling,
    * such that the grid map data is stationary in the grid map frame.
    * @param position the new location of the grid map in the map frame.
+   * @param newRegionIndeces the (top-left) indices of the newly covered regions.
+   * @param newRegionSizes the sizes of the newly covered regions.
+   * @return true if map has been moved, false otherwise.
    */
-  void move(const grid_map::Position& position);
+  bool move(const grid_map::Position& position, std::vector<Index>& newRegionIndeces,
+            std::vector<Size>& newRegionSizes);
+
+  /*!
+   * Move the grid map w.r.t. to the grid map frame. Use this to move the grid map
+   * boundaries without moving the grid map data. Takes care of all the data handling,
+   * such that the grid map data is stationary in the grid map frame.
+   * @param position the new location of the grid map in the map frame.
+   * @return true if map has been moved, false otherwise.
+   */
+  bool move(const grid_map::Position& position);
 
   /*!
    * Clears all cells (set to NAN) for a layer.
@@ -307,7 +329,7 @@ class GridMap
    * Get the timestamp of the grid map.
    * @return timestamp in nanoseconds.
    */
-  uint64_t getTimestamp() const;
+  Time getTimestamp() const;
 
   /*!
    * Resets the timestamp of the grid map (to zero).
@@ -389,7 +411,7 @@ class GridMap
   std::string frameId_;
 
   //! Timestamp of the grid map (nanoseconds).
-  uint64_t timestamp_;
+  Time timestamp_;
 
   //! Grid map data stored as layers of matrices.
   std::unordered_map<std::string, Eigen::MatrixXf> data_;

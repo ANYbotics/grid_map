@@ -654,136 +654,109 @@ TEST(getSubmapInformation, Debug2)
 
 TEST(getBufferRegionsForSubmap, Trivial)
 {
-  unsigned int topLeft = bufferRegionIndeces[BufferRegion::TopLeft];
-  unsigned int topRight = bufferRegionIndeces[BufferRegion::TopRight];
-  unsigned int bottomLeft= bufferRegionIndeces[BufferRegion::BottomLeft];
-  unsigned int bottomRight= bufferRegionIndeces[BufferRegion::BottomRight];
+  Size bufferSize(5, 4);
+  Index submapIndex(0, 0);
+  Size submapSize(0, 0);
+  std::vector<BufferRegion> regions;
 
-  Eigen::Array2i bufferSize(5, 4);
-  vector<Eigen::Array2i> submapIndeces, submapSizes;
-
-  Eigen::Array2i submapIndex(0, 0);
-  Eigen::Array2i submapSize(0, 0);
-  EXPECT_TRUE(getBufferRegionsForSubmap(submapIndeces, submapSizes, submapIndex, submapSize, bufferSize));
-  EXPECT_EQ(0, submapSizes[topLeft][0]);
-  EXPECT_EQ(0, submapSizes[topLeft][1]);
-  EXPECT_EQ(0, submapSizes[topRight][0]);
-  EXPECT_EQ(0, submapSizes[topRight][1]);
-  EXPECT_EQ(0, submapSizes[bottomLeft][0]);
-  EXPECT_EQ(0, submapSizes[bottomLeft][1]);
-  EXPECT_EQ(0, submapSizes[bottomRight][0]);
-  EXPECT_EQ(0, submapSizes[bottomRight][1]);
+  EXPECT_TRUE(getBufferRegionsForSubmap(regions, submapIndex, submapSize, bufferSize));
+  EXPECT_EQ(1, regions.size());
+  EXPECT_EQ(BufferRegion::Quadrant::TopLeft, regions[0].getQuadrant());
+  EXPECT_EQ(0, regions[0].getIndex()[0]);
+  EXPECT_EQ(0, regions[0].getIndex()[1]);
+  EXPECT_EQ(0, regions[0].getSize()[0]);
+  EXPECT_EQ(0, regions[0].getSize()[1]);
 
   submapSize << 0, 7;
-  EXPECT_FALSE(getBufferRegionsForSubmap(submapIndeces, submapSizes, submapIndex, submapSize, bufferSize));
+  EXPECT_FALSE(getBufferRegionsForSubmap(regions, submapIndex, submapSize, bufferSize));
 
   submapSize << 6, 7;
-  EXPECT_FALSE(getBufferRegionsForSubmap(submapIndeces, submapSizes, submapIndex, submapSize, bufferSize));
+  EXPECT_FALSE(getBufferRegionsForSubmap(regions, submapIndex, submapSize, bufferSize));
 }
 
 TEST(getBufferRegionsForSubmap, Simple)
 {
-  unsigned int topLeft = bufferRegionIndeces[BufferRegion::TopLeft];
-  unsigned int topRight = bufferRegionIndeces[BufferRegion::TopRight];
-  unsigned int bottomLeft= bufferRegionIndeces[BufferRegion::BottomLeft];
-  unsigned int bottomRight= bufferRegionIndeces[BufferRegion::BottomRight];
+  Size bufferSize(5, 4);
+  Index submapIndex(1, 2);
+  Size submapSize(3, 2);
+  std::vector<BufferRegion> regions;
 
-  Eigen::Array2i submapIndex;
-  Eigen::Array2i submapSize;
-  Eigen::Array2i bufferSize(5, 4);
-  vector<Eigen::Array2i> submapIndeces, submapSizes;
-
-  submapIndex << 1, 2;
-  submapSize << 3, 2;
-  EXPECT_TRUE(getBufferRegionsForSubmap(submapIndeces, submapSizes, submapIndex, submapSize, bufferSize));
-  EXPECT_EQ(1, submapIndeces[topLeft][0]);
-  EXPECT_EQ(2, submapIndeces[topLeft][1]);
-  EXPECT_EQ(3, submapSizes[topLeft][0]);
-  EXPECT_EQ(2, submapSizes[topLeft][1]);
-  EXPECT_EQ(0, submapSizes[topRight][0]);
-  EXPECT_EQ(0, submapSizes[topRight][1]);
-  EXPECT_EQ(0, submapSizes[bottomLeft][0]);
-  EXPECT_EQ(0, submapSizes[bottomLeft][1]);
-  EXPECT_EQ(0, submapSizes[bottomRight][0]);
-  EXPECT_EQ(0, submapSizes[bottomRight][1]);
+  EXPECT_TRUE(getBufferRegionsForSubmap(regions, submapIndex, submapSize, bufferSize));
+  EXPECT_EQ(1, regions.size());
+  EXPECT_EQ(BufferRegion::Quadrant::TopLeft, regions[0].getQuadrant());
+  EXPECT_EQ(1, regions[0].getIndex()[0]);
+  EXPECT_EQ(2, regions[0].getIndex()[1]);
+  EXPECT_EQ(3, regions[0].getSize()[0]);
+  EXPECT_EQ(2, regions[0].getSize()[1]);
 }
 
 TEST(getBufferRegionsForSubmap, CircularBuffer)
 {
-  unsigned int topLeft = bufferRegionIndeces[BufferRegion::TopLeft];
-  unsigned int topRight = bufferRegionIndeces[BufferRegion::TopRight];
-  unsigned int bottomLeft= bufferRegionIndeces[BufferRegion::BottomLeft];
-  unsigned int bottomRight= bufferRegionIndeces[BufferRegion::BottomRight];
-
-  Eigen::Array2i submapIndex;
-  Eigen::Array2i submapSize;
-  Eigen::Array2i bufferSize(5, 4);
-  Eigen::Array2i bufferStartIndex(3, 1);
-  vector<Eigen::Array2i> submapIndeces, submapSizes;
+  Size bufferSize(5, 4);
+  Index submapIndex;
+  Size submapSize;
+  Index bufferStartIndex(3, 1);
+  std::vector<BufferRegion> regions;
 
   submapIndex << 3, 1;
   submapSize << 2, 3;
-  EXPECT_TRUE(getBufferRegionsForSubmap(submapIndeces, submapSizes, submapIndex, submapSize, bufferSize, bufferStartIndex));
-  EXPECT_EQ(3, submapIndeces[topLeft][0]);
-  EXPECT_EQ(1, submapIndeces[topLeft][1]);
-  EXPECT_EQ(2, submapSizes[topLeft][0]);
-  EXPECT_EQ(3, submapSizes[topLeft][1]);
-  EXPECT_EQ(0, submapSizes[topRight][0]);
-  EXPECT_EQ(0, submapSizes[topRight][1]);
-  EXPECT_EQ(0, submapSizes[bottomLeft][0]);
-  EXPECT_EQ(0, submapSizes[bottomLeft][1]);
-  EXPECT_EQ(0, submapSizes[bottomRight][0]);
-  EXPECT_EQ(0, submapSizes[bottomRight][1]);
+  EXPECT_TRUE(getBufferRegionsForSubmap(regions, submapIndex, submapSize, bufferSize, bufferStartIndex));
+  EXPECT_EQ(1, regions.size());
+  EXPECT_EQ(BufferRegion::Quadrant::TopLeft, regions[0].getQuadrant());
+  EXPECT_EQ(3, regions[0].getIndex()[0]);
+  EXPECT_EQ(1, regions[0].getIndex()[1]);
+  EXPECT_EQ(2, regions[0].getSize()[0]);
+  EXPECT_EQ(3, regions[0].getSize()[1]);
 
   submapIndex << 4, 1;
   submapSize << 2, 3;
-  getBufferRegionsForSubmap(submapIndeces, submapSizes, submapIndex, submapSize, bufferSize, bufferStartIndex);
-  EXPECT_EQ(4, submapIndeces[topLeft][0]);
-  EXPECT_EQ(1, submapIndeces[topLeft][1]);
-  EXPECT_EQ(1, submapSizes[topLeft][0]);
-  EXPECT_EQ(3, submapSizes[topLeft][1]);
-  EXPECT_EQ(0, submapSizes[topRight][0]);
-  EXPECT_EQ(0, submapSizes[topRight][1]);
-  EXPECT_EQ(0, submapIndeces[bottomLeft][0]);
-  EXPECT_EQ(1, submapIndeces[bottomLeft][1]);
-  EXPECT_EQ(1, submapSizes[bottomLeft][0]);
-  EXPECT_EQ(3, submapSizes[bottomLeft][1]);
-  EXPECT_EQ(0, submapSizes[bottomRight][0]);
-  EXPECT_EQ(0, submapSizes[bottomRight][1]);
+  EXPECT_TRUE(getBufferRegionsForSubmap(regions, submapIndex, submapSize, bufferSize, bufferStartIndex));
+  EXPECT_EQ(2, regions.size());
+  EXPECT_EQ(BufferRegion::Quadrant::TopLeft, regions[0].getQuadrant());
+  EXPECT_EQ(4, regions[0].getIndex()[0]);
+  EXPECT_EQ(1, regions[0].getIndex()[1]);
+  EXPECT_EQ(1, regions[0].getSize()[0]);
+  EXPECT_EQ(3, regions[0].getSize()[1]);
+  EXPECT_EQ(BufferRegion::Quadrant::BottomLeft, regions[1].getQuadrant());
+  EXPECT_EQ(0, regions[1].getIndex()[0]);
+  EXPECT_EQ(1, regions[1].getIndex()[1]);
+  EXPECT_EQ(1, regions[1].getSize()[0]);
+  EXPECT_EQ(3, regions[1].getSize()[1]);
 
   submapIndex << 1, 0;
   submapSize << 2, 1;
-  EXPECT_TRUE(getBufferRegionsForSubmap(submapIndeces, submapSizes, submapIndex, submapSize, bufferSize, bufferStartIndex));
-  EXPECT_EQ(0, submapSizes[topLeft][0]);
-  EXPECT_EQ(0, submapSizes[topLeft][1]);
-  EXPECT_EQ(0, submapSizes[topRight][0]);
-  EXPECT_EQ(0, submapSizes[topRight][1]);
-  EXPECT_EQ(0, submapSizes[bottomLeft][0]);
-  EXPECT_EQ(0, submapSizes[bottomLeft][1]);
-  EXPECT_EQ(1, submapIndeces[bottomRight][0]);
-  EXPECT_EQ(0, submapIndeces[bottomRight][1]);
-  EXPECT_EQ(2, submapSizes[bottomRight][0]);
-  EXPECT_EQ(1, submapSizes[bottomRight][1]);
+  EXPECT_TRUE(getBufferRegionsForSubmap(regions, submapIndex, submapSize, bufferSize, bufferStartIndex));
+  EXPECT_EQ(1, regions.size());
+  EXPECT_EQ(BufferRegion::Quadrant::BottomRight, regions[0].getQuadrant());
+  EXPECT_EQ(1, regions[0].getIndex()[0]);
+  EXPECT_EQ(0, regions[0].getIndex()[1]);
+  EXPECT_EQ(2, regions[0].getSize()[0]);
+  EXPECT_EQ(1, regions[0].getSize()[1]);
 
   submapIndex << 3, 1;
   submapSize << 5, 4;
-  EXPECT_TRUE(getBufferRegionsForSubmap(submapIndeces, submapSizes, submapIndex, submapSize, bufferSize, bufferStartIndex));
-  EXPECT_EQ(3, submapIndeces[topLeft][0]);
-  EXPECT_EQ(1, submapIndeces[topLeft][1]);
-  EXPECT_EQ(2, submapSizes[topLeft][0]);
-  EXPECT_EQ(3, submapSizes[topLeft][1]);
-  EXPECT_EQ(3, submapIndeces[topRight][0]);
-  EXPECT_EQ(0, submapIndeces[topRight][1]);
-  EXPECT_EQ(2, submapSizes[topRight][0]);
-  EXPECT_EQ(1, submapSizes[topRight][1]);
-  EXPECT_EQ(0, submapIndeces[bottomLeft][0]);
-  EXPECT_EQ(1, submapIndeces[bottomLeft][1]);
-  EXPECT_EQ(3, submapSizes[bottomLeft][0]);
-  EXPECT_EQ(3, submapSizes[bottomLeft][1]);
-  EXPECT_EQ(0, submapIndeces[bottomRight][0]);
-  EXPECT_EQ(0, submapIndeces[bottomRight][1]);
-  EXPECT_EQ(3, submapSizes[bottomRight][0]);
-  EXPECT_EQ(1, submapSizes[bottomRight][1]);
+  EXPECT_TRUE(getBufferRegionsForSubmap(regions, submapIndex, submapSize, bufferSize, bufferStartIndex));\
+  EXPECT_EQ(4, regions.size());
+  EXPECT_EQ(BufferRegion::Quadrant::TopLeft, regions[0].getQuadrant());
+  EXPECT_EQ(3, regions[0].getIndex()[0]);
+  EXPECT_EQ(1, regions[0].getIndex()[1]);
+  EXPECT_EQ(2, regions[0].getSize()[0]);
+  EXPECT_EQ(3, regions[0].getSize()[1]);
+  EXPECT_EQ(BufferRegion::Quadrant::TopRight, regions[1].getQuadrant());
+  EXPECT_EQ(3, regions[1].getIndex()[0]);
+  EXPECT_EQ(0, regions[1].getIndex()[1]);
+  EXPECT_EQ(2, regions[1].getSize()[0]);
+  EXPECT_EQ(1, regions[1].getSize()[1]);
+  EXPECT_EQ(BufferRegion::Quadrant::BottomLeft, regions[2].getQuadrant());
+  EXPECT_EQ(0, regions[2].getIndex()[0]);
+  EXPECT_EQ(1, regions[2].getIndex()[1]);
+  EXPECT_EQ(3, regions[2].getSize()[0]);
+  EXPECT_EQ(3, regions[2].getSize()[1]);
+  EXPECT_EQ(BufferRegion::Quadrant::BottomRight, regions[3].getQuadrant());
+  EXPECT_EQ(0, regions[3].getIndex()[0]);
+  EXPECT_EQ(0, regions[3].getIndex()[1]);
+  EXPECT_EQ(3, regions[3].getSize()[0]);
+  EXPECT_EQ(1, regions[3].getSize()[1]);
 }
 
 TEST(checkIncrementIndex, Simple)

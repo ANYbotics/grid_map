@@ -52,6 +52,8 @@ include_directories(
 add_library(${PROJECT_NAME}
    src/GridMap.cpp
    src/GridMapMath.cpp
+   src/SubmapGeometry.cpp
+   src/BufferRegion.cpp
    src/Polygon.cpp
    src/iterators/GridMapIterator.cpp
    src/iterators/SubmapIterator.cpp
