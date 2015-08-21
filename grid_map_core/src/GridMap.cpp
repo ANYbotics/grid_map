@@ -275,7 +275,7 @@ GridMap GridMap::getSubmap(const grid_map::Position& position, const grid_map::L
   // Copy data.
   std::vector<BufferRegion> bufferRegions;
 
-  if (!getBufferRegionsForSubmap(bufferRegions, submapInformation.getTopLeftIndex(),
+  if (!getBufferRegionsForSubmap(bufferRegions, submapInformation.getStartIndex(),
                                  submap.getSize(), size_, startIndex_)) {
     cout << "Cannot access submap of this size." << endl;
     isSuccess = false;
@@ -284,7 +284,7 @@ GridMap GridMap::getSubmap(const grid_map::Position& position, const grid_map::L
 
   for (auto& data : data_) {
     for (const auto& bufferRegion : bufferRegions) {
-      Index index = bufferRegion.getIndex();
+      Index index = bufferRegion.getStartIndex();
       Size size = bufferRegion.getSize();
 
       if (bufferRegion.getQuadrant() == BufferRegion::Quadrant::TopLeft) {
@@ -304,27 +304,13 @@ GridMap GridMap::getSubmap(const grid_map::Position& position, const grid_map::L
   return submap;
 }
 
-bool GridMap::move(const grid_map::Position& position, std::vector<Index>& newRegionIndeces,
-                   std::vector<Size>& newRegionSizes)
+bool GridMap::move(const grid_map::Position& position, std::vector<BufferRegion>& newRegions)
 {
-  struct Lines
-  {
-    Lines(int index, int size)
-    {
-      index_ = index;
-      size_ = size;
-    }
-
-    int index_;
-    int size_;
-  };
-
   Index indexShift;
   Position positionShift = position - position_;
   getIndexShiftFromPositionShift(indexShift, positionShift, resolution_);
   Position alignedPositionShift;
   getPositionShiftFromIndexShift(alignedPositionShift, indexShift, resolution_);
-  vector<Lines> colLines, rowLines;
 
   // Delete fields that fall out of map (and become empty cells).
   for (int i = 0; i < indexShift.size(); i++) {
@@ -332,35 +318,46 @@ bool GridMap::move(const grid_map::Position& position, std::vector<Index>& newRe
       if (abs(indexShift(i)) >= getSize()(i)) {
         // Entire map is dropped.
         clearAll();
-        // TODO
+        newRegions.push_back(BufferRegion(Index(0, 0), getSize(), BufferRegion::Quadrant::Undefined));
       } else {
         // Drop cells out of map.
         int sign = (indexShift(i) > 0 ? 1 : -1);
         int startIndex = startIndex_(i) - (sign < 0 ? 1 : 0);
         int endIndex = startIndex - sign + indexShift(i);
         int nCells = abs(indexShift(i));
-
         int index = (sign > 0 ? startIndex : endIndex);
         mapIndexWithinRange(index, getSize()(i));
 
         if (index + nCells <= getSize()(i)) {
           // One region to drop.
-          Lines lines(index, nCells);
-          if (i == 0) { clearCols(index, nCells); colLines.push_back(lines); }
-          if (i == 1) { clearRows(index, nCells); rowLines.push_back(lines); }
+          if (i == 0) {
+            clearCols(index, nCells);
+            newRegions.push_back(BufferRegion(Index(0, index), Size(getSize()(0), nCells), BufferRegion::Quadrant::Undefined));
+          } else if (i == 1) {
+            clearRows(index, nCells);
+            newRegions.push_back(BufferRegion(Index(index, 0), Size(nCells, getSize()(1)), BufferRegion::Quadrant::Undefined));
+          }
         } else {
           // Two regions to drop.
           int firstIndex = index;
           int firstNCells = getSize()(i) - firstIndex;
-          Lines firstLines(firstIndex, firstNCells);
-          if (i == 0) { clearCols(firstIndex, firstNCells); colLines.push_back(firstLines); }
-          if (i == 1) { clearRows(firstIndex, firstNCells); rowLines.push_back(firstLines); }
+          if (i == 0) {
+            clearCols(firstIndex, firstNCells);
+            newRegions.push_back(BufferRegion(Index(0, firstIndex), Size(getSize()(0), firstNCells), BufferRegion::Quadrant::Undefined));
+          } else if (i == 1) {
+            clearRows(firstIndex, firstNCells);
+            newRegions.push_back(BufferRegion(Index(firstIndex, 0), Size(firstNCells, getSize()(1)), BufferRegion::Quadrant::Undefined));
+          }
 
           int secondIndex = 0;
           int secondNCells = nCells - firstNCells;
-          Lines secondLines(secondIndex, secondNCells);
-          if (i == 0) { clearCols(secondIndex, secondNCells); colLines.push_back(secondLines); }
-          if (i == 1) { clearRows(secondIndex, secondNCells); rowLines.push_back(secondLines); }
+          if (i == 0) {
+            clearCols(secondIndex, secondNCells);
+            newRegions.push_back(BufferRegion(Index(0, secondIndex), Size(getSize()(0), secondNCells), BufferRegion::Quadrant::Undefined));
+          } else if (i == 1) {
+            clearRows(secondIndex, secondNCells);
+            newRegions.push_back(BufferRegion(Index(secondIndex, 0), Size(secondNCells, getSize()(1)), BufferRegion::Quadrant::Undefined));
+          }
         }
       }
     }
@@ -371,25 +368,14 @@ bool GridMap::move(const grid_map::Position& position, std::vector<Index>& newRe
   mapIndexWithinRange(startIndex_, getSize());
   position_ += alignedPositionShift;
 
-  // Retrieve cell indices that cover new area.
-  for (const auto& lines : colLines) {
-    newRegionIndeces.push_back(Index(0, lines.index_));
-    newRegionSizes.push_back(Size(getSize()(0), lines.size_));
-  }
-  for (const auto& lines : rowLines) {
-    newRegionIndeces.push_back(Index(lines.index_, 0));
-    newRegionSizes.push_back(Size(lines.size_, getSize()(1)));
-  }
-
   // Check if map has been moved at all.
   return (indexShift.any() != 0);
 }
 
 bool GridMap::move(const grid_map::Position& position)
 {
-  std::vector<Index> newRegionIndices;
-  std::vector<Size> newRegionSizes;
-  return move(position, newRegionIndices, newRegionSizes);
+  std::vector<BufferRegion> newRegions;
+  return move(position, newRegions);
 }
 
 void GridMap::setTimestamp(const Time timestamp)

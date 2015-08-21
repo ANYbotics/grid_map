@@ -15,7 +15,7 @@ SubmapGeometry::SubmapGeometry(const GridMap& gridMap, const Position& position,
                                      const Length& length, bool& isSuccess)
     : gridMap_(gridMap)
 {
-  isSuccess = getSubmapInformation(topLeftIndex_, size_, position_, length_,
+  isSuccess = getSubmapInformation(startIndex_, size_, position_, length_,
                                    requestedIndexInSubmap_, position, length, gridMap_.getLength(),
                                    gridMap_.getPosition(), gridMap_.getResolution(),
                                    gridMap_.getSize(), gridMap_.getStartIndex());
@@ -55,9 +55,9 @@ double SubmapGeometry::getResolution() const
   return gridMap_.getResolution();
 }
 
-const Index& SubmapGeometry::getTopLeftIndex() const
+const Index& SubmapGeometry::getStartIndex() const
 {
-  return topLeftIndex_;
+  return startIndex_;
 }
 
 } /* namespace grid_map */

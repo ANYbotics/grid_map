@@ -14,6 +14,11 @@ namespace grid_map {
 
 class GridMap;
 
+/*!
+ * This class holds information about the geometry of submap
+ * region of a grid map. Note that, this class does NOT hold
+ * the any data of the grid map.
+ */
 class SubmapGeometry
 {
  public:
@@ -38,15 +43,15 @@ class SubmapGeometry
   const Index& getRequestedIndexInSubmap() const;
   const Size& getSize() const;
   double getResolution() const;
-  const Index& getTopLeftIndex() const;
+  const Index& getStartIndex() const;
 
  private:
 
   //! Parent grid map of the submap.
   const GridMap& gridMap_;
 
-  //! Top left index of the submap.
-  Index topLeftIndex_;
+  //! Start index (typically top left) index of the submap.
+  Index startIndex_;
 
   //! Size of the submap.
   Size size_;

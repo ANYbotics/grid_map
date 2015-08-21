@@ -9,6 +9,8 @@
 #pragma once
 
 #include "grid_map_core/GridMap.hpp"
+#include "grid_map_core/SubmapGeometry.hpp"
+#include "grid_map_core/BufferRegion.hpp"
 
 // Eigen
 #include <Eigen/Core>
@@ -26,13 +28,25 @@ public:
 
   /*!
    * Constructor.
+   * @param submap the submap geometry to iterate over.
+   */
+  SubmapIterator(const grid_map::SubmapGeometry& submap);
+
+  /*!
+   * Constructor.
+   * @param submap the buffer region of a grid map to iterate over.
+   */
+  SubmapIterator(const grid_map::GridMap& gridMap, const grid_map::BufferRegion& bufferRegion);
+
+  /*!
+   * Constructor.
    * @param gridMap the grid map to iterate on.
    * @param submapStartIndex the start index of the submap, typically top-left index.
    * @param submapSize the size of the submap to iterate on.
    */
-  SubmapIterator(const grid_map::GridMap& gridMap,
-                 const Eigen::Array2i& submapStartIndex,
-                 const Eigen::Array2i& submapSize);
+  SubmapIterator(const grid_map::GridMap& gridMap, const Index& submapStartIndex,
+                 const Size& submapSize);
+
   /*!
    * Copy constructor.
    * @param other the object to copy.
@@ -71,12 +85,6 @@ public:
   SubmapIterator& operator ++();
 
   /*!
-   * Return the end iterator
-   * @return the end iterator (useful when performing normal iterator processing with ++).
-   */
-  SubmapIterator end() const;
-
-  /*!
    * Indicates if iterator is past end.
    * @return true if iterator is out of scope, false if end has not been reached.
    */
@@ -85,25 +93,22 @@ public:
 private:
 
   //! Size of the buffer.
-  Eigen::Array2i bufferSize_;
+  Size size_;
 
   //! Start index of the circular buffer.
-  Eigen::Array2i startIndex_;
+  Index startIndex_;
 
   //! Current index.
-  Eigen::Array2i index_;
+  Index index_;
 
   //! Submap buffer size.
-  Eigen::Array2i submapBufferSize_;
+  Size submapSize_;
 
   //! Top left index of the submap.
-  Eigen::Array2i submapStartIndex_;
-
-  //! End index of the submap.
-  Eigen::Array2i submapEndIndex_;
+  Index submapStartIndex_;
 
   //! Current index in the submap.
-  Eigen::Array2i submapIndex_;
+  Index submapIndex_;
 
   //! Is iterator out of scope.
   bool isPastEnd_;

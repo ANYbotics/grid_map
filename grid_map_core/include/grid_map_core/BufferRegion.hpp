@@ -12,6 +12,10 @@
 
 namespace grid_map {
 
+/*!
+ * This class holds information about a rectangular region
+ * of cells of the circular buffer.
+ */
 class BufferRegion
 {
  public:
@@ -31,11 +35,11 @@ class BufferRegion
   constexpr static unsigned int nQuadrants = 4;
 
   BufferRegion();
-  BufferRegion(const Index& index, const Size& size, const BufferRegion::Quadrant& quadrant);
+  BufferRegion(const Index& startIndex, const Size& size, const BufferRegion::Quadrant& quadrant);
   virtual ~BufferRegion();
 
-  const Index& getIndex() const;
-  void setIndex(const Index& index);
+  const Index& getStartIndex() const;
+  void setStartIndex(const Index& startIndex);
   const Size& getSize() const;
   void setSize(const Size& size);
   BufferRegion::Quadrant getQuadrant() const;
@@ -43,8 +47,8 @@ class BufferRegion
 
  private:
 
-  //! Top left index of the buffer region.
-  Index index_;
+  //! Start index (typically top-left) of the buffer region.
+  Index staretIndex_;
 
   //! Size of the buffer region.
   Size size_;

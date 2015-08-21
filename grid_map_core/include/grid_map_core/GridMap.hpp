@@ -10,6 +10,7 @@
 
 #include "grid_map_core/TypeDefs.hpp"
 #include "grid_map_core/SubmapGeometry.hpp"
+#include "grid_map_core/BufferRegion.hpp"
 
 // STL
 #include <vector>
@@ -284,12 +285,10 @@ class GridMap
    * boundaries without moving the grid map data. Takes care of all the data handling,
    * such that the grid map data is stationary in the grid map frame.
    * @param position the new location of the grid map in the map frame.
-   * @param newRegionIndeces the (top-left) indices of the newly covered regions.
-   * @param newRegionSizes the sizes of the newly covered regions.
+   * @param newRegions the regions of the newly covered / previously uncovered regions of the buffer.
    * @return true if map has been moved, false otherwise.
    */
-  bool move(const grid_map::Position& position, std::vector<Index>& newRegionIndeces,
-            std::vector<Size>& newRegionSizes);
+  bool move(const grid_map::Position& position, std::vector<BufferRegion>& newRegions);
 
   /*!
    * Move the grid map w.r.t. to the grid map frame. Use this to move the grid map
