@@ -73,7 +73,13 @@ target_link_libraries(${PROJECT_NAME}
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
 ## Add gtest based cpp test target and link libraries
-catkin_add_gtest(${PROJECT_NAME}-test test/test_grid_map_core.cpp test/GridMapMathTest.cpp test/SubmapIteratorTest.cpp test/PolygonIteratorTest.cpp test/PolygonTest.cpp)
+catkin_add_gtest(${PROJECT_NAME}-test
+  test/test_grid_map_core.cpp
+  test/GridMapMathTest.cpp
+  test/GridMapTest.cpp
+  test/SubmapIteratorTest.cpp
+  test/PolygonIteratorTest.cpp
+  test/PolygonTest.cpp)
 if(TARGET ${PROJECT_NAME}-test)
   target_link_libraries(${PROJECT_NAME}-test grid_map_core)
 endif()

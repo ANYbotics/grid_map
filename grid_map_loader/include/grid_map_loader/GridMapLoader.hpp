@@ -71,6 +71,9 @@ class GridMapLoader
 
   //! Topic name of the grid map in the ROS bag.
   std::string topic_;
+
+  //! Duration to publish the grid map.
+  ros::Duration duration_;
 };
 
 } /* namespace */

@@ -1,5 +1,5 @@
 /*
- * GridMapTest.cpp
+ * PolygonTest.cpp
  *
  *  Created on: Mar 24, 2015
  *      Author: Martin Wermelinger, Péter Fankhauser

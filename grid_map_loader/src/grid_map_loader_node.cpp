@@ -14,6 +14,6 @@ int main(int argc, char** argv)
   ros::init(argc, argv, "grid_map_loader");
   ros::NodeHandle nodeHandle("~");
   grid_map_loader::GridMapLoader gridMapLoader(nodeHandle);
-  ros::spin();
+  ros::waitForShutdown();
   return 0;
 }
