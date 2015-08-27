@@ -36,11 +36,13 @@ TEST(GridMap, Move)
   EXPECT_FALSE(map.isValid(Index(3, 1)));
   EXPECT_TRUE(map.isValid(Index(7, 4)));
 
-  std::cout << map.get("layer");
-
   EXPECT_EQ(2, regions.size());
   EXPECT_EQ(0, regions[0].getStartIndex()[0]);
   EXPECT_EQ(0, regions[0].getStartIndex()[1]);
-  EXPECT_EQ(8, regions[0].getSize()[0]);
-  EXPECT_EQ(2, regions[0].getSize()[1]);
+  EXPECT_EQ(3, regions[0].getSize()[0]);
+  EXPECT_EQ(5, regions[0].getSize()[1]);
+  EXPECT_EQ(0, regions[1].getStartIndex()[0]);
+  EXPECT_EQ(0, regions[1].getStartIndex()[1]);
+  EXPECT_EQ(8, regions[1].getSize()[0]);
+  EXPECT_EQ(2, regions[1].getSize()[1]);
 }

@@ -41,11 +41,7 @@ bool GridMapLoader::readParameters()
 bool GridMapLoader::load()
 {
   ROS_INFO_STREAM("Loading grid map from path " << filePath_ << ".");
-  map_.setGeometry(Length(10.0, 10.0), 0.1, Position(0.0, 0.0));
-  map_.add("elevation", 0.69);
-  map_.setTimestamp(ros::Time::now().toNSec());
-  map_.setFrameId("map");
-//  return GridMapRosConverter::loadFromBag(filePath_, topic_, map_);
+  return GridMapRosConverter::loadFromBag(filePath_, topic_, map_);
   return true;
 }
 

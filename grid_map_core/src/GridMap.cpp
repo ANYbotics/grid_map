@@ -331,32 +331,32 @@ bool GridMap::move(const grid_map::Position& position, std::vector<BufferRegion>
         if (index + nCells <= getSize()(i)) {
           // One region to drop.
           if (i == 0) {
-            clearCols(index, nCells);
-            newRegions.push_back(BufferRegion(Index(0, index), Size(getSize()(0), nCells), BufferRegion::Quadrant::Undefined));
-          } else if (i == 1) {
             clearRows(index, nCells);
             newRegions.push_back(BufferRegion(Index(index, 0), Size(nCells, getSize()(1)), BufferRegion::Quadrant::Undefined));
+          } else if (i == 1) {
+            clearCols(index, nCells);
+            newRegions.push_back(BufferRegion(Index(0, index), Size(getSize()(0), nCells), BufferRegion::Quadrant::Undefined));
           }
         } else {
           // Two regions to drop.
           int firstIndex = index;
           int firstNCells = getSize()(i) - firstIndex;
           if (i == 0) {
-            clearCols(firstIndex, firstNCells);
-            newRegions.push_back(BufferRegion(Index(0, firstIndex), Size(getSize()(0), firstNCells), BufferRegion::Quadrant::Undefined));
-          } else if (i == 1) {
             clearRows(firstIndex, firstNCells);
             newRegions.push_back(BufferRegion(Index(firstIndex, 0), Size(firstNCells, getSize()(1)), BufferRegion::Quadrant::Undefined));
+          } else if (i == 1) {
+            clearCols(firstIndex, firstNCells);
+            newRegions.push_back(BufferRegion(Index(0, firstIndex), Size(getSize()(0), firstNCells), BufferRegion::Quadrant::Undefined));
           }
 
           int secondIndex = 0;
           int secondNCells = nCells - firstNCells;
           if (i == 0) {
-            clearCols(secondIndex, secondNCells);
-            newRegions.push_back(BufferRegion(Index(0, secondIndex), Size(getSize()(0), secondNCells), BufferRegion::Quadrant::Undefined));
-          } else if (i == 1) {
             clearRows(secondIndex, secondNCells);
             newRegions.push_back(BufferRegion(Index(secondIndex, 0), Size(secondNCells, getSize()(1)), BufferRegion::Quadrant::Undefined));
+          } else if (i == 1) {
+            clearCols(secondIndex, secondNCells);
+            newRegions.push_back(BufferRegion(Index(0, secondIndex), Size(getSize()(0), secondNCells), BufferRegion::Quadrant::Undefined));
           }
         }
       }
@@ -455,23 +455,23 @@ void GridMap::clearAll()
   }
 }
 
-void GridMap::clearCols(unsigned int index, unsigned int nCols)
-{
-  std::vector<std::string> layersToClear;
-  if (basicLayers_.size() > 0) layersToClear = basicLayers_;
-  else layersToClear = layers_;
-  for (auto& layer : layersToClear) {
-    data_.at(layer).block(index, 0, nCols, getSize()(1)).setConstant(NAN);
-  }
-}
-
 void GridMap::clearRows(unsigned int index, unsigned int nRows)
 {
   std::vector<std::string> layersToClear;
   if (basicLayers_.size() > 0) layersToClear = basicLayers_;
   else layersToClear = layers_;
   for (auto& layer : layersToClear) {
-    data_.at(layer).block(0, index, getSize()(0), nRows).setConstant(NAN);
+    data_.at(layer).block(index, 0, nRows, getSize()(1)).setConstant(NAN);
+  }
+}
+
+void GridMap::clearCols(unsigned int index, unsigned int nCols)
+{
+  std::vector<std::string> layersToClear;
+  if (basicLayers_.size() > 0) layersToClear = basicLayers_;
+  else layersToClear = layers_;
+  for (auto& layer : layersToClear) {
+    data_.at(layer).block(0, index, getSize()(0), nCols).setConstant(NAN);
   }
 }
 
