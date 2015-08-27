@@ -6,9 +6,11 @@
  *	 Institute: ETH Zurich, Autonomous Systems Lab
  */
 
-#include <grid_map_core/SubmapGeometry.hpp>
 #include "grid_map_core/GridMap.hpp"
 #include "grid_map_core/GridMapMath.hpp"
+#include "grid_map_core/SubmapGeometry.hpp"
+#include "grid_map_core/iterators/GridMapIterator.hpp"
+
 #include <iostream>
 #include <cassert>
 #include <math.h>
@@ -78,6 +80,14 @@ void GridMap::setBasicLayers(const std::vector<std::string>& basicLayers)
 const std::vector<std::string>& GridMap::getBasicLayers() const
 {
   return basicLayers_;
+}
+
+bool GridMap::hasSameLayers(const grid_map::GridMap& other) const
+{
+  for (const auto& layer : layers_) {
+    if (!other.exists(layer)) return false;
+  }
+  return true;
 }
 
 void GridMap::add(const std::string& layer, const double value)
@@ -200,7 +210,7 @@ bool GridMap::getPosition(const grid_map::Index& index, grid_map::Position& posi
   return getPositionFromIndex(position, index, length_, position_, resolution_, size_, startIndex_);
 }
 
-bool GridMap::isInside(const grid_map::Position& position)
+bool GridMap::isInside(const grid_map::Position& position) const
 {
   return checkIfPositionWithinMap(position, length_, position_);
 }
@@ -378,6 +388,24 @@ bool GridMap::move(const grid_map::Position& position)
   return move(position, newRegions);
 }
 
+bool GridMap::fillHolesFrom(const grid_map::GridMap other)
+{
+  if (!hasSameLayers(other)) return false;
+  for (GridMapIterator iterator(*this); !iterator.isPastEnd(); ++iterator) {
+    if (isValid(*iterator)) continue;
+    Position position;
+    getPosition(*iterator, position);
+    Index index;
+    if (!other.isInside(position)) continue;
+    other.getIndex(position, index);
+    if (!other.isValid(index, basicLayers_));
+    for (const auto& layer : layers_) {
+      at(layer, *iterator) = other.at(layer, index);
+    }
+  }
+  return true;
+}
+
 void GridMap::setTimestamp(const Time timestamp)
 {
   timestamp_ = timestamp;
@@ -484,3 +512,4 @@ void GridMap::resize(const Eigen::Array2i& size)
 }
 
 } /* namespace */
+

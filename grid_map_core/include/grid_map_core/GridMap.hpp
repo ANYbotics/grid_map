@@ -153,6 +153,15 @@ class GridMap
   const std::vector<std::string>& getBasicLayers() const;
 
   /*!
+   * Checks if another grid map contains the same layers as this grid map.
+   * The other grid map could contain more layers than the checked ones.
+   * Does not check the selection of basic layers.
+   * @param other the other grid map.
+   * @return true if the other grid map has the same layers, false otherwise.
+   */
+  bool hasSameLayers(const grid_map::GridMap& other) const;
+
+  /*!
    * Get cell data at requested position.
    * @param layer the name of the layer to be accessed.
    * @param position the requested position.
@@ -210,7 +219,7 @@ class GridMap
    * @param position the position to be checked.
    * @return true if position is within map, false otherwise.
    */
-  bool isInside(const grid_map::Position& position);
+  bool isInside(const grid_map::Position& position) const;
 
   /*!
    * Checks if the index of all layers defined as basic types are valid,
@@ -298,6 +307,13 @@ class GridMap
    * @return true if map has been moved, false otherwise.
    */
   bool move(const grid_map::Position& position);
+
+  /*!
+   * Fills holes (invalid cells) with data from another grid map.
+   * @param other the grid map to take data from for hole filling.
+   * @return true if successful, false if layers are not corresponding.
+   */
+  bool fillHolesFrom(const grid_map::GridMap other);
 
   /*!
    * Clears all cells (set to NAN) for a layer.
