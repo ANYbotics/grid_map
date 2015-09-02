@@ -13,28 +13,36 @@ using namespace std;
 
 namespace grid_map {
 
-SubmapIterator::SubmapIterator(const grid_map::GridMap& gridMap,
-                               const Eigen::Array2i& submapStartIndex,
-                               const Eigen::Array2i& submapSize)
+SubmapIterator::SubmapIterator(const grid_map::SubmapGeometry& submap)
+    : SubmapIterator(submap.getGridMap(), submap.getStartIndex(), submap.getSize())
 {
-  bufferSize_ = gridMap.getSize();
+}
+
+SubmapIterator::SubmapIterator(const grid_map::GridMap& gridMap,
+                               const grid_map::BufferRegion& bufferRegion)
+    : SubmapIterator(gridMap, bufferRegion.getStartIndex(), bufferRegion.getSize())
+{
+}
+
+
+SubmapIterator::SubmapIterator(const grid_map::GridMap& gridMap, const Index& submapStartIndex,
+                               const Size& submapSize)
+{
+  size_ = gridMap.getSize();
   startIndex_ = gridMap.getStartIndex();
   index_ = submapStartIndex;
-  submapBufferSize_ = submapSize;
+  submapSize_ = submapSize;
   submapStartIndex_ = submapStartIndex;
-  submapEndIndex_ = submapStartIndex + submapSize - Eigen::Array2i::Ones();
-  mapIndexWithinRange(submapEndIndex_, submapBufferSize_);
   submapIndex_.setZero();
   isPastEnd_ = false;
 }
 
 SubmapIterator::SubmapIterator(const SubmapIterator* other)
 {
-  bufferSize_ = other->bufferSize_;
+  size_ = other->size_;
   startIndex_ = other->startIndex_;
-  submapBufferSize_ = other->submapBufferSize_;
+  submapSize_ = other->submapSize_;
   submapStartIndex_ = other->submapStartIndex_;
-  submapEndIndex_ = other->submapEndIndex_;
   index_ = other->index_;
   submapIndex_ = other->submapIndex_;
   isPastEnd_ = other->isPastEnd_;
@@ -42,11 +50,10 @@ SubmapIterator::SubmapIterator(const SubmapIterator* other)
 
 SubmapIterator& SubmapIterator::operator =(const SubmapIterator& other)
 {
-  bufferSize_ = other.bufferSize_;
+  size_ = other.size_;
   startIndex_ = other.startIndex_;
-  submapBufferSize_ = other.submapBufferSize_;
+  submapSize_ = other.submapSize_;
   submapStartIndex_ = other.submapStartIndex_;
-  submapEndIndex_ = other.submapEndIndex_;
   index_ = other.index_;
   submapIndex_ = other.submapIndex_;
   isPastEnd_ = other.isPastEnd_;
@@ -71,15 +78,8 @@ const Eigen::Array2i& SubmapIterator::getSubmapIndex() const
 SubmapIterator& SubmapIterator::operator ++()
 {
   isPastEnd_ = !incrementIndexForSubmap(submapIndex_, index_, submapStartIndex_,
-                                         submapBufferSize_, bufferSize_, startIndex_);
+                                         submapSize_, size_, startIndex_);
   return *this;
-}
-
-SubmapIterator SubmapIterator::end() const
-{
-  SubmapIterator res(this);
-  res.index_ = submapEndIndex_;
-  return res;
 }
 
 bool SubmapIterator::isPastEnd() const

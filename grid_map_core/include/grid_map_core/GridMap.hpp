@@ -9,6 +9,8 @@
 #pragma once
 
 #include "grid_map_core/TypeDefs.hpp"
+#include "grid_map_core/SubmapGeometry.hpp"
+#include "grid_map_core/BufferRegion.hpp"
 
 // STL
 #include <vector>
@@ -18,6 +20,8 @@
 #include <Eigen/Core>
 
 namespace grid_map {
+
+class SubmapGeometry;
 
 /*!
  * Grid map managing multiple overlaying maps holding float values.
@@ -59,6 +63,12 @@ class GridMap
    */
   void setGeometry(const grid_map::Length& length, const double resolution,
                    const grid_map::Position& position = grid_map::Position::Zero());
+
+  /*!
+   * Set the geometry of the grid map from submap geometry information.
+   * @param geometry the submap geometry information.
+   */
+  void setGeometry(const SubmapGeometry& geometry);
 
   /*!
    * Add a new empty data layer.
@@ -143,6 +153,15 @@ class GridMap
   const std::vector<std::string>& getBasicLayers() const;
 
   /*!
+   * Checks if another grid map contains the same layers as this grid map.
+   * The other grid map could contain more layers than the checked ones.
+   * Does not check the selection of basic layers.
+   * @param other the other grid map.
+   * @return true if the other grid map has the same layers, false otherwise.
+   */
+  bool hasSameLayers(const grid_map::GridMap& other) const;
+
+  /*!
    * Get cell data at requested position.
    * @param layer the name of the layer to be accessed.
    * @param position the requested position.
@@ -200,7 +219,7 @@ class GridMap
    * @param position the position to be checked.
    * @return true if position is within map, false otherwise.
    */
-  bool isInside(const grid_map::Position& position);
+  bool isInside(const grid_map::Position& position) const;
 
   /*!
    * Checks if the index of all layers defined as basic types are valid,
@@ -275,8 +294,26 @@ class GridMap
    * boundaries without moving the grid map data. Takes care of all the data handling,
    * such that the grid map data is stationary in the grid map frame.
    * @param position the new location of the grid map in the map frame.
+   * @param newRegions the regions of the newly covered / previously uncovered regions of the buffer.
+   * @return true if map has been moved, false otherwise.
    */
-  void move(const grid_map::Position& position);
+  bool move(const grid_map::Position& position, std::vector<BufferRegion>& newRegions);
+
+  /*!
+   * Move the grid map w.r.t. to the grid map frame. Use this to move the grid map
+   * boundaries without moving the grid map data. Takes care of all the data handling,
+   * such that the grid map data is stationary in the grid map frame.
+   * @param position the new location of the grid map in the map frame.
+   * @return true if map has been moved, false otherwise.
+   */
+  bool move(const grid_map::Position& position);
+
+  /*!
+   * Fills holes (invalid cells) with data from another grid map.
+   * @param other the grid map to take data from for hole filling.
+   * @return true if successful, false if layers are not corresponding.
+   */
+  bool fillHolesFrom(const grid_map::GridMap other);
 
   /*!
    * Clears all cells (set to NAN) for a layer.
@@ -307,7 +344,7 @@ class GridMap
    * Get the timestamp of the grid map.
    * @return timestamp in nanoseconds.
    */
-  uint64_t getTimestamp() const;
+  Time getTimestamp() const;
 
   /*!
    * Resets the timestamp of the grid map (to zero).
@@ -389,7 +426,7 @@ class GridMap
   std::string frameId_;
 
   //! Timestamp of the grid map (nanoseconds).
-  uint64_t timestamp_;
+  Time timestamp_;
 
   //! Grid map data stored as layers of matrices.
   std::unordered_map<std::string, Eigen::MatrixXf> data_;

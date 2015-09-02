@@ -21,5 +21,6 @@ namespace grid_map {
   typedef Eigen::Array2i Index;
   typedef Eigen::Array2i Size;
   typedef Eigen::Array2d Length;
+  typedef uint64_t Time;
 
 } /* namespace */

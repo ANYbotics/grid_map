@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>grid_map_demos</name>
+  <name>grid_map_loader</name>
   <version>0.1.0</version>
-  <description>Demo nodes to demonstrate the usage of the grid map library.</description>
+  <description>Loading and publishing grid maps from bag files.</description>
   <maintainer email="pfankhauser@ethz.ch">Péter Fankhauser</maintainer>
   <license>BSD</license>
   <url type="website">http://github.com/ethz-asl/grid_map</url>
@@ -11,8 +11,5 @@
   <buildtool_depend>catkin</buildtool_depend>
   <depend>roscpp</depend>
   <depend>grid_map</depend>
-  <depend>grid_map_loader</depend>
   <depend>grid_map_msgs</depend>
-  <depend>geometry_msgs</depend>
-  <depend>sensor_msgs</depend>
 </package>

@@ -8,6 +8,9 @@
 
 #pragma once
 
+#include "grid_map_core/TypeDefs.hpp"
+#include "grid_map_core/BufferRegion.hpp"
+
 #include <Eigen/Core>
 #include <vector>
 #include <map>
@@ -175,20 +178,18 @@ bool getSubmapInformation(Eigen::Array2i& submapTopLeftIndex,
 /*!
  * Computes the regions in the circular buffer that make up the data for
  * a requested submap.
- * @param[out] submapIndeces the list of indeces (top-left) for the buffer regions.
- * @param[out] submapSizes the sizes of the buffer regions.
+ * @param[out] submapBufferRegions the list of buffer regions that make up the submap.
  * @param[in] submapIndex the index (top-left) for the requested submap.
  * @param[in] submapBufferSize the size of the requested submap.
  * @param[in] bufferSize the buffer size of the map.
  * @param[in] bufferStartIndex the index of the starting point of the circular buffer (optional).
  * @return true if successful, false if requested submap is not fully contained in the map.
  */
-bool getBufferRegionsForSubmap(std::vector<Eigen::Array2i>& submapIndeces,
-                               std::vector<Eigen::Array2i>& submapSizes,
-                               const Eigen::Array2i& submapIndex,
-                               const Eigen::Array2i& submapBufferSize,
-                               const Eigen::Array2i& bufferSize,
-                               const Eigen::Array2i& bufferStartIndex = Eigen::Array2i::Zero());
+bool getBufferRegionsForSubmap(std::vector<BufferRegion>& submapBufferRegions,
+                               const Index& submapIndex,
+                               const Size& submapBufferSize,
+                               const Size& bufferSize,
+                               const Index& bufferStartIndex = Index::Zero());
 
 /*!
  * Increases the index by one to iterate through the map.
@@ -218,8 +219,10 @@ bool incrementIndex(Eigen::Array2i& index, const Eigen::Array2i& bufferSize,
  * @param[in] bufferStartIndex the map buffer start index.
  * @return true if successfully incremented indeces, false if end of iteration limits are reached.
  */
-bool incrementIndexForSubmap(Eigen::Array2i& submapIndex, Eigen::Array2i& index, const Eigen::Array2i& submapTopLeftIndex,
-                             const Eigen::Array2i& submapBufferSize, const Eigen::Array2i& bufferSize,
+bool incrementIndexForSubmap(Eigen::Array2i& submapIndex, Eigen::Array2i& index,
+                             const Eigen::Array2i& submapTopLeftIndex,
+                             const Eigen::Array2i& submapBufferSize,
+                             const Eigen::Array2i& bufferSize,
                              const Eigen::Array2i& bufferStartIndex = Eigen::Array2i::Zero());
 
 /*!
@@ -230,27 +233,26 @@ bool incrementIndexForSubmap(Eigen::Array2i& submapIndex, Eigen::Array2i& index,
  * @param[in] (optional) rowMajor if the 1d index is generated for row-major format.
  * @return the 1d index.
  */
-unsigned int get1dIndexFrom2dIndex(const Eigen::Array2i& index, const Eigen::Array2i& bufferSize, const bool rowMajor);
+unsigned int get1dIndexFrom2dIndex(const Eigen::Array2i& index, const Eigen::Array2i& bufferSize,
+                                   const bool rowMajor);
 
 /*!
- * The definition of the buffer regions.
+ * Generates a list of indices for a region in the map.
+ * @param regionIndex the region top-left index.
+ * @param regionSize the region size.
+ * @param indices the list of indices of the region.
  */
-enum class BufferRegion
-{
-  TopLeft,
-  TopRight,
-  BottomLeft,
-  BottomRight
-};
+void getIndicesForRegion(const Index& regionIndex, const Size& regionSize,
+                         std::vector<Index> indices);
 
 /*!
- * The definition of the position in the list for the buffer regions.
+ * Generates a list of indices for multiple regions in the map.
+ * This method makes sure every index is only once contained in the list.
+ * @param regionIndeces the regions' top-left index.
+ * @param regionSizes the regions' sizes.
+ * @param indices the list of indices of the regions.
  */
-static std::map<BufferRegion, int> bufferRegionIndeces =
-{
-{ BufferRegion::TopLeft, 0 },
-{ BufferRegion::TopRight, 1 },
-{ BufferRegion::BottomLeft, 2 },
-{ BufferRegion::BottomRight, 3 } };
+void getIndicesForRegions(const std::vector<Index>& regionIndeces, const Size& regionSizes,
+                          std::vector<Index> indices);
 
 } // namespace

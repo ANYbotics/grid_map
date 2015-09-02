@@ -8,8 +8,9 @@
 
 #include "grid_map_core/GridMap.hpp"
 #include "grid_map_core/GridMapMath.hpp"
+#include "grid_map_core/SubmapGeometry.hpp"
+#include "grid_map_core/iterators/GridMapIterator.hpp"
 
-// STL
 #include <iostream>
 #include <cassert>
 #include <math.h>
@@ -66,6 +67,11 @@ void GridMap::setGeometry(const grid_map::Length& length, const double resolutio
   return;
 }
 
+void GridMap::setGeometry(const SubmapGeometry& geometry)
+{
+  setGeometry(geometry.getLength(), geometry.getResolution(), geometry.getPosition());
+}
+
 void GridMap::setBasicLayers(const std::vector<std::string>& basicLayers)
 {
   basicLayers_ = basicLayers;
@@ -74,6 +80,14 @@ void GridMap::setBasicLayers(const std::vector<std::string>& basicLayers)
 const std::vector<std::string>& GridMap::getBasicLayers() const
 {
   return basicLayers_;
+}
+
+bool GridMap::hasSameLayers(const grid_map::GridMap& other) const
+{
+  for (const auto& layer : layers_) {
+    if (!other.exists(layer)) return false;
+  }
+  return true;
 }
 
 void GridMap::add(const std::string& layer, const double value)
@@ -196,7 +210,7 @@ bool GridMap::getPosition(const grid_map::Index& index, grid_map::Position& posi
   return getPositionFromIndex(position, index, length_, position_, resolution_, size_, startIndex_);
 }
 
-bool GridMap::isInside(const grid_map::Position& position)
+bool GridMap::isInside(const grid_map::Position& position) const
 {
   return checkIfPositionWithinMap(position, length_, position_);
 }
@@ -263,43 +277,44 @@ GridMap GridMap::getSubmap(const grid_map::Position& position, const grid_map::L
   submap.setFrameId(frameId_);
 
   // Get submap geometric information.
-  Index topLeftIndex;
-  Index submapBufferSize;
-  Position submapPosition;
-  Length submapLength;
-
-  if (!getSubmapInformation(topLeftIndex, submapBufferSize, submapPosition, submapLength, indexInSubmap, position,
-                       length, length_, position_, resolution_, size_, startIndex_)) {
-    isSuccess = false;
-    return GridMap(layers_);
-  }
-
-  submap.setGeometry(submapLength, resolution_, submapPosition);
+  SubmapGeometry submapInformation(*this, position, length, isSuccess);
+  if (isSuccess == false) return GridMap(layers_);
+  submap.setGeometry(submapInformation);
   submap.startIndex_.setZero(); // Because of the way we copy the data below.
 
   // Copy data.
-  std::vector<Eigen::Array2i> submapIndeces;
-  std::vector<Eigen::Array2i> submapSizes;
+  std::vector<BufferRegion> bufferRegions;
 
-  if (!getBufferRegionsForSubmap(submapIndeces, submapSizes, topLeftIndex, submap.size_, size_, startIndex_)) {
+  if (!getBufferRegionsForSubmap(bufferRegions, submapInformation.getStartIndex(),
+                                 submap.getSize(), size_, startIndex_)) {
     cout << "Cannot access submap of this size." << endl;
     isSuccess = false;
     return GridMap(layers_);
   }
 
   for (auto& data : data_) {
-    submap.data_[data.first].topLeftCorner    (submapSizes[0](0), submapSizes[0](1)) = data.second.block(submapIndeces[0](0), submapIndeces[0](1), submapSizes[0](0), submapSizes[0](1));
-    submap.data_[data.first].topRightCorner   (submapSizes[1](0), submapSizes[1](1)) = data.second.block(submapIndeces[1](0), submapIndeces[1](1), submapSizes[1](0), submapSizes[1](1));
-    submap.data_[data.first].bottomLeftCorner (submapSizes[2](0), submapSizes[2](1)) = data.second.block(submapIndeces[2](0), submapIndeces[2](1), submapSizes[2](0), submapSizes[2](1));
-    submap.data_[data.first].bottomRightCorner(submapSizes[3](0), submapSizes[3](1)) = data.second.block(submapIndeces[3](0), submapIndeces[3](1), submapSizes[3](0), submapSizes[3](1));
+    for (const auto& bufferRegion : bufferRegions) {
+      Index index = bufferRegion.getStartIndex();
+      Size size = bufferRegion.getSize();
+
+      if (bufferRegion.getQuadrant() == BufferRegion::Quadrant::TopLeft) {
+        submap.data_[data.first].topLeftCorner(size(0), size(1)) = data.second.block(index(0), index(1), size(0), size(1));
+      } else if (bufferRegion.getQuadrant() == BufferRegion::Quadrant::TopRight) {
+        submap.data_[data.first].topRightCorner(size(0), size(1)) = data.second.block(index(0), index(1), size(0), size(1));
+      } else if (bufferRegion.getQuadrant() == BufferRegion::Quadrant::BottomLeft) {
+        submap.data_[data.first].bottomLeftCorner(size(0), size(1)) = data.second.block(index(0), index(1), size(0), size(1));
+      } else if (bufferRegion.getQuadrant() == BufferRegion::Quadrant::BottomRight) {
+        submap.data_[data.first].bottomRightCorner(size(0), size(1)) = data.second.block(index(0), index(1), size(0), size(1));
+      }
+
+    }
   }
 
   isSuccess = true;
   return submap;
 }
 
-
-void GridMap::move(const grid_map::Position& position)
+bool GridMap::move(const grid_map::Position& position, std::vector<BufferRegion>& newRegions)
 {
   Index indexShift;
   Position positionShift = position - position_;
@@ -313,31 +328,46 @@ void GridMap::move(const grid_map::Position& position)
       if (abs(indexShift(i)) >= getSize()(i)) {
         // Entire map is dropped.
         clearAll();
+        newRegions.push_back(BufferRegion(Index(0, 0), getSize(), BufferRegion::Quadrant::Undefined));
       } else {
         // Drop cells out of map.
         int sign = (indexShift(i) > 0 ? 1 : -1);
         int startIndex = startIndex_(i) - (sign < 0 ? 1 : 0);
         int endIndex = startIndex - sign + indexShift(i);
         int nCells = abs(indexShift(i));
-
         int index = (sign > 0 ? startIndex : endIndex);
         mapIndexWithinRange(index, getSize()(i));
 
         if (index + nCells <= getSize()(i)) {
           // One region to drop.
-          if (i == 0) clearCols(index, nCells);
-          if (i == 1) clearRows(index, nCells);
+          if (i == 0) {
+            clearRows(index, nCells);
+            newRegions.push_back(BufferRegion(Index(index, 0), Size(nCells, getSize()(1)), BufferRegion::Quadrant::Undefined));
+          } else if (i == 1) {
+            clearCols(index, nCells);
+            newRegions.push_back(BufferRegion(Index(0, index), Size(getSize()(0), nCells), BufferRegion::Quadrant::Undefined));
+          }
         } else {
           // Two regions to drop.
           int firstIndex = index;
           int firstNCells = getSize()(i) - firstIndex;
-          if (i == 0) clearCols(firstIndex, firstNCells);
-          if (i == 1) clearRows(firstIndex, firstNCells);
+          if (i == 0) {
+            clearRows(firstIndex, firstNCells);
+            newRegions.push_back(BufferRegion(Index(firstIndex, 0), Size(firstNCells, getSize()(1)), BufferRegion::Quadrant::Undefined));
+          } else if (i == 1) {
+            clearCols(firstIndex, firstNCells);
+            newRegions.push_back(BufferRegion(Index(0, firstIndex), Size(getSize()(0), firstNCells), BufferRegion::Quadrant::Undefined));
+          }
 
           int secondIndex = 0;
           int secondNCells = nCells - firstNCells;
-          if (i == 0) clearCols(secondIndex, secondNCells);
-          if (i == 1) clearRows(secondIndex, secondNCells);
+          if (i == 0) {
+            clearRows(secondIndex, secondNCells);
+            newRegions.push_back(BufferRegion(Index(secondIndex, 0), Size(secondNCells, getSize()(1)), BufferRegion::Quadrant::Undefined));
+          } else if (i == 1) {
+            clearCols(secondIndex, secondNCells);
+            newRegions.push_back(BufferRegion(Index(0, secondIndex), Size(getSize()(0), secondNCells), BufferRegion::Quadrant::Undefined));
+          }
         }
       }
     }
@@ -348,16 +378,40 @@ void GridMap::move(const grid_map::Position& position)
   mapIndexWithinRange(startIndex_, getSize());
   position_ += alignedPositionShift;
 
-//  if (indexShift.all() != 0) // TODO Move notifier to implementation.
-//    ROS_DEBUG("Grid map has been moved to position (%f, %f).", position_.x(), position_.y());
+  // Check if map has been moved at all.
+  return (indexShift.any() != 0);
 }
 
-void GridMap::setTimestamp(const uint64_t timestamp)
+bool GridMap::move(const grid_map::Position& position)
+{
+  std::vector<BufferRegion> newRegions;
+  return move(position, newRegions);
+}
+
+bool GridMap::fillHolesFrom(const grid_map::GridMap other)
+{
+  if (!hasSameLayers(other)) return false;
+  for (GridMapIterator iterator(*this); !iterator.isPastEnd(); ++iterator) {
+    if (isValid(*iterator)) continue;
+    Position position;
+    getPosition(*iterator, position);
+    Index index;
+    if (!other.isInside(position)) continue;
+    other.getIndex(position, index);
+    if (!other.isValid(index, basicLayers_));
+    for (const auto& layer : layers_) {
+      at(layer, *iterator) = other.at(layer, index);
+    }
+  }
+  return true;
+}
+
+void GridMap::setTimestamp(const Time timestamp)
 {
   timestamp_ = timestamp;
 }
 
-uint64_t GridMap::getTimestamp() const
+Time GridMap::getTimestamp() const
 {
   return timestamp_;
 }
@@ -401,7 +455,7 @@ void GridMap::setStartIndex(const grid_map::Index& startIndex) {
   startIndex_ = startIndex;
 }
 
-const Eigen::Array2i& GridMap::getStartIndex() const
+const grid_map::Index& GridMap::getStartIndex() const
 {
   return startIndex_;
 }
@@ -429,17 +483,23 @@ void GridMap::clearAll()
   }
 }
 
-void GridMap::clearCols(unsigned int index, unsigned int nCols)
+void GridMap::clearRows(unsigned int index, unsigned int nRows)
 {
-  for (auto& layer : basicLayers_) {
-    data_.at(layer).block(index, 0, nCols, getSize()(1)).setConstant(NAN);
+  std::vector<std::string> layersToClear;
+  if (basicLayers_.size() > 0) layersToClear = basicLayers_;
+  else layersToClear = layers_;
+  for (auto& layer : layersToClear) {
+    data_.at(layer).block(index, 0, nRows, getSize()(1)).setConstant(NAN);
   }
 }
 
-void GridMap::clearRows(unsigned int index, unsigned int nRows)
+void GridMap::clearCols(unsigned int index, unsigned int nCols)
 {
-  for (auto& layer : basicLayers_) {
-    data_.at(layer).block(0, index, getSize()(0), nRows).setConstant(NAN);
+  std::vector<std::string> layersToClear;
+  if (basicLayers_.size() > 0) layersToClear = basicLayers_;
+  else layersToClear = layers_;
+  for (auto& layer : layersToClear) {
+    data_.at(layer).block(0, index, getSize()(0), nCols).setConstant(NAN);
   }
 }
 

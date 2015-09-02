@@ -1,0 +1,9 @@
+<launch>
+
+  <node pkg="grid_map_loader" type="grid_map_loader" name="grid_map_loader_demo" output="screen">
+  	<param name="file_path" value="$(find grid_map_demos)/data/grid_map.bag" />
+  	<param name="topic" value="/grid_map" />
+  	<param name="duration" value="5.0" />
+  </node>
+
+</launch>
