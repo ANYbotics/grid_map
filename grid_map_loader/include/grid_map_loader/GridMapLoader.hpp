@@ -70,7 +70,10 @@ class GridMapLoader
   std::string filePath_;
 
   //! Topic name of the grid map in the ROS bag.
-  std::string topic_;
+  std::string bagTopic_;
+
+  //! Topic name of the grid map to be loaded.
+  std::string publishTopic_;
 
   //! Duration to publish the grid map.
   ros::Duration duration_;

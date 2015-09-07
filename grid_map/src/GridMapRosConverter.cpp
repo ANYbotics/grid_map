@@ -409,16 +409,19 @@ bool GridMapRosConverter::loadFromBag(const std::string& pathToBag, const std::s
   bag.open(pathToBag, rosbag::bagmode::Read);
   rosbag::View view(bag, rosbag::TopicQuery(topic));
 
+  bool isDataFound = false;
   for (const auto& messageInstance : view) {
     grid_map_msgs::GridMap::ConstPtr message = messageInstance.instantiate<grid_map_msgs::GridMap>();
     if (message != NULL) {
       fromMessage(*message, gridMap);
+      isDataFound = true;
     } else {
       bag.close();
       ROS_WARN("Unable to load data from ROS bag.");
       return false;
     }
   }
+  if (!isDataFound) ROS_WARN_STREAM("No data under the topic '" << topic << "' was found.");
   bag.close();
   return true;
 }

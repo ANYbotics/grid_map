@@ -18,7 +18,7 @@ GridMapLoader::GridMapLoader(ros::NodeHandle nodeHandle)
     : nodeHandle_(nodeHandle)
 {
   readParameters();
-  publisher_ = nodeHandle_.advertise<grid_map_msgs::GridMap>(topic_, 1, true);
+  publisher_ = nodeHandle_.advertise<grid_map_msgs::GridMap>(publishTopic_, 1, true);
   if (!load()) return;
   publish();
   ros::requestShutdown();
@@ -30,7 +30,8 @@ GridMapLoader::~GridMapLoader()
 
 bool GridMapLoader::readParameters()
 {
-  nodeHandle_.param("topic", topic_, std::string("/grid_map"));
+  nodeHandle_.param("bag_topic", bagTopic_, std::string("/grid_map"));
+  nodeHandle_.param("publish_topic", publishTopic_, bagTopic_);
   nodeHandle_.param("file_path", filePath_, std::string());
   double durationInSec;
   nodeHandle_.param("duration", durationInSec, 5.0);
@@ -41,8 +42,7 @@ bool GridMapLoader::readParameters()
 bool GridMapLoader::load()
 {
   ROS_INFO_STREAM("Loading grid map from path " << filePath_ << ".");
-  return GridMapRosConverter::loadFromBag(filePath_, topic_, map_);
-  return true;
+  return GridMapRosConverter::loadFromBag(filePath_, bagTopic_, map_);
 }
 
 void GridMapLoader::publish()
