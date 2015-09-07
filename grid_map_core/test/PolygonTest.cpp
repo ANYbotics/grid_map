@@ -19,6 +19,35 @@ using namespace std;
 using namespace Eigen;
 using namespace grid_map;
 
+TEST(checkGetCentroid, triangle)
+{
+  grid_map::Polygon triangle;
+  triangle.addVertex(Vector2d(0.0, 0.0));
+  triangle.addVertex(Vector2d(1.0, 0.0));
+  triangle.addVertex(Vector2d(0.5, 1.0));
+
+  grid_map::Position expectedCentroid;
+  expectedCentroid.x() = 1.0 / 3.0 * (1.0 + 0.5);
+  expectedCentroid.y() = 1.0 / 3.0;
+  grid_map::Position centroid = triangle.getCentroid();
+  EXPECT_DOUBLE_EQ(expectedCentroid.x(), centroid.x());
+  EXPECT_DOUBLE_EQ(expectedCentroid.y(), centroid.y());
+}
+
+TEST(checkGetCentroid, rectangle)
+{
+  grid_map::Polygon rectangle;
+  rectangle.addVertex(Vector2d(-2.0, -1.0));
+  rectangle.addVertex(Vector2d(-2.0, 2.0));
+  rectangle.addVertex(Vector2d(1.0, 2.0));
+  rectangle.addVertex(Vector2d(1.0, -1.0));
+
+  grid_map::Position expectedCentroid(-0.5, 0.5);
+  grid_map::Position centroid = rectangle.getCentroid();
+  EXPECT_DOUBLE_EQ(expectedCentroid.x(), centroid.x());
+  EXPECT_DOUBLE_EQ(expectedCentroid.y(), centroid.y());
+}
+
 TEST(checkConvexHull, createHull)
 {
   grid_map::Polygon polygon1;
