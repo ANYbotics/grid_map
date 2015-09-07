@@ -126,7 +126,7 @@ class GridMapRosConverter
    * @return true if successful, false otherwise.
    */
   static bool initializeFromImage(const sensor_msgs::Image& image, const double resolution,
-                                  grid_map::GridMap& gridMap);
+                                  grid_map::GridMap& gridMap, const grid_map::Position& position = grid_map::Position::Zero());
 
   /*!
    * Adds a layer with data from image.
