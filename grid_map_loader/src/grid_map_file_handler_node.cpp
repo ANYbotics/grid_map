@@ -6,8 +6,9 @@
  *   Institute: ETH Zurich, Autonomous Systems Lab
  */
 
-#include <grid_map_loader/GridMapLoader.hpp>
 #include <ros/ros.h>
+
+#include "../include/grid_map_file_handler/GridMapFileHandler.hpp"
 
 int main(int argc, char** argv)
 {

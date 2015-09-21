@@ -7,7 +7,8 @@
  *
  */
 
-#include <grid_map_loader/GridMapLoader.hpp>
+#include "../include/grid_map_file_handler/GridMapFileHandler.hpp"
+
 #include <grid_map_msgs/GridMap.h>
 
 using namespace grid_map;

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(grid_map_loader)
+project(grid_map_file_handler)
 
 set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
 
@@ -44,8 +44,8 @@ include_directories(
 ## Declare a cpp executable
 add_executable(
   ${PROJECT_NAME}
-  src/grid_map_loader_node.cpp
-  src/GridMapLoader.cpp
+  src/grid_map_file_handler_node.cpp
+  src/GridMapFileHandler.cpp
 )
 
 ## Specify libraries to link a library or executable target against
