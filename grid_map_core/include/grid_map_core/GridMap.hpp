@@ -316,6 +316,18 @@ class GridMap
   bool fillHolesFrom(const grid_map::GridMap other);
 
   /*!
+   *
+   */
+  bool addDataFrom(const grid_map::GridMap other, bool extendMap, bool overwriteData, bool copyAllLayer, std::vector<std::string> layers = std::vector<std::string>());
+
+  /*!
+   * Converts the resolution to the desired one.
+   * @param resolution the new resolution.
+   * @return map with the new resolution.
+   */
+  GridMap convertResolution(const double resolution);
+
+  /*!
    * Clears all cells (set to NAN) for a layer.
    * @param layer the layer to be cleared.
    */
