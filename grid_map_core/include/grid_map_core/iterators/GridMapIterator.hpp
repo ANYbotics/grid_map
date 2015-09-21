@@ -54,6 +54,12 @@ public:
   const Index& operator *() const;
 
   /*!
+   * Retrieve the index as unwrapped index, i.e., as the corresponding index of a
+   * grid map with no circular buffer offset.
+   */
+  const Index getUnwrappedIndex() const;
+
+  /*!
    * Increase the iterator to the next element.
    * @return a reference to the updated iterator.
    */

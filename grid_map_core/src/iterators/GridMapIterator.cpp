@@ -45,9 +45,14 @@ bool GridMapIterator::operator !=(const GridMapIterator& other) const
   return (index_ != other.index_).any();
 }
 
-const Eigen::Array2i& GridMapIterator::operator *() const
+const Index& GridMapIterator::operator *() const
 {
   return index_;
+}
+
+const Index GridMapIterator::getUnwrappedIndex() const
+{
+  return getIndexFromBufferIndex(index_, size_, startIndex_);
 }
 
 GridMapIterator& GridMapIterator::operator ++()

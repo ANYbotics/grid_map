@@ -81,19 +81,6 @@ inline Eigen::Array2i getBufferIndexFromIndex(
   return bufferIndex;
 }
 
-inline Eigen::Array2i getIndexFromBufferIndex(
-    const Eigen::Array2i& bufferIndex,
-    const Eigen::Array2i& bufferSize,
-    const Eigen::Array2i& bufferStartIndex)
-{
-  if (checkIfStartIndexAtDefaultPosition(bufferStartIndex))
-    return bufferIndex;
-
-  Array2i index = bufferIndex - bufferStartIndex;
-  mapIndexWithinRange(index, bufferSize);
-  return index;
-}
-
 inline Eigen::Vector2d getIndexVectorFromIndex(
     const Eigen::Array2i& index,
     const Eigen::Array2i& bufferSize,
@@ -468,6 +455,17 @@ bool incrementIndexForSubmap(Eigen::Array2i& submapIndex, Eigen::Array2i& index,
   index = tempIndex;
   submapIndex = tempSubmapIndex;
   return true;
+}
+
+Index getIndexFromBufferIndex(const Index& bufferIndex, const Size& bufferSize,
+                              const Index& bufferStartIndex)
+{
+  if (checkIfStartIndexAtDefaultPosition(bufferStartIndex))
+    return bufferIndex;
+
+  Array2i index = bufferIndex - bufferStartIndex;
+  mapIndexWithinRange(index, bufferSize);
+  return index;
 }
 
 unsigned int get1dIndexFrom2dIndex(const Eigen::Array2i& index, const Eigen::Array2i& bufferSize, const bool rowMajor)

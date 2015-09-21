@@ -226,6 +226,17 @@ bool incrementIndexForSubmap(Eigen::Array2i& submapIndex, Eigen::Array2i& index,
                              const Eigen::Array2i& bufferStartIndex = Eigen::Array2i::Zero());
 
 /*!
+ * Retrieve the index as unwrapped index, i.e., as the corresponding index of a
+ * grid map with no circular buffer offset.
+ * @param bufferIndex the index in the circular buffer.
+ * @param bufferSize the map buffer size.
+ * @param bufferStartIndex the map buffer start index.
+ * @return the unwrapped index.
+ */
+Index getIndexFromBufferIndex(const Index& bufferIndex, const Size& bufferSize,
+                              const Index& bufferStartIndex);
+
+/*!
  * Returns the 1d index corresponding to the 2d index for either row- or column-major format.
  * Note: Eigen is defaulting to column-major format.
  * @param[in] index the 2d index.
@@ -233,7 +244,7 @@ bool incrementIndexForSubmap(Eigen::Array2i& submapIndex, Eigen::Array2i& index,
  * @param[in] (optional) rowMajor if the 1d index is generated for row-major format.
  * @return the 1d index.
  */
-unsigned int get1dIndexFrom2dIndex(const Eigen::Array2i& index, const Eigen::Array2i& bufferSize,
+unsigned int get1dIndexFrom2dIndex(const Index& index, const Size& bufferSize,
                                    const bool rowMajor);
 
 /*!
