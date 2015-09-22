@@ -388,19 +388,104 @@ bool GridMap::move(const grid_map::Position& position)
   return move(position, newRegions);
 }
 
-bool GridMap::fillHolesFrom(const grid_map::GridMap other)
+bool GridMap::addDataFrom(const grid_map::GridMap& other, bool extendMap, bool overwriteData, bool copyAllLayer, std::vector<std::string> layers)
 {
-  if (!hasSameLayers(other)) return false;
+  // Set the layers to copy.
+  if (copyAllLayer) layers = other.getLayers();
+
+  // Resize map.
+  if (extendMap) {
+    extendToInclude(other);
+  }
+  // Check if all layers to copy exist and add missing layers.
+  for (const auto& layer : layers) {
+    if (std::find(layers_.begin(), layers_.end(), layer) == layers_.end()) {
+      add(layer);
+    }
+  }
+  // Copy data.
   for (GridMapIterator iterator(*this); !iterator.isPastEnd(); ++iterator) {
-    if (isValid(*iterator)) continue;
+    if (isValid(*iterator) && !overwriteData) continue;
     Position position;
     getPosition(*iterator, position);
     Index index;
     if (!other.isInside(position)) continue;
     other.getIndex(position, index);
-    if (!other.isValid(index, basicLayers_));
-    for (const auto& layer : layers_) {
+    for (const auto& layer : layers) {
+      if (!other.isValid(index, layer)) continue;
       at(layer, *iterator) = other.at(layer, index);
+    }
+  }
+
+  return true;
+}
+
+bool GridMap::extendToInclude(const grid_map::GridMap& other)
+{
+  // Get dimension of maps.
+  Position topLeftCorner(position_.x() + length_.x() / 2.0, position_.y() + length_.y() / 2.0);
+  Position bottomRightCorner(position_.x() - length_.x() / 2.0, position_.y() - length_.y() / 2.0);
+  Position topLeftCornerOther(other.getPosition().x() + other.getLength().x() / 2.0, other.getPosition().y() + other.getLength().y() / 2.0);
+  Position bottomRightCornerOther(other.getPosition().x() - other.getLength().x() / 2.0, other.getPosition().y() - other.getLength().y() / 2.0);
+  // Check if map needs to be resized.
+  bool resizeMap = false;
+  Position extendedMapPosition = position_;
+  Length extendedMapLength = length_;
+  if (topLeftCornerOther.x() > topLeftCorner.x()) {
+    extendedMapPosition.x() += (topLeftCornerOther.x() - topLeftCorner.x()) / 2.0;
+    extendedMapLength.x() += topLeftCornerOther.x() - topLeftCorner.x();
+    resizeMap = true;
+  }
+  if (topLeftCornerOther.y() > topLeftCorner.y()) {
+    extendedMapPosition.y() += (topLeftCornerOther.y() - topLeftCorner.y()) / 2.0;
+    extendedMapLength.y() += topLeftCornerOther.y() - topLeftCorner.y();
+    resizeMap = true;
+  }
+  if (bottomRightCornerOther.x() < bottomRightCorner.x()) {
+    extendedMapPosition.x() -= (bottomRightCorner.x() - bottomRightCornerOther.x()) / 2.0;
+    extendedMapLength.x() += bottomRightCorner.x() - bottomRightCornerOther.x();
+    resizeMap = true;
+  }
+  if (bottomRightCornerOther.y() < bottomRightCorner.y()) {
+    extendedMapPosition.y() -= (bottomRightCorner.y() - bottomRightCornerOther.y()) / 2.0;
+    extendedMapLength.y() += bottomRightCorner.y() - bottomRightCornerOther.y();
+    resizeMap = true;
+  }
+  // Resize map and copy data to new map.
+  if (resizeMap) {
+    GridMap mapCopy = *this;
+    setGeometry(extendedMapLength, resolution_, extendedMapPosition);
+    // Align new map with old one.
+    Vector shift = position_ - mapCopy.getPosition();
+    shift.x() = std::fmod(shift.x(), resolution_);
+    shift.y() = std::fmod(shift.y(), resolution_);
+    if (std::abs(shift.x()) < resolution_ / 2.0) {
+      position_.x() -= shift.x();
+    } else {
+      position_.x() += resolution_ - shift.x();
+    }
+    if (size_.x() % 2 != mapCopy.getSize().x() % 2) {
+      position_.x() += -std::copysign(resolution_ / 2.0, shift.x());
+    }
+    if (std::abs(shift.y()) < resolution_ / 2.0) {
+      position_.y() -= shift.y();
+    } else {
+      position_.y() += resolution_ - shift.y();
+    }
+    if (size_.y() % 2 != mapCopy.getSize().y() % 2) {
+      position_.y() += -std::copysign(resolution_ / 2.0, shift.y());
+    }
+    // Copy data.
+    for (GridMapIterator iterator(*this); !iterator.isPastEnd(); ++iterator) {
+      if (isValid(*iterator)) continue;
+      Position position;
+      getPosition(*iterator, position);
+      Index index;
+      if (!mapCopy.isInside(position)) continue;
+      mapCopy.getIndex(position, index);
+      for (const auto& layer : layers_) {
+        at(layer, *iterator) = mapCopy.at(layer, index);
+      }
     }
   }
   return true;
