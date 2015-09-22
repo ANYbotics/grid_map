@@ -383,6 +383,58 @@ bool GridMapRosConverter::addColorLayerFromImage(const sensor_msgs::Image& image
   return true;
 }
 
+
+bool GridMapRosConverter::addGridLayerToImage(grid_map::GridMap& gridMap,
+                                            const std::string& layer,
+                                            cv::Mat& cvImage)
+{
+  if (gridMap.getSize()(0) > 0 && gridMap.getSize()(1) > 0) {
+    // Initialize blank image:
+    cvImage = cv::Mat::zeros(gridMap.getSize()(0), gridMap.getSize()(1), CV_8UC4);
+  }
+  else {
+    ROS_ERROR("Invalid Grid?");
+    return false;
+  }
+
+  unsigned int depth = std::pow(2,8) - 1;
+
+  // find upper and lower values
+  // this should be replaced, possibly in GridMap.cpp or with cv::convertScaleAbs
+  // (can't use .maxCoeff because of nans
+  double lowerValue = 100.;
+  double upperValue = -100.;
+  for (GridMapIterator iterator(gridMap); !iterator.isPastEnd(); ++iterator) {
+    if (gridMap.isValid(*iterator, layer)) {
+      double cellValue = gridMap.at(layer, *iterator);
+      if (cellValue < -1.9) {
+        gridMap.at(layer, *iterator) = -0.3;
+        cellValue = -0.3;
+      }
+      if (cellValue < lowerValue) {
+        lowerValue = cellValue;
+      }
+      if (cellValue > upperValue) {
+        upperValue = cellValue;
+      }
+    }
+  }
+
+  for (GridMapIterator iterator(gridMap); !iterator.isPastEnd(); ++iterator) {
+    if (gridMap.isValid(*iterator, layer)) {
+      int hValue = (int)((gridMap.at(layer, *iterator) - lowerValue) / (upperValue - lowerValue) * depth);
+      grid_map::Index imageIndex(iterator.getUnwrappedIndex());
+      cvImage.at<cv::Vec<uchar, 4>>(imageIndex(0), imageIndex(1))[0] = hValue;
+      cvImage.at<cv::Vec<uchar, 4>>(imageIndex(0), imageIndex(1))[1] = hValue;
+      cvImage.at<cv::Vec<uchar, 4>>(imageIndex(0), imageIndex(1))[2] = hValue;
+      cvImage.at<cv::Vec<uchar, 4>>(imageIndex(0), imageIndex(1))[3] = depth;
+    }
+
+  }
+
+  return true;
+}
+
 bool GridMapRosConverter::saveToBag(const grid_map::GridMap& gridMap, const std::string& pathToBag,
                                     const std::string& topic)
 {

@@ -1,0 +1,18 @@
+gridmap_registration_demo:
+  bag_file_path: "/home/estumm/Documents/Code/ROS_stuff/bags/grid_registration/uav_elevation_map.bag"
+  global_bag_topic: "grid_map"
+  local_bag_topic: "/elevation_mapping_long_range/elevation_map"
+
+grid_map_visualization:
+  grid_map_topic: /gridmap_registration_demo/grid_map
+  grid_map_visualizations:
+    - name: elevation_points
+      type: point_cloud
+      params:
+        layer: elevation
+    - name: elevation_grid
+      type: occupancy_grid
+      params:
+        layer: elevation
+        data_min: -0.2
+        data_max: 0.2

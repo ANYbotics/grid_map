@@ -18,6 +18,7 @@ find_package(catkin REQUIRED COMPONENTS
   grid_map_msgs
   geometry_msgs
   sensor_msgs
+  cv_bridge
 )
 
 ## System dependencies are found with CMake's conventions
@@ -79,6 +80,12 @@ add_executable(
 	src/ImageToGridmapDemo.cpp
 )
 
+add_executable(
+	gridmap_registration_demo
+	src/gridmap_registration_demo_node.cpp
+    src/GridmapRegistrationDemo.cpp
+)
+
 ## Specify libraries to link a library or executable target against
 target_link_libraries(
   simple_demo
@@ -97,5 +104,10 @@ target_link_libraries(
 
 target_link_libraries(
   image_to_gridmap_demo
+  ${catkin_LIBRARIES}
+)
+
+target_link_libraries(
+  gridmap_registration_demo
   ${catkin_LIBRARIES}
 )
