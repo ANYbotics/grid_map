@@ -424,10 +424,10 @@ bool GridMapRosConverter::addGridLayerToImage(grid_map::GridMap& gridMap,
     if (gridMap.isValid(*iterator, layer)) {
       int hValue = (int)((gridMap.at(layer, *iterator) - lowerValue) / (upperValue - lowerValue) * depth);
       grid_map::Index imageIndex(iterator.getUnwrappedIndex());
-      cvImage.at<cv::Vec<uchar, 4>>(imageIndex(0), imageIndex(1))[0] = hValue;
-      cvImage.at<cv::Vec<uchar, 4>>(imageIndex(0), imageIndex(1))[1] = hValue;
-      cvImage.at<cv::Vec<uchar, 4>>(imageIndex(0), imageIndex(1))[2] = hValue;
-      cvImage.at<cv::Vec<uchar, 4>>(imageIndex(0), imageIndex(1))[3] = depth;
+      cvImage.at<cv::Vec<uchar, 4>>(imageIndex(1), imageIndex(0))[0] = hValue;
+      cvImage.at<cv::Vec<uchar, 4>>(imageIndex(1), imageIndex(0))[1] = hValue;
+      cvImage.at<cv::Vec<uchar, 4>>(imageIndex(1), imageIndex(0))[2] = hValue;
+      cvImage.at<cv::Vec<uchar, 4>>(imageIndex(1), imageIndex(0))[3] = depth;
     }
 
   }
