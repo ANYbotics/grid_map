@@ -407,17 +407,14 @@ bool GridMapRosConverter::addGridLayerToImage(grid_map::GridMap& gridMap,
   for (GridMapIterator iterator(gridMap); !iterator.isPastEnd(); ++iterator) {
     if (gridMap.isValid(*iterator, layer)) {
       double cellHeight = gridMap.at(layer, *iterator);
-      if (cellHeight > maxHeight) {
-        cellHeight = maxHeight;
-      }
-      else if (cellHeight < minHeight){
-        cellHeight = minHeight;
-      }
-      if (cellHeight < lowerHeight) {
-        lowerHeight= cellHeight;
-      }
-      if (cellHeight > upperHeight) {
-        upperHeight = cellHeight;
+      // use max and min height to "ignore" outliers
+      if (cellHeight <= maxHeight && cellHeight >= minHeight) {
+        if (cellHeight < lowerHeight) {
+          lowerHeight= cellHeight;
+        }
+        if (cellHeight > upperHeight) {
+          upperHeight = cellHeight;
+        }
       }
     }
   }
@@ -426,6 +423,13 @@ bool GridMapRosConverter::addGridLayerToImage(grid_map::GridMap& gridMap,
     if (gridMap.isValid(*iterator, layer)) {
       int hValue;
       float height = gridMap.at(layer, *iterator);
+      // use max and min height to "ignore" outliers
+      if (height > maxHeight){
+        height = maxHeight;
+      }
+      if (height < minHeight){
+        height = minHeight;
+      }
       hValue = (int)(((height - lowerHeight) / (upperHeight - lowerHeight)) * depth);
       grid_map::Index imageIndex(iterator.getUnwrappedIndex());
       cvImage.at<cv::Vec<uchar, 4>>(imageIndex(1), imageIndex(0))[0] = hValue;
