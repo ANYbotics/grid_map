@@ -160,10 +160,12 @@ class GridMapRosConverter
    * @param[in] grid map to be added.
    * @param[in] layer the layer that is filled with the image.
    * @param[out] cv image to be populated.
+   * @param[in] optional height limit.
+   * @param[in] optional height limit.
    * @return true if successful, false otherwise.
    */
   static bool addGridLayerToImage(grid_map::GridMap& gridMap, const std::string& layer,
-                                  cv::Mat& cvImage);
+                                  cv::Mat& cvImage, float maxHeight=2., float minHeight=-0.5);
   /*!
    * Saves a grid map into a ROS bag. The timestamp of the grid map
    * is used as time for storing the message in the ROS bag. The time

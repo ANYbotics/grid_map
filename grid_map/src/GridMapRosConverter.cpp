@@ -386,7 +386,7 @@ bool GridMapRosConverter::addColorLayerFromImage(const sensor_msgs::Image& image
 
 bool GridMapRosConverter::addGridLayerToImage(grid_map::GridMap& gridMap,
                                             const std::string& layer,
-                                            cv::Mat& cvImage)
+                                            cv::Mat& cvImage, float maxHeight, float minHeight)
 {
   if (gridMap.getSize()(0) > 0 && gridMap.getSize()(1) > 0) {
     // Initialize blank image:
@@ -402,27 +402,31 @@ bool GridMapRosConverter::addGridLayerToImage(grid_map::GridMap& gridMap,
   // find upper and lower values
   // this should be replaced, possibly in GridMap.cpp or with cv::convertScaleAbs
   // (can't use .maxCoeff because of nans
-  double lowerValue = 100.;
-  double upperValue = -100.;
+  float lowerHeight = 100.;
+  float upperHeight = -100.;
   for (GridMapIterator iterator(gridMap); !iterator.isPastEnd(); ++iterator) {
     if (gridMap.isValid(*iterator, layer)) {
-      double cellValue = gridMap.at(layer, *iterator);
-      if (cellValue < -1.9) {
-        gridMap.at(layer, *iterator) = -0.3;
-        cellValue = -0.3;
+      double cellHeight = gridMap.at(layer, *iterator);
+      if (cellHeight > maxHeight) {
+        cellHeight = maxHeight;
       }
-      if (cellValue < lowerValue) {
-        lowerValue = cellValue;
+      else if (cellHeight < minHeight){
+        cellHeight = minHeight;
       }
-      if (cellValue > upperValue) {
-        upperValue = cellValue;
+      if (cellHeight < lowerHeight) {
+        lowerHeight= cellHeight;
+      }
+      if (cellHeight > upperHeight) {
+        upperHeight = cellHeight;
       }
     }
   }
 
   for (GridMapIterator iterator(gridMap); !iterator.isPastEnd(); ++iterator) {
     if (gridMap.isValid(*iterator, layer)) {
-      int hValue = (int)((gridMap.at(layer, *iterator) - lowerValue) / (upperValue - lowerValue) * depth);
+      int hValue;
+      float height = gridMap.at(layer, *iterator);
+      hValue = (int)(((height - lowerHeight) / (upperHeight - lowerHeight)) * depth);
       grid_map::Index imageIndex(iterator.getUnwrappedIndex());
       cvImage.at<cv::Vec<uchar, 4>>(imageIndex(0), imageIndex(1))[0] = hValue;
       cvImage.at<cv::Vec<uchar, 4>>(imageIndex(0), imageIndex(1))[1] = hValue;
