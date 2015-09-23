@@ -123,7 +123,7 @@ class Polygon
    * "simple", i.e. not crossing itself.
    * @return centroid of polygon.
    */
-  const Position& getCentroid() const;
+  Position getCentroid() const;
 
   /*!
    * Computes the convex hull of two polygons and returns it as polygon.

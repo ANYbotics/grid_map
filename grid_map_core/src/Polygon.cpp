@@ -104,7 +104,7 @@ const double Polygon::getArea() const
   return std::abs(area / 2.0);
 }
 
-const Position& Polygon::getCentroid() const
+Position Polygon::getCentroid() const
 {
   Position centroid;
   std::vector<Position> vertices = getVertices();
