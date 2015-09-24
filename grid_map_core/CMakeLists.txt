@@ -79,7 +79,8 @@ catkin_add_gtest(${PROJECT_NAME}-test
   test/GridMapTest.cpp
   test/SubmapIteratorTest.cpp
   test/PolygonIteratorTest.cpp
-  test/PolygonTest.cpp)
+  test/PolygonTest.cpp
+  test/EigenPluginsTest.cpp)
 if(TARGET ${PROJECT_NAME}-test)
   target_link_libraries(${PROJECT_NAME}-test grid_map_core)
 endif()
