@@ -309,11 +309,25 @@ class GridMap
   bool move(const grid_map::Position& position);
 
   /*!
-   * Fills holes (invalid cells) with data from another grid map.
-   * @param other the grid map to take data from for hole filling.
-   * @return true if successful, false if layers are not corresponding.
+   * Adds data from an other grid map to this grid map
+   * @param other the grid map to take data from.
+   * @param extendMap if true the grid map is resized that the other map fits within.
+   * @param overwriteData if true the new data replaces the old values, else only invalid cells are updated.
+   * @param copyAllLayer if true all layers are used to add data.
+   * @param layers the layers that are copied if not all layers are used.
+   * @return true if successful.
    */
-  bool fillHolesFrom(const grid_map::GridMap other);
+  bool addDataFrom(const grid_map::GridMap& other, bool extendMap,
+                   bool overwriteData, bool copyAllLayer,
+                   std::vector<std::string> layers =
+                       std::vector<std::string>());
+
+  /*!
+   * Extends the size of the grip map such that the other grid map fits within.
+   * @param other the grid map to extend the size to.
+   * @return true if successful.
+   */
+  bool extendToInclude(const grid_map::GridMap& other);
 
   /*!
    * Clears all cells (set to NAN) for a layer.
