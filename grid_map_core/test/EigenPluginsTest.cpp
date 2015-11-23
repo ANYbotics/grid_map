@@ -64,3 +64,17 @@ TEST(EigenMatrixBaseAddons, meanOfFinites)
   matrix2.setRandom();
   EXPECT_NEAR(matrix2.mean(), matrix2.meanOfFinites(), 1e-10);
 }
+
+TEST(EigenMatrixBaseAddons, clamp)
+{
+  Eigen::VectorXf vector(Eigen::VectorXf::LinSpaced(9, 1.0, 9.0));
+  Eigen::Matrix3f matrix;
+  matrix << vector.segment(0, 3), vector.segment(3, 3), vector.segment(6, 3);
+  matrix(1, 1) = NAN;
+  matrix = matrix.unaryExpr(grid_map::Clamp<float>(2.1, 7.0));
+  EXPECT_NEAR(2.1, matrix(0, 0), 1e-7);
+  EXPECT_NEAR(2.1, matrix(1, 0), 1e-7);
+  EXPECT_NEAR(3.0, matrix(2, 0), 1e-7);
+  EXPECT_TRUE(std::isnan(matrix(1, 1)));
+  EXPECT_NEAR(7.0, matrix(2, 2), 1e-7);
+}
