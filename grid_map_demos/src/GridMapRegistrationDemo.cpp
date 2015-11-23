@@ -1,31 +1,31 @@
 /*
- * GridmapRegistrationDemo.cpp
+ * GridMapRegistrationDemo.cpp
  *
  *  Created on: Sept 18, 2015
  *      Author: Elena Stumm
  *	 Institute: ETH Zurich, Autonomous Systems Lab
  */
 
-#include "grid_map_demos/GridmapRegistrationDemo.hpp"
+#include "grid_map_demos/GridMapRegistrationDemo.hpp"
 
 namespace grid_map_demos {
 
-GridmapRegistrationDemo::GridmapRegistrationDemo(ros::NodeHandle& nodeHandle)
+GridMapRegistrationDemo::GridMapRegistrationDemo(ros::NodeHandle& nodeHandle)
     : nodeHandle_(nodeHandle),
       localMap_(grid_map::GridMap({"elevation"})),
       globalMap_(grid_map::GridMap({"elevation"}))
 {
   readParameters();
   loadGlobalMap();
-  gridMapSubscriber_ = nodeHandle_.subscribe(localBagTopic_, 1, &GridmapRegistrationDemo::gridMapCallback, this);
+  gridMapSubscriber_ = nodeHandle_.subscribe(localBagTopic_, 1, &GridMapRegistrationDemo::gridMapCallback, this);
   gridMapPublisher_ = nodeHandle_.advertise<grid_map_msgs::GridMap>(publishTopic_, 1, true);
 }
 
-GridmapRegistrationDemo::~GridmapRegistrationDemo()
+GridMapRegistrationDemo::~GridMapRegistrationDemo()
 {
 }
 
-bool GridmapRegistrationDemo::readParameters()
+bool GridMapRegistrationDemo::readParameters()
 {
   nodeHandle_.param("global_bag_topic", globalBagTopic_, std::string("grid_map"));
   nodeHandle_.param("local_bag_topic", localBagTopic_, std::string("/elevation_mapping_long_range/elevation_map"));
@@ -33,20 +33,20 @@ bool GridmapRegistrationDemo::readParameters()
   nodeHandle_.param("bag_file_path", bagFilePath_, std::string());
   return true;
 }
-bool GridmapRegistrationDemo::loadGlobalMap()
+bool GridMapRegistrationDemo::loadGlobalMap()
 {
   ROS_INFO_STREAM("Loading grid map from path " << bagFilePath_ << ".");
   return grid_map::GridMapRosConverter::loadFromBag(bagFilePath_, globalBagTopic_, globalMap_);
 }
 
-void GridmapRegistrationDemo::gridMapCallback(const grid_map_msgs::GridMap& msg)
+void GridMapRegistrationDemo::gridMapCallback(const grid_map_msgs::GridMap& msg)
 {
   ROS_INFO("local grid map callback");
   grid_map::GridMapRosConverter::fromMessage(msg, localMap_);
   cv::Mat globalElevationImage;
   cv::Mat localElevationImage;
-  grid_map::GridMapRosConverter::addGridLayerToImage(globalMap_, "elevation", globalElevationImage);
-  grid_map::GridMapRosConverter::addGridLayerToImage(localMap_, "elevation",  localElevationImage);
+  grid_map::GridMapRosConverter::toCvImage(globalMap_, "elevation", globalElevationImage);
+  grid_map::GridMapRosConverter::toCvImage(localMap_, "elevation",  localElevationImage);
 
   // blur the two map images
   const int blur = 5;

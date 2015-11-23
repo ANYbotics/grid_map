@@ -1,10 +1,10 @@
 <launch>
-  <rosparam command="load" file="$(find grid_map_demos)/config/gridmap_registration_demo.yaml" />
+  <rosparam command="load" file="$(find grid_map_demos)/config/grid_map_registration_demo.yaml" />
   
   <node pkg="rosbag" type="play" name="player" output="screen" args="--clock /home/estumm/Documents/Code/ROS_stuff/bags/grid_registration/sensors_with_vi_2015-09-14-09-51-21.bag"/>
 
-  <!-- Launch the grid map simple demo node -->
-  <node pkg="grid_map_demos" type="gridmap_registration_demo" name="gridmap_registration_demo" output="screen" />
+  <!-- Launch the grid map registration demo node -->
+  <node pkg="grid_map_demos" type="grid_map_registration_demo" name="grid_map_registration_demo" output="screen" />
   
   <!-- Launch the grid map visualizer -->
   <node pkg="grid_map_visualization" type="grid_map_visualization" name="grid_map_visualization" output="screen" />

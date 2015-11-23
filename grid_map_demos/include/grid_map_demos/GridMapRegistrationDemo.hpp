@@ -28,7 +28,7 @@ namespace grid_map_demos {
  * The local grid map is then registered w.r.t the global map, and displayed.
  * The global grid map is published and can be viewed in Rviz.
  */
-class GridmapRegistrationDemo
+class GridMapRegistrationDemo
 {
  public:
 
@@ -36,12 +36,12 @@ class GridmapRegistrationDemo
    * Constructor.
    * @param nodeHandle the ROS node handle.
    */
-  GridmapRegistrationDemo(ros::NodeHandle& nodeHandle);
+  GridMapRegistrationDemo(ros::NodeHandle& nodeHandle);
 
   /*!
    * Destructor.
    */
-  virtual ~GridmapRegistrationDemo();
+  virtual ~GridMapRegistrationDemo();
 
   /*!
   * Reads and verifies the ROS parameters.
