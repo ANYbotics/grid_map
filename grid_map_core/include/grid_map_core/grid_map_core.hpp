@@ -15,3 +15,4 @@
 #include "grid_map_core/BufferRegion.hpp"
 #include "grid_map_core/Polygon.hpp"
 #include "grid_map_core/iterators/iterators.hpp"
+#include "grid_map_eigen_plugins/Functors.hpp"

@@ -352,7 +352,7 @@ class GridMap
    * Set the timestamp of the grid map.
    * @param timestamp the timestamp to set (in  nanoseconds).
    */
-  void setTimestamp(const uint64_t timestamp);
+  void setTimestamp(const Time timestamp);
 
   /*!
    * Get the timestamp of the grid map.

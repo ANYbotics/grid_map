@@ -93,7 +93,7 @@ int main(int argc, char** argv)
     double rootMeanSquaredError = sqrt((map["error"].array().pow(2).sum()) / nCells);
 
     // Publish grid map.
-    map.setTimestamp(time.toSec());
+    map.setTimestamp(time.toNSec());
     grid_map_msgs::GridMap message;
     GridMapRosConverter::toMessage(map, message);
     publisher.publish(message);
