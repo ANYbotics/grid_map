@@ -384,30 +384,27 @@ bool GridMapRosConverter::addColorLayerFromImage(const sensor_msgs::Image& image
 }
 
 
-bool GridMapRosConverter::addGridLayerToImage(grid_map::GridMap& gridMap,
-                                            const std::string& layer,
-                                            cv::Mat& cvImage, float maxHeight, float minHeight)
+bool GridMapRosConverter::toCvImage(grid_map::GridMap& gridMap, const std::string& layer,
+                                    cv::Mat& cvImage, float maxHeight, float minHeight)
 {
   if (gridMap.getSize()(0) > 0 && gridMap.getSize()(1) > 0) {
     // Initialize blank image:
     cvImage = cv::Mat::zeros(gridMap.getSize()(0), gridMap.getSize()(1), CV_8UC4);
-  }
-  else {
-    ROS_ERROR("Invalid Grid?");
+  } else {
+    ROS_ERROR("Invalid grid map?");
     return false;
   }
 
   unsigned int depth = std::pow(2,8) - 1;
 
-  // find upper and lower values
-  // this should be replaced, possibly in GridMap.cpp or with cv::convertScaleAbs
-  // (can't use .maxCoeff because of nans
-  float lowerHeight = 100.;
-  float upperHeight = -100.;
+  // Find upper and lower values.
+  // This should be replaced, possibly in GridMap.cpp or with cv::convertScaleAbs
+  // (can't use .maxCoeff because of nans).
+  float lowerHeight = 100.0;
+  float upperHeight = -100.0;
   for (GridMapIterator iterator(gridMap); !iterator.isPastEnd(); ++iterator) {
     if (gridMap.isValid(*iterator, layer)) {
       double cellHeight = gridMap.at(layer, *iterator);
-      // use max and min height to "ignore" outliers
       if (cellHeight <= maxHeight && cellHeight >= minHeight) {
         if (cellHeight < lowerHeight) {
           lowerHeight= cellHeight;
@@ -423,7 +420,6 @@ bool GridMapRosConverter::addGridLayerToImage(grid_map::GridMap& gridMap,
     if (gridMap.isValid(*iterator, layer)) {
       int hValue;
       float height = gridMap.at(layer, *iterator);
-      // use max and min height to "ignore" outliers
       if (height > maxHeight){
         height = maxHeight;
       }
@@ -437,7 +433,6 @@ bool GridMapRosConverter::addGridLayerToImage(grid_map::GridMap& gridMap,
       cvImage.at<cv::Vec<uchar, 4>>(imageIndex(1), imageIndex(0))[2] = hValue;
       cvImage.at<cv::Vec<uchar, 4>>(imageIndex(1), imageIndex(0))[3] = depth;
     }
-
   }
 
   return true;
