@@ -106,7 +106,7 @@ const double Polygon::getArea() const
 
 Position Polygon::getCentroid() const
 {
-  Position centroid;
+  Position centroid(0.0, 0.0);
   std::vector<Position> vertices = getVertices();
   vertices.push_back(vertices.at(0));
   double area = 0.0;
