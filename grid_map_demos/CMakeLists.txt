@@ -80,12 +80,6 @@ add_executable(
 	src/ImageToGridmapDemo.cpp
 )
 
-add_executable(
-	grid_map_registration_demo
-	src/grid_map_registration_demo_node.cpp
-    src/GridMapRegistrationDemo.cpp
-)
-
 ## Specify libraries to link a library or executable target against
 target_link_libraries(
   simple_demo
@@ -104,10 +98,5 @@ target_link_libraries(
 
 target_link_libraries(
   image_to_gridmap_demo
-  ${catkin_LIBRARIES}
-)
-
-target_link_libraries(
-  grid_map_registration_demo
   ${catkin_LIBRARIES}
 )
