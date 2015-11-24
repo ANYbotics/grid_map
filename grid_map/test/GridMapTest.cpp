@@ -8,6 +8,7 @@
 
 #include "grid_map_core/GridMap.hpp"
 #include "grid_map/GridMapRosConverter.hpp"
+#include "grid_map_core/iterators/GridMapIterator.hpp"
 
 // gtest
 #include <gtest/gtest.h>
@@ -17,20 +18,26 @@
 
 // STD
 #include <string>
+#include <vector>
 
 using namespace std;
 using namespace grid_map;
 
 TEST(RosbagHandling, saveLoad)
 {
-  Eigen::Matrix2f dataIn, dataOut;
-  dataIn << 1.0, 2.0,
-            3.0, 4.0;
+
   string layer = "layer";
   string pathToBag = "test.bag";
   string topic = "topic";
-  grid_map::GridMap gridMapIn, gridMapOut;
-  gridMapIn.add(layer, dataIn);
+  vector<string> layers;
+  layers.push_back(layer);
+  grid_map::GridMap gridMapIn(layers), gridMapOut;
+  gridMapIn.setGeometry(grid_map::Length(1.0, 1.0), 0.5);
+  double a = 1.0;
+  for (grid_map::GridMapIterator iterator(gridMapIn); !iterator.isPastEnd(); ++iterator) {
+    gridMapIn.at(layer, *iterator) = a;
+    a += 1.0;
+  }
 
   EXPECT_FALSE(gridMapOut.exists(layer));
 
@@ -39,23 +46,25 @@ TEST(RosbagHandling, saveLoad)
 
   EXPECT_TRUE(gridMapOut.exists(layer));
 
-  dataOut = gridMapOut.get(layer);
-
-  // TODO Do full matrix comparison.
-  EXPECT_DOUBLE_EQ(dataIn(0,0), dataOut(0,0));
-  EXPECT_DOUBLE_EQ(dataIn(1,1), dataOut(1,1));
+  for (grid_map::GridMapIterator iterator(gridMapIn); !iterator.isPastEnd(); ++iterator) {
+    EXPECT_DOUBLE_EQ(gridMapIn.at(layer, *iterator), gridMapOut.at(layer, *iterator));
+  }
 }
 
 TEST(RosbagHandling, saveLoadWithTime)
 {
-  Eigen::Matrix2f dataIn, dataOut;
-  dataIn << 1.0, 2.0,
-            3.0, 4.0;
   string layer = "layer";
   string pathToBag = "test.bag";
   string topic = "topic";
-  grid_map::GridMap gridMapIn, gridMapOut;
-  gridMapIn.add(layer, dataIn);
+  vector<string> layers;
+  layers.push_back(layer);
+  grid_map::GridMap gridMapIn(layers), gridMapOut;
+  gridMapIn.setGeometry(grid_map::Length(1.0, 1.0), 0.5);
+  double a = 1.0;
+  for (grid_map::GridMapIterator iterator(gridMapIn); !iterator.isPastEnd(); ++iterator) {
+    gridMapIn.at(layer, *iterator) = a;
+    a += 1.0;
+  }
 
   EXPECT_FALSE(gridMapOut.exists(layer));
 
@@ -68,9 +77,7 @@ TEST(RosbagHandling, saveLoadWithTime)
 
   EXPECT_TRUE(gridMapOut.exists(layer));
 
-  dataOut = gridMapOut.get(layer);
-
-  // TODO Do full matrix comparison.
-  EXPECT_DOUBLE_EQ(dataIn(0,0), dataOut(0,0));
-  EXPECT_DOUBLE_EQ(dataIn(1,1), dataOut(1,1));
+  for (grid_map::GridMapIterator iterator(gridMapIn); !iterator.isPastEnd(); ++iterator) {
+    EXPECT_DOUBLE_EQ(gridMapIn.at(layer, *iterator), gridMapOut.at(layer, *iterator));
+  }
 }
