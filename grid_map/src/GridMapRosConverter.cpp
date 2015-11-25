@@ -403,21 +403,8 @@ bool GridMapRosConverter::toCvImage(grid_map::GridMap& gridMap, const std::strin
   map.get(layer) = map.get(layer).unaryExpr(grid_map::Clamp<float>(minHeight, maxHeight));
 
   // Find upper and lower values.
-  // This should be replaced, possibly in GridMap.cpp or with cv::convertScaleAbs
-  // (can't use .maxCoeff because of nans).
-  float lowerHeight = maxHeight;
-  float upperHeight = minHeight;
-  for (GridMapIterator iterator(map); !iterator.isPastEnd(); ++iterator) {
-    if (map.isValid(*iterator, layer)) {
-      double cellHeight = map.at(layer, *iterator);
-      if (cellHeight < lowerHeight) {
-        lowerHeight= cellHeight;
-      }
-      if (cellHeight > upperHeight) {
-        upperHeight = cellHeight;
-      }
-    }
-  }
+  float lowerHeight = map.get(layer).minCoeffOfFinites();
+  float upperHeight = map.get(layer).maxCoeffOfFinites();
 
   for (GridMapIterator iterator(map); !iterator.isPastEnd(); ++iterator) {
     if (map.isValid(*iterator, layer)) {
