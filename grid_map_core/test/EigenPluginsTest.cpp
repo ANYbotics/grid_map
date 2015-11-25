@@ -65,6 +65,42 @@ TEST(EigenMatrixBaseAddons, meanOfFinites)
   EXPECT_NEAR(matrix2.mean(), matrix2.meanOfFinites(), 1e-10);
 }
 
+TEST(EigenMatrixBaseAddons, minCoeffOfFinites)
+{
+  Matrix<double, 7, 18> matrix;
+  matrix.setRandom();
+  double min = matrix.minCoeff();
+  EXPECT_NEAR(min, matrix.minCoeffOfFinites(), 1e-10);
+
+  int i, j;
+  matrix.maxCoeff(&i, &j);
+  matrix(i, j) = NAN;
+  EXPECT_NEAR(min, matrix.minCoeffOfFinites(), 1e-10);
+
+  matrix.setConstant(NAN);
+  EXPECT_TRUE(std::isnan(matrix.minCoeffOfFinites()));
+  matrix(i, j) = -1.0;
+  EXPECT_NEAR(-1.0, matrix.minCoeffOfFinites(), 1e-10);
+}
+
+TEST(EigenMatrixBaseAddons, maxCoeffOfFinites)
+{
+  Matrix<double, 7, 18> matrix;
+  matrix.setRandom();
+  double max = matrix.maxCoeff();
+  EXPECT_NEAR(max, matrix.maxCoeffOfFinites(), 1e-10);
+
+  int i, j;
+  matrix.minCoeff(&i, &j);
+  matrix(i, j) = NAN;
+  EXPECT_NEAR(max, matrix.maxCoeffOfFinites(), 1e-10);
+
+  matrix.setConstant(NAN);
+  EXPECT_TRUE(std::isnan(matrix.maxCoeffOfFinites()));
+  matrix(i, j) = -1.0;
+  EXPECT_NEAR(-1.0, matrix.maxCoeffOfFinites(), 1e-10);
+}
+
 TEST(EigenMatrixBaseAddons, clamp)
 {
   Eigen::VectorXf vector(Eigen::VectorXf::LinSpaced(9, 1.0, 9.0));
