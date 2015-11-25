@@ -166,8 +166,8 @@ class GridMapRosConverter
    */
   static bool toCvImage(grid_map::GridMap& gridMap, const std::string& layer,
                         cv::Mat& cvImage,
-                        float maxHeight = std::numeric_limits<float>::min(),
-                        float minHeight = std::numeric_limits<float>::max());
+                        float minHeight = std::numeric_limits<float>::min(),
+                        float maxHeight = std::numeric_limits<float>::max());
 
   /*!
    * Saves a grid map into a ROS bag. The timestamp of the grid map
