@@ -10,6 +10,7 @@
 #include "grid_map/GridMapMsgHelpers.hpp"
 #include <grid_map_core/GridMapMath.hpp>
 #include <grid_map_core/iterators/GridMapIterator.hpp>
+#include <grid_map_core/grid_map_core.hpp>
 
 // ROS
 #include <sensor_msgs/point_cloud2_iterator.h>
@@ -378,6 +379,44 @@ bool GridMapRosConverter::addColorLayerFromImage(const sensor_msgs::Image& image
     colorVector(1) = cvColor[1];
     colorVector(0) = cvColor[2];
     colorVectorToValue(colorVector, gridMap.at(layer, *iterator));
+  }
+
+  return true;
+}
+
+
+bool GridMapRosConverter::toCvImage(const grid_map::GridMap& gridMap, const std::string& layer,
+                                    cv::Mat& cvImage, const float dataMin, const float dataMax)
+{
+  if (gridMap.getSize()(0) > 0 && gridMap.getSize()(1) > 0) {
+    // Initialize blank image.
+    cvImage = cv::Mat::zeros(gridMap.getSize()(0), gridMap.getSize()(1), CV_8UC4);
+  } else {
+    ROS_ERROR("Invalid grid map?");
+    return false;
+  }
+
+  uchar imageMax = std::numeric_limits<unsigned char>::max();
+
+  // Clamp outliers.
+  grid_map::GridMap map = gridMap;
+  map.get(layer) = map.get(layer).unaryExpr(grid_map::Clamp<float>(dataMin, dataMax));
+
+  // Find upper and lower values.
+  float lowerValue = map.get(layer).minCoeffOfFinites();
+  float upperValue = map.get(layer).maxCoeffOfFinites();
+
+  for (GridMapIterator iterator(map); !iterator.isPastEnd(); ++iterator) {
+    if (map.isValid(*iterator, layer)) {
+      uchar imageValue;
+      float value = map.at(layer, *iterator);
+      imageValue = (uchar)(((value - lowerValue) / (upperValue - lowerValue)) * (float)imageMax);
+      grid_map::Index imageIndex(iterator.getUnwrappedIndex());
+      cvImage.at<cv::Vec<uchar, 4>>(imageIndex(1), imageIndex(0))[0] = imageValue;
+      cvImage.at<cv::Vec<uchar, 4>>(imageIndex(1), imageIndex(0))[1] = imageValue;
+      cvImage.at<cv::Vec<uchar, 4>>(imageIndex(1), imageIndex(0))[2] = imageValue;
+      cvImage.at<cv::Vec<uchar, 4>>(imageIndex(1), imageIndex(0))[3] = imageMax;
+    }
   }
 
   return true;

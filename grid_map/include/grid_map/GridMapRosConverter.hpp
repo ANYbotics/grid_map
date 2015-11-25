@@ -26,6 +26,9 @@
 #include <nav_msgs/OccupancyGrid.h>
 #include <nav_msgs/GridCells.h>
 
+// Open CV
+#include <opencv2/core/core.hpp>
+
 namespace grid_map {
 
 /*!
@@ -151,6 +154,20 @@ class GridMapRosConverter
    */
   static bool addColorLayerFromImage(const sensor_msgs::Image& image, const std::string& layer,
                                      grid_map::GridMap& gridMap);
+
+    /*!
+   * Creates a cv image from a grid map layer.
+   * @param[in] grid map to be added.
+   * @param[in] layer the layer that is filled with the image.
+   * @param[out] cv image to be populated.
+   * @param[in] optional height limit.
+   * @param[in] optional height limit.
+   * @return true if successful, false otherwise.
+   */
+  static bool toCvImage(const grid_map::GridMap& gridMap, const std::string& layer,
+                        cv::Mat& cvImage,
+                        const float dataMin = std::numeric_limits<float>::min(),
+                        const float dataMax = std::numeric_limits<float>::max());
 
   /*!
    * Saves a grid map into a ROS bag. The timestamp of the grid map
