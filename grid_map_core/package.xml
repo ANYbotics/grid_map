@@ -11,4 +11,5 @@
   <author email="ralf.kaestner@gmail.com">Ralf Kaestner</author>
   <author email="martiwer@student.ethz.ch">Martin Wermelinger</author>
   <buildtool_depend>catkin</buildtool_depend>
+  <depend>eigen</depend>
 </package>
