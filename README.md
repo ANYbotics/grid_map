@@ -13,7 +13,7 @@ Features:
 * **ROS interface:** Grid maps can be directly converted to ROS message types such as PointCloud2, OccupancyGrid, GridCells, and our custom GridMap message.
 * **Visualizations:** The *grid_map_visualization* package helps to visualize grid maps in various form in [RViz].
 
-The grid map package has been tested under [ROS] Indigo and Ubuntu 14.04. This is research code, expect that it changes often and any fitness for a particular purpose is disclaimed.
+The grid map package has been tested with [ROS] Indigo and Jade under Ubuntu 14.04. This is research code, expect that it changes often and any fitness for a particular purpose is disclaimed.
 
 The source code is released under a [BSD 3-Clause license](LICENSE).
 
