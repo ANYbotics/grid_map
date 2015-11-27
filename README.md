@@ -21,8 +21,9 @@ The source code is released under a [BSD 3-Clause license](LICENSE).
 Maintainer: Péter Fankhauser, pfankhauser@ethz.ch<br />
 Affiliation: Autonomous Systems Lab, ETH Zurich**
 
-![Grid map example in rviz](grid_map_visualization/doc/point_cloud.jpg)
+[![Build Status](http://jenkins.ros.org/job/devel-indigo-grid_map/badge/icon)](http://jenkins.ros.org/job/devel-indigo-grid_map/)
 
+![Grid map example in rviz](grid_map_visualization/doc/point_cloud.jpg)
 
 ## Publications
 
