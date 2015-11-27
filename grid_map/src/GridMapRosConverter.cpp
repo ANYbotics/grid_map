@@ -401,6 +401,7 @@ bool GridMapRosConverter::toCvImage(const grid_map::GridMap& gridMap, const std:
   float lowerValue = map.get(layer).minCoeffOfFinites();
   float upperValue = map.get(layer).maxCoeffOfFinites();
 
+  uchar imageMax = std::numeric_limits<unsigned char>::max();
   for (GridMapIterator iterator(map); !iterator.isPastEnd(); ++iterator) {
     if (map.isValid(*iterator, layer)) {
       float value = map.at(layer, *iterator);
@@ -409,7 +410,7 @@ bool GridMapRosConverter::toCvImage(const grid_map::GridMap& gridMap, const std:
       cvImage.at<cv::Vec<uchar, 4>>(imageIndex(1), imageIndex(0))[0] = imageValue;
       cvImage.at<cv::Vec<uchar, 4>>(imageIndex(1), imageIndex(0))[1] = imageValue;
       cvImage.at<cv::Vec<uchar, 4>>(imageIndex(1), imageIndex(0))[2] = imageValue;
-      cvImage.at<cv::Vec<uchar, 4>>(imageIndex(1), imageIndex(0))[3] = std::numeric_limits<unsigned char>::max();
+      cvImage.at<cv::Vec<uchar, 4>>(imageIndex(1), imageIndex(0))[3] = imageMax;
     }
   }
 
