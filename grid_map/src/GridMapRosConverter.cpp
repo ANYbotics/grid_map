@@ -364,15 +364,13 @@ bool GridMapRosConverter::addColorLayerFromImage(const sensor_msgs::Image& image
 
   gridMap.add(layer);
 
-  if (gridMap.getSize()(0) != image.height
-      || gridMap.getSize()(1) != image.width) {
+  if (gridMap.getSize()(0) != image.height || gridMap.getSize()(1) != image.width) {
     ROS_ERROR("Image size does not correspond to grid map size!");
     return false;
   }
 
   for (GridMapIterator iterator(gridMap); !iterator.isPastEnd(); ++iterator) {
-    const auto& cvColor = cvPtr->image.at<cv::Vec3b>((*iterator)(0),
-                                                     (*iterator)(1));
+    const auto& cvColor = cvPtr->image.at<cv::Vec3b>((*iterator)(0), (*iterator)(1));
     Eigen::Vector3i colorVector;
     // TODO Add cases for different image encodings.
     colorVector(2) = cvColor[0];  // From BGR to RGB.
@@ -383,7 +381,6 @@ bool GridMapRosConverter::addColorLayerFromImage(const sensor_msgs::Image& image
 
   return true;
 }
-
 
 bool GridMapRosConverter::toCvImage(const grid_map::GridMap& gridMap, const std::string& layer,
                                     cv::Mat& cvImage, const float dataMin, const float dataMax)
@@ -396,8 +393,6 @@ bool GridMapRosConverter::toCvImage(const grid_map::GridMap& gridMap, const std:
     return false;
   }
 
-  uchar imageMax = std::numeric_limits<unsigned char>::max();
-
   // Clamp outliers.
   grid_map::GridMap map = gridMap;
   map.get(layer) = map.get(layer).unaryExpr(grid_map::Clamp<float>(dataMin, dataMax));
@@ -408,14 +403,13 @@ bool GridMapRosConverter::toCvImage(const grid_map::GridMap& gridMap, const std:
 
   for (GridMapIterator iterator(map); !iterator.isPastEnd(); ++iterator) {
     if (map.isValid(*iterator, layer)) {
-      uchar imageValue;
       float value = map.at(layer, *iterator);
-      imageValue = (uchar)(((value - lowerValue) / (upperValue - lowerValue)) * (float)imageMax);
+      uchar imageValue = (uchar)(((value - lowerValue) / (upperValue - lowerValue)) * (float)imageMax);
       grid_map::Index imageIndex(iterator.getUnwrappedIndex());
       cvImage.at<cv::Vec<uchar, 4>>(imageIndex(1), imageIndex(0))[0] = imageValue;
       cvImage.at<cv::Vec<uchar, 4>>(imageIndex(1), imageIndex(0))[1] = imageValue;
       cvImage.at<cv::Vec<uchar, 4>>(imageIndex(1), imageIndex(0))[2] = imageValue;
-      cvImage.at<cv::Vec<uchar, 4>>(imageIndex(1), imageIndex(0))[3] = imageMax;
+      cvImage.at<cv::Vec<uchar, 4>>(imageIndex(1), imageIndex(0))[3] = std::numeric_limits<unsigned char>::max();
     }
   }
 
