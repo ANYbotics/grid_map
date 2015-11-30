@@ -424,7 +424,7 @@ bool GridMapRosConverter::saveToBag(const grid_map::GridMap& gridMap, const std:
   toMessage(gridMap, message);
   ros::Time time(gridMap.getTimestamp());
 
-  if (!time.isValid()) {
+  if (!time.isValid() || time.isZero()) {
     if (!ros::Time::isValid()) ros::Time::init();
     time = ros::Time::now();
   }
