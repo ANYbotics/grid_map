@@ -318,9 +318,8 @@ class GridMap
    * @return true if successful.
    */
   bool addDataFrom(const grid_map::GridMap& other, bool extendMap,
-                   bool overwriteData, bool copyAllLayer,
-                   std::vector<std::string> layers =
-                       std::vector<std::string>());
+                   bool overwriteData, bool copyAllLayers,
+                   std::vector<std::string> layers = std::vector<std::string>());
 
   /*!
    * Extends the size of the grip map such that the other grid map fits within.

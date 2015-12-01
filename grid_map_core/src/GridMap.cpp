@@ -388,15 +388,15 @@ bool GridMap::move(const grid_map::Position& position)
   return move(position, newRegions);
 }
 
-bool GridMap::addDataFrom(const grid_map::GridMap& other, bool extendMap, bool overwriteData, bool copyAllLayer, std::vector<std::string> layers)
+bool GridMap::addDataFrom(const grid_map::GridMap& other, bool extendMap, bool overwriteData,
+                          bool copyAllLayers, std::vector<std::string> layers)
 {
   // Set the layers to copy.
-  if (copyAllLayer) layers = other.getLayers();
+  if (copyAllLayers) layers = other.getLayers();
 
   // Resize map.
-  if (extendMap) {
-    extendToInclude(other);
-  }
+  if (extendMap) extendToInclude(other);
+
   // Check if all layers to copy exist and add missing layers.
   for (const auto& layer : layers) {
     if (std::find(layers_.begin(), layers_.end(), layer) == layers_.end()) {
