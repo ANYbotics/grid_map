@@ -1,7 +1,7 @@
 /*
- * CircleIterator.hpp
+ * EllipseIterator.hpp
  *
- *  Created on: Nov 13, 2014
+ *  Created on: Dec 2, 2015
  *      Author: Péter Fankhauser
  *   Institute: ETH Zurich, Autonomous Systems Lab
  */
@@ -20,32 +20,33 @@
 namespace grid_map {
 
 /*!
- * Iterator class to iterate through a circular area of the map.
+ * Iterator class to iterate through a ellipsoid area of the map.
+ * The main axis of the ellipse are aligned with the map frame.
  */
-class CircleIterator
+class EllipseIterator
 {
 public:
 
   /*!
    * Constructor.
    * @param gridMap the grid map to iterate on.
-   * @param center the position of the circle center.
-   * @param radius the radius of the circle.
+   * @param center the position of the ellipse center.
+   * @param length the length of the main axis.
    */
-  CircleIterator(const GridMap& gridMap, const Position& center, const double radius);
+  EllipseIterator(const GridMap& gridMap, const Position& center, const Length& length);
 
   /*!
    * Assignment operator.
    * @param iterator the iterator to copy data from.
    * @return a reference to *this.
    */
-  CircleIterator& operator =(const CircleIterator& other);
+  EllipseIterator& operator =(const EllipseIterator& other);
 
   /*!
    * Compare to another iterator.
    * @return whether the current iterator points to a different address than the other one.
    */
-  bool operator !=(const CircleIterator& other) const;
+  bool operator !=(const EllipseIterator& other) const;
 
   /*!
    * Dereference the iterator with const.
@@ -57,7 +58,7 @@ public:
    * Increase the iterator to the next element.
    * @return a reference to the updated iterator.
    */
-  CircleIterator& operator ++();
+  EllipseIterator& operator ++();
 
   /*!
    * Indicates if iterator is past end.
@@ -68,29 +69,27 @@ public:
 private:
 
   /*!
-   * Check if current index is inside the circle.
+   * Check if current index is inside the ellipse.
    * @return true if inside, false otherwise.
    */
   bool isInside();
 
   /*!
-   * Finds the submap that fully contains the circle and returns the parameters.
-   * @param[in] center the position of the circle center.
-   * @param[in] radius the radius of the circle.
+   * Finds the submap that fully contains the ellipse and returns the parameters.
+   * @param[in] center the position of the ellipse center.
+   * @param[in] length the length of the main axis.
    * @param[out] startIndex the start index of the submap.
    * @param[out] bufferSize the buffer size of the submap.
    */
-  void findSubmapParameters(const Position& center, const double radius,
+  void findSubmapParameters(const Position& center, const Length& length,
                             Index& startIndex, Size& bufferSize) const;
 
   //! Position of the circle center;
   Position center_;
 
-  //! Radius of the circle.
-  double radius_;
-
-  //! Square of the radius for efficiency.
-  double radiusSquare_;
+  //! Length of the main axis.
+  Length length_;
+  Length lengthSquare_;
 
   //! Grid submap iterator.
   std::shared_ptr<SubmapIterator> internalIterator_;

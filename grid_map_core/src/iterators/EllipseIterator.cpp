@@ -1,23 +1,23 @@
 /*
- * Circleterator.hpp
+ * EllipseIterator.hpp
  *
- *  Created on: Nov 13, 2014
+ *  Created on: Dec 2, 2015
  *      Author: Péter Fankhauser
  *   Institute: ETH Zurich, Autonomous Systems Lab
  */
 
-#include "grid_map_core/iterators/CircleIterator.hpp"
+#include "grid_map_core/iterators/EllipseIterator.hpp"
 #include "grid_map_core/GridMapMath.hpp"
 
 using namespace std;
 
 namespace grid_map {
 
-CircleIterator::CircleIterator(const GridMap& gridMap, const Position& center, const double radius)
+EllipseIterator::EllipseIterator(const GridMap& gridMap, const Position& center, const Length& length)
     : center_(center),
-      radius_(radius)
+      length_(length)
 {
-  radiusSquare_ = pow(radius_, 2);
+  lengthSquare_ = length_.square();
   mapLength_ = gridMap.getLength();
   mapPosition_ = gridMap.getPosition();
   resolution_ = gridMap.getResolution();
@@ -25,16 +25,16 @@ CircleIterator::CircleIterator(const GridMap& gridMap, const Position& center, c
   bufferStartIndex_ = gridMap.getStartIndex();
   Index submapStartIndex;
   Index submapBufferSize;
-  findSubmapParameters(center, radius, submapStartIndex, submapBufferSize);
+  findSubmapParameters(center, length, submapStartIndex, submapBufferSize);
   internalIterator_ = std::shared_ptr<SubmapIterator>(new SubmapIterator(gridMap, submapStartIndex, submapBufferSize));
   if(!isInside()) ++(*this);
 }
 
-CircleIterator& CircleIterator::operator =(const CircleIterator& other)
+EllipseIterator& EllipseIterator::operator =(const EllipseIterator& other)
 {
   center_ = other.center_;
-  radius_ = other.radius_;
-  radiusSquare_ = other.radiusSquare_;
+  length_ = other.length_;
+  lengthSquare_ = other.lengthSquare_;
   internalIterator_ = other.internalIterator_;
   mapLength_ = other.mapLength_;
   mapPosition_ = other.mapPosition_;
@@ -44,17 +44,17 @@ CircleIterator& CircleIterator::operator =(const CircleIterator& other)
   return *this;
 }
 
-bool CircleIterator::operator !=(const CircleIterator& other) const
+bool EllipseIterator::operator !=(const EllipseIterator& other) const
 {
   return (internalIterator_ != other.internalIterator_);
 }
 
-const Index& CircleIterator::operator *() const
+const Eigen::Array2i& EllipseIterator::operator *() const
 {
   return *(*internalIterator_);
 }
 
-CircleIterator& CircleIterator::operator ++()
+EllipseIterator& EllipseIterator::operator ++()
 {
   ++(*internalIterator_);
   if (internalIterator_->isPastEnd()) return *this;
@@ -66,30 +66,30 @@ CircleIterator& CircleIterator::operator ++()
   return *this;
 }
 
-bool CircleIterator::isPastEnd() const
+bool EllipseIterator::isPastEnd() const
 {
   return internalIterator_->isPastEnd();
 }
 
-bool CircleIterator::isInside()
+bool EllipseIterator::isInside()
 {
   Position position;
   getPositionFromIndex(position, *(*internalIterator_), mapLength_, mapPosition_, resolution_, bufferSize_, bufferStartIndex_);
-  double squareNorm = (position - center_).array().square().sum();
-  return (squareNorm <= radiusSquare_);
+  double value = ((position - center_).array().square() / lengthSquare_).sum();
+  return (value <= 1);
 }
 
-void CircleIterator::findSubmapParameters(const Position& center, const double radius,
-                                          Index& startIndex, Size& bufferSize) const
+void EllipseIterator::findSubmapParameters(const Position& center, const Length& length,
+                                           Index& startIndex, Size& bufferSize) const
 {
-  Position topLeft = center.array() + radius;
-  Position bottomRight = center.array() - radius;
+  Position topLeft = center.array() + length;
+  Position bottomRight = center.array() - length;
   limitPositionToRange(topLeft, mapLength_, mapPosition_);
   limitPositionToRange(bottomRight, mapLength_, mapPosition_);
   getIndexFromPosition(startIndex, topLeft, mapLength_, mapPosition_, resolution_, bufferSize_, bufferStartIndex_);
   Index endIndex;
   getIndexFromPosition(endIndex, bottomRight, mapLength_, mapPosition_, resolution_, bufferSize_, bufferStartIndex_);
-  bufferSize = endIndex - startIndex + Index::Ones();
+  bufferSize = endIndex - startIndex + Eigen::Array2i::Ones();
 }
 
 } /* namespace grid_map */

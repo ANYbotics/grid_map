@@ -135,7 +135,7 @@ Using the iterator in a `for` loop is common. For example, iterate over the enti
         cout << "The value at index " << *iterator << " is " << map.at("layer", *iterator) << endl;
     }
 
-The other grid map iterators follow the same form. You can find more examples on how to use the different iterators in the *[iterators_demo](grid_map_demo/src/IteratorsDemo.cpp)* node.
+The other grid map iterators follow the same form. You can find more examples on how to use the different iterators in the *[iterators_demo](grid_map_demos/src/IteratorsDemo.cpp)* node.
 
 
 ## Nodes
