@@ -9,16 +9,19 @@
 #include "grid_map_core/iterators/EllipseIterator.hpp"
 #include "grid_map_core/GridMapMath.hpp"
 
-#include <iostream>
+#include <math.h>
 
 using namespace std;
 
 namespace grid_map {
 
-EllipseIterator::EllipseIterator(const GridMap& gridMap, const Position& center, const Length& length)
+EllipseIterator::EllipseIterator(const GridMap& gridMap, const Position& center, const Length& length, double rotation)
     : center_(center)
 {
-  semiAxisSquare = (0.5 * length).square();
+  semiAxisSquare_ = (0.5 * length).square();
+  double sinRotation = sin(rotation);
+  double cosRotation = cos(rotation);
+  rotationMatrix_ << cosRotation, sinRotation, sinRotation, -cosRotation;
   mapLength_ = gridMap.getLength();
   mapPosition_ = gridMap.getPosition();
   resolution_ = gridMap.getResolution();
@@ -34,7 +37,8 @@ EllipseIterator::EllipseIterator(const GridMap& gridMap, const Position& center,
 EllipseIterator& EllipseIterator::operator =(const EllipseIterator& other)
 {
   center_ = other.center_;
-  semiAxisSquare = other.semiAxisSquare;
+  semiAxisSquare_ = other.semiAxisSquare_;
+  rotationMatrix_ = other.rotationMatrix_;
   internalIterator_ = other.internalIterator_;
   mapLength_ = other.mapLength_;
   mapPosition_ = other.mapPosition_;
@@ -75,7 +79,7 @@ bool EllipseIterator::isInside()
 {
   Position position;
   getPositionFromIndex(position, *(*internalIterator_), mapLength_, mapPosition_, resolution_, bufferSize_, bufferStartIndex_);
-  double value = ((position - center_).array().square() / semiAxisSquare).sum();
+  double value = ((rotationMatrix_ * (position - center_)).array().square() / semiAxisSquare_).sum();
   return (value <= 1);
 }
 

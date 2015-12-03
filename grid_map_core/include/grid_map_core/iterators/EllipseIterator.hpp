@@ -32,8 +32,9 @@ public:
    * @param gridMap the grid map to iterate on.
    * @param center the position of the ellipse center.
    * @param length the length of the main axis.
+   * @param angle the rotation angle of the ellipse (in [rad]).
    */
-  EllipseIterator(const GridMap& gridMap, const Position& center, const Length& length);
+  EllipseIterator(const GridMap& gridMap, const Position& center, const Length& length, double rotation = 0.0);
 
   /*!
    * Assignment operator.
@@ -88,7 +89,10 @@ private:
   Position center_;
 
   //! Square length of the semi axis.
-  Length semiAxisSquare;
+  Eigen::Array2d semiAxisSquare_;
+
+  //! Sine and cosine values of the rotation angle as matrix.
+  Eigen::Matrix2d rotationMatrix_;
 
   //! Grid submap iterator.
   std::shared_ptr<SubmapIterator> internalIterator_;
