@@ -25,7 +25,7 @@ using namespace std;
 using namespace Eigen;
 using namespace grid_map;
 
-TEST(checkSubmapIterator, Simple)
+TEST(SubmapIterator, Simple)
 {
   Eigen::Array2i submapTopLeftIndex(3, 1);
   Eigen::Array2i submapBufferSize(3, 2);
@@ -88,7 +88,7 @@ TEST(checkSubmapIterator, Simple)
   EXPECT_EQ(1, iterator.getSubmapIndex()(1));
 }
 
-TEST(checkSubmapIterator, CircularBuffer)
+TEST(SubmapIterator, CircularBuffer)
 {
   Eigen::Array2i submapTopLeftIndex(6, 3);
   Eigen::Array2i submapBufferSize(2, 4);

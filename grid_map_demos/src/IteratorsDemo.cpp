@@ -110,7 +110,7 @@ void IteratorsDemo::demoEllipseIterator()
   publish();
 
   Position center(0.0, -0.15);
-  Length length(0.2, 0.4);
+  Length length(0.4, 0.8);
 
   for (grid_map::EllipseIterator iterator(map_, center, length);
       !iterator.isPastEnd(); ++iterator) {

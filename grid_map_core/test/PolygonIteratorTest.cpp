@@ -26,7 +26,7 @@ using namespace std;
 using namespace Eigen;
 using namespace grid_map;
 
-TEST(checkPolygonIterator, FullCover)
+TEST(PolygonIterator, FullCover)
 {
   vector<string> types;
   types.push_back("type");
@@ -65,7 +65,7 @@ TEST(checkPolygonIterator, FullCover)
   EXPECT_TRUE(iterator.isPastEnd());
 }
 
-TEST(checkPolygonIterator, Outside)
+TEST(PolygonIterator, Outside)
 {
   GridMap map({"types"});
   map.setGeometry(Length(8.0, 5.0), 1.0, Position(0.0, 0.0)); // bufferSize(8, 5)
@@ -81,7 +81,7 @@ TEST(checkPolygonIterator, Outside)
   EXPECT_TRUE(iterator.isPastEnd());
 }
 
-TEST(checkPolygonIterator, Square)
+TEST(PolygonIterator, Square)
 {
   GridMap map({"types"});
   map.setGeometry(Length(8.0, 5.0), 1.0, Position(0.0, 0.0)); // bufferSize(8, 5)
@@ -127,7 +127,7 @@ TEST(checkPolygonIterator, Square)
   EXPECT_TRUE(iterator.isPastEnd());
 }
 
-TEST(checkPolygonIterator, TopLeftTriangle)
+TEST(PolygonIterator, TopLeftTriangle)
 {
   GridMap map({"types"});
   map.setGeometry(Length(8.0, 5.0), 1.0, Position(0.0, 0.0)); // bufferSize(8, 5)

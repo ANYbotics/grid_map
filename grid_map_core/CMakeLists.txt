@@ -78,6 +78,7 @@ catkin_add_gtest(${PROJECT_NAME}-test
   test/test_grid_map_core.cpp
   test/GridMapMathTest.cpp
   test/GridMapTest.cpp
+  test/EllipseIteratorTest.cpp
   test/SubmapIteratorTest.cpp
   test/PolygonIteratorTest.cpp
   test/PolygonTest.cpp

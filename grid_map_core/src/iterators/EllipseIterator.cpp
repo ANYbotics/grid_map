@@ -9,15 +9,16 @@
 #include "grid_map_core/iterators/EllipseIterator.hpp"
 #include "grid_map_core/GridMapMath.hpp"
 
+#include <iostream>
+
 using namespace std;
 
 namespace grid_map {
 
 EllipseIterator::EllipseIterator(const GridMap& gridMap, const Position& center, const Length& length)
-    : center_(center),
-      length_(length)
+    : center_(center)
 {
-  lengthSquare_ = length_.square();
+  semiAxisSquare = (0.5 * length).square();
   mapLength_ = gridMap.getLength();
   mapPosition_ = gridMap.getPosition();
   resolution_ = gridMap.getResolution();
@@ -33,8 +34,7 @@ EllipseIterator::EllipseIterator(const GridMap& gridMap, const Position& center,
 EllipseIterator& EllipseIterator::operator =(const EllipseIterator& other)
 {
   center_ = other.center_;
-  length_ = other.length_;
-  lengthSquare_ = other.lengthSquare_;
+  semiAxisSquare = other.semiAxisSquare;
   internalIterator_ = other.internalIterator_;
   mapLength_ = other.mapLength_;
   mapPosition_ = other.mapPosition_;
@@ -75,7 +75,7 @@ bool EllipseIterator::isInside()
 {
   Position position;
   getPositionFromIndex(position, *(*internalIterator_), mapLength_, mapPosition_, resolution_, bufferSize_, bufferStartIndex_);
-  double value = ((position - center_).array().square() / lengthSquare_).sum();
+  double value = ((position - center_).array().square() / semiAxisSquare).sum();
   return (value <= 1);
 }
 

@@ -87,9 +87,8 @@ private:
   //! Position of the circle center;
   Position center_;
 
-  //! Length of the main axis.
-  Length length_;
-  Length lengthSquare_;
+  //! Square length of the semi axis.
+  Length semiAxisSquare;
 
   //! Grid submap iterator.
   std::shared_ptr<SubmapIterator> internalIterator_;
