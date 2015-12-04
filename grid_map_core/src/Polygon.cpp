@@ -144,6 +144,8 @@ Polygon Polygon::convexHullCircles(const Position center1,
     centerToVertexTemp = rot2d.toRotationMatrix() * centerToVertex;
     polygon.addVertex(center2 + centerToVertexTemp);
   }
+  polygon.setFrameId(frameId_);
+  polygon.setTimestamp(timestamp_);
   return polygon;
 }
 
@@ -152,13 +154,15 @@ Polygon Polygon::convexHullCircle(const Position center, const double radius,
 {
   Eigen::Vector2d centerToVertex(radius, 0.0), centerToVertexTemp;
 
-  grid_map::Polygon polygon;
+  Polygon polygon;
   for (int j = 0; j < nVertices; j++) {
     double theta = j * 2 * M_PI / (nVertices - 1);
     Eigen::Rotation2D<double> rot2d(theta);
     centerToVertexTemp = rot2d.toRotationMatrix() * centerToVertex;
     polygon.addVertex(center + centerToVertexTemp);
   }
+  polygon.setFrameId(frameId_);
+  polygon.setTimestamp(timestamp_);
   return polygon;
 }
 
@@ -194,7 +198,10 @@ Polygon Polygon::convexHull(Polygon& polygon1, Polygon& polygon2)
   }
   hull.resize(k - 1);
 
-  return Polygon(hull);
+  Polygon polygon(hull);
+  polygon.setFrameId(frameId_);
+  polygon.setTimestamp(timestamp_);
+  return polygon;
 }
 
 bool Polygon::sortVertices(const Eigen::Vector2d& vector1,
