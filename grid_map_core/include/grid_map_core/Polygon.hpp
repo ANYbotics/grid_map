@@ -126,33 +126,6 @@ class Polygon
   Position getCentroid() const;
 
   /*!
-   * Computes the convex hull of two polygons and returns it as polygon.
-   * @param[in] polygon1 the first input polygon.
-   * @param[in] polygon2 the second input polygon.
-   * @return convex hull as Polygon.
-   */
-  Polygon convexHull(Polygon& polygon1, Polygon& polygon2);
-
-  /*!
-   * Approximates the convex hull of two circles and returns it as polygon.
-   * @param[in] center1 the center position of the first circle.
-   * @param[in] center2 the center position of the second circle.
-   * @param[in] radius radius of the circles.
-   * @param[in] nVertices number of vertices of the approximation polygon. Default = 20.
-   * @return convex hull as Polygon.
-   */
-  Polygon convexHullCircles(const Position center1, const Position center2, const double radius, const int nVertices = 20);
-
-  /*!
-   * Approximates a circle with a convex hull polygon.
-   * @param[in] center the center position of the circle.
-   * @param[in] radius radius of the circle.
-   * @param[in] nVertices number of vertices of the approximation polygon. Default = 20.
-   * @return convex hull as Polygon.
-   */
-  Polygon convexHullCircle(const Position center, const double radius, const int nVertices = 20);
-
-  /*!
    * Convert polygon to inequality constraints which most tightly contain the points; i.e.,
    * create constraints to bound the convex hull of polygon. The inequality constraints are
    * represented as A and b, a set of constraints such that A*x <= b defining the region of
@@ -163,7 +136,8 @@ class Polygon
    * @param b the b matrix in of the inequality constraint.
    * @return true if conversion successful, false otherwise.
    */
-  bool convertToInequalityConstraints(Eigen::MatrixXd& A, Eigen::VectorXd& b);
+  bool convertToInequalityConstraints(Eigen::MatrixXd& A,
+                                      Eigen::VectorXd& b) const;
 
   /*!
    * Offsets the polygon inward (buffering) by a margin.
@@ -172,6 +146,37 @@ class Polygon
    * @return true if succesful, false otherwise.
    */
   bool offsetInward(const double margin);
+
+  /*!
+   * Approximates a circle with a polygon.
+   * @param[in] center the center position of the circle.
+   * @param[in] radius radius of the circle.
+   * @param[in] nVertices number of vertices of the approximation polygon. Default = 20.
+   * @return circle as polygon.
+   */
+  static Polygon fromCircle(const Position center, const double radius,
+                            const int nVertices = 20);
+
+  /*!
+   * Approximates two circles with a convex hull and returns it as polygon.
+   * @param[in] center1 the center position of the first circle.
+   * @param[in] center2 the center position of the second circle.
+   * @param[in] radius radius of the circles.
+   * @param[in] nVertices number of vertices of the approximation polygon. Default = 20.
+   * @return convex hull of the two circles as polygon.
+   */
+  static Polygon convexHullOfTwoCircles(const Position center1,
+                                        const Position center2,
+                                        const double radius,
+                                        const int nVertices = 20);
+
+  /*!
+   * Computes the convex hull of two polygons and returns it as polygon.
+   * @param[in] polygon1 the first input polygon.
+   * @param[in] polygon2 the second input polygon.
+   * @return convex hull as polygon.
+   */
+  static Polygon convexHull(Polygon& polygon1, Polygon& polygon2);
 
  protected:
 
@@ -188,8 +193,8 @@ class Polygon
    * @param[in] vector1 the first input vector.
    * @param[in] vector2 the second input vector.
    */
-  double computeCrossProduct2D(const Eigen::Vector2d& vector1,
-                               const Eigen::Vector2d& vector2);
+  static double computeCrossProduct2D(const Eigen::Vector2d& vector1,
+                                      const Eigen::Vector2d& vector2);
 
   //! Frame id of the polygon.
   std::string frameId_;
