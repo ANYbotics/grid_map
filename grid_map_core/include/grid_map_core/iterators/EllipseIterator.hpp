@@ -34,7 +34,7 @@ public:
    * @param length the length of the main axis.
    * @param angle the rotation angle of the ellipse (in [rad]).
    */
-  EllipseIterator(const GridMap& gridMap, const Position& center, const Length& length, double rotation = 0.0);
+  EllipseIterator(const GridMap& gridMap, const Position& center, const Length& length, const double rotation = 0.0);
 
   /*!
    * Assignment operator.
@@ -79,10 +79,11 @@ private:
    * Finds the submap that fully contains the ellipse and returns the parameters.
    * @param[in] center the position of the ellipse center.
    * @param[in] length the length of the main axis.
+   * @param[in] angle the rotation angle of the ellipse (in [rad]).
    * @param[out] startIndex the start index of the submap.
    * @param[out] bufferSize the buffer size of the submap.
    */
-  void findSubmapParameters(const Position& center, const Length& length,
+  void findSubmapParameters(const Position& center, const Length& length, const double rotation,
                             Index& startIndex, Size& bufferSize) const;
 
   //! Position of the circle center;
@@ -91,10 +92,10 @@ private:
   //! Square length of the semi axis.
   Eigen::Array2d semiAxisSquare_;
 
-  //! Sine and cosine values of the rotation angle as matrix.
-  Eigen::Matrix2d rotationMatrix_;
+  //! Sine and cosine values of the rotation angle as transformation matrix.
+  Eigen::Matrix2d transformMatrix_;
 
-  //! Grid submap iterator.
+  //! Grid submap iterator. // TODO Think of using unique_ptr instead.
   std::shared_ptr<SubmapIterator> internalIterator_;
 
   //! Map information needed to get position from iterator.
