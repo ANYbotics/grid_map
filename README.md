@@ -230,9 +230,9 @@ Please report bugs and request features using the [Issue Tracker](https://github
 [ROS]: http://www.ros.org
 [RViz]: http://wiki.ros.org/rviz
 [Eigen]: http://eigen.tuxfamily.org
-[grid_map_msgs/GridMapInfo]: grid_map_msg/msg/GridMapInfo.msg
-[grid_map_msgs/GridMap]: grid_map_msg/msg/GridMap.msg
-[grid_map_msgs/GetGridMap]: grid_map_msg/srv/GetGridMap.srv
+[grid_map_msgs/GridMapInfo]: http://docs.ros.org/api/grid_map_msgs/html/msg/GridMapInfo.html
+[grid_map_msgs/GridMap]: http://docs.ros.org/api/grid_map_msgs/html/msg/GridMap.html
+[grid_map_msgs/GetGridMap]: http://docs.ros.org/api/grid_map_msgs/html/srv/GetGridMap.html
 [sensor_msgs/PointCloud2]: http://docs.ros.org/api/sensor_msgs/html/msg/PointCloud2.html
 [visualization_msgs/Marker]: http://docs.ros.org/api/visualization_msgs/html/msg/Marker.html
 [geometry_msgs/PolygonStamped]: http://docs.ros.org/api/geometry_msgs/html/msg/PolygonStamped.html
