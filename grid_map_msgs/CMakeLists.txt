@@ -24,6 +24,7 @@ add_service_files(
   FILES
   GetGridMap.srv
   GetGridMapInfo.srv
+  ProcessFile.srv
 )
 
 ## Generate added messages and services with any dependencies listed here
