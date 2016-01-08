@@ -17,8 +17,9 @@ The grid map package has been tested with [ROS] Indigo and Jade under Ubuntu 14.
 
 The source code is released under a [BSD 3-Clause license](LICENSE).
 
-**Authors: Péter Fankhauser, Martin Wermelinger<br />
+**Author: Péter Fankhauser<br />
 Maintainer: Péter Fankhauser, pfankhauser@ethz.ch<br />
+In collaboration with: Martin Wermelinger, Ralph Kaestner, Elena Stumm<br />
 Affiliation: Autonomous Systems Lab, ETH Zurich**
 
 [![Build Status](http://jenkins.ros.org/job/devel-indigo-grid_map/badge/icon)](http://jenkins.ros.org/job/devel-indigo-grid_map/)

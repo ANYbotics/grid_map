@@ -1,15 +1,13 @@
 <?xml version="1.0"?>
 <package format="2">
   <name>grid_map_core</name>
-  <version>1.0.0</version>
+  <version>1.1.0</version>
   <description>Universal grid map library to manage two-dimensional grid maps with multiple data layers.</description>
   <maintainer email="pfankhauser@ethz.ch">Péter Fankhauser</maintainer>
   <license>BSD</license>
   <url type="website">http://github.com/ethz-asl/grid_map</url>
   <url type="bugtracker">http://github.com/ethz-asl/grid_map/issues</url>
   <author email="pfankhauser@ethz.ch">Péter Fankhauser</author>
-  <author email="ralf.kaestner@gmail.com">Ralf Kaestner</author>
-  <author email="martiwer@student.ethz.ch">Martin Wermelinger</author>
   <buildtool_depend>catkin</buildtool_depend>
   <depend>eigen</depend>
 </package>
