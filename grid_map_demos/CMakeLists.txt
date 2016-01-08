@@ -51,32 +51,27 @@ include_directories(
   ${EIGEN3_INCLUDE_DIR}
 )
 
-## Declare a cpp library
-# add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/grid_map_example_node.cpp
-# )
-
 ## Declare a cpp executable
 add_executable(
-	simple_demo
-	src/simple_demo_node.cpp
+  simple_demo
+  src/simple_demo_node.cpp
 )
 
 add_executable(
-	tutorial_demo
-	src/tutorial_demo_node.cpp
+  tutorial_demo
+  src/tutorial_demo_node.cpp
 )
 
 add_executable(
-	iterators_demo
-	src/iterators_demo_node.cpp
-	src/IteratorsDemo.cpp
+  iterators_demo
+  src/iterators_demo_node.cpp
+  src/IteratorsDemo.cpp
 )
 
 add_executable(
-	image_to_gridmap_demo
-	src/image_to_gridmap_demo_node.cpp
-	src/ImageToGridmapDemo.cpp
+  image_to_gridmap_demo
+  src/image_to_gridmap_demo_node.cpp
+  src/ImageToGridmapDemo.cpp
 )
 
 ## Specify libraries to link a library or executable target against
@@ -99,3 +94,23 @@ target_link_libraries(
   image_to_gridmap_demo
   ${catkin_LIBRARIES}
 )
+
+
+#############
+## Install ##
+#############
+
+# Mark executables and/or libraries for installation
+install(
+  TARGETS simple_demo tutorial_demo iterators_demo image_to_gridmap_demo
+  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
+# Mark other files for installation
+install(
+  DIRECTORY doc launch rviz scripts
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+)
+

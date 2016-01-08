@@ -70,17 +70,17 @@ include_directories(
 
 ## Declare a cpp executable
 add_executable(
-	${PROJECT_NAME}
-	src/grid_map_visualization_node.cpp
-	src/GridMapVisualization.cpp
-	src/GridMapVisualizationHelpers.cpp
-	src/visualizations/VisualizationBase.cpp
-	src/visualizations/VisualizationFactory.cpp
-	src/visualizations/PointCloudVisualization.cpp
-	src/visualizations/VectorVisualization.cpp
-	src/visualizations/OccupancyGridVisualization.cpp
-	src/visualizations/GridCellsVisualization.cpp
-	src/visualizations/MapRegionVisualization.cpp
+  ${PROJECT_NAME}
+  src/grid_map_visualization_node.cpp
+  src/GridMapVisualization.cpp
+  src/GridMapVisualizationHelpers.cpp
+  src/visualizations/VisualizationBase.cpp
+  src/visualizations/VisualizationFactory.cpp
+  src/visualizations/PointCloudVisualization.cpp
+  src/visualizations/VectorVisualization.cpp
+  src/visualizations/OccupancyGridVisualization.cpp
+  src/visualizations/GridCellsVisualization.cpp
+  src/visualizations/MapRegionVisualization.cpp
 )
 
 ## Add cmake target dependencies of the executable/library
@@ -91,4 +91,22 @@ add_executable(
 target_link_libraries(
   ${PROJECT_NAME}
   ${catkin_LIBRARIES}
+)
+
+#############
+## Install ##
+#############
+
+# Mark executables and/or libraries for installation
+install(
+  TARGETS ${PROJECT_NAME}
+  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
+# Mark other files for installation
+install(
+  DIRECTORY doc
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
