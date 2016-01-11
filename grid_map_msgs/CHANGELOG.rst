@@ -2,6 +2,9 @@
 Changelog for package grid_map_msgs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.1.0 (2016-01-08)
 -------------------
 * added new srv definition for processing of grid map files
