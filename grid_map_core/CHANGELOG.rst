@@ -2,6 +2,9 @@
 Changelog for package grid_map_core
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.1.2 (2016-01-11)
 ------------------
 * Should fix errors on build server regarding Eigen3 and visualization_msgs dependencies.
