@@ -9,7 +9,6 @@
 #pragma once
 
 #include <grid_map_core/GridMap.hpp>
-#include <filters/filter_base.h>
 
 // ROS
 #include <ros/ros.h>
