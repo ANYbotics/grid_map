@@ -9,7 +9,6 @@
   <url type="bugtracker">http://github.com/ethz-asl/grid_map/issues</url>
   <author email="pfankhauser@ethz.ch">Péter Fankhauser</author>
   <buildtool_depend>catkin</buildtool_depend>
-  <depend>cmake_modules</depend>
   <depend>roscpp</depend>
   <depend>message_generation</depend>
   <depend>std_msgs</depend>

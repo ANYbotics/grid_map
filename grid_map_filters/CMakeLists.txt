@@ -13,13 +13,6 @@ find_package(catkin REQUIRED COMPONENTS
 
 ## System dependencies are found with CMake's conventions
 #find_package(Eigen3 REQUIRED)
-# Solution to find Eigen3 with Saucy.
-find_package(Eigen3 QUIET)
-if(NOT EIGEN3_FOUND)
-  find_package(PkgConfig REQUIRED)
-  pkg_check_modules(EIGEN3 REQUIRED eigen3)
-  set(EIGEN3_INCLUDE_DIR ${EIGEN3_INCLUDE_DIRS})
-endif()
 
 ###################################
 ## catkin specific configuration ##
@@ -41,7 +34,7 @@ catkin_package(
     grid_map_msgs
     filters
   DEPENDS
-    Eigen3
+    #Eigen3
 )
 
 ###########

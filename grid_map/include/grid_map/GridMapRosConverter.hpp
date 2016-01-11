@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "grid_map_core/TypeDefs.hpp"
+#include <grid_map_core/TypeDefs.hpp>
 #include <grid_map_core/GridMap.hpp>
 #include <grid_map_msgs/GridMap.h>
 

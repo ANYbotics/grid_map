@@ -16,6 +16,7 @@
   <depend>nav_msgs</depend>
   <depend>std_msgs</depend>
   <depend>geometry_msgs</depend>
-  <depend>rosbag</depend>
   <depend>cv_bridge</depend>
+  <depend>rosbag</depend>
+  <depend>visualization_msgs</depend>
 </package>

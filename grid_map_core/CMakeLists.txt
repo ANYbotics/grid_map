@@ -29,11 +29,12 @@ endif()
 catkin_package(
   INCLUDE_DIRS
     include
+    ${EIGEN3_INCLUDE_DIR}
   LIBRARIES
     ${PROJECT_NAME}
   CATKIN_DEPENDS
   DEPENDS
-    Eigen3
+    #Eigen3
 )
 
 ###########

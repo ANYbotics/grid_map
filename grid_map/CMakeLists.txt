@@ -14,17 +14,11 @@ find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
   cv_bridge
   rosbag
+  visualization_msgs
 )
 
 ## System dependencies are found with CMake's conventions
 #find_package(Eigen3 REQUIRED)
-# Solution to find Eigen3 with Saucy.
-find_package(Eigen3 QUIET)
-if(NOT EIGEN3_FOUND)
-  find_package(PkgConfig REQUIRED)
-  pkg_check_modules(EIGEN3 REQUIRED eigen3)
-  set(EIGEN3_INCLUDE_DIR ${EIGEN3_INCLUDE_DIRS})
-endif()
 
 ###################################
 ## catkin specific configuration ##
@@ -48,8 +42,10 @@ catkin_package(
     nav_msgs
     std_msgs
     geometry_msgs
+    cv_bridge
+    visualization_msgs
   DEPENDS
-    Eigen3
+    #Eigen3
 )
 
 ###########
