@@ -2,8 +2,8 @@
 Changelog for package grid_map_visualization
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.1.3 (2016-01-11)
+------------------
 * Removed unnecessary include of filter_base.
 
 1.1.2 (2016-01-11)

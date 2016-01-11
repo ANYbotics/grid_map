@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package format="2">
   <name>grid_map_demos</name>
-  <version>1.1.2</version>
+  <version>1.1.3</version>
   <description>Demo nodes to demonstrate the usage of the grid map library.</description>
   <maintainer email="pfankhauser@ethz.ch">Péter Fankhauser</maintainer>
   <license>BSD</license>
