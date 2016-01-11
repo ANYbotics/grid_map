@@ -2,6 +2,10 @@
 Changelog for package grid_map_core
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Should fix errors on build server regarding Eigen3 and visualization_msgs dependencies.
+
 1.1.1 (2016-01-11)
 ------------------
 * Changes to CMakeLists.txt to enable compatibility with Ubuntu Saucy.
