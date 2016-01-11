@@ -19,7 +19,7 @@ The source code is released under a [BSD 3-Clause license](LICENSE).
 
 **Author: Péter Fankhauser<br />
 Maintainer: Péter Fankhauser, pfankhauser@ethz.ch<br />
-In collaboration with: Martin Wermelinger, Ralph Kaestner, Elena Stumm<br />
+In collaboration with: Martin Wermelinger, Remo Diethelm, Ralph Kaestner, Elena Stumm<br />
 Affiliation: Autonomous Systems Lab, ETH Zurich**
 
 [![Build Status](http://jenkins.ros.org/job/devel-indigo-grid_map/badge/icon)](http://jenkins.ros.org/job/devel-indigo-grid_map/)
