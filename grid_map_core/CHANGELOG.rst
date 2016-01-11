@@ -2,8 +2,8 @@
 Changelog for package grid_map_core
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.1.1 (2016-01-11)
+------------------
 * Changes to CMakeLists.txt to enable compatibility with Ubuntu Saucy.
 
 1.1.0 (2016-01-08)
