@@ -87,7 +87,6 @@ target_link_libraries(
   ${catkin_LIBRARIES}
 )
 
-
 #############
 ## Install ##
 #############
@@ -102,7 +101,7 @@ install(
 
 # Mark other files for installation
 install(
-  DIRECTORY doc launch rviz scripts
+  DIRECTORY config doc launch rviz scripts
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
 
