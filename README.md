@@ -22,8 +22,6 @@ Maintainer: Péter Fankhauser, pfankhauser@ethz.ch<br />
 In collaboration with: Martin Wermelinger, Remo Diethelm, Ralph Kaestner, Elena Stumm<br />
 Affiliation: Autonomous Systems Lab, ETH Zurich**
 
-[![Build Status](http://jenkins.ros.org/job/devel-indigo-grid_map/badge/icon)](http://jenkins.ros.org/job/devel-indigo-grid_map/)
-
 ![Grid map example in rviz](grid_map_visualization/doc/point_cloud.jpg)
 
 ## Publications
@@ -51,14 +49,22 @@ in Robot Operating System (ROS) – The Complete Reference (Volume 1), A. Koubaa
 
 ## Installation
 
-### Dependencies
+### Installation from Packages
+
+To install all packages from the grid map library as Debian packages use
+
+    sudo apt-get install ros-indigo-grid-map*
+    
+### Building from Source
+
+#### Dependencies
 
 Except for ROS packages that are part of the standard installation (*roscpp*, *tf*, *filters*, *sensor_msgs*, *nav_msgs*, and *cv_bridge*), the grid map library depends only on the linear algebra library [Eigen].
 
     sudo apt-get install libeigen3-dev
 
 
-### Building
+#### Building
 
 To install, clone the latest version from this repository into your catkin workspace and compile the package using
 
@@ -222,6 +228,27 @@ The published topics are configured with the [YAML parameter file](grid_map_demo
          line_width: 0.003
 
 *Note: Color values are in RGB form as concatenated integers (for each channel value 0-255). The values can be generated like [this](http://www.wolframalpha.com/input/?i=BitOr%5BBitShiftLeft%5Br%2C16%5D%2C+BitShiftLeft%5Bg%2C8%5D%2C+b%5D+where+%7Br%3D0%2C+g%3D255%2C+b%3D0%7D) as an example for the color green (red: 0, green: 255, blue: 0).*
+
+
+## Build Status
+
+### Devel Job Status
+
+| | Indigo | Jade |
+| --- | --- | --- |
+| grid_map | [![Build Status](http://jenkins.ros.org/job/devel-indigo-grid_map/badge/icon)](http://jenkins.ros.org/job/devel-indigo-grid_map/) | [![Build Status](http://jenkins.ros.org/job/devel-jade-grid_map/badge/icon)](http://jenkins.ros.org/job/devel-jade-grid_map/) |
+
+### Trusty AMD64 Debian Job Status
+
+| | Indigo | Jade |
+| --- | --- | --- |
+| grid_map | [![Build Status](http://jenkins.ros.org/buildStatus/icon?job=ros-indigo-grid-map_binarydeb_trusty_amd64)](http://jenkins.ros.org/job/ros-indigo-grid-map_binarydeb_trusty_amd64/) | [![Build Status](http://jenkins.ros.org/buildStatus/icon?job=ros-jade-grid-map_binarydeb_trusty_amd64)](http://jenkins.ros.org/job/ros-jade-grid-map_binarydeb_trusty_amd64/) |
+| grid_map_core | [![Build Status](http://jenkins.ros.org/buildStatus/icon?job=ros-indigo-grid-map-core_binarydeb_trusty_amd64)](http://jenkins.ros.org/job/ros-indigo-grid-map-core_binarydeb_trusty_amd64/) | [![Build Status](http://jenkins.ros.org/buildStatus/icon?job=ros-jade-grid-map-core_binarydeb_trusty_amd64)](http://jenkins.ros.org/job/ros-jade-grid-map-core_binarydeb_trusty_amd64/) |
+| grid_map_msgs | [![Build Status](http://jenkins.ros.org/buildStatus/icon?job=ros-indigo-grid-map-msgs_binarydeb_trusty_amd64)](http://jenkins.ros.org/job/ros-indigo-grid-map-msgs_binarydeb_trusty_amd64/) | [![Build Status](http://jenkins.ros.org/buildStatus/icon?job=ros-jade-grid-map-msgs_binarydeb_trusty_amd64)](http://jenkins.ros.org/job/ros-jade-grid-map-msgs_binarydeb_trusty_amd64/) |
+| grid_map_visualization | [![Build Status](http://jenkins.ros.org/buildStatus/icon?job=ros-indigo-grid-map-visualization_binarydeb_trusty_amd64)](http://jenkins.ros.org/job/ros-indigo-grid-map-visualization_binarydeb_trusty_amd64/) | [![Build Status](http://jenkins.ros.org/buildStatus/icon?job=ros-jade-grid-map-visualization_binarydeb_trusty_amd64)](http://jenkins.ros.org/job/ros-jade-grid-map-visualization_binarydeb_trusty_amd64/) |
+| grid_map_filters | [![Build Status](http://jenkins.ros.org/buildStatus/icon?job=ros-indigo-grid-map-filters_binarydeb_trusty_amd64)](http://jenkins.ros.org/job/ros-indigo-grid-map-filters_binarydeb_trusty_amd64/) | [![Build Status](http://jenkins.ros.org/buildStatus/icon?job=ros-jade-grid-map-filters_binarydeb_trusty_amd64)](http://jenkins.ros.org/job/ros-jade-grid-map-filters_binarydeb_trusty_amd64/) |
+| grid_map_loader | [![Build Status](http://jenkins.ros.org/buildStatus/icon?job=ros-indigo-grid-map-loader_binarydeb_trusty_amd64)](http://jenkins.ros.org/job/ros-indigo-grid-map-loader_binarydeb_trusty_amd64/) | [![Build Status](http://jenkins.ros.org/buildStatus/icon?job=ros-jade-grid-map-loader_binarydeb_trusty_amd64)](http://jenkins.ros.org/job/ros-jade-grid-map-loader_binarydeb_trusty_amd64/) |
+| grid_map_demos | [![Build Status](http://jenkins.ros.org/buildStatus/icon?job=ros-indigo-grid-map-demos_binarydeb_trusty_amd64)](http://jenkins.ros.org/job/ros-indigo-grid-map-demos_binarydeb_trusty_amd64/) | [![Build Status](http://jenkins.ros.org/buildStatus/icon?job=ros-jade-grid-map-demos_binarydeb_trusty_amd64)](http://jenkins.ros.org/job/ros-jade-grid-map-demos_binarydeb_trusty_amd64/) |
 
 
 ## Bugs & Feature Requests
