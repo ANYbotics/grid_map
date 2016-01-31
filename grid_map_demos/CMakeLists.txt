@@ -91,6 +91,11 @@ target_link_libraries(
 ## Install ##
 #############
 
+catkin_install_python(
+  PROGRAMS scripts/image_publisher.py
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
 # Mark executables and/or libraries for installation
 install(
   TARGETS simple_demo tutorial_demo iterators_demo image_to_gridmap_demo
