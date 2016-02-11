@@ -81,3 +81,27 @@ TEST(RosbagHandling, saveLoadWithTime)
     EXPECT_DOUBLE_EQ(gridMapIn.at(layer, *iterator), gridMapOut.at(layer, *iterator));
   }
 }
+
+TEST(ToOccupancyGrid, toOccupancyGridWithMove)
+{
+  grid_map::GridMap map;
+  map.setGeometry(grid_map::Length(8.1, 5.1), 0.5, grid_map::Position(0.0, 0.0));
+  map.add("layer", 1.0);
+
+  // convert to OccupancyGrid msg
+  nav_msgs::OccupancyGrid occupancyGrid;
+  grid_map::GridMapRosConverter::toOccupancyGrid(map, "layer", 0.0, 1.0, occupancyGrid);
+
+  // expect the (0, 0) cell to have value 100
+  EXPECT_DOUBLE_EQ(100.0, occupancyGrid.data[0]);
+
+  // move the map, so the cell (0, 0) will move to unobserved space
+  map.move(grid_map::Position(1.0, 1.0));
+
+  // convert again to OGM
+  nav_msgs::OccupancyGrid occupancyGridNew;
+  grid_map::GridMapRosConverter::toOccupancyGrid(map, "layer", 0.0, 1.0, occupancyGridNew);
+
+  // Now the (0, 0) cell should be unobserved (-1.0)
+  EXPECT_DOUBLE_EQ(-1.0, occupancyGridNew.data[0]);
+}
