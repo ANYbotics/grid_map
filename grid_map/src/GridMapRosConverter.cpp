@@ -241,18 +241,18 @@ void GridMapRosConverter::toOccupancyGrid(const grid_map::GridMap& gridMap,
   occupancyGrid.info.resolution = gridMap.getResolution();
   occupancyGrid.info.width = gridMap.getSize()(0);
   occupancyGrid.info.height = gridMap.getSize()(1);
-  Position positionOfOrigin;
-  getPositionOfDataStructureOrigin(gridMap.getPosition(), gridMap.getLength(), positionOfOrigin);
-  occupancyGrid.info.origin.position.x = positionOfOrigin.x();
-  occupancyGrid.info.origin.position.y = positionOfOrigin.y();
+  Position position = gridMap.getPosition() - 0.5 * gridMap.getLength().matrix();
+  occupancyGrid.info.origin.position.x = position.x();
+  occupancyGrid.info.origin.position.y = position.y();
   occupancyGrid.info.origin.position.z = 0.0;
   occupancyGrid.info.origin.orientation.x = 0.0;
   occupancyGrid.info.origin.orientation.y = 0.0;
-  occupancyGrid.info.origin.orientation.z = 1.0;  // yes, this is correct.
-  occupancyGrid.info.origin.orientation.w = 0.0;
-  occupancyGrid.data.resize(gridMap.getSize().prod());
+  occupancyGrid.info.origin.orientation.z = 0.0;
+  occupancyGrid.info.origin.orientation.w = 1.0;
+  size_t nCells = gridMap.getSize().prod();
+  occupancyGrid.data.resize(nCells);
 
-  // Occupancy probabilities are in the range [0,100].  Unknown is -1.
+  // Occupancy probabilities are in the range [0,100]. Unknown is -1.
   const float cellMin = 0;
   const float cellMax = 100;
   const float cellRange = cellMax - cellMin;
@@ -263,10 +263,9 @@ void GridMapRosConverter::toOccupancyGrid(const grid_map::GridMap& gridMap,
       value = -1;
     else
       value = cellMin + min(max(0.0f, value), 1.0f) * cellRange;
-    // Occupancy grid claims to be row-major order, but it does not seem that way.
-    // http://docs.ros.org/api/nav_msgs/html/msg/OccupancyGrid.html.
-    unsigned int index = get1dIndexFrom2dIndex(*iterator, gridMap.getSize(), false);
-    occupancyGrid.data[index] = value;
+    size_t index = get1dIndexFrom2dIndex(iterator.getUnwrappedIndex(), gridMap.getSize(), false);
+    // Reverse cell order because of different conventions between occupancy grid and grid map.
+    occupancyGrid.data[nCells - index - 1] = value;
   }
 }
 
