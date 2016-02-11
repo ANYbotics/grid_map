@@ -95,6 +95,16 @@ class GridMapRosConverter
                            const std::string& pointLayer, sensor_msgs::PointCloud2& pointCloud);
 
   /*!
+   * Converts an occupancy grid message to a layer of a grid map.
+   * @param[in] occupancyGrid the occupancy grid to be converted.
+   * @param[in] layer the layer to which the occupancy grid will be converted.
+   * @param[out] gridMap the grid map to be populated.
+   * @return true if successful.
+   */
+  static bool fromOccupancyGrid(const nav_msgs::OccupancyGrid& occupancyGrid,
+                                const std::string& layer, grid_map::GridMap& gridMap);
+
+  /*!
    * Converts a grid map object to a ROS OccupancyGrid message. Set the layer to be transformed
    * as the cell data of the occupancy grid with `layer`, all other layers will be neglected.
    * @param[in] gridMap the grid map object.
