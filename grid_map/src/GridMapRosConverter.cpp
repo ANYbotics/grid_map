@@ -220,7 +220,7 @@ void GridMapRosConverter::toOccupancyGrid(const grid_map::GridMap& gridMap,
       value = cellMin + min(max(0.0f, value), 1.0f) * cellRange;
     // Occupancy grid claims to be row-major order, but it does not seem that way.
     // http://docs.ros.org/api/nav_msgs/html/msg/OccupancyGrid.html.
-    unsigned int index = get1dIndexFrom2dIndex(*iterator, gridMap.getSize(), false);
+    unsigned int index = get1dIndexFrom2dIndex(iterator.getUnwrappedIndex(), gridMap.getSize(), false);
     occupancyGrid.data[index] = value;
   }
 }
