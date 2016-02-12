@@ -8,13 +8,12 @@
 
 #include "grid_map/GridMapRosConverter.hpp"
 #include "grid_map/GridMapMsgHelpers.hpp"
-#include <grid_map_core/GridMapMath.hpp>
-#include <grid_map_core/iterators/GridMapIterator.hpp>
 #include <grid_map_core/grid_map_core.hpp>
 
 // ROS
 #include <sensor_msgs/point_cloud2_iterator.h>
 #include <geometry_msgs/Point.h>
+#include <geometry_msgs/Quaternion.h>
 #include <cv_bridge/cv_bridge.h>
 #include <sensor_msgs/image_encodings.h>
 #include <rosbag/bag.h>
@@ -23,6 +22,7 @@
 // STL
 #include <limits>
 #include <algorithm>
+#include <vector>
 
 using namespace std;
 using namespace Eigen;
@@ -186,6 +186,51 @@ void GridMapRosConverter::toPointCloud(const grid_map::GridMap& gridMap,
   }
 }
 
+bool GridMapRosConverter::fromOccupancyGrid(const nav_msgs::OccupancyGrid& occupancyGrid,
+                                            const std::string& layer, grid_map::GridMap& gridMap)
+{
+  const Size size(occupancyGrid.info.width, occupancyGrid.info.height);
+  const double resolution = occupancyGrid.info.resolution;
+  const Length length = resolution * size.cast<double>();
+  const string& frameId = occupancyGrid.header.frame_id;
+  Position position(occupancyGrid.info.origin.position.x, occupancyGrid.info.origin.position.y);
+  // Different conventions of center of map.
+  position += 0.5 * length.matrix();
+
+  const auto& orientation = occupancyGrid.info.origin.orientation;
+  if (orientation.w != 1.0 && !(orientation.x == 0 && orientation.y == 0
+      && orientation.z == 0 && orientation.w == 0)) {
+    ROS_WARN_STREAM("Conversion of occupancy grid: Grid maps do not support orientation.");
+    ROS_INFO_STREAM("Orientation of occupancy grid: " << endl << occupancyGrid.info.origin.orientation);
+    return false;
+  }
+
+  if (size.prod() != occupancyGrid.data.size()) {
+    ROS_WARN_STREAM("Conversion of occupancy grid: Size of data does not correspond to width * height.");
+    return false;
+  }
+
+  if ((gridMap.getSize() != size).any() || gridMap.getResolution() != resolution
+      || (gridMap.getLength() != length).any() || gridMap.getPosition() != position
+      || gridMap.getFrameId() != frameId || !gridMap.getStartIndex().isZero()) {
+    gridMap.setTimestamp(occupancyGrid.header.stamp.toNSec());
+    gridMap.setFrameId(frameId);
+    gridMap.setGeometry(length, resolution, position);
+  }
+
+  // Reverse iteration is required because of different conventions
+  // between occupancy grid and grid map.
+  grid_map::Matrix data(size(0), size(1));
+  for (std::vector<int8_t>::const_reverse_iterator iterator = occupancyGrid.data.rbegin();
+      iterator != occupancyGrid.data.rend(); ++iterator) {
+    size_t i = std::distance(occupancyGrid.data.rbegin(), iterator);
+    data(i) = *iterator != -1 ? *iterator : NAN;
+  }
+
+  gridMap.add(layer, data);
+  return true;
+}
+
 void GridMapRosConverter::toOccupancyGrid(const grid_map::GridMap& gridMap,
                                           const std::string& layer, float dataMin, float dataMax,
                                           nav_msgs::OccupancyGrid& occupancyGrid)
@@ -196,18 +241,18 @@ void GridMapRosConverter::toOccupancyGrid(const grid_map::GridMap& gridMap,
   occupancyGrid.info.resolution = gridMap.getResolution();
   occupancyGrid.info.width = gridMap.getSize()(0);
   occupancyGrid.info.height = gridMap.getSize()(1);
-  Position positionOfOrigin;
-  getPositionOfDataStructureOrigin(gridMap.getPosition(), gridMap.getLength(), positionOfOrigin);
-  occupancyGrid.info.origin.position.x = positionOfOrigin.x();
-  occupancyGrid.info.origin.position.y = positionOfOrigin.y();
+  Position position = gridMap.getPosition() - 0.5 * gridMap.getLength().matrix();
+  occupancyGrid.info.origin.position.x = position.x();
+  occupancyGrid.info.origin.position.y = position.y();
   occupancyGrid.info.origin.position.z = 0.0;
   occupancyGrid.info.origin.orientation.x = 0.0;
   occupancyGrid.info.origin.orientation.y = 0.0;
-  occupancyGrid.info.origin.orientation.z = 1.0;  // yes, this is correct.
-  occupancyGrid.info.origin.orientation.w = 0.0;
-  occupancyGrid.data.resize(occupancyGrid.info.width * occupancyGrid.info.height);
+  occupancyGrid.info.origin.orientation.z = 0.0;
+  occupancyGrid.info.origin.orientation.w = 1.0;
+  size_t nCells = gridMap.getSize().prod();
+  occupancyGrid.data.resize(nCells);
 
-  // Occupancy probabilities are in the range [0,100].  Unknown is -1.
+  // Occupancy probabilities are in the range [0,100]. Unknown is -1.
   const float cellMin = 0;
   const float cellMax = 100;
   const float cellRange = cellMax - cellMin;
@@ -218,10 +263,9 @@ void GridMapRosConverter::toOccupancyGrid(const grid_map::GridMap& gridMap,
       value = -1;
     else
       value = cellMin + min(max(0.0f, value), 1.0f) * cellRange;
-    // Occupancy grid claims to be row-major order, but it does not seem that way.
-    // http://docs.ros.org/api/nav_msgs/html/msg/OccupancyGrid.html.
-    unsigned int index = get1dIndexFrom2dIndex(*iterator, gridMap.getSize(), false);
-    occupancyGrid.data[index] = value;
+    size_t index = get1dIndexFrom2dIndex(iterator.getUnwrappedIndex(), gridMap.getSize(), false);
+    // Reverse cell order because of different conventions between occupancy grid and grid map.
+    occupancyGrid.data[nCells - index - 1] = value;
   }
 }
 
