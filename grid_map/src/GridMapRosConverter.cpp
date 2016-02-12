@@ -224,7 +224,7 @@ bool GridMapRosConverter::fromOccupancyGrid(const nav_msgs::OccupancyGrid& occup
   for (std::vector<int8_t>::const_reverse_iterator iterator = occupancyGrid.data.rbegin();
       iterator != occupancyGrid.data.rend(); ++iterator) {
     size_t i = std::distance(occupancyGrid.data.rbegin(), iterator);
-    data(i) = *iterator;
+    data(i) = *iterator != -1 ? *iterator : NAN;
   }
 
   gridMap.add(layer, data);
