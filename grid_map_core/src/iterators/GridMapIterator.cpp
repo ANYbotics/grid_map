@@ -1,5 +1,5 @@
 /*
- * GridMapIterator.hpp
+ * GridMapIterator.cpp
  *
  *  Created on: Sep 22, 2014
  *      Author: Péter Fankhauser

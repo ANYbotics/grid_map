@@ -9,6 +9,7 @@
 #pragma once
 
 #include "grid_map_core/iterators/GridMapIterator.hpp"
+#include "grid_map_core/iterators/GridMapLayerDataIterator.hpp"
 #include "grid_map_core/iterators/SubmapIterator.hpp"
 #include "grid_map_core/iterators/CircleIterator.hpp"
 #include "grid_map_core/iterators/EllipseIterator.hpp"
