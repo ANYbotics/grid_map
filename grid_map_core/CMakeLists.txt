@@ -56,7 +56,6 @@ add_library(${PROJECT_NAME}
    src/BufferRegion.cpp
    src/Polygon.cpp
    src/iterators/GridMapIterator.cpp
-   src/iterators/GridMapLayerDataIterator.cpp
    src/iterators/SubmapIterator.cpp
    src/iterators/CircleIterator.cpp
    src/iterators/EllipseIterator.cpp
@@ -103,6 +102,7 @@ catkin_add_gtest(${PROJECT_NAME}-test
   test/test_grid_map_core.cpp
   test/GridMapMathTest.cpp
   test/GridMapTest.cpp
+  test/GridMapIteratorTest.cpp
   test/EllipseIteratorTest.cpp
   test/SubmapIteratorTest.cpp
   test/PolygonIteratorTest.cpp

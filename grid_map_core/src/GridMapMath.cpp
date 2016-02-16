@@ -476,7 +476,7 @@ size_t getLinearIndexFromIndex(const Index& index, const Size& bufferSize, const
 
 Index getIndexFromLinearIndex(const size_t linearIndex, const Size& bufferSize, const bool rowMajor)
 {
-  if (!rowMajor) return Index((int)linearIndex / bufferSize(0), (int)linearIndex % bufferSize(0));
+  if (!rowMajor) return Index((int)linearIndex % bufferSize(0), (int)linearIndex / bufferSize(0));
   return Index((int)linearIndex / bufferSize(1), (int)linearIndex % bufferSize(1));
 }
 

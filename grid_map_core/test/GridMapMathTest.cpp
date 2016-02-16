@@ -940,3 +940,13 @@ TEST(checkIncrementIndexForSubmap, CircularBuffer)
   submapIndex << 2, 0;
   EXPECT_FALSE(incrementIndexForSubmap(submapIndex, index, submapTopLeftIndex, submapBufferSize, bufferSize, bufferStartIndex));
 }
+
+TEST(getIndexFromLinearIndex, Simple)
+{
+  EXPECT_TRUE((Index(0, 0) == getIndexFromLinearIndex(0, Size(8, 5), false)).all());
+  EXPECT_TRUE((Index(1, 0) == getIndexFromLinearIndex(1, Size(8, 5), false)).all());
+  EXPECT_TRUE((Index(0, 1) == getIndexFromLinearIndex(1, Size(8, 5), true)).all());
+  EXPECT_TRUE((Index(2, 0) == getIndexFromLinearIndex(2, Size(8, 5), false)).all());
+  EXPECT_TRUE((Index(0, 1) == getIndexFromLinearIndex(8, Size(8, 5), false)).all());
+  EXPECT_TRUE((Index(7, 4) == getIndexFromLinearIndex(39, Size(8, 5), false)).all());
+}
