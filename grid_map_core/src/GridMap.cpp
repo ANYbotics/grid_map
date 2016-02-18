@@ -46,8 +46,8 @@ GridMap::~GridMap()
 {
 }
 
-void GridMap::setGeometry(const grid_map::Length& length, const double resolution,
-                          const grid_map::Position& position)
+void GridMap::setGeometry(const Length& length, const double resolution,
+                          const Position& position)
 {
   assert(length(0) > 0.0);
   assert(length(1) > 0.0);
@@ -82,7 +82,7 @@ const std::vector<std::string>& GridMap::getBasicLayers() const
   return basicLayers_;
 }
 
-bool GridMap::hasSameLayers(const grid_map::GridMap& other) const
+bool GridMap::hasSameLayers(const GridMap& other) const
 {
   for (const auto& layer : layers_) {
     if (!other.exists(layer)) return false;
@@ -115,7 +115,7 @@ bool GridMap::exists(const std::string& layer) const
   return !(data_.find(layer) == data_.end());
 }
 
-const grid_map::Matrix& GridMap::get(const std::string& layer) const
+const Matrix& GridMap::get(const std::string& layer) const
 {
   try {
     return data_.at(layer);
@@ -124,7 +124,7 @@ const grid_map::Matrix& GridMap::get(const std::string& layer) const
   }
 }
 
-grid_map::Matrix& GridMap::get(const std::string& layer)
+Matrix& GridMap::get(const std::string& layer)
 {
   try {
     return data_.at(layer);
@@ -133,12 +133,12 @@ grid_map::Matrix& GridMap::get(const std::string& layer)
   }
 }
 
-const grid_map::Matrix& GridMap::operator [](const std::string& layer) const
+const Matrix& GridMap::operator [](const std::string& layer) const
 {
   return get(layer);
 }
 
-grid_map::Matrix& GridMap::operator [](const std::string& layer)
+Matrix& GridMap::operator [](const std::string& layer)
 {
   return get(layer);
 }
@@ -164,25 +164,25 @@ const std::vector<std::string>& GridMap::getLayers() const
   return layers_;
 }
 
-float& GridMap::atPosition(const std::string& layer, const grid_map::Position& position)
+float& GridMap::atPosition(const std::string& layer, const Position& position)
 {
-  Eigen::Array2i index;
+  Index index;
   if (getIndex(position, index)) {
     return at(layer, index);
   }
   throw std::out_of_range("GridMap::atPosition(...) : Position is out of range.");
 }
 
-float GridMap::atPosition(const std::string& layer, const grid_map::Position& position) const
+float GridMap::atPosition(const std::string& layer, const Position& position) const
 {
-  Eigen::Array2i index;
+  Index index;
   if (getIndex(position, index)) {
     return at(layer, index);
   }
   throw std::out_of_range("GridMap::atPosition(...) : Position is out of range.");
 }
 
-float& GridMap::at(const std::string& layer, const grid_map::Index& index)
+float& GridMap::at(const std::string& layer, const Index& index)
 {
   try {
     return data_.at(layer)(index(0), index(1));
@@ -191,7 +191,7 @@ float& GridMap::at(const std::string& layer, const grid_map::Index& index)
   }
 }
 
-float GridMap::at(const std::string& layer, const Eigen::Array2i& index) const
+float GridMap::at(const std::string& layer, const Index& index) const
 {
   try {
     return data_.at(layer)(index(0), index(1));
@@ -200,33 +200,33 @@ float GridMap::at(const std::string& layer, const Eigen::Array2i& index) const
   }
 }
 
-bool GridMap::getIndex(const grid_map::Position& position, grid_map::Index& index) const
+bool GridMap::getIndex(const Position& position, Index& index) const
 {
   return getIndexFromPosition(index, position, length_, position_, resolution_, size_, startIndex_);
 }
 
-bool GridMap::getPosition(const grid_map::Index& index, grid_map::Position& position) const
+bool GridMap::getPosition(const Index& index, Position& position) const
 {
   return getPositionFromIndex(position, index, length_, position_, resolution_, size_, startIndex_);
 }
 
-bool GridMap::isInside(const grid_map::Position& position) const
+bool GridMap::isInside(const Position& position) const
 {
   return checkIfPositionWithinMap(position, length_, position_);
 }
 
-bool GridMap::isValid(const grid_map::Index& index) const
+bool GridMap::isValid(const Index& index) const
 {
   return isValid(index, basicLayers_);
 }
 
-bool GridMap::isValid(const grid_map::Index& index, const std::string& layer) const
+bool GridMap::isValid(const Index& index, const std::string& layer) const
 {
   if (!isfinite(at(layer, index))) return false;
   return true;
 }
 
-bool GridMap::isValid(const grid_map::Index& index, const std::vector<std::string>& layers) const
+bool GridMap::isValid(const Index& index, const std::vector<std::string>& layers) const
 {
   if (layers.empty()) return false;
   for (auto& layer : layers) {
@@ -235,8 +235,8 @@ bool GridMap::isValid(const grid_map::Index& index, const std::vector<std::strin
   return true;
 }
 
-bool GridMap::getPosition3(const std::string& layer, const grid_map::Index& index,
-                           grid_map::Position3& position) const
+bool GridMap::getPosition3(const std::string& layer, const Index& index,
+                           Position3& position) const
 {
   if (!isValid(index, layer)) return false;
   Position position2d;
@@ -246,7 +246,7 @@ bool GridMap::getPosition3(const std::string& layer, const grid_map::Index& inde
   return true;
 }
 
-bool GridMap::getVector(const std::string& layerPrefix, const grid_map::Index& index,
+bool GridMap::getVector(const std::string& layerPrefix, const Index& index,
                         Eigen::Vector3d& vector) const
 {
   std::vector<std::string> layers;
@@ -260,15 +260,15 @@ bool GridMap::getVector(const std::string& layerPrefix, const grid_map::Index& i
   return true;
 }
 
-GridMap GridMap::getSubmap(const grid_map::Position& position, const grid_map::Length& length,
+GridMap GridMap::getSubmap(const Position& position, const Length& length,
                            bool& isSuccess) const
 {
   Index index;
   return getSubmap(position, length, index, isSuccess);
 }
 
-GridMap GridMap::getSubmap(const grid_map::Position& position, const grid_map::Length& length,
-                           grid_map::Index& indexInSubmap, bool& isSuccess) const
+GridMap GridMap::getSubmap(const Position& position, const Length& length,
+                           Index& indexInSubmap, bool& isSuccess) const
 {
   // Submap the generate.
   GridMap submap(layers_);
@@ -314,7 +314,7 @@ GridMap GridMap::getSubmap(const grid_map::Position& position, const grid_map::L
   return submap;
 }
 
-bool GridMap::move(const grid_map::Position& position, std::vector<BufferRegion>& newRegions)
+bool GridMap::move(const Position& position, std::vector<BufferRegion>& newRegions)
 {
   Index indexShift;
   Position positionShift = position - position_;
@@ -382,13 +382,13 @@ bool GridMap::move(const grid_map::Position& position, std::vector<BufferRegion>
   return (indexShift.any() != 0);
 }
 
-bool GridMap::move(const grid_map::Position& position)
+bool GridMap::move(const Position& position)
 {
   std::vector<BufferRegion> newRegions;
   return move(position, newRegions);
 }
 
-bool GridMap::addDataFrom(const grid_map::GridMap& other, bool extendMap, bool overwriteData,
+bool GridMap::addDataFrom(const GridMap& other, bool extendMap, bool overwriteData,
                           bool copyAllLayers, std::vector<std::string> layers)
 {
   // Set the layers to copy.
@@ -420,7 +420,7 @@ bool GridMap::addDataFrom(const grid_map::GridMap& other, bool extendMap, bool o
   return true;
 }
 
-bool GridMap::extendToInclude(const grid_map::GridMap& other)
+bool GridMap::extendToInclude(const GridMap& other)
 {
   // Get dimension of maps.
   Position topLeftCorner(position_.x() + length_.x() / 2.0, position_.y() + length_.y() / 2.0);
@@ -516,12 +516,12 @@ const std::string& GridMap::getFrameId() const
   return frameId_;
 }
 
-const Eigen::Array2d& GridMap::getLength() const
+const Length& GridMap::getLength() const
 {
   return length_;
 }
 
-const Eigen::Vector2d& GridMap::getPosition() const
+const Position& GridMap::getPosition() const
 {
   return position_;
 }
@@ -531,16 +531,16 @@ double GridMap::getResolution() const
   return resolution_;
 }
 
-const grid_map::Size& GridMap::getSize() const
+const Size& GridMap::getSize() const
 {
   return size_;
 }
 
-void GridMap::setStartIndex(const grid_map::Index& startIndex) {
+void GridMap::setStartIndex(const Index& startIndex) {
   startIndex_ = startIndex;
 }
 
-const grid_map::Index& GridMap::getStartIndex() const
+const Index& GridMap::getStartIndex() const
 {
   return startIndex_;
 }
@@ -588,7 +588,7 @@ void GridMap::clearCols(unsigned int index, unsigned int nCols)
   }
 }
 
-void GridMap::resize(const Eigen::Array2i& size)
+void GridMap::resize(const Index& size)
 {
   size_ = size;
   for (auto& data : data_) {
