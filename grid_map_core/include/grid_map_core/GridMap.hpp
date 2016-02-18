@@ -275,7 +275,7 @@ class GridMap
    * @return submap (is empty if success is false).
    */
   GridMap getSubmap(const grid_map::Position& position, const grid_map::Length& length,
-                    bool& isSuccess);
+                    bool& isSuccess) const;
 
   /*!
    * Gets a submap from the map. The requested submap is specified with the requested
@@ -287,7 +287,7 @@ class GridMap
    * @return submap (is empty if success is false).
    */
   GridMap getSubmap(const grid_map::Position& position, const grid_map::Length& length,
-                    grid_map::Index& indexInSubmap, bool& isSuccess);
+                    grid_map::Index& indexInSubmap, bool& isSuccess) const;
 
   /*!
    * Move the grid map w.r.t. to the grid map frame. Use this to move the grid map

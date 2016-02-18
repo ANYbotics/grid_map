@@ -261,14 +261,14 @@ bool GridMap::getVector(const std::string& layerPrefix, const grid_map::Index& i
 }
 
 GridMap GridMap::getSubmap(const grid_map::Position& position, const grid_map::Length& length,
-                           bool& isSuccess)
+                           bool& isSuccess) const
 {
   Index index;
   return getSubmap(position, length, index, isSuccess);
 }
 
 GridMap GridMap::getSubmap(const grid_map::Position& position, const grid_map::Length& length,
-                           grid_map::Index& indexInSubmap, bool& isSuccess)
+                           grid_map::Index& indexInSubmap, bool& isSuccess) const
 {
   // Submap the generate.
   GridMap submap(layers_);
