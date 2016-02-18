@@ -1,5 +1,5 @@
 /*
- * GridMapIterator.hpp
+ * GridMapIterator.cpp
  *
  *  Created on: Sep 22, 2014
  *      Author: Péter Fankhauser
@@ -15,9 +15,8 @@ GridMapIterator::GridMapIterator(const grid_map::GridMap& gridMap)
 {
   size_ = gridMap.getSize();
   startIndex_ = gridMap.getStartIndex();
-  endIndex_ = startIndex_ + gridMap.getSize() - Eigen::Array2i::Ones();
-  mapIndexWithinRange(endIndex_, size_);
-  index_ = startIndex_;
+  linearSize_ = size_.prod();
+  linearIndex_ = 0;
   isPastEnd_ = false;
 }
 
@@ -25,8 +24,8 @@ GridMapIterator::GridMapIterator(const GridMapIterator* other)
 {
   size_ = other->size_;
   startIndex_ = other->startIndex_;
-  endIndex_ = other->endIndex_;
-  index_ = other->index_;
+  linearSize_ = other->linearSize_;
+  linearIndex_ = other->linearIndex_;
   isPastEnd_ = other->isPastEnd_;
 }
 
@@ -34,37 +33,47 @@ GridMapIterator& GridMapIterator::operator =(const GridMapIterator& other)
 {
   size_ = other.size_;
   startIndex_ = other.startIndex_;
-  endIndex_ = other.endIndex_;
-  index_ = other.index_;
+  linearSize_ = other.linearSize_;
+  linearIndex_ = other.linearIndex_;
   isPastEnd_ = other.isPastEnd_;
   return *this;
 }
 
 bool GridMapIterator::operator !=(const GridMapIterator& other) const
 {
-  return (index_ != other.index_).any();
+  return linearIndex_ != other.linearIndex_;
 }
 
-const Index& GridMapIterator::operator *() const
+const Index GridMapIterator::operator *() const
 {
-  return index_;
+  return getIndexFromLinearIndex(linearIndex_, size_);
+}
+
+const size_t& GridMapIterator::getLinearIndex() const
+{
+  return linearIndex_;
 }
 
 const Index GridMapIterator::getUnwrappedIndex() const
 {
-  return getIndexFromBufferIndex(index_, size_, startIndex_);
+  return getIndexFromBufferIndex(*(*this), size_, startIndex_);
 }
 
 GridMapIterator& GridMapIterator::operator ++()
 {
-  isPastEnd_ = !incrementIndex(index_, size_, startIndex_);
+  size_t newIndex = linearIndex_ + 1;
+  if (newIndex < linearSize_) {
+    linearIndex_ = newIndex;
+  } else {
+    isPastEnd_ = true;
+  }
   return *this;
 }
 
 GridMapIterator GridMapIterator::end() const
 {
   GridMapIterator res(this);
-  res.index_ = endIndex_;
+  res.linearIndex_ = linearSize_ - 1;
   return res;
 }
 

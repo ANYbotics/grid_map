@@ -48,10 +48,19 @@ public:
   bool operator !=(const GridMapIterator& other) const;
 
   /*!
-   * Dereference the iterator with const.
-   * @return the value to which the iterator is pointing.
+   * Dereference the iterator to return the regular index (2-dim.) of the cell
+   * to which the iterator is pointing at.
+   * @return the regular index (2-dim.) of the cell on which the iterator is pointing.
    */
-  const Index& operator *() const;
+  const Index operator *() const;
+
+  /*!
+   * Returns the the linear (1-dim.) index of the cell the iterator is pointing at.
+   * Note: Use this access for improved efficiency when working with large maps.
+   * Example: See `runGridMapIteratorVersion2()` of `grid_map_demos/src/iterator_benchmark.cpp`.
+   * @return the 1d linear index.
+   */
+  const size_t& getLinearIndex() const;
 
   /*!
    * Retrieve the index as unwrapped index, i.e., as the corresponding index of a
@@ -85,11 +94,11 @@ private:
   //! Start index of the circular buffer.
   Index startIndex_;
 
-  //! End index of the circular buffer.
-  Index endIndex_;
+  //! Linear size of the data.
+  size_t linearSize_;
 
-  //! Current index.
-  Index index_;
+  //! Linear index.
+  size_t linearIndex_;
 
   //! Is iterator out of scope.
   bool isPastEnd_;

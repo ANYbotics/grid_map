@@ -237,15 +237,24 @@ Index getIndexFromBufferIndex(const Index& bufferIndex, const Size& bufferSize,
                               const Index& bufferStartIndex);
 
 /*!
- * Returns the 1d index corresponding to the 2d index for either row- or column-major format.
+ * Returns the linear index (1-dim.) corresponding to the regular index (2-dim.) for either
+ * row- or column-major format.
  * Note: Eigen is defaulting to column-major format.
- * @param[in] index the 2d index.
+ * @param[in] index the regular 2d index.
  * @param[in] bufferSize the map buffer size.
- * @param[in] (optional) rowMajor if the 1d index is generated for row-major format.
- * @return the 1d index.
+ * @param[in] (optional) rowMajor if the linear index is generated for row-major format.
+ * @return the linear 1d index.
  */
-unsigned int get1dIndexFrom2dIndex(const Index& index, const Size& bufferSize,
-                                   const bool rowMajor);
+size_t getLinearIndexFromIndex(const Index& index, const Size& bufferSize, const bool rowMajor = false);
+
+/*!
+ * Returns the regular index (2-dim.) corresponding to the linear index (1-dim.) for a given buffer size.
+ * @param[in] linearIndex the he linear 1d index.
+ * @param[in] bufferSize the map buffer size.
+ * @param[in] (optional) rowMajor if the linear index is generated for row-major format.
+ * @return the regular 2d index.
+ */
+Index getIndexFromLinearIndex(const size_t linearIndex, const Size& bufferSize, const bool rowMajor = false);
 
 /*!
  * Generates a list of indices for a region in the map.

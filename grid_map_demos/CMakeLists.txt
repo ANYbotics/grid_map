@@ -66,6 +66,11 @@ add_executable(
   src/ImageToGridmapDemo.cpp
 )
 
+add_executable(
+  iterator_benchmark
+  src/iterator_benchmark.cpp
+)
+
 ## Specify libraries to link a library or executable target against
 target_link_libraries(
   simple_demo
@@ -84,6 +89,11 @@ target_link_libraries(
 
 target_link_libraries(
   image_to_gridmap_demo
+  ${catkin_LIBRARIES}
+)
+
+target_link_libraries(
+  iterator_benchmark
   ${catkin_LIBRARIES}
 )
 

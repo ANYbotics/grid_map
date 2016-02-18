@@ -468,10 +468,16 @@ Index getIndexFromBufferIndex(const Index& bufferIndex, const Size& bufferSize,
   return index;
 }
 
-unsigned int get1dIndexFrom2dIndex(const Eigen::Array2i& index, const Eigen::Array2i& bufferSize, const bool rowMajor)
+size_t getLinearIndexFromIndex(const Index& index, const Size& bufferSize, const bool rowMajor)
 {
   if (!rowMajor) return index(1) * bufferSize(0) + index(0);
   return index(0) * bufferSize(1) + index(1);
+}
+
+Index getIndexFromLinearIndex(const size_t linearIndex, const Size& bufferSize, const bool rowMajor)
+{
+  if (!rowMajor) return Index((int)linearIndex % bufferSize(0), (int)linearIndex / bufferSize(0));
+  return Index((int)linearIndex / bufferSize(1), (int)linearIndex % bufferSize(1));
 }
 
 void getIndicesForRegion(const Index& regionIndex, const Size& regionSize,
