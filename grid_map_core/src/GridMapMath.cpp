@@ -152,7 +152,7 @@ bool checkIfPositionWithinMap(const Eigen::Vector2d& position,
   Vector2d positionTransformed = getMapFrameToBufferOrderTransformation().cast<double>() * (position - mapPosition - offset);
 
   if (positionTransformed.x() >= 0.0 && positionTransformed.y() >= 0.0
-      && positionTransformed.x() <= mapLength(0) && positionTransformed.y() <= mapLength(1)) {
+      && positionTransformed.x() < mapLength(0) && positionTransformed.y() < mapLength(1)) {
     return true;
   }
   return false;
