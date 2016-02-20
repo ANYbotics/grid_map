@@ -133,6 +133,10 @@ TEST(IndexFromPosition, EdgeCases)
   EXPECT_TRUE(getIndexFromPosition(index, Vector2d(-0.5 - DBL_EPSILON, -DBL_EPSILON), mapLength, mapPosition, resolution, bufferSize));
   EXPECT_EQ(2, index(0));
   EXPECT_EQ(1, index(1));
+
+  EXPECT_TRUE(getIndexFromPosition(index, Vector2d(-1.5, 1.0), mapLength, mapPosition, resolution, bufferSize));
+  EXPECT_TRUE((index >= 0).all());
+  EXPECT_TRUE(index(0) < bufferSize(0) && index(1) < bufferSize(1));
 }
 
 TEST(IndexFromPosition, CircularBuffer)
