@@ -34,35 +34,56 @@ extern std::map<StorageIndices, std::string> storageIndexNames;
 
 /*!
  * Checks if message data is stored in row-major format.
- * @param[in] messageData the message data.
+ * @tparam MultiArrayMessageType_ a std_msgs::xxxMultiArray message (e.g. std_msgs::Float32MultiArray)
+ * @param[in] messageData the message data
  * @return true if is in row-major format, false if is in column-major format.
  */
-bool isRowMajor(const std_msgs::Float32MultiArray& messageData);
+template<typename MultiArrayMessageType_>
+bool isRowMajor(const MultiArrayMessageType_& messageData) {
+  if (messageData.layout.dim[0].label == grid_map::storageIndexNames[grid_map::StorageIndices::Column]) return false;
+  else if (messageData.layout.dim[0].label == grid_map::storageIndexNames[grid_map::StorageIndices::Row]) return true;
+  ROS_ERROR("isRowMajor() failed because layout label is not set correctly.");
+  return false;
+}
 
 /*!
  * Returns the number of columns of the message data.
+ * @tparam MultiArrayMessageType_ a std_msgs::xxxMultiArray message (e.g. std_msgs::Float32MultiArray)
  * @param[in] messageData the message data.
  * @return the number of columns.
  */
-unsigned int getCols(const std_msgs::Float32MultiArray& messageData);
+template<typename MultiArrayMessageType_>
+unsigned int getCols(const MultiArrayMessageType_& messageData)
+{
+  if (isRowMajor(messageData)) return messageData.layout.dim.at(1).size;
+  return messageData.layout.dim.at(0).size;
+}
 
 /*!
  * Returns the number of rows of the message data.
+ * @tparam MultiArrayMessageType_ a std_msgs::xxxMultiArray message (e.g. std_msgs::Float32MultiArray)
  * @param[in] messageData the message data.
  * @return the number of rows.
  */
-unsigned int getRows(const std_msgs::Float32MultiArray& messageData);
+template<typename MultiArrayMessageType_>
+unsigned int getRows(const MultiArrayMessageType_& messageData)
+{
+  if (isRowMajor(messageData)) return messageData.layout.dim.at(0).size;
+  return messageData.layout.dim.at(1).size;
+}
 
 /*!
  * Copies an Eigen matrix into a ROS MultiArray message.
  * Both column- and row-major matrices are allowed, and the type
  * will be marked in the layout labels.
+ * @tparam MultiArrayMessageType_ a std_msgs::xxxMultiArray message (e.g. std_msgs::Float32MultiArray)
+ * @tparam EigenType_ an Eigen matrix with matching Scalar type as that of the multi-array message
  * @param[in] e the Eigen matrix to be converted.
  * @param[out] m the ROS message to which the data will be copied.
  * @return true if successful
  */
-template<typename EigenType_, typename MessageType_>
-bool matrixEigenCopyToMultiArrayMessage(const EigenType_& e, MessageType_& m)
+template<typename EigenType_, typename MultiArrayMessageType_>
+bool matrixEigenCopyToMultiArrayMessage(const EigenType_& e, MultiArrayMessageType_& m)
 {
   m.layout.dim.resize(nDimensions());
   m.layout.dim[0].stride = e.size();
@@ -83,14 +104,29 @@ bool matrixEigenCopyToMultiArrayMessage(const EigenType_& e, MessageType_& m)
   return true;
 }
 
-/*!
- * Copies a ROS Float64MultiArray message into an Eigen matrix.
- * Both column- and row-major message types are allowed.
- * @param[in] m the ROS message to be converted.
- * @param[out] e the Eigen matrix to which the data will be copied.
+/**
+ * Copies a ROS xxxMultiArray message into an Eigen matrix.
+ * @tparam MultiArrayMessageType_ a std_msgs::xxxMultiArray message (e.g. std_msgs::Float32MultiArray)
+ * @tparam EigenType_ an Eigen matrix with matching Scalar type as that of the multi-array message
+ * @param[in] m the ROS message to which the data will be copied.
+ * @param[out] e the Eigen matrix to be converted.
  * @return true if successful
+ * @return
  */
-bool multiArrayMessageCopyToMatrixEigen(const std_msgs::Float32MultiArray& m, Eigen::MatrixXf& e);
+template<typename EigenType_, typename MultiArrayMessageType_>
+bool multiArrayMessageCopyToMatrixEigen(const MultiArrayMessageType_& m, EigenType_& e)
+{
+  if (e.IsRowMajor != isRowMajor(m))
+  {
+    ROS_ERROR("multiArrayMessageToMatrixEigen() failed because the storage order is not compatible.");
+    return false;
+  }
+
+  EigenType_ tempE(getRows(m), getCols(m));
+  tempE = Eigen::Map<const EigenType_>(m.data.data(), getRows(m), getCols(m));
+  e = tempE;
+  return true;
+}
 
 /*!
  * Maps a ROS Float64MultiArray message into an Eigen matrix.
