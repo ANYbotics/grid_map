@@ -71,6 +71,12 @@ class GridMap
   void setGeometry(const SubmapGeometry& geometry);
 
   /*!
+   * Set the position of the grid map.
+   * @param position the 2d position of the grid map in the grid map frame [m].
+   */
+  void setPosition(const Position& position) { position_ = position; }
+
+  /*!
    * Add a new empty data layer.
    * @param layer the name of the layer.
    * @value value the value to initialize the cells with.
