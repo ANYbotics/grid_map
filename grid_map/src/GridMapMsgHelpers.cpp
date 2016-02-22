@@ -22,19 +22,6 @@ std::map<StorageIndices, std::string> storageIndexNames = boost::assign::map_lis
     (StorageIndices::Column,  "column_index")
     (StorageIndices::Row, "row_index");
 
-bool multiArrayMessageMapToMatrixEigen(std_msgs::Float32MultiArray& m, Eigen::MatrixXf& e)
-{
-  if (e.IsRowMajor != isRowMajor(m))
-  {
-    ROS_ERROR("multiArrayMessageToMatrixEigen() failed because the storage order is not compatible.");
-    return false;
-  }
-
-  e.resize(getRows(m), getCols(m));
-  e = Eigen::Map<Eigen::MatrixXf>(m.data.data(), getRows(m), getCols(m));
-  return true;
-}
-
 bool colorValueToVector(const unsigned long& colorValue, Eigen::Vector3i& colorVector)
 {
   colorVector(0) = (colorValue >> 16) & 0x0000ff;

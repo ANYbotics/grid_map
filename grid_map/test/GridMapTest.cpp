@@ -9,6 +9,7 @@
 #include "grid_map_core/GridMap.hpp"
 #include "grid_map/GridMapRosConverter.hpp"
 #include "grid_map_core/iterators/GridMapIterator.hpp"
+#include "grid_map_msgs/GridMap.h"
 
 // gtest
 #include <gtest/gtest.h>
@@ -28,9 +29,31 @@
 using namespace std;
 using namespace grid_map;
 
+TEST(RosMessageConversion, roundTrip)
+{
+  GridMap mapIn({"layer"});
+  mapIn.setGeometry(Length(2.0, 3.0), 0.5, Position(1.0, 1.5));
+  mapIn["layer"].setRandom();
+
+  grid_map_msgs::GridMap message;
+  GridMapRosConverter::toMessage(mapIn, message);
+  GridMap mapOut;
+  GridMapRosConverter::fromMessage(message, mapOut);
+
+  for (unsigned int i; i < mapIn.getLayers().size(); ++i) {
+    EXPECT_EQ(mapIn.getLayers().at(i), mapOut.getLayers().at(i));
+    const std::string layer = mapIn.getLayers().at(i);
+    EXPECT_TRUE((mapIn[layer].array() == mapOut[layer].array()).all());
+  }
+
+  EXPECT_EQ(mapIn.getFrameId(), mapOut.getFrameId());
+  EXPECT_TRUE((mapIn.getLength() == mapOut.getLength()).all());
+  EXPECT_TRUE((mapIn.getPosition().array() == mapOut.getPosition().array()).all());
+  EXPECT_TRUE((mapIn.getSize() == mapOut.getSize()).all());
+}
+
 TEST(RosbagHandling, saveLoad)
 {
-
   string layer = "layer";
   string pathToBag = "test.bag";
   string topic = "topic";
@@ -51,7 +74,7 @@ TEST(RosbagHandling, saveLoad)
 
   EXPECT_TRUE(gridMapOut.exists(layer));
 
-  for (grid_map::GridMapIterator iterator(gridMapIn); !iterator.isPastEnd(); ++iterator) {
+  for (GridMapIterator iterator(gridMapIn); !iterator.isPastEnd(); ++iterator) {
     EXPECT_DOUBLE_EQ(gridMapIn.at(layer, *iterator), gridMapOut.at(layer, *iterator));
   }
 }
@@ -63,10 +86,10 @@ TEST(RosbagHandling, saveLoadWithTime)
   string topic = "topic";
   vector<string> layers;
   layers.push_back(layer);
-  grid_map::GridMap gridMapIn(layers), gridMapOut;
+  GridMap gridMapIn(layers), gridMapOut;
   gridMapIn.setGeometry(grid_map::Length(1.0, 1.0), 0.5);
   double a = 1.0;
-  for (grid_map::GridMapIterator iterator(gridMapIn); !iterator.isPastEnd(); ++iterator) {
+  for (GridMapIterator iterator(gridMapIn); !iterator.isPastEnd(); ++iterator) {
     gridMapIn.at(layer, *iterator) = a;
     a += 1.0;
   }
@@ -82,7 +105,7 @@ TEST(RosbagHandling, saveLoadWithTime)
 
   EXPECT_TRUE(gridMapOut.exists(layer));
 
-  for (grid_map::GridMapIterator iterator(gridMapIn); !iterator.isPastEnd(); ++iterator) {
+  for (GridMapIterator iterator(gridMapIn); !iterator.isPastEnd(); ++iterator) {
     EXPECT_DOUBLE_EQ(gridMapIn.at(layer, *iterator), gridMapOut.at(layer, *iterator));
   }
 }
@@ -95,7 +118,7 @@ TEST(OccupancyGridConversion, withMove)
 
   // Convert to OccupancyGrid msg.
   nav_msgs::OccupancyGrid occupancyGrid;
-  grid_map::GridMapRosConverter::toOccupancyGrid(map, "layer", 0.0, 1.0, occupancyGrid);
+  GridMapRosConverter::toOccupancyGrid(map, "layer", 0.0, 1.0, occupancyGrid);
 
   // Expect the (0, 0) cell to have value 100.
   EXPECT_DOUBLE_EQ(100.0, occupancyGrid.data[0]);
@@ -105,7 +128,7 @@ TEST(OccupancyGridConversion, withMove)
 
   // Convert again to OccupancyGrid msg.
   nav_msgs::OccupancyGrid occupancyGridNew;
-  grid_map::GridMapRosConverter::toOccupancyGrid(map, "layer", 0.0, 1.0, occupancyGridNew);
+  GridMapRosConverter::toOccupancyGrid(map, "layer", 0.0, 1.0, occupancyGridNew);
 
   // Now the (0, 0) cell should be unobserved (-1).
   EXPECT_DOUBLE_EQ(-1.0, occupancyGridNew.data[0]);
@@ -130,12 +153,12 @@ TEST(OccupancyGridConversion, roundTrip)
   }
 
   // Convert to grid map.
-  grid_map::GridMap gridMap;
-  grid_map::GridMapRosConverter::fromOccupancyGrid(occupancyGrid, "layer", gridMap);
+  GridMap gridMap;
+  GridMapRosConverter::fromOccupancyGrid(occupancyGrid, "layer", gridMap);
 
   // Convert back to occupancy grid.
   nav_msgs::OccupancyGrid occupancyGridResult;
-  grid_map::GridMapRosConverter::toOccupancyGrid(gridMap, "layer", -1.0, 100.0, occupancyGridResult);
+  GridMapRosConverter::toOccupancyGrid(gridMap, "layer", -1.0, 100.0, occupancyGridResult);
 
   // Check map info.
   EXPECT_EQ(occupancyGrid.header.stamp, occupancyGridResult.header.stamp);
