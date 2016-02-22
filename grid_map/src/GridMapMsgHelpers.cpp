@@ -22,54 +22,6 @@ std::map<StorageIndices, std::string> storageIndexNames = boost::assign::map_lis
     (StorageIndices::Column,  "column_index")
     (StorageIndices::Row, "row_index");
 
-bool isRowMajor(const std_msgs::Float32MultiArray& messageData)
-{
-  if (messageData.layout.dim[0].label == storageIndexNames[StorageIndices::Column]) return false;
-  else if (messageData.layout.dim[0].label == storageIndexNames[StorageIndices::Row]) return true;
-
-  ROS_ERROR("isRowMajor() failed because layout label is not set correctly.");
-  return false;
-}
-
-unsigned int getCols(const std_msgs::Float32MultiArray& messageData)
-{
-  if (isRowMajor(messageData)) return messageData.layout.dim.at(1).size;
-  return messageData.layout.dim.at(0).size;
-}
-
-unsigned int getRows(const std_msgs::Float32MultiArray& messageData)
-{
-  if (isRowMajor(messageData)) return messageData.layout.dim.at(0).size;
-  return messageData.layout.dim.at(1).size;
-}
-
-bool multiArrayMessageCopyToMatrixEigen(const std_msgs::Float32MultiArray& m, Eigen::MatrixXf& e)
-{
-  if (e.IsRowMajor != isRowMajor(m))
-  {
-    ROS_ERROR("multiArrayMessageToMatrixEigen() failed because the storage order is not compatible.");
-    return false;
-  }
-
-  Eigen::MatrixXf tempE(getRows(m), getCols(m));
-  tempE = Eigen::Map<const Eigen::MatrixXf>(m.data.data(), getRows(m), getCols(m));
-  e = tempE;
-  return true;
-}
-
-bool multiArrayMessageMapToMatrixEigen(std_msgs::Float32MultiArray& m, Eigen::MatrixXf& e)
-{
-  if (e.IsRowMajor != isRowMajor(m))
-  {
-    ROS_ERROR("multiArrayMessageToMatrixEigen() failed because the storage order is not compatible.");
-    return false;
-  }
-
-  e.resize(getRows(m), getCols(m));
-  e = Eigen::Map<Eigen::MatrixXf>(m.data.data(), getRows(m), getCols(m));
-  return true;
-}
-
 bool colorValueToVector(const unsigned long& colorValue, Eigen::Vector3i& colorVector)
 {
   colorVector(0) = (colorValue >> 16) & 0x0000ff;
