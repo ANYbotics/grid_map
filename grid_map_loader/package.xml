@@ -10,6 +10,6 @@
   <author email="pfankhauser@ethz.ch">Péter Fankhauser</author>
   <buildtool_depend>catkin</buildtool_depend>
   <depend>roscpp</depend>
-  <depend>grid_map</depend>
+  <depend>grid_map_ros</depend>
   <depend>grid_map_msgs</depend>
 </package>

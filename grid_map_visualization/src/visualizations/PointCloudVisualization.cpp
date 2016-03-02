@@ -7,7 +7,7 @@
  */
 
 #include <grid_map_visualization/visualizations/PointCloudVisualization.hpp>
-#include <grid_map/GridMapRosConverter.hpp>
+#include <grid_map_ros/GridMapRosConverter.hpp>
 
 #include <sensor_msgs/PointCloud2.h>
 

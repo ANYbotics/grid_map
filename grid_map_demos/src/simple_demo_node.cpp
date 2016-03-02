@@ -1,5 +1,5 @@
 #include <ros/ros.h>
-#include <grid_map/grid_map.hpp>
+#include <grid_map_ros/grid_map_ros.hpp>
 #include <grid_map_msgs/GridMap.h>
 #include <cmath>
 

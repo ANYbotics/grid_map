@@ -53,7 +53,7 @@ in Robot Operating System (ROS) – The Complete Reference (Volume 1), A. Koubaa
 
 To install all packages from the grid map library as Debian packages use
 
-    sudo apt-get install ros-indigo-grid-map*
+    sudo apt-get install ros-indigo-grid-map
     
 ### Building from Source
 
@@ -82,8 +82,9 @@ To maximize performance, make sure to build in *Release* mode. You can specify t
 
 This repository consists of following packages:
 
+* ***grid_map*** is the meta-package for the grid map library.
 * ***grid_map_core*** implements the algorithms of the grid map library. It provides the `GridMap` class and several helper classes such as the iterators. This package is implemented without [ROS] dependencies.
-* ***grid_map*** is the main package for [ROS] dependent projects using the grid map library. It provides the interfaces to convert the base classes to several [ROS] message types.
+* ***grid_map_ros*** is the main package for [ROS] dependent projects using the grid map library. It provides the interfaces to convert the base classes to several [ROS] message types.
 * ***grid_map_msgs*** holds the [ROS] message and service definitions around the [grid_map_msg/GridMap] message type.
 * ***grid_map_visualization*** contains a node written to convert GridMap messages to other [ROS] message types for visualization in [RViz]. The visualization parameters are configurable through [ROS] parameters.
 * ***grid_map_filters*** builds on the ROS [filters](http://wiki.ros.org/filters) package to process grid maps as a sequence of filters. 
@@ -94,8 +95,13 @@ This repository consists of following packages:
 
 Run the unit tests with
 
-    catkin_make run_tests_grid_map_core run_tests_grid_map
+    catkin_make run_tests_grid_map_core run_tests_grid_map_ros
+
+or
+
+    catkin build grid_map --no-deps --verbose --catkin-make-args run_tests
     
+if you are using [catkin tools](http://catkin-tools.readthedocs.org/).
 
 ## Usage
 
