@@ -139,8 +139,10 @@ The *grid_map_demos* package contains several demonstration nodes. Use this code
 The grid map library contains various iterators for convenience.
 
 Grid map | Submap | Circle | Line | Polygon
---- | --- | --- | --- | ---
+:---: | :---: | :---: | :---: | :---:
 [![Grid map iterator](grid_map_core/doc/iterators/grid_map_iterator_preview.gif)](grid_map_core/doc/iterators/grid_map_iterator.gif) | [![Submap iterator](grid_map_core/doc/iterators/submap_iterator_preview.gif)](grid_map_core/doc/iterators/submap_iterator.gif) | [![Circle iterator](grid_map_core/doc/iterators/circle_iterator_preview.gif)](grid_map_core/doc/iterators/circle_iterator.gif) | [![Line iterator](grid_map_core/doc/iterators/line_iterator_preview.gif)](grid_map_core/doc/iterators/line_iterator.gif) | [![Polygon iterator](grid_map_core/doc/iterators/polygon_iterator_preview.gif)](grid_map_core/doc/iterators/polygon_iterator.gif)
+__Ellipse__ | __Spiral__
+[![Ellipse iterator](grid_map_core/doc/iterators/ellipse_iterator_preview.gif)](grid_map_core/doc/iterators/ellipse_iterator.gif) | [![Spiral iterator](grid_map_core/doc/iterators/spiral_iterator_preview.gif)](grid_map_core/doc/iterators/spiral_iterator.gif)
 
 Using the iterator in a `for` loop is common. For example, iterate over the entire grid map with the `GridMapIterator` with
 
