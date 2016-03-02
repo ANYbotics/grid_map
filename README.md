@@ -107,7 +107,7 @@ if you are using [catkin tools](http://catkin-tools.readthedocs.org/).
 
 ### Demonstrations
 
-The *grid_map_demos* package contains several demonstration nodes. Use this code to verify your installation of the grid map packages and to get you started with own usage of the library.
+The *grid_map_demos* package contains several demonstration nodes. Use this code to verify your installation of the grid map packages and to get you started with your own usage of the library.
 
 * *[simple_demo](grid_map_demos/src/simple_demo_node.cpp)* demonstrates a simple example for using the grid map library. This ROS node creates a grid map, adds data to it, and publishes it. To see the result in RViz, execute the command
 
@@ -152,6 +152,15 @@ Using the iterator in a `for` loop is common. For example, iterate over the enti
 
 The other grid map iterators follow the same form. You can find more examples on how to use the different iterators in the *[iterators_demo](grid_map_demos/src/IteratorsDemo.cpp)* node.
 
+### Changing the Position of the Map
+
+There are two different methods to change the position of the map:
+* `setPosition(...)`: Changes the position of the map without changing data stored in the map. This changes the corresponce between the data and the map frame.
+* `move(...)`: Relocates the grid map such that the corresponce between data and the map frame does not change. Data in the overlapping region before and after the position change remains stored. Data that falls outside of the map at its new position is discarded. Cells that cover previously unknown regions are emptied (set to nan). The data storage is implemented as two-dimensional circular buffer to minimize computational effort.
+
+`setPosition(...)` | `move(...)`
+:---: | :---:
+![Grid map iterator](grid_map_core/doc/setposition_method.gif) | ![Submap iterator](grid_map_core/doc/move_method.gif)| 
 
 ## Nodes
 
