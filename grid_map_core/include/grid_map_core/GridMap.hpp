@@ -287,10 +287,22 @@ class GridMap
   GridMap getSubmap(const Position& position, const Length& length, Index& indexInSubmap,
                     bool& isSuccess) const;
 
+   /*!
+    * Set the position of the grid map.
+    * Note: This method does not change the data stored in the grid map and
+    * is complementary to the `move(...)` method. For a comparison between
+    * the `setPosition` and the `move` method, see the `move_demo_node.cpp`
+    * file of the `grid_map_demos` package.
+    * @param position the 2d position of the grid map in the grid map frame [m].
+    */
+   void setPosition(const Position& position);
+
   /*!
    * Move the grid map w.r.t. to the grid map frame. Use this to move the grid map
    * boundaries without moving the grid map data. Takes care of all the data handling,
    * such that the grid map data is stationary in the grid map frame.
+   * Note: For a comparison between the `setPosition` and the `move` method,
+   * see the `move_demo_node.cpp` file of the `grid_map_demos` package.
    * @param position the new location of the grid map in the map frame.
    * @param newRegions the regions of the newly covered / previously uncovered regions of the buffer.
    * @return true if map has been moved, false otherwise.

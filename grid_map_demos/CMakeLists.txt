@@ -67,6 +67,11 @@ add_executable(
 )
 
 add_executable(
+  move_demo
+  src/move_demo_node.cpp
+)
+
+add_executable(
   iterator_benchmark
   src/iterator_benchmark.cpp
 )
@@ -89,6 +94,11 @@ target_link_libraries(
 
 target_link_libraries(
   image_to_gridmap_demo
+  ${catkin_LIBRARIES}
+)
+
+target_link_libraries(
+  move_demo
   ${catkin_LIBRARIES}
 )
 

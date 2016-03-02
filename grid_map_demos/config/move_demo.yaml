@@ -1,0 +1,8 @@
+grid_map_topic: /grid_map_move_demo/grid_map
+grid_map_visualizations:
+  - name: occupancy_grid
+    type: occupancy_grid
+    params:
+     layer: layer
+     data_min: 0.0
+     data_max: 1.0

@@ -314,6 +314,11 @@ GridMap GridMap::getSubmap(const Position& position, const Length& length,
   return submap;
 }
 
+void GridMap::setPosition(const Position& position)
+{
+  position_ = position;
+}
+
 bool GridMap::move(const Position& position, std::vector<BufferRegion>& newRegions)
 {
   Index indexShift;
