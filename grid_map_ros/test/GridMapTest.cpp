@@ -7,8 +7,8 @@
  */
 
 #include "grid_map_core/GridMap.hpp"
-#include "grid_map/GridMapRosConverter.hpp"
 #include "grid_map_core/iterators/GridMapIterator.hpp"
+#include "grid_map_ros/GridMapRosConverter.hpp"
 #include "grid_map_msgs/GridMap.h"
 
 // gtest

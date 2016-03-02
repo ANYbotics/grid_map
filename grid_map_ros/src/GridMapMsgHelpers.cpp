@@ -6,7 +6,7 @@
  *   Institute: ETH Zurich, Autonomous Systems Lab
  */
 
-#include "grid_map/GridMapMsgHelpers.hpp"
+#include "grid_map_ros/GridMapMsgHelpers.hpp"
 
 // Boost
 #include <boost/assign.hpp>

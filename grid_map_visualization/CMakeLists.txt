@@ -7,8 +7,8 @@ set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   tf
-  grid_map
   grid_map_core
+  grid_map_ros
   grid_map_msgs
   visualization_msgs
   sensor_msgs
@@ -34,8 +34,8 @@ catkin_package(
   CATKIN_DEPENDS
     roscpp
     tf
-    grid_map
     grid_map_core
+    grid_map_ros
     grid_map_msgs
     visualization_msgs
     sensor_msgs

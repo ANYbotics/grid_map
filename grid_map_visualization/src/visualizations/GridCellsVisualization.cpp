@@ -7,7 +7,7 @@
  */
 
 #include "grid_map_visualization/visualizations/GridCellsVisualization.hpp"
-#include <grid_map/GridMapRosConverter.hpp>
+#include <grid_map_ros/GridMapRosConverter.hpp>
 #include <nav_msgs/GridCells.h>
 
 // STD

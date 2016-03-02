@@ -6,8 +6,9 @@
  *	 Institute: ETH Zurich, Autonomous Systems Lab
  */
 
-#include "grid_map/GridMapRosConverter.hpp"
-#include "grid_map/GridMapMsgHelpers.hpp"
+#include "grid_map_ros/GridMapRosConverter.hpp"
+#include "grid_map_ros/GridMapMsgHelpers.hpp"
+ 
 #include <grid_map_core/grid_map_core.hpp>
 
 // ROS
