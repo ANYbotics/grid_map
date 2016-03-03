@@ -8,7 +8,7 @@
 
 #include "grid_map_ros/GridMapRosConverter.hpp"
 #include "grid_map_ros/GridMapMsgHelpers.hpp"
- 
+
 #include <grid_map_core/grid_map_core.hpp>
 
 // ROS
@@ -99,14 +99,16 @@ void GridMapRosConverter::toMessage(const grid_map::GridMap& gridMap, const std:
 
 void GridMapRosConverter::toPointCloud(const grid_map::GridMap& gridMap,
                                        const std::string& pointLayer,
+                                       const bool& flatCloud,
                                        sensor_msgs::PointCloud2& pointCloud)
 {
-  toPointCloud(gridMap, gridMap.getLayers(), pointLayer, pointCloud);
+  toPointCloud(gridMap, gridMap.getLayers(), pointLayer, flatCloud, pointCloud);
 }
 
 void GridMapRosConverter::toPointCloud(const grid_map::GridMap& gridMap,
                                        const std::vector<std::string>& layers,
                                        const std::string& pointLayer,
+                                       const bool& flatCloud,
                                        sensor_msgs::PointCloud2& pointCloud)
 {
   // Header.
@@ -122,6 +124,9 @@ void GridMapRosConverter::toPointCloud(const grid_map::GridMap& gridMap,
       fieldNames.push_back("x");
       fieldNames.push_back("y");
       fieldNames.push_back("z");
+      if ( flatCloud ) {
+        fieldNames.push_back(layer);
+      }
     } else if (layer == "color") {
       fieldNames.push_back("rgb");
     } else {
@@ -172,7 +177,7 @@ void GridMapRosConverter::toPointCloud(const grid_map::GridMap& gridMap,
       } else if (iterator.first == "y") {
         *iterator.second = (float) position.y();
       } else if (iterator.first == "z") {
-        *iterator.second = (float) position.z();
+        *iterator.second = flatCloud ? 0.0 : (float) position.z();
       } else if (iterator.first == "rgb") {
         *iterator.second = gridMap.at("color", *mapIterator);
       } else {

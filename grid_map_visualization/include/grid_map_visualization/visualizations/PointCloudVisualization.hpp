@@ -58,6 +58,8 @@ class PointCloudVisualization : public VisualizationBase
 
   //! Type that is transformed to points.
   std::string layer_;
+  //! Generate a flat point cloud, i.e. z=0 and values of the layer in the channels.
+  bool flat_cloud_;
 };
 
 } /* namespace */
