@@ -236,7 +236,7 @@ The published topics are configured with the [YAML parameter file](grid_map_demo
         name: elevation
         type: point_cloud
         params:
-        layer: elevation
+         layer: elevation
 
 * **`vector`** ([visualization_msgs/Marker])
 
