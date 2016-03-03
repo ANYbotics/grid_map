@@ -134,6 +134,7 @@ The *grid_map_demos* package contains several demonstration nodes. Use this code
 
 [![Grid map conventions](grid_map_core/doc/grid_map_conventions.png)](grid_map_core/doc/grid_map_conventions.pdf)
 
+
 ### Iterators
 
 The grid map library contains various iterators for convenience.
@@ -152,6 +153,43 @@ Using the iterator in a `for` loop is common. For example, iterate over the enti
 
 The other grid map iterators follow the same form. You can find more examples on how to use the different iterators in the *[iterators_demo](grid_map_demos/src/IteratorsDemo.cpp)* node.
 
+Note: For maximum efficiency when using iterators, it is recommended to locally store direct access to the data layers of the grid map with `grid_map::Matrix& data = map["layer"]` outside the `for` loop:
+
+    grid_map::Matrix& data = map["layer"];
+    for (GridMapIterator iterator(map); !iterator.isPastEnd(); ++iterator) {
+        const Index index(*iterator);
+        cout << "The value at index " << index << " is " << data(index(0), index(1)) << endl;
+    }
+
+You can find a benchmarking of the performance of the iterators in the `iterator_benchmark` node of the `grid_map_demos` package which can be run with
+
+    rosrun grid_map_demos iterator_benchmark
+
+Beware that while iterators are convenient, it is often the cleanest and most efficient to make use of the built-in [Eigen] methods. Here are some examples:
+
+* Setting a constant value to all cells of a layer:
+
+        map["layer"].setConstant(3.0);
+
+* Adding two layers:
+
+        map["sum"] = map["layer_1"] + map["layer_2"];
+
+* Scaling a layer:
+
+        map["layer"] = 2.0 * map["layer"];
+
+* Max. values between two layers: 
+
+        map["max"] = map["layer_1"].cwiseMax(map["layer_2"]);
+
+* Compute the root mean squared error:
+
+        map.add("error", (map.get("layer_1") - map.get("layer_2")).cwiseAbs());
+        unsigned int nCells = map.getSize().prod();
+        double rootMeanSquaredError = sqrt((map["error"].array().pow(2).sum()) / nCells);
+
+
 ### Changing the Position of the Map
 
 There are two different methods to change the position of the map:
@@ -161,6 +199,7 @@ There are two different methods to change the position of the map:
 `setPosition(...)` | `move(...)`
 :---: | :---:
 ![Grid map iterator](grid_map_core/doc/setposition_method.gif) | ![Submap iterator](grid_map_core/doc/move_method.gif)| 
+
 
 ## Nodes
 
