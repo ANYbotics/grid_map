@@ -2,8 +2,8 @@
 Changelog for package grid_map_core
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.2.0 (2016-03-03)
+------------------
 * Improved efficiency for the Grid Map iterator (speed increase of 10x for large maps) (`#45 <https://github.com/ethz-asl/grid_map/issues/45>`_).
 * New iterator_benchmark demo to exemplify the usage of the iterators and their computational performance (`#45 <https://github.com/ethz-asl/grid_map/issues/45>`_).
 * Added new method to set the position of a grid map (`#42 <https://github.com/ethz-asl/grid_map/pull/42>`_).

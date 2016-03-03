@@ -2,8 +2,8 @@
 Changelog for package grid_map_msgs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.2.0 (2016-03-03)
+------------------
 * [grid_map_msgs] package exports
 * Contributors: Daniel Stonier
 
