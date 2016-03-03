@@ -118,7 +118,7 @@ catkin_install_python(
 
 # Mark executables and/or libraries for installation
 install(
-  TARGETS simple_demo tutorial_demo iterators_demo image_to_gridmap_demo
+  TARGETS simple_demo tutorial_demo iterators_demo image_to_gridmap_demo move_demo iterator_benchmark
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}

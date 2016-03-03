@@ -2,6 +2,11 @@
 Changelog for package grid_map_loader
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Changed the package name from `grid_map` to `grid_map_ros` and made `grid_map` a metapackage ([#34](https://github.com/ethz-asl/grid_map/issues/34)).
+* Contributors: Peter Fankhauser
+
 1.1.3 (2016-01-11)
 ------------------
 
