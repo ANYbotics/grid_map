@@ -231,12 +231,13 @@ The published topics are configured with the [YAML parameter file](grid_map_demo
 
 * **`point_cloud`** ([sensor_msgs/PointCloud2])
 
-    Shows the grid map as a point cloud. Select which layer to transform as points with the `layer` parameter.
+    Shows the grid map as a point cloud. Select which layer to transform as points with the `layer` parameter. Set the optional parameter `flat` to true to show the point cloud with height *z* = 0.
 
         name: elevation
         type: point_cloud
         params:
          layer: elevation
+         flat: false # optional
 
 * **`vector`** ([visualization_msgs/Marker])
 
