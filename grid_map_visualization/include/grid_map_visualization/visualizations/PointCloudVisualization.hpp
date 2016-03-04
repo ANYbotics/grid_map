@@ -55,11 +55,11 @@ class PointCloudVisualization : public VisualizationBase
   bool visualize(const grid_map::GridMap& map);
 
  private:
-
   //! Type that is transformed to points.
   std::string layer_;
+
   //! Generate a flat point cloud, i.e. z=0 and values of the layer in the channels.
-  bool flat_cloud_;
+  bool flatCloud_;
 };
 
 } /* namespace */

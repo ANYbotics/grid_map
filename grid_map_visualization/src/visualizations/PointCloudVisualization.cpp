@@ -14,9 +14,8 @@
 namespace grid_map_visualization {
 
 PointCloudVisualization::PointCloudVisualization(ros::NodeHandle& nodeHandle, const std::string& name)
-    : VisualizationBase(nodeHandle, name)
-    , layer_("")
-    , flat_cloud_(false)
+    : VisualizationBase(nodeHandle, name),
+      flatCloud_(false)
 {
 }
 
@@ -27,12 +26,14 @@ PointCloudVisualization::~PointCloudVisualization()
 bool PointCloudVisualization::readParameters(XmlRpc::XmlRpcValue& config)
 {
   VisualizationBase::readParameters(config);
-  if (!getParam("layer", layer_)) {
+  bool hasLayerParameter = getParam("layer", layer_);
+  getParam("flat", flatCloud_);
+
+  if (!hasLayerParameter && !flatCloud_) {
     ROS_ERROR("PointCloudVisualization with name '%s' did not find a 'layer' parameter.", name_.c_str());
     return false;
   }
-  // optional parameter - default set by constructor
-  getParam("flat", flat_cloud_);
+
   return true;
 }
 
@@ -45,12 +46,20 @@ bool PointCloudVisualization::initialize()
 bool PointCloudVisualization::visualize(const grid_map::GridMap& map)
 {
   if (!isActive()) return true;
-  if (!map.exists(layer_)) {
-    ROS_WARN_STREAM("PointCloudVisualization::visualize: No grid map layer with name '" << layer_ << "' found.");
-    return false;
-  }
   sensor_msgs::PointCloud2 pointCloud;
-  grid_map::GridMapRosConverter::toPointCloud(map, layer_, flat_cloud_, pointCloud);
+
+  if (!flatCloud_) {
+    if (!map.exists(layer_)) {
+      ROS_WARN_STREAM("PointCloudVisualization::visualize: No grid map layer with name '" << layer_ << "' found.");
+      return false;
+    }
+    grid_map::GridMapRosConverter::toPointCloud(map, layer_, pointCloud);
+  } else {
+    grid_map::GridMap mapCopy(map);
+    mapCopy.add("flat", 0.0);
+    grid_map::GridMapRosConverter::toPointCloud(mapCopy, "flat", pointCloud);
+  }
+
   publisher_.publish(pointCloud);
   return true;
 }
