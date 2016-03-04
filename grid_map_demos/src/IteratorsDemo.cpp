@@ -50,8 +50,13 @@ void IteratorsDemo::demoGridMapIterator()
   map_.clearAll();
   publish();
 
+  // Note: In this example we locally store a reference to the map data
+  // for improved performance. See `iterator_benchmark.cpp` and the
+  // README.md for a comparison and more information.
+  grid_map::Matrix& data = map_["type"];
   for (grid_map::GridMapIterator iterator(map_); !iterator.isPastEnd(); ++iterator) {
-    map_.at("type", *iterator) = 1.0;
+    const int i = iterator.getLinearIndex();
+    data(i) = 1.0;
     publish();
     ros::Duration duration(0.01);
     duration.sleep();
