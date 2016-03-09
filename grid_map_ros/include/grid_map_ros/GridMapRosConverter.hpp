@@ -79,20 +79,23 @@ class GridMapRosConverter
    * @param[in] pointLayer the type that is transformed to points.
    * @param[out] pointCloud the message to be populated.
    */
-  static void toPointCloud(const grid_map::GridMap& gridMap, const std::string& pointLayer,
+  static void toPointCloud(const grid_map::GridMap& gridMap,
+                           const std::string& pointLayer,
                            sensor_msgs::PointCloud2& pointCloud);
 
   /*!
    * Converts a grid map object to a ROS PointCloud2 message. Set the layer to be transformed
    * as the points of the point cloud with `pointLayer` and all other types to be added as
-   * additional layers with `layersToAdd`.
+   * additional layers with `layers`.
    * @param[in] gridMap the grid map object.
-   * @param[in] layers the layers that should be added as fields to the point cloud. Must include the pointLayer.
+   * @param[in] layers the layers that should be added as fields to the point cloud. Must include the `pointLayer`.
    * @param[in] pointLayer the layer that is transformed to points.
    * @param[out] pointCloud the message to be populated.
    */
-  static void toPointCloud(const grid_map::GridMap& gridMap, const std::vector<std::string>& layers,
-                           const std::string& pointLayer, sensor_msgs::PointCloud2& pointCloud);
+  static void toPointCloud(const grid_map::GridMap& gridMap,
+                           const std::vector<std::string>& layers,
+                           const std::string& pointLayer,
+                           sensor_msgs::PointCloud2& pointCloud);
 
   /*!
    * Converts an occupancy grid message to a layer of a grid map.

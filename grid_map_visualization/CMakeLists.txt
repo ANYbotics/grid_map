@@ -68,6 +68,7 @@ add_executable(
   src/visualizations/VisualizationBase.cpp
   src/visualizations/VisualizationFactory.cpp
   src/visualizations/PointCloudVisualization.cpp
+  src/visualizations/FlatPointCloudVisualization.cpp
   src/visualizations/VectorVisualization.cpp
   src/visualizations/OccupancyGridVisualization.cpp
   src/visualizations/GridCellsVisualization.cpp

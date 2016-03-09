@@ -237,8 +237,20 @@ The published topics are configured with the [YAML parameter file](grid_map_demo
         type: point_cloud
         params:
          layer: elevation
+         flat: false # optional
 
-* **`vector`** ([visualization_msgs/Marker])
+* **`flat_point_cloud`** ([sensor_msgs/PointCloud2])
+
+    Shows the grid map as a "flat" point cloud, i.e. with all points at the same height *z*. This is convenient to visualize 2d maps or images (or even video streams) in [RViz] with help of its `Color Transformer`. The parameter `height` determines the desired *z*-position of the flat point cloud.
+
+        name: flat_grid
+        type: flat_point_cloud
+        params:
+         height: 0.0
+
+    Note: In order to omit points in the flat point cloud from empty/invalid cells, specify the layers which should be checked for validity with `setBasicLayers(...)`.
+
+* **`vectors`** ([visualization_msgs/Marker])
 
     Visualizes vector data of the grid map as visual markers. Specify the layers which hold the *x*-, *y*-, and *z*-components of the vectors with the `layer_prefix` parameter. The parameter `position_layer` defines the layer to be used as start point of the vectors.
     

@@ -16,6 +16,7 @@ ImageToGridmapDemo::ImageToGridmapDemo(ros::NodeHandle& nodeHandle)
       mapInitialized_(false)
 {
   readParameters();
+  map_.setBasicLayers({"elevation"});
   imageSubscriber_ = nodeHandle_.subscribe(imageTopic_, 1, &ImageToGridmapDemo::imageCallback, this);
   gridMapPublisher_ = nodeHandle_.advertise<grid_map_msgs::GridMap>("grid_map", 1, true);
 }
