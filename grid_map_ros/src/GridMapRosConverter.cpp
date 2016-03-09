@@ -134,19 +134,19 @@ void GridMapRosConverter::toPointCloud(const grid_map::GridMap& gridMap,
   int offset = 0;
 
   for (auto& name : fieldNames) {
-    sensor_msgs::PointField point_field;
-    point_field.name = name;
-    point_field.count = 1;
-    point_field.datatype = sensor_msgs::PointField::FLOAT32;
-    point_field.offset = offset;
-    pointCloud.fields.push_back(point_field);
-    offset = offset + point_field.count * 4;  // 4 for sensor_msgs::PointField::FLOAT32
+    sensor_msgs::PointField pointField;
+    pointField.name = name;
+    pointField.count = 1;
+    pointField.datatype = sensor_msgs::PointField::FLOAT32;
+    pointField.offset = offset;
+    pointCloud.fields.push_back(pointField);
+    offset = offset + pointField.count * 4;  // 4 for sensor_msgs::PointField::FLOAT32
   }
 
   // Resize.
-  size_t nPoints = gridMap.getSize().prod();
+  size_t maxNumberOfPoints = gridMap.getSize().prod();
   pointCloud.height = 1;
-  pointCloud.width = nPoints;
+  pointCloud.width = maxNumberOfPoints;
   pointCloud.point_step = offset;
   pointCloud.row_step = pointCloud.width * pointCloud.point_step;
   pointCloud.data.resize(pointCloud.height * pointCloud.row_step);
@@ -160,11 +160,22 @@ void GridMapRosConverter::toPointCloud(const grid_map::GridMap& gridMap,
   }
 
   GridMapIterator mapIterator(gridMap);
+  const bool hasBasicLayers = gridMap.getBasicLayers().size() > 0;
 
-  for (size_t i = 0; i < nPoints; ++i) {
+  size_t realNumberOfPoints = 0;
+  for (size_t i = 0; i < maxNumberOfPoints; ++i) {
+    if (hasBasicLayers) {
+      if (!gridMap.isValid(*mapIterator)) {
+        ++mapIterator;
+        continue;
+      }
+    }
+
     Position3 position;
-    position.setConstant(NAN);
-    gridMap.getPosition3(pointLayer, *mapIterator, position);
+    if (!gridMap.getPosition3(pointLayer, *mapIterator, position)) {
+      ++mapIterator;
+      continue;
+    }
 
     for (auto& iterator : fieldIterators) {
       if (iterator.first == "x") {
@@ -184,6 +195,13 @@ void GridMapRosConverter::toPointCloud(const grid_map::GridMap& gridMap,
     for (auto& iterator : fieldIterators) {
       ++iterator.second;
     }
+    ++realNumberOfPoints;
+  }
+
+  if (realNumberOfPoints != maxNumberOfPoints) {
+    pointCloud.width = realNumberOfPoints;
+    pointCloud.row_step = pointCloud.width * pointCloud.point_step;
+    pointCloud.data.resize(pointCloud.height * pointCloud.row_step);
   }
 }
 

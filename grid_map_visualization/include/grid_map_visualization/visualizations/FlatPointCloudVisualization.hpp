@@ -1,7 +1,7 @@
 /*
- * PointCloudVisualization.hpp
+ * FlatPointCloudVisualization.hpp
  *
- *  Created on: Sep 11, 2014
+ *  Created on: Mar 9, 2016
  *      Author: Péter Fankhauser
  *   Institute: ETH Zurich, Autonomous Systems Lab
  */
@@ -17,9 +17,9 @@
 namespace grid_map_visualization {
 
 /*!
- * Visualization of the grid map as a point cloud.
+ * Visualization of the grid map as a flat point cloud.
  */
-class PointCloudVisualization : public VisualizationBase
+class FlatPointCloudVisualization : public VisualizationBase
 {
  public:
 
@@ -28,12 +28,12 @@ class PointCloudVisualization : public VisualizationBase
    * @param nodeHandle the ROS node handle.
    * @param name the name of the visualization.
    */
-  PointCloudVisualization(ros::NodeHandle& nodeHandle, const std::string& name);
+  FlatPointCloudVisualization(ros::NodeHandle& nodeHandle, const std::string& name);
 
   /*!
    * Destructor.
    */
-  virtual ~PointCloudVisualization();
+  virtual ~FlatPointCloudVisualization();
 
   /*!
    * Read parameters from ROS.
@@ -57,6 +57,9 @@ class PointCloudVisualization : public VisualizationBase
  private:
   //! Type that is transformed to points.
   std::string layer_;
+
+  //! Height of the z-coordinate at which the flat point cloud is visualized.
+  double height_;
 };
 
 } /* namespace */

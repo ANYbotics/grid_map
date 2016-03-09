@@ -86,9 +86,9 @@ class GridMapRosConverter
   /*!
    * Converts a grid map object to a ROS PointCloud2 message. Set the layer to be transformed
    * as the points of the point cloud with `pointLayer` and all other types to be added as
-   * additional layers with `layersToAdd`.
+   * additional layers with `layers`.
    * @param[in] gridMap the grid map object.
-   * @param[in] layers the layers that should be added as fields to the point cloud. Must include the pointLayer.
+   * @param[in] layers the layers that should be added as fields to the point cloud. Must include the `pointLayer`.
    * @param[in] pointLayer the layer that is transformed to points.
    * @param[out] pointCloud the message to be populated.
    */
