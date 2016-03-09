@@ -2,6 +2,11 @@
 Changelog for package grid_map_ros
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Improved efficiency of the grid map to point cloud conversion by omitting invalid cells.
+* Contributors: Peter Fankhauser
+
 1.2.0 (2016-03-03)
 ------------------
 * Changed the package name from `grid_map` to `grid_map_ros` and made `grid_map` a metapackage (`#34 <https://github.com/ethz-asl/grid_map/issues/34>`_).

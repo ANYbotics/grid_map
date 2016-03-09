@@ -2,6 +2,11 @@
 Changelog for package grid_map_demos
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Added comment on iterator performance (`#45 <https://github.com/ethz-asl/grid_map/issues/45>`_).
+* Contributors: Peter Fankhauser
+
 1.2.0 (2016-03-03)
 ------------------
 * New iterator_benchmark demo to exemplify the usage of the iterators and their computational performance.
