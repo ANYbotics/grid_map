@@ -405,7 +405,7 @@ bool GridMapRosConverter::addLayerFromImage(const sensor_msgs::Image& image,
     }
 
     double height = lowerValue
-        + (upperValue - lowerValue) * ((double) grayValue / (double) depth);
+        + (upperValue - lowerValue) * ((double) grayValue / (double) (depth - 1));
     gridMap.at(layer, *iterator) = height;
   }
 
