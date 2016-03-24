@@ -268,6 +268,8 @@ class GridMap
   /*!
    * Gets a submap from the map. The requested submap is specified with the requested
    * location and length.
+   * Note: The returned submap may not have the requested length due to the borders
+   * of the map and discretization.
    * @param[in] position the requested position of the submap (usually the center).
    * @param[in] length the requested length of the submap.
    * @param[out] isSuccess true if successful, false otherwise.
@@ -278,6 +280,8 @@ class GridMap
   /*!
    * Gets a submap from the map. The requested submap is specified with the requested
    * location and length.
+   * Note: The returned submap may not have the requested length due to the borders
+   * of the map and discretization.
    * @param[in] position the requested position of the submap (usually the center).
    * @param[in] length the requested length of the submap.
    * @param[out] indexInSubmap the index of the requested position in the submap.
