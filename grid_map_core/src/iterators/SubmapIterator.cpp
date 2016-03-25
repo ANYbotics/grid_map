@@ -65,12 +65,12 @@ bool SubmapIterator::operator !=(const SubmapIterator& other) const
   return (index_ != other.index_).any();
 }
 
-const Eigen::Array2i& SubmapIterator::operator *() const
+const Index& SubmapIterator::operator *() const
 {
   return index_;
 }
 
-const Eigen::Array2i& SubmapIterator::getSubmapIndex() const
+const Index& SubmapIterator::getSubmapIndex() const
 {
   return submapIndex_;
 }
@@ -78,7 +78,7 @@ const Eigen::Array2i& SubmapIterator::getSubmapIndex() const
 SubmapIterator& SubmapIterator::operator ++()
 {
   isPastEnd_ = !incrementIndexForSubmap(submapIndex_, index_, submapStartIndex_,
-                                         submapSize_, size_, startIndex_);
+                                        submapSize_, size_, startIndex_);
   return *this;
 }
 

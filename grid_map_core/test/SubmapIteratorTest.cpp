@@ -98,8 +98,8 @@ TEST(SubmapIterator, CircularBuffer)
   vector<string> types;
   types.push_back("type");
   GridMap map(types);
-  map.setGeometry(Array2d(8.1, 5.1), 1.0, Vector2d(0.0, 0.0)); // bufferSize(8, 5)
-  map.move(Vector2d(-3.0, -2.0)); // bufferStartIndex(3, 2)
+  map.setGeometry(Length(8.1, 5.1), 1.0, Position(0.0, 0.0)); // bufferSize(8, 5)
+  map.move(Position(-3.0, -2.0)); // bufferStartIndex(3, 2)
 
   SubmapIterator iterator(map, submapTopLeftIndex, submapBufferSize);
 

@@ -21,8 +21,8 @@ PolygonIterator::PolygonIterator(const grid_map::GridMap& gridMap, const grid_ma
   resolution_ = gridMap.getResolution();
   bufferSize_ = gridMap.getSize();
   bufferStartIndex_ = gridMap.getStartIndex();
-  Eigen::Array2i submapStartIndex;
-  Eigen::Array2i submapBufferSize;
+  Index submapStartIndex;
+  Size submapBufferSize;
   findSubmapParameters(polygon, submapStartIndex, submapBufferSize);
   internalIterator_ = std::shared_ptr<SubmapIterator>(new SubmapIterator(gridMap, submapStartIndex, submapBufferSize));
   if(!isInside()) ++(*this);
@@ -45,7 +45,7 @@ bool PolygonIterator::operator !=(const PolygonIterator& other) const
   return (internalIterator_ != other.internalIterator_);
 }
 
-const Eigen::Array2i& PolygonIterator::operator *() const
+const Index& PolygonIterator::operator *() const
 {
   return *(*internalIterator_);
 }
@@ -69,15 +69,15 @@ bool PolygonIterator::isPastEnd() const
 
 bool PolygonIterator::isInside()
 {
-  Eigen::Vector2d position;
+  Position position;
   getPositionFromIndex(position, *(*internalIterator_), mapLength_, mapPosition_, resolution_, bufferSize_, bufferStartIndex_);
   return polygon_.isInside(position);
 }
 
-void PolygonIterator::findSubmapParameters(const grid_map::Polygon& polygon, Eigen::Array2i& startIndex, Eigen::Array2i& bufferSize) const
+void PolygonIterator::findSubmapParameters(const grid_map::Polygon& polygon, Index& startIndex, Size& bufferSize) const
 {
-  Eigen::Vector2d topLeft = polygon_.getVertices()[0];
-  Eigen::Vector2d bottomRight = topLeft;
+  Position topLeft = polygon_.getVertices()[0];
+  Position bottomRight = topLeft;
   for (const auto& vertex : polygon_.getVertices()) {
     topLeft = topLeft.array().max(vertex.array());
     bottomRight = bottomRight.array().min(vertex.array());
@@ -85,9 +85,9 @@ void PolygonIterator::findSubmapParameters(const grid_map::Polygon& polygon, Eig
   limitPositionToRange(topLeft, mapLength_, mapPosition_);
   limitPositionToRange(bottomRight, mapLength_, mapPosition_);
   getIndexFromPosition(startIndex, topLeft, mapLength_, mapPosition_, resolution_, bufferSize_, bufferStartIndex_);
-  Eigen::Array2i endIndex;
+  Index endIndex;
   getIndexFromPosition(endIndex, bottomRight, mapLength_, mapPosition_, resolution_, bufferSize_, bufferStartIndex_);
-  bufferSize = endIndex - startIndex + Eigen::Array2i::Ones();
+  bufferSize = getSubmapSizeFromCornerIndeces(startIndex, endIndex, bufferSize_, bufferStartIndex_);
 }
 
 } /* namespace grid_map */
