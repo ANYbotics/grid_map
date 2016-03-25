@@ -148,7 +148,7 @@ __Ellipse__ | __Spiral__
 Using the iterator in a `for` loop is common. For example, iterate over the entire grid map with the `GridMapIterator` with
 
     for (grid_map::GridMapIterator iterator(map); !iterator.isPastEnd(); ++iterator) {
-        cout << "The value at index " << *iterator << " is " << map.at("layer", *iterator) << endl;
+        cout << "The value at index " << (*iterator).transpose() << " is " << map.at("layer", *iterator) << endl;
     }
 
 The other grid map iterators follow the same form. You can find more examples on how to use the different iterators in the *[iterators_demo](grid_map_demos/src/IteratorsDemo.cpp)* node.
@@ -158,7 +158,7 @@ Note: For maximum efficiency when using iterators, it is recommended to locally 
     grid_map::Matrix& data = map["layer"];
     for (GridMapIterator iterator(map); !iterator.isPastEnd(); ++iterator) {
         const Index index(*iterator);
-        cout << "The value at index " << index << " is " << data(index(0), index(1)) << endl;
+        cout << "The value at index " << index.transpose() << " is " << data(index(0), index(1)) << endl;
     }
 
 You can find a benchmarking of the performance of the iterators in the `iterator_benchmark` node of the `grid_map_demos` package which can be run with
