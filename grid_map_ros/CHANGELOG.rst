@@ -4,8 +4,9 @@ Changelog for package grid_map_ros
 
 Forthcoming
 -----------
+* Fix scaling of image value to height conversion.
 * Improved efficiency of the grid map to point cloud conversion by omitting invalid cells.
-* Contributors: Peter Fankhauser
+* Contributors: Peter Fankhauser, Daniel Stonier, Martin Wermelinger
 
 1.2.0 (2016-03-03)
 ------------------
