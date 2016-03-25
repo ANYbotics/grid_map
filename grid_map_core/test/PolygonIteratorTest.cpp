@@ -151,4 +151,32 @@ TEST(PolygonIterator, TopLeftTriangle)
   // TODO Extend.
 }
 
+TEST(PolygonIterator, MoveMap)
+{
+  GridMap map({"types"});
+  map.setGeometry(Length(8.0, 5.0), 1.0, Position(0.0, 0.0)); // bufferSize(8, 5)
 
+  map.move(Position(2.0, 0.0));
+
+  Polygon polygon;
+  polygon.addVertex(Position(6.5, 2.0));
+  polygon.addVertex(Position(0.5, 2.0));
+  polygon.addVertex(Position(0.5, -2.0));
+  polygon.addVertex(Position(6.5, -2.0));
+
+  for (grid_map::PolygonIterator iterator(map, polygon); !iterator.isPastEnd(); ++iterator) {
+      cout << "The value at index " << *iterator << " is " << map.at("layer", *iterator) << endl;
+  }
+
+
+//  EXPECT_FALSE(iterator.isPastEnd());
+//  EXPECT_EQ(0, (*iterator)(0));
+//  EXPECT_EQ(0, (*iterator)(1));
+//
+//  ++iterator;
+//  EXPECT_FALSE(iterator.isPastEnd());
+//  EXPECT_EQ(1, (*iterator)(0));
+//  EXPECT_EQ(0, (*iterator)(1));
+
+  // TODO Extend.
+}
