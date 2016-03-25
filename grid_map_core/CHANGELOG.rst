@@ -4,6 +4,10 @@ Changelog for package grid_map_core
 
 Forthcoming
 -----------
+* Fixes polygon iterator bug when using moved maps.
+* Added unit test for polygon iterator on a moved map.
+* Added comment about size of the returning submap.
+* Contributors: Peter Fankhauser, Martin Wermelinger
 
 1.2.0 (2016-03-03)
 ------------------
