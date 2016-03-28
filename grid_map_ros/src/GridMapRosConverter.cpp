@@ -377,15 +377,15 @@ bool GridMapRosConverter::addLayerFromImage(const sensor_msgs::Image& image,
   for (GridMapIterator iterator(gridMap); !iterator.isPastEnd(); ++iterator) {
     // Set transparent values.
     if (image.encoding == sensor_msgs::image_encodings::BGRA8) {
-      const auto& cvAlpha = cvPtrAlpha->image.at<cv::Vec4b>((*iterator)(0),
-                                                            (*iterator)(1));
+      const auto& cvAlpha = cvPtrAlpha->image.at<cv::Vec4b>((*iterator)(1),
+                                                            (*iterator)(0));
       unsigned int alpha = cvAlpha[3];
       if (cvAlpha[3] < depth / 2)
         continue;
     }
     if (image.encoding == sensor_msgs::image_encodings::BGRA16) {
       const auto& cvAlpha = cvPtrAlpha->image.at<cv::Vec<uchar, 8>>(
-          (*iterator)(0), (*iterator)(1));
+          (*iterator)(1), (*iterator)(0));
       int alpha = (cvAlpha[6] << 8) + cvAlpha[7];
       if (alpha < depth / 2)
         continue;
@@ -394,13 +394,13 @@ bool GridMapRosConverter::addLayerFromImage(const sensor_msgs::Image& image,
     // Compute height.
     unsigned int grayValue;
     if (depth == std::pow(2, 8)) {
-      uchar cvGrayscale = cvPtrMono->image.at<uchar>((*iterator)(0),
-                                                     (*iterator)(1));
+      uchar cvGrayscale = cvPtrMono->image.at<uchar>((*iterator)(1),
+                                                     (*iterator)(0));
       grayValue = cvGrayscale;
     }
     if (depth == std::pow(2, 16)) {
-      const auto& cvGrayscale = cvPtrMono->image.at<cv::Vec2b>((*iterator)(0),
-                                                               (*iterator)(1));
+      const auto& cvGrayscale = cvPtrMono->image.at<cv::Vec2b>((*iterator)(1),
+                                                               (*iterator)(0));
       grayValue = (cvGrayscale[0] << 8) + cvGrayscale[1];
     }
 
