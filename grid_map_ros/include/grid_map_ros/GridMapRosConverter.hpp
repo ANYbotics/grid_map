@@ -134,8 +134,8 @@ class GridMapRosConverter
                           nav_msgs::GridCells& gridCells);
 
   /*!
-   * Initializes a grid map from a image messages. This changes the geometry
-   * of the map and deletes all contents of the layers!
+   * Initializes a the geometry of a grid map from an image messages. This changes
+   * the geometry of the map and deletes all contents of the layers!
    * @param[in] image the image.
    * @param[in] resolution the desired resolution of the grid map [m/cell].
    * @param[out] gridMap the grid map to be initialized.
@@ -155,8 +155,8 @@ class GridMapRosConverter
    * @return true if successful, false otherwise.
    */
   static bool addLayerFromImage(const sensor_msgs::Image& image, const std::string& layer,
-                                grid_map::GridMap& gridMap, const double lowerValue = 0.0,
-                                const double upperValue = 1.0);
+                                grid_map::GridMap& gridMap, const float lowerValue = 0.0,
+                                const float upperValue = 1.0);
 
   /*!
    * Adds a color layer with data from an image.
@@ -171,10 +171,10 @@ class GridMapRosConverter
     /*!
    * Creates a cv image from a grid map layer.
    * @param[in] grid map to be added.
-   * @param[in] layer the layer that is filled with the image.
+   * @param[in] layer the layer that is converted to the image.
    * @param[out] cv image to be populated.
-   * @param[in] optional height limit.
-   * @param[in] optional height limit.
+   * @param[in](optional) dataMin the lower height limit.
+   * @param[in](optional) dataMax the upper height limit.
    * @return true if successful, false otherwise.
    */
   static bool toCvImage(const grid_map::GridMap& gridMap, const std::string& layer,

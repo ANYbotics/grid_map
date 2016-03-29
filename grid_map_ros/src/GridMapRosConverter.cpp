@@ -325,7 +325,7 @@ bool GridMapRosConverter::initializeFromImage(const sensor_msgs::Image& image,
 
 bool GridMapRosConverter::addLayerFromImage(const sensor_msgs::Image& image,
                                             const std::string& layer, grid_map::GridMap& gridMap,
-                                            const double lowerValue, const double upperValue)
+                                            const float lowerValue, const float upperValue)
 {
   cv_bridge::CvImagePtr cvPtrAlpha, cvPtrMono;
 
@@ -353,8 +353,7 @@ bool GridMapRosConverter::addLayerFromImage(const sensor_msgs::Image& image,
     } else if (image.encoding == sensor_msgs::image_encodings::BGRA16
         || image.encoding == sensor_msgs::image_encodings::BGR16
         || image.encoding == sensor_msgs::image_encodings::MONO16) {
-      cvPtrMono = cv_bridge::toCvCopy(image,
-                                      sensor_msgs::image_encodings::MONO16);
+      cvPtrMono = cv_bridge::toCvCopy(image, sensor_msgs::image_encodings::MONO16);
       depth = std::pow(2, 16);
       ROS_DEBUG("Color image converted to mono16");
     } else {
@@ -404,8 +403,8 @@ bool GridMapRosConverter::addLayerFromImage(const sensor_msgs::Image& image,
       grayValue = (cvGrayscale[0] << 8) + cvGrayscale[1];
     }
 
-    double height = lowerValue
-        + (upperValue - lowerValue) * ((double) grayValue / (double) (depth - 1));
+    const float height = lowerValue
+        + (upperValue - lowerValue) * ((float) grayValue / (float) (depth - 1));
     gridMap.at(layer, *iterator) = height;
   }
 
@@ -467,7 +466,7 @@ bool GridMapRosConverter::toCvImage(const grid_map::GridMap& gridMap, const std:
   uchar imageMax = std::numeric_limits<unsigned char>::max();
   for (GridMapIterator iterator(map); !iterator.isPastEnd(); ++iterator) {
     if (map.isValid(*iterator, layer)) {
-      float value = map.at(layer, *iterator);
+      const float value = map.at(layer, *iterator);
       uchar imageValue = (uchar)(((value - lowerValue) / (upperValue - lowerValue)) * (float)imageMax);
       grid_map::Index imageIndex(iterator.getUnwrappedIndex());
       cvImage.at<cv::Vec<uchar, 4>>(imageIndex(1), imageIndex(0))[0] = imageValue;

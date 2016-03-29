@@ -8,6 +8,7 @@
 
 #include "grid_map_core/GridMap.hpp"
 #include "grid_map_core/iterators/GridMapIterator.hpp"
+#include "grid_map_core/gtest_eigen.hpp"
 #include "grid_map_ros/GridMapRosConverter.hpp"
 #include "grid_map_msgs/GridMap.h"
 
@@ -25,6 +26,8 @@
 
 // ROS
 #include <nav_msgs/OccupancyGrid.h>
+#include <cv_bridge/cv_bridge.h>
+#include <sensor_msgs/image_encodings.h>
 
 using namespace std;
 using namespace grid_map;
@@ -178,4 +181,26 @@ TEST(OccupancyGridConversion, roundTrip)
     size_t i = std::distance(occupancyGrid.data.begin(), iterator);
     EXPECT_EQ((int)*iterator, (int)occupancyGridResult.data[i]);
   }
+}
+
+TEST(ImageConversion, roundTrip)
+{
+  // Create grid map.
+  GridMap gridMapInput({"layer"});
+  gridMapInput.setGeometry(grid_map::Length(2.0, 1.0), 0.5);
+  gridMapInput["layer"].setRandom();
+
+  // Convert to CV image.
+  cv_bridge::CvImage cvImage;
+  GridMapRosConverter::toCvImage(gridMapInput, "layer", cvImage.image);
+  cvImage.encoding = sensor_msgs::image_encodings::BGRA8;
+  std::cout << *(cvImage.toImageMsg()) << std::endl;
+
+  // Convert back to grid map.
+  GridMap gridMapOutput;
+  GridMapRosConverter::initializeFromImage(*(cvImage.toImageMsg()), gridMapInput.getResolution(), gridMapOutput);
+  GridMapRosConverter::addLayerFromImage(*(cvImage.toImageMsg()), "layer", gridMapOutput, -1.0, 1.0);
+
+  // Check data.
+  ASSERT_DOUBLE_MX_EQ(gridMapInput["layer"], gridMapOutput["layer"], 0.1, "");
 }
