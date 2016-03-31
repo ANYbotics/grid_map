@@ -152,7 +152,7 @@ bool checkIfPositionWithinMap(const Eigen::Vector2d& position,
   Vector2d positionTransformed = getMapFrameToBufferOrderTransformation().cast<double>() * (position - mapPosition - offset);
 
   if (positionTransformed.x() >= 0.0 && positionTransformed.y() >= 0.0
-      && positionTransformed.x() <= mapLength(0) && positionTransformed.y() <= mapLength(1)) {
+      && positionTransformed.x() < mapLength(0) && positionTransformed.y() < mapLength(1)) {
     return true;
   }
   return false;
@@ -199,8 +199,8 @@ bool checkIfIndexWithinRange(const Eigen::Array2i& index, const Eigen::Array2i& 
   return false;
 }
 
-void mapIndexWithinRange(Eigen::Array2i& index,
-                         const Eigen::Array2i& bufferSize)
+void mapIndexWithinRange(Index& index,
+                         const Size& bufferSize)
 {
   for (int i = 0; i < index.size(); i++) {
     mapIndexWithinRange(index[i], bufferSize[i]);
@@ -213,11 +213,11 @@ void mapIndexWithinRange(int& index, const int& bufferSize)
   index = index % bufferSize;
 }
 
-void limitPositionToRange(Eigen::Vector2d& position, const Eigen::Array2d& mapLength, const Eigen::Vector2d& mapPosition)
+void limitPositionToRange(Position& position, const Length& mapLength, const Position& mapPosition)
 {
   Vector2d vectorToOrigin;
   getVectorToOrigin(vectorToOrigin, mapLength);
-  Vector2d positionShifted = position - mapPosition + vectorToOrigin;
+  Position positionShifted = position - mapPosition + vectorToOrigin;
 
   // We have to make sure to stay inside the map.
   for (int i = 0; i < positionShifted.size(); i++) {
@@ -293,6 +293,14 @@ bool getSubmapInformation(Eigen::Array2i& submapTopLeftIndex,
   if(!getIndexFromPosition(requestedIndexInSubmap, requestedSubmapPosition, submapLength, submapPosition, resolution, submapBufferSize)) return false;
 
   return true;
+}
+
+Size getSubmapSizeFromCornerIndeces(const Index& topLeftIndex, const Index& bottomRightIndex,
+                                    const Size& bufferSize, const Index& bufferStartIndex)
+{
+  const Index unwrappedTopLeftIndex = getIndexFromBufferIndex(topLeftIndex, bufferSize, bufferStartIndex);
+  const Index unwrappedBottomRightIndex = getIndexFromBufferIndex(bottomRightIndex, bufferSize, bufferStartIndex);
+  return Size(unwrappedBottomRightIndex - unwrappedTopLeftIndex + Size::Ones());
 }
 
 bool getBufferRegionsForSubmap(std::vector<BufferRegion>& submapBufferRegions,
@@ -403,10 +411,9 @@ bool getBufferRegionsForSubmap(std::vector<BufferRegion>& submapBufferRegions,
   return false;
 }
 
-bool incrementIndex(Eigen::Array2i& index, const Eigen::Array2i& bufferSize,
-                    const Eigen::Array2i& bufferStartIndex)
+bool incrementIndex(Index& index, const Size& bufferSize, const Index& bufferStartIndex)
 {
-  Eigen::Array2i unwrappedIndex = getIndexFromBufferIndex(index, bufferSize, bufferStartIndex);
+  Index unwrappedIndex = getIndexFromBufferIndex(index, bufferSize, bufferStartIndex);
 
   // Increment index.
   if (unwrappedIndex(1) + 1 < bufferSize(1)) {
@@ -426,9 +433,9 @@ bool incrementIndex(Eigen::Array2i& index, const Eigen::Array2i& bufferSize,
   return true;
 }
 
-bool incrementIndexForSubmap(Eigen::Array2i& submapIndex, Eigen::Array2i& index, const Eigen::Array2i& submapTopLeftIndex,
-                             const Eigen::Array2i& submapBufferSize, const Eigen::Array2i& bufferSize,
-                             const Eigen::Array2i& bufferStartIndex)
+bool incrementIndexForSubmap(Index& submapIndex, Index& index, const Index& submapTopLeftIndex,
+                             const Size& submapBufferSize, const Size& bufferSize,
+                             const Index& bufferStartIndex)
 {
   // Copy the data first, only copy it back if everything is within range.
   Array2i tempIndex = index;
@@ -468,10 +475,16 @@ Index getIndexFromBufferIndex(const Index& bufferIndex, const Size& bufferSize,
   return index;
 }
 
-unsigned int get1dIndexFrom2dIndex(const Eigen::Array2i& index, const Eigen::Array2i& bufferSize, const bool rowMajor)
+size_t getLinearIndexFromIndex(const Index& index, const Size& bufferSize, const bool rowMajor)
 {
   if (!rowMajor) return index(1) * bufferSize(0) + index(0);
   return index(0) * bufferSize(1) + index(1);
+}
+
+Index getIndexFromLinearIndex(const size_t linearIndex, const Size& bufferSize, const bool rowMajor)
+{
+  if (!rowMajor) return Index((int)linearIndex % bufferSize(0), (int)linearIndex / bufferSize(0));
+  return Index((int)linearIndex / bufferSize(1), (int)linearIndex % bufferSize(1));
 }
 
 void getIndicesForRegion(const Index& regionIndex, const Size& regionSize,

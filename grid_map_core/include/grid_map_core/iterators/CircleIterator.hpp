@@ -32,7 +32,7 @@ public:
    * @param center the position of the circle center.
    * @param radius the radius of the circle.
    */
-  CircleIterator(const grid_map::GridMap& gridMap, const Eigen::Vector2d& center, const double radius);
+  CircleIterator(const GridMap& gridMap, const Position& center, const double radius);
 
   /*!
    * Assignment operator.
@@ -51,7 +51,7 @@ public:
    * Dereference the iterator with const.
    * @return the value to which the iterator is pointing.
    */
-  const Eigen::Array2i& operator *() const;
+  const Index& operator *() const;
 
   /*!
    * Increase the iterator to the next element.
@@ -80,11 +80,11 @@ private:
    * @param[out] startIndex the start index of the submap.
    * @param[out] bufferSize the buffer size of the submap.
    */
-  void findSubmapParameters(const Eigen::Vector2d& center, const double radius,
-                            Eigen::Array2i& startIndex, Eigen::Array2i& bufferSize) const;
+  void findSubmapParameters(const Position& center, const double radius,
+                            Index& startIndex, Size& bufferSize) const;
 
   //! Position of the circle center;
-  Eigen::Vector2d center_;
+  Position center_;
 
   //! Radius of the circle.
   double radius_;
@@ -96,11 +96,11 @@ private:
   std::shared_ptr<SubmapIterator> internalIterator_;
 
   //! Map information needed to get position from iterator.
-  Eigen::Array2d mapLength_;
-  Eigen::Vector2d mapPosition_;
+  Length mapLength_;
+  Position mapPosition_;
   double resolution_;
-  Eigen::Array2i bufferSize_;
-  Eigen::Array2i bufferStartIndex_;
+  Size bufferSize_;
+  Index bufferStartIndex_;
 };
 
 } /* namespace */

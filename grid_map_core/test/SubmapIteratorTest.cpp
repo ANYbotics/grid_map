@@ -25,7 +25,7 @@ using namespace std;
 using namespace Eigen;
 using namespace grid_map;
 
-TEST(checkSubmapIterator, Simple)
+TEST(SubmapIterator, Simple)
 {
   Eigen::Array2i submapTopLeftIndex(3, 1);
   Eigen::Array2i submapBufferSize(3, 2);
@@ -88,7 +88,7 @@ TEST(checkSubmapIterator, Simple)
   EXPECT_EQ(1, iterator.getSubmapIndex()(1));
 }
 
-TEST(checkSubmapIterator, CircularBuffer)
+TEST(SubmapIterator, CircularBuffer)
 {
   Eigen::Array2i submapTopLeftIndex(6, 3);
   Eigen::Array2i submapBufferSize(2, 4);
@@ -98,8 +98,8 @@ TEST(checkSubmapIterator, CircularBuffer)
   vector<string> types;
   types.push_back("type");
   GridMap map(types);
-  map.setGeometry(Array2d(8.1, 5.1), 1.0, Vector2d(0.0, 0.0)); // bufferSize(8, 5)
-  map.move(Vector2d(-3.0, -2.0)); // bufferStartIndex(3, 2)
+  map.setGeometry(Length(8.1, 5.1), 1.0, Position(0.0, 0.0)); // bufferSize(8, 5)
+  map.move(Position(-3.0, -2.0)); // bufferStartIndex(3, 2)
 
   SubmapIterator iterator(map, submapTopLeftIndex, submapBufferSize);
 

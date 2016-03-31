@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "grid_map_core/TypeDefs.hpp"
+#include <grid_map_core/TypeDefs.hpp>
 #include <grid_map_core/GridMap.hpp>
 #include <grid_map_msgs/GridMap.h>
 
@@ -25,6 +25,9 @@
 #include <sensor_msgs/Image.h>
 #include <nav_msgs/OccupancyGrid.h>
 #include <nav_msgs/GridCells.h>
+
+// Open CV
+#include <opencv2/core/core.hpp>
 
 namespace grid_map {
 
@@ -76,20 +79,33 @@ class GridMapRosConverter
    * @param[in] pointLayer the type that is transformed to points.
    * @param[out] pointCloud the message to be populated.
    */
-  static void toPointCloud(const grid_map::GridMap& gridMap, const std::string& pointLayer,
+  static void toPointCloud(const grid_map::GridMap& gridMap,
+                           const std::string& pointLayer,
                            sensor_msgs::PointCloud2& pointCloud);
 
   /*!
    * Converts a grid map object to a ROS PointCloud2 message. Set the layer to be transformed
    * as the points of the point cloud with `pointLayer` and all other types to be added as
-   * additional layers with `layersToAdd`.
+   * additional layers with `layers`.
    * @param[in] gridMap the grid map object.
-   * @param[in] layers the layers that should be added as fields to the point cloud. Must include the pointLayer.
+   * @param[in] layers the layers that should be added as fields to the point cloud. Must include the `pointLayer`.
    * @param[in] pointLayer the layer that is transformed to points.
    * @param[out] pointCloud the message to be populated.
    */
-  static void toPointCloud(const grid_map::GridMap& gridMap, const std::vector<std::string>& layers,
-                           const std::string& pointLayer, sensor_msgs::PointCloud2& pointCloud);
+  static void toPointCloud(const grid_map::GridMap& gridMap,
+                           const std::vector<std::string>& layers,
+                           const std::string& pointLayer,
+                           sensor_msgs::PointCloud2& pointCloud);
+
+  /*!
+   * Converts an occupancy grid message to a layer of a grid map.
+   * @param[in] occupancyGrid the occupancy grid to be converted.
+   * @param[in] layer the layer to which the occupancy grid will be converted.
+   * @param[out] gridMap the grid map to be populated.
+   * @return true if successful.
+   */
+  static bool fromOccupancyGrid(const nav_msgs::OccupancyGrid& occupancyGrid,
+                                const std::string& layer, grid_map::GridMap& gridMap);
 
   /*!
    * Converts a grid map object to a ROS OccupancyGrid message. Set the layer to be transformed
@@ -151,6 +167,20 @@ class GridMapRosConverter
    */
   static bool addColorLayerFromImage(const sensor_msgs::Image& image, const std::string& layer,
                                      grid_map::GridMap& gridMap);
+
+    /*!
+   * Creates a cv image from a grid map layer.
+   * @param[in] grid map to be added.
+   * @param[in] layer the layer that is filled with the image.
+   * @param[out] cv image to be populated.
+   * @param[in] optional height limit.
+   * @param[in] optional height limit.
+   * @return true if successful, false otherwise.
+   */
+  static bool toCvImage(const grid_map::GridMap& gridMap, const std::string& layer,
+                        cv::Mat& cvImage,
+                        const float dataMin = std::numeric_limits<float>::min(),
+                        const float dataMax = std::numeric_limits<float>::max());
 
   /*!
    * Saves a grid map into a ROS bag. The timestamp of the grid map

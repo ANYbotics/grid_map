@@ -70,13 +70,13 @@ public:
    * Dereference the iterator with const.
    * @return the value to which the iterator is pointing.
    */
-  const Eigen::Array2i& operator *() const;
+  const Index& operator *() const;
 
   /*!
    * Get the current index in the submap.
    * @return the current index in the submap.
    */
-  const Eigen::Array2i& getSubmapIndex() const;
+  const Index& getSubmapIndex() const;
 
   /*!
    * Increase the iterator to the next element.

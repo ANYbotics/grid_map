@@ -26,7 +26,7 @@ using namespace std;
 using namespace Eigen;
 using namespace grid_map;
 
-TEST(checkPolygonIterator, FullCover)
+TEST(PolygonIterator, FullCover)
 {
   vector<string> types;
   types.push_back("type");
@@ -65,7 +65,7 @@ TEST(checkPolygonIterator, FullCover)
   EXPECT_TRUE(iterator.isPastEnd());
 }
 
-TEST(checkPolygonIterator, Outside)
+TEST(PolygonIterator, Outside)
 {
   GridMap map({"types"});
   map.setGeometry(Length(8.0, 5.0), 1.0, Position(0.0, 0.0)); // bufferSize(8, 5)
@@ -81,7 +81,7 @@ TEST(checkPolygonIterator, Outside)
   EXPECT_TRUE(iterator.isPastEnd());
 }
 
-TEST(checkPolygonIterator, Square)
+TEST(PolygonIterator, Square)
 {
   GridMap map({"types"});
   map.setGeometry(Length(8.0, 5.0), 1.0, Position(0.0, 0.0)); // bufferSize(8, 5)
@@ -127,7 +127,7 @@ TEST(checkPolygonIterator, Square)
   EXPECT_TRUE(iterator.isPastEnd());
 }
 
-TEST(checkPolygonIterator, TopLeftTriangle)
+TEST(PolygonIterator, TopLeftTriangle)
 {
   GridMap map({"types"});
   map.setGeometry(Length(8.0, 5.0), 1.0, Position(0.0, 0.0)); // bufferSize(8, 5)
@@ -151,4 +151,45 @@ TEST(checkPolygonIterator, TopLeftTriangle)
   // TODO Extend.
 }
 
+TEST(PolygonIterator, MoveMap)
+{
+  GridMap map({"layer"});
+  map.setGeometry(Length(8.0, 5.0), 1.0, Position(0.0, 0.0)); // bufferSize(8, 5)
+  map.move(Position(2.0, 0.0));
 
+  Polygon polygon;
+  polygon.addVertex(Position(6.1, 1.6));
+  polygon.addVertex(Position(0.9, 1.6));
+  polygon.addVertex(Position(0.9, -1.6));
+  polygon.addVertex(Position(6.1, -1.6));
+  PolygonIterator iterator(map, polygon);
+
+  EXPECT_FALSE(iterator.isPastEnd());
+  EXPECT_EQ(6, (*iterator)(0));
+  EXPECT_EQ(1, (*iterator)(1));
+
+  ++iterator;
+  EXPECT_FALSE(iterator.isPastEnd());
+  EXPECT_EQ(6, (*iterator)(0));
+  EXPECT_EQ(2, (*iterator)(1));
+
+  for (int i = 0; i < 4; ++i) ++iterator;
+
+  EXPECT_FALSE(iterator.isPastEnd());
+  EXPECT_EQ(7, (*iterator)(0));
+  EXPECT_EQ(3, (*iterator)(1));
+
+  ++iterator;
+  EXPECT_FALSE(iterator.isPastEnd());
+  EXPECT_EQ(0, (*iterator)(0));
+  EXPECT_EQ(1, (*iterator)(1));
+
+  for (int i = 0; i < 8; ++i) ++iterator;
+
+  EXPECT_FALSE(iterator.isPastEnd());
+  EXPECT_EQ(2, (*iterator)(0));
+  EXPECT_EQ(3, (*iterator)(1));
+
+  ++iterator;
+  EXPECT_TRUE(iterator.isPastEnd());
+}

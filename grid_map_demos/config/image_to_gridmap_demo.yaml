@@ -18,3 +18,7 @@ grid_map_visualization:
         layer: elevation
         data_min: -0.2
         data_max: 0.2
+    - name: flat_grid
+      type: flat_point_cloud
+      params:
+        height: 0.0

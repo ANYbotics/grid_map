@@ -62,8 +62,7 @@ TEST(checkConvexHull, createHull)
   polygon2.addVertex(Vector2d(1.5, 0.5));
   polygon2.addVertex(Vector2d(1.5, 1.5));
 
-  grid_map::Polygon hull;
-  hull = hull.convexHull(polygon1, polygon2);
+  grid_map::Polygon hull = grid_map::Polygon::convexHull(polygon1, polygon2);
 
   EXPECT_EQ(6, hull.nVertices());
   EXPECT_TRUE(hull.isInside(Vector2d(0.5, 0.5)));
@@ -77,8 +76,7 @@ TEST(checkConvexHullCircles, createHull)
   double radius = 0.5;
   const int nVertices = 15;
 
-  grid_map::Polygon hull;
-  hull = hull.convexHullCircles(center1, center2, radius);
+  grid_map::Polygon hull = grid_map::Polygon::convexHullOfTwoCircles(center1, center2, radius);
   EXPECT_EQ(20, hull.nVertices());
   EXPECT_TRUE(hull.isInside(Vector2d(-0.25, 0.0)));
   EXPECT_TRUE(hull.isInside(Vector2d(0.5, 0.0)));
@@ -86,7 +84,7 @@ TEST(checkConvexHullCircles, createHull)
   EXPECT_FALSE(hull.isInside(Vector2d(0.5, 0.6)));
   EXPECT_FALSE(hull.isInside(Vector2d(1.5, 0.2)));
 
-  hull = hull.convexHullCircles(center1, center2, radius, nVertices);
+  hull = grid_map::Polygon::convexHullOfTwoCircles(center1, center2, radius, nVertices);
   EXPECT_EQ(nVertices + 1, hull.nVertices());
   EXPECT_TRUE(hull.isInside(Vector2d(-0.25, 0.0)));
   EXPECT_TRUE(hull.isInside(Vector2d(0.5, 0.0)));
@@ -101,8 +99,7 @@ TEST(checkConvexHullCircle, createHull)
   double radius = 0.5;
   const int nVertices = 15;
 
-  grid_map::Polygon hull;
-  hull = hull.convexHullCircle(center, radius);
+  grid_map::Polygon hull = grid_map::Polygon::fromCircle(center, radius);
 
   EXPECT_EQ(20, hull.nVertices());
   EXPECT_TRUE(hull.isInside(Vector2d(-0.25, 0.0)));
@@ -110,7 +107,7 @@ TEST(checkConvexHullCircle, createHull)
   EXPECT_FALSE(hull.isInside(Vector2d(0.5, 0.4)));
   EXPECT_FALSE(hull.isInside(Vector2d(1.0, 0.0)));
 
-  hull = hull.convexHullCircle(center, radius, nVertices);
+  hull = grid_map::Polygon::fromCircle(center, radius, nVertices);
   EXPECT_EQ(nVertices, hull.nVertices());
   EXPECT_TRUE(hull.isInside(Vector2d(-0.25, 0.0)));
   EXPECT_TRUE(hull.isInside(Vector2d(0.49, 0.0)));

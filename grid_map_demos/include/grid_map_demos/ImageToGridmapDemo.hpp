@@ -13,7 +13,7 @@
 #include <ros/ros.h>
 #include <sensor_msgs/Image.h>
 
-#include <grid_map/grid_map.hpp>
+#include <grid_map_ros/grid_map_ros.hpp>
 
 #include <string>
 

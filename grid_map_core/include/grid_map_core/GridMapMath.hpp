@@ -116,8 +116,8 @@ bool checkIfIndexWithinRange(const Eigen::Array2i& index, const Eigen::Array2i& 
  * @param[in/out] index the indeces that will be mapped into the valid region of the buffer.
  * @param[in] bufferSize the size of the buffer.
  */
-void mapIndexWithinRange(Eigen::Array2i& index,
-                         const Eigen::Array2i& bufferSize);
+void mapIndexWithinRange(Index& index,
+                         const Size& bufferSize);
 
 /*!
  * Maps an index that runs out of the range of the circular buffer back into allowed the region.
@@ -132,9 +132,9 @@ void mapIndexWithinRange(int& index, const int& bufferSize);
  * @param[in] mapLength the lengths in x and y direction.
  * @param[in] mapPosition the position of the map.
  */
-void limitPositionToRange(Eigen::Vector2d& position,
-                          const Eigen::Array2d& mapLength,
-                          const Eigen::Vector2d& mapPosition);
+void limitPositionToRange(Position& position,
+                          const Length& mapLength,
+                          const Position& mapPosition);
 
 /*!
  * Provides the alignment transformation from the buffer order (outer/inner storage)
@@ -176,6 +176,15 @@ bool getSubmapInformation(Eigen::Array2i& submapTopLeftIndex,
                           const Eigen::Array2i& bufferStartIndex = Eigen::Array2i::Zero());
 
 /*!
+ * Computes the buffer size of a submap given a top left and a lower right index.
+ * @param topLeftIndex the top left index in the map.
+ * @param bottomRightIndex the bottom right index in the map.
+ * @return buffer size for the submap.
+ */
+Size getSubmapSizeFromCornerIndeces(const Index& topLeftIndex, const Index& bottomRightIndex,
+                                    const Size& bufferSize, const Index& bufferStartIndex);
+
+/*!
  * Computes the regions in the circular buffer that make up the data for
  * a requested submap.
  * @param[out] submapBufferRegions the list of buffer regions that make up the submap.
@@ -200,8 +209,8 @@ bool getBufferRegionsForSubmap(std::vector<BufferRegion>& submapBufferRegions,
  * @param[in] bufferStartIndex the map buffer start index.
  * @return true if successfully incremented indeces, false if end of iteration limits are reached.
  */
-bool incrementIndex(Eigen::Array2i& index, const Eigen::Array2i& bufferSize,
-                    const Eigen::Array2i& bufferStartIndex = Eigen::Array2i::Zero());
+bool incrementIndex(Index& index, const Size& bufferSize,
+                    const Index& bufferStartIndex = Index::Zero());
 
 /*!
  * Increases the index by one to iterate through the cells of a submap.
@@ -219,11 +228,9 @@ bool incrementIndex(Eigen::Array2i& index, const Eigen::Array2i& bufferSize,
  * @param[in] bufferStartIndex the map buffer start index.
  * @return true if successfully incremented indeces, false if end of iteration limits are reached.
  */
-bool incrementIndexForSubmap(Eigen::Array2i& submapIndex, Eigen::Array2i& index,
-                             const Eigen::Array2i& submapTopLeftIndex,
-                             const Eigen::Array2i& submapBufferSize,
-                             const Eigen::Array2i& bufferSize,
-                             const Eigen::Array2i& bufferStartIndex = Eigen::Array2i::Zero());
+bool incrementIndexForSubmap(Index& submapIndex, Index& index, const Index& submapTopLeftIndex,
+                             const Size& submapBufferSize, const Size& bufferSize,
+                             const Index& bufferStartIndex = Index::Zero());
 
 /*!
  * Retrieve the index as unwrapped index, i.e., as the corresponding index of a
@@ -237,15 +244,24 @@ Index getIndexFromBufferIndex(const Index& bufferIndex, const Size& bufferSize,
                               const Index& bufferStartIndex);
 
 /*!
- * Returns the 1d index corresponding to the 2d index for either row- or column-major format.
+ * Returns the linear index (1-dim.) corresponding to the regular index (2-dim.) for either
+ * row- or column-major format.
  * Note: Eigen is defaulting to column-major format.
- * @param[in] index the 2d index.
+ * @param[in] index the regular 2d index.
  * @param[in] bufferSize the map buffer size.
- * @param[in] (optional) rowMajor if the 1d index is generated for row-major format.
- * @return the 1d index.
+ * @param[in] (optional) rowMajor if the linear index is generated for row-major format.
+ * @return the linear 1d index.
  */
-unsigned int get1dIndexFrom2dIndex(const Index& index, const Size& bufferSize,
-                                   const bool rowMajor);
+size_t getLinearIndexFromIndex(const Index& index, const Size& bufferSize, const bool rowMajor = false);
+
+/*!
+ * Returns the regular index (2-dim.) corresponding to the linear index (1-dim.) for a given buffer size.
+ * @param[in] linearIndex the he linear 1d index.
+ * @param[in] bufferSize the map buffer size.
+ * @param[in] (optional) rowMajor if the linear index is generated for row-major format.
+ * @return the regular 2d index.
+ */
+Index getIndexFromLinearIndex(const size_t linearIndex, const Size& bufferSize, const bool rowMajor = false);
 
 /*!
  * Generates a list of indices for a region in the map.

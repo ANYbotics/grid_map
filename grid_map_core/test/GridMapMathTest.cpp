@@ -133,6 +133,8 @@ TEST(IndexFromPosition, EdgeCases)
   EXPECT_TRUE(getIndexFromPosition(index, Vector2d(-0.5 - DBL_EPSILON, -DBL_EPSILON), mapLength, mapPosition, resolution, bufferSize));
   EXPECT_EQ(2, index(0));
   EXPECT_EQ(1, index(1));
+
+  EXPECT_FALSE(getIndexFromPosition(index, Vector2d(-1.5, 1.0), mapLength, mapPosition, resolution, bufferSize));
 }
 
 TEST(IndexFromPosition, CircularBuffer)
@@ -183,8 +185,8 @@ TEST(checkIfPositionWithinMap, EdgeCases)
   Array2d mapLength(2.0, 3.0);
   Vector2d mapPosition(0.0, 0.0);
 
-  EXPECT_TRUE(checkIfPositionWithinMap(Vector2d(1.0, -1.5), mapLength, mapPosition));
-  EXPECT_TRUE(checkIfPositionWithinMap(Vector2d(-1.0, 1.5), mapLength, mapPosition));
+  EXPECT_FALSE(checkIfPositionWithinMap(Vector2d(1.0, -1.5), mapLength, mapPosition));
+  EXPECT_FALSE(checkIfPositionWithinMap(Vector2d(-1.0, 1.5), mapLength, mapPosition));
   EXPECT_FALSE(checkIfPositionWithinMap(Vector2d(1.0 + DBL_EPSILON, 1.0), mapLength, mapPosition));
   EXPECT_TRUE(checkIfPositionWithinMap(Vector2d((2.0 + DBL_EPSILON) / 2.0, 1.0), mapLength, mapPosition));
   EXPECT_FALSE(checkIfPositionWithinMap(Vector2d(0.5, -1.5 - (2.0 * DBL_EPSILON)), mapLength, mapPosition));
@@ -939,4 +941,14 @@ TEST(checkIncrementIndexForSubmap, CircularBuffer)
 
   submapIndex << 2, 0;
   EXPECT_FALSE(incrementIndexForSubmap(submapIndex, index, submapTopLeftIndex, submapBufferSize, bufferSize, bufferStartIndex));
+}
+
+TEST(getIndexFromLinearIndex, Simple)
+{
+  EXPECT_TRUE((Index(0, 0) == getIndexFromLinearIndex(0, Size(8, 5), false)).all());
+  EXPECT_TRUE((Index(1, 0) == getIndexFromLinearIndex(1, Size(8, 5), false)).all());
+  EXPECT_TRUE((Index(0, 1) == getIndexFromLinearIndex(1, Size(8, 5), true)).all());
+  EXPECT_TRUE((Index(2, 0) == getIndexFromLinearIndex(2, Size(8, 5), false)).all());
+  EXPECT_TRUE((Index(0, 1) == getIndexFromLinearIndex(8, Size(8, 5), false)).all());
+  EXPECT_TRUE((Index(7, 4) == getIndexFromLinearIndex(39, Size(8, 5), false)).all());
 }

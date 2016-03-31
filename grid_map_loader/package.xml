@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package format="2">
   <name>grid_map_loader</name>
-  <version>0.1.0</version>
+  <version>1.2.0</version>
   <description>Loading and publishing grid maps from bag files.</description>
   <maintainer email="pfankhauser@ethz.ch">Péter Fankhauser</maintainer>
   <license>BSD</license>
@@ -10,6 +10,6 @@
   <author email="pfankhauser@ethz.ch">Péter Fankhauser</author>
   <buildtool_depend>catkin</buildtool_depend>
   <depend>roscpp</depend>
-  <depend>grid_map</depend>
+  <depend>grid_map_ros</depend>
   <depend>grid_map_msgs</depend>
 </package>

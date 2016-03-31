@@ -3,24 +3,16 @@ project(grid_map_filters)
 
 set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
 
-# Set the build type.  Options are:
-#  Coverage       : w/ debug symbols, w/o optimization, w/ code-coverage
-#  Debug          : w/ debug symbols, w/o optimization
-#  Release        : w/o debug symbols, w/ optimization
-#  RelWithDebInfo : w/ debug symbols, w/ optimization
-#  MinSizeRel     : w/o debug symbols, w/ optimization, stripped binaries
-#set(CMAKE_BUILD_TYPE RelWithDebInfo)
-
 ## Find catkin macros and libraries
 find_package(catkin REQUIRED COMPONENTS
-  grid_map
   grid_map_core
+  grid_map_ros
   grid_map_msgs
   filters
 )
 
 ## System dependencies are found with CMake's conventions
-find_package(Eigen3 REQUIRED)
+#find_package(Eigen3 REQUIRED)
 
 ###################################
 ## catkin specific configuration ##
@@ -37,12 +29,12 @@ catkin_package(
   LIBRARIES
     ${PROJECT_NAME}
   CATKIN_DEPENDS
-    grid_map
+    grid_map_ros
     grid_map_core
     grid_map_msgs
     filters
   DEPENDS
-    Eigen3
+    #Eigen3
 )
 
 ###########
@@ -66,4 +58,29 @@ add_library(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME}
   ${catkin_LIBRARIES}
+)
+
+#############
+## Install ##
+#############
+
+# Mark executables and/or libraries for installation
+install(
+  TARGETS ${PROJECT_NAME}
+  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
+# Mark cpp header files for installation
+install(
+  DIRECTORY include/${PROJECT_NAME}/
+  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+  FILES_MATCHING PATTERN "*.hpp"
+)
+
+# Mark other files for installation
+install(
+  FILES filter_plugins.xml
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )

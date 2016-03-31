@@ -24,6 +24,7 @@ add_service_files(
   FILES
   GetGridMap.srv
   GetGridMapInfo.srv
+  ProcessFile.srv
 )
 
 ## Generate added messages and services with any dependencies listed here
@@ -46,6 +47,10 @@ generate_messages(
 catkin_package(
     #INCLUDE_DIRS include
     #LIBRARIES
-    #CATKIN_DEPENDS std_msgs message_runtime
+    CATKIN_DEPENDS
+        geometry_msgs
+        message_runtime
+        std_msgs
     #DEPENDS
 )
+

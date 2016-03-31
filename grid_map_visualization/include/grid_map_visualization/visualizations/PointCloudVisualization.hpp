@@ -55,7 +55,6 @@ class PointCloudVisualization : public VisualizationBase
   bool visualize(const grid_map::GridMap& map);
 
  private:
-
   //! Type that is transformed to points.
   std::string layer_;
 };

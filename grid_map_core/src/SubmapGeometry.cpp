@@ -12,7 +12,7 @@
 namespace grid_map {
 
 SubmapGeometry::SubmapGeometry(const GridMap& gridMap, const Position& position,
-                                     const Length& length, bool& isSuccess)
+                               const Length& length, bool& isSuccess)
     : gridMap_(gridMap)
 {
   isSuccess = getSubmapInformation(startIndex_, size_, position_, length_,

@@ -6,14 +6,15 @@
  *	 Institute: ETH Zurich, Autonomous Systems Lab
  */
 
-#include "grid_map/GridMapRosConverter.hpp"
-#include "grid_map/GridMapMsgHelpers.hpp"
-#include <grid_map_core/GridMapMath.hpp>
-#include <grid_map_core/iterators/GridMapIterator.hpp>
+#include "grid_map_ros/GridMapRosConverter.hpp"
+#include "grid_map_ros/GridMapMsgHelpers.hpp"
+
+#include <grid_map_core/grid_map_core.hpp>
 
 // ROS
 #include <sensor_msgs/point_cloud2_iterator.h>
 #include <geometry_msgs/Point.h>
+#include <geometry_msgs/Quaternion.h>
 #include <cv_bridge/cv_bridge.h>
 #include <sensor_msgs/image_encodings.h>
 #include <rosbag/bag.h>
@@ -22,6 +23,7 @@
 // STL
 #include <limits>
 #include <algorithm>
+#include <vector>
 
 using namespace std;
 using namespace Eigen;
@@ -132,19 +134,19 @@ void GridMapRosConverter::toPointCloud(const grid_map::GridMap& gridMap,
   int offset = 0;
 
   for (auto& name : fieldNames) {
-    sensor_msgs::PointField point_field;
-    point_field.name = name;
-    point_field.count = 1;
-    point_field.datatype = sensor_msgs::PointField::FLOAT32;
-    point_field.offset = offset;
-    pointCloud.fields.push_back(point_field);
-    offset = offset + point_field.count * 4;  // 4 for sensor_msgs::PointField::FLOAT32
+    sensor_msgs::PointField pointField;
+    pointField.name = name;
+    pointField.count = 1;
+    pointField.datatype = sensor_msgs::PointField::FLOAT32;
+    pointField.offset = offset;
+    pointCloud.fields.push_back(pointField);
+    offset = offset + pointField.count * 4;  // 4 for sensor_msgs::PointField::FLOAT32
   }
 
   // Resize.
-  size_t nPoints = gridMap.getSize().prod();
+  size_t maxNumberOfPoints = gridMap.getSize().prod();
   pointCloud.height = 1;
-  pointCloud.width = nPoints;
+  pointCloud.width = maxNumberOfPoints;
   pointCloud.point_step = offset;
   pointCloud.row_step = pointCloud.width * pointCloud.point_step;
   pointCloud.data.resize(pointCloud.height * pointCloud.row_step);
@@ -158,11 +160,22 @@ void GridMapRosConverter::toPointCloud(const grid_map::GridMap& gridMap,
   }
 
   GridMapIterator mapIterator(gridMap);
+  const bool hasBasicLayers = gridMap.getBasicLayers().size() > 0;
 
-  for (size_t i = 0; i < nPoints; ++i) {
+  size_t realNumberOfPoints = 0;
+  for (size_t i = 0; i < maxNumberOfPoints; ++i) {
+    if (hasBasicLayers) {
+      if (!gridMap.isValid(*mapIterator)) {
+        ++mapIterator;
+        continue;
+      }
+    }
+
     Position3 position;
-    position.setConstant(NAN);
-    gridMap.getPosition3(pointLayer, *mapIterator, position);
+    if (!gridMap.getPosition3(pointLayer, *mapIterator, position)) {
+      ++mapIterator;
+      continue;
+    }
 
     for (auto& iterator : fieldIterators) {
       if (iterator.first == "x") {
@@ -182,7 +195,59 @@ void GridMapRosConverter::toPointCloud(const grid_map::GridMap& gridMap,
     for (auto& iterator : fieldIterators) {
       ++iterator.second;
     }
+    ++realNumberOfPoints;
   }
+
+  if (realNumberOfPoints != maxNumberOfPoints) {
+    pointCloud.width = realNumberOfPoints;
+    pointCloud.row_step = pointCloud.width * pointCloud.point_step;
+    pointCloud.data.resize(pointCloud.height * pointCloud.row_step);
+  }
+}
+
+bool GridMapRosConverter::fromOccupancyGrid(const nav_msgs::OccupancyGrid& occupancyGrid,
+                                            const std::string& layer, grid_map::GridMap& gridMap)
+{
+  const Size size(occupancyGrid.info.width, occupancyGrid.info.height);
+  const double resolution = occupancyGrid.info.resolution;
+  const Length length = resolution * size.cast<double>();
+  const string& frameId = occupancyGrid.header.frame_id;
+  Position position(occupancyGrid.info.origin.position.x, occupancyGrid.info.origin.position.y);
+  // Different conventions of center of map.
+  position += 0.5 * length.matrix();
+
+  const auto& orientation = occupancyGrid.info.origin.orientation;
+  if (orientation.w != 1.0 && !(orientation.x == 0 && orientation.y == 0
+      && orientation.z == 0 && orientation.w == 0)) {
+    ROS_WARN_STREAM("Conversion of occupancy grid: Grid maps do not support orientation.");
+    ROS_INFO_STREAM("Orientation of occupancy grid: " << endl << occupancyGrid.info.origin.orientation);
+    return false;
+  }
+
+  if (size.prod() != occupancyGrid.data.size()) {
+    ROS_WARN_STREAM("Conversion of occupancy grid: Size of data does not correspond to width * height.");
+    return false;
+  }
+
+  if ((gridMap.getSize() != size).any() || gridMap.getResolution() != resolution
+      || (gridMap.getLength() != length).any() || gridMap.getPosition() != position
+      || gridMap.getFrameId() != frameId || !gridMap.getStartIndex().isZero()) {
+    gridMap.setTimestamp(occupancyGrid.header.stamp.toNSec());
+    gridMap.setFrameId(frameId);
+    gridMap.setGeometry(length, resolution, position);
+  }
+
+  // Reverse iteration is required because of different conventions
+  // between occupancy grid and grid map.
+  grid_map::Matrix data(size(0), size(1));
+  for (std::vector<int8_t>::const_reverse_iterator iterator = occupancyGrid.data.rbegin();
+      iterator != occupancyGrid.data.rend(); ++iterator) {
+    size_t i = std::distance(occupancyGrid.data.rbegin(), iterator);
+    data(i) = *iterator != -1 ? *iterator : NAN;
+  }
+
+  gridMap.add(layer, data);
+  return true;
 }
 
 void GridMapRosConverter::toOccupancyGrid(const grid_map::GridMap& gridMap,
@@ -195,18 +260,18 @@ void GridMapRosConverter::toOccupancyGrid(const grid_map::GridMap& gridMap,
   occupancyGrid.info.resolution = gridMap.getResolution();
   occupancyGrid.info.width = gridMap.getSize()(0);
   occupancyGrid.info.height = gridMap.getSize()(1);
-  Position positionOfOrigin;
-  getPositionOfDataStructureOrigin(gridMap.getPosition(), gridMap.getLength(), positionOfOrigin);
-  occupancyGrid.info.origin.position.x = positionOfOrigin.x();
-  occupancyGrid.info.origin.position.y = positionOfOrigin.y();
+  Position position = gridMap.getPosition() - 0.5 * gridMap.getLength().matrix();
+  occupancyGrid.info.origin.position.x = position.x();
+  occupancyGrid.info.origin.position.y = position.y();
   occupancyGrid.info.origin.position.z = 0.0;
   occupancyGrid.info.origin.orientation.x = 0.0;
   occupancyGrid.info.origin.orientation.y = 0.0;
-  occupancyGrid.info.origin.orientation.z = 1.0;  // yes, this is correct.
-  occupancyGrid.info.origin.orientation.w = 0.0;
-  occupancyGrid.data.resize(occupancyGrid.info.width * occupancyGrid.info.height);
+  occupancyGrid.info.origin.orientation.z = 0.0;
+  occupancyGrid.info.origin.orientation.w = 1.0;
+  size_t nCells = gridMap.getSize().prod();
+  occupancyGrid.data.resize(nCells);
 
-  // Occupancy probabilities are in the range [0,100].  Unknown is -1.
+  // Occupancy probabilities are in the range [0,100]. Unknown is -1.
   const float cellMin = 0;
   const float cellMax = 100;
   const float cellRange = cellMax - cellMin;
@@ -217,10 +282,9 @@ void GridMapRosConverter::toOccupancyGrid(const grid_map::GridMap& gridMap,
       value = -1;
     else
       value = cellMin + min(max(0.0f, value), 1.0f) * cellRange;
-    // Occupancy grid claims to be row-major order, but it does not seem that way.
-    // http://docs.ros.org/api/nav_msgs/html/msg/OccupancyGrid.html.
-    unsigned int index = get1dIndexFrom2dIndex(*iterator, gridMap.getSize(), false);
-    occupancyGrid.data[index] = value;
+    size_t index = getLinearIndexFromIndex(iterator.getUnwrappedIndex(), gridMap.getSize(), false);
+    // Reverse cell order because of different conventions between occupancy grid and grid map.
+    occupancyGrid.data[nCells - index - 1] = value;
   }
 }
 
@@ -341,7 +405,7 @@ bool GridMapRosConverter::addLayerFromImage(const sensor_msgs::Image& image,
     }
 
     double height = lowerValue
-        + (upperValue - lowerValue) * ((double) grayValue / (double) depth);
+        + (upperValue - lowerValue) * ((double) grayValue / (double) (depth - 1));
     gridMap.at(layer, *iterator) = height;
   }
 
@@ -363,21 +427,54 @@ bool GridMapRosConverter::addColorLayerFromImage(const sensor_msgs::Image& image
 
   gridMap.add(layer);
 
-  if (gridMap.getSize()(0) != image.height
-      || gridMap.getSize()(1) != image.width) {
+  if (gridMap.getSize()(0) != image.height || gridMap.getSize()(1) != image.width) {
     ROS_ERROR("Image size does not correspond to grid map size!");
     return false;
   }
 
   for (GridMapIterator iterator(gridMap); !iterator.isPastEnd(); ++iterator) {
-    const auto& cvColor = cvPtr->image.at<cv::Vec3b>((*iterator)(0),
-                                                     (*iterator)(1));
+    const auto& cvColor = cvPtr->image.at<cv::Vec3b>((*iterator)(0), (*iterator)(1));
     Eigen::Vector3i colorVector;
     // TODO Add cases for different image encodings.
     colorVector(2) = cvColor[0];  // From BGR to RGB.
     colorVector(1) = cvColor[1];
     colorVector(0) = cvColor[2];
     colorVectorToValue(colorVector, gridMap.at(layer, *iterator));
+  }
+
+  return true;
+}
+
+bool GridMapRosConverter::toCvImage(const grid_map::GridMap& gridMap, const std::string& layer,
+                                    cv::Mat& cvImage, const float dataMin, const float dataMax)
+{
+  if (gridMap.getSize()(0) > 0 && gridMap.getSize()(1) > 0) {
+    // Initialize blank image.
+    cvImage = cv::Mat::zeros(gridMap.getSize()(0), gridMap.getSize()(1), CV_8UC4);
+  } else {
+    ROS_ERROR("Invalid grid map?");
+    return false;
+  }
+
+  // Clamp outliers.
+  grid_map::GridMap map = gridMap;
+  map.get(layer) = map.get(layer).unaryExpr(grid_map::Clamp<float>(dataMin, dataMax));
+
+  // Find upper and lower values.
+  float lowerValue = map.get(layer).minCoeffOfFinites();
+  float upperValue = map.get(layer).maxCoeffOfFinites();
+
+  uchar imageMax = std::numeric_limits<unsigned char>::max();
+  for (GridMapIterator iterator(map); !iterator.isPastEnd(); ++iterator) {
+    if (map.isValid(*iterator, layer)) {
+      float value = map.at(layer, *iterator);
+      uchar imageValue = (uchar)(((value - lowerValue) / (upperValue - lowerValue)) * (float)imageMax);
+      grid_map::Index imageIndex(iterator.getUnwrappedIndex());
+      cvImage.at<cv::Vec<uchar, 4>>(imageIndex(1), imageIndex(0))[0] = imageValue;
+      cvImage.at<cv::Vec<uchar, 4>>(imageIndex(1), imageIndex(0))[1] = imageValue;
+      cvImage.at<cv::Vec<uchar, 4>>(imageIndex(1), imageIndex(0))[2] = imageValue;
+      cvImage.at<cv::Vec<uchar, 4>>(imageIndex(1), imageIndex(0))[3] = imageMax;
+    }
   }
 
   return true;
@@ -390,7 +487,7 @@ bool GridMapRosConverter::saveToBag(const grid_map::GridMap& gridMap, const std:
   toMessage(gridMap, message);
   ros::Time time(gridMap.getTimestamp());
 
-  if (!time.isValid()) {
+  if (!time.isValid() || time.isZero()) {
     if (!ros::Time::isValid()) ros::Time::init();
     time = ros::Time::now();
   }

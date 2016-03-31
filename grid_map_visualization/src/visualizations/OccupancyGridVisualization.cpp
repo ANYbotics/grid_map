@@ -7,7 +7,7 @@
  */
 
 #include "grid_map_visualization/visualizations/OccupancyGridVisualization.hpp"
-#include <grid_map/GridMapRosConverter.hpp>
+#include <grid_map_ros/GridMapRosConverter.hpp>
 #include <nav_msgs/OccupancyGrid.h>
 
 namespace grid_map_visualization {

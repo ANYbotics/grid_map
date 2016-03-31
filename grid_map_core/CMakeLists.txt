@@ -3,20 +3,19 @@ project(grid_map_core)
 
 set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
 
-# Set the build type.  Options are:
-#  Coverage       : w/ debug symbols, w/o optimization, w/ code-coverage
-#  Debug          : w/ debug symbols, w/o optimization
-#  Release        : w/o debug symbols, w/ optimization
-#  RelWithDebInfo : w/ debug symbols, w/ optimization
-#  MinSizeRel     : w/o debug symbols, w/ optimization, stripped binaries
-#set(CMAKE_BUILD_TYPE RelWithDebInfo)
-
 ## Find catkin macros and libraries
 find_package(catkin REQUIRED COMPONENTS
 )
 
 ## System dependencies are found with CMake's conventions
-find_package(Eigen3 REQUIRED)
+#find_package(Eigen3 REQUIRED)
+# Solution to find Eigen3 with Saucy.
+find_package(Eigen3 QUIET)
+if(NOT EIGEN3_FOUND)
+  find_package(PkgConfig REQUIRED)
+  pkg_check_modules(EIGEN3 REQUIRED eigen3)
+  set(EIGEN3_INCLUDE_DIR ${EIGEN3_INCLUDE_DIRS})
+endif()
 
 ###################################
 ## catkin specific configuration ##
@@ -28,13 +27,14 @@ find_package(Eigen3 REQUIRED)
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-    INCLUDE_DIRS
-      include
-    LIBRARIES
-      ${PROJECT_NAME}
-    CATKIN_DEPENDS
-    DEPENDS
-      Eigen3
+  INCLUDE_DIRS
+    include
+    ${EIGEN3_INCLUDE_DIR}
+  LIBRARIES
+    ${PROJECT_NAME}
+  CATKIN_DEPENDS
+  DEPENDS
+    #Eigen3
 )
 
 ###########
@@ -58,6 +58,7 @@ add_library(${PROJECT_NAME}
    src/iterators/GridMapIterator.cpp
    src/iterators/SubmapIterator.cpp
    src/iterators/CircleIterator.cpp
+   src/iterators/EllipseIterator.cpp
    src/iterators/SpiralIterator.cpp
    src/iterators/PolygonIterator.cpp
    src/iterators/LineIterator.cpp
@@ -65,6 +66,30 @@ add_library(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME}
   ${catkin_LIBRARIES}
+)
+
+#############
+## Install ##
+#############
+
+# Mark executables and/or libraries for installation
+install(TARGETS ${PROJECT_NAME}
+  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
+# Mark cpp header files for installation
+install(
+  DIRECTORY include/${PROJECT_NAME}/
+  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+  FILES_MATCHING PATTERN "*.hpp"
+)
+
+# Mark other files for installation
+install(
+  DIRECTORY doc
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
 
 #############
@@ -77,10 +102,13 @@ catkin_add_gtest(${PROJECT_NAME}-test
   test/test_grid_map_core.cpp
   test/GridMapMathTest.cpp
   test/GridMapTest.cpp
+  test/GridMapIteratorTest.cpp
+  test/EllipseIteratorTest.cpp
   test/SubmapIteratorTest.cpp
   test/PolygonIteratorTest.cpp
   test/PolygonTest.cpp
   test/EigenPluginsTest.cpp)
 if(TARGET ${PROJECT_NAME}-test)
-  target_link_libraries(${PROJECT_NAME}-test grid_map_core)
+  target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 endif()
+

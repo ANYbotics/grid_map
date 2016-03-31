@@ -5,7 +5,7 @@
  *      Author: Péter Fankhauser
  *   Institute: ETH Zurich, Autonomous Systems Lab
  */
-#include <grid_map/PolygonRosConverter.hpp>
+#include "grid_map_ros/PolygonRosConverter.hpp"
 
 // ROS
 #include <geometry_msgs/Point32.h>

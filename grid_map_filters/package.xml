@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package format="2">
   <name>grid_map_filters</name>
-  <version>1.0.0</version>
+  <version>1.2.0</version>
   <description>Processing grid maps as a sequence of ROS filters.</description>
   <maintainer email="pfankhauser@ethz.ch">Péter Fankhauser</maintainer>
   <license>BSD</license>
@@ -10,8 +10,8 @@
   <author email="martiwer@student.ethz.ch">Martin Wermelinger</author>
   <author email="pfankhauser@ethz.ch">Péter Fankhauser</author>
   <buildtool_depend>catkin</buildtool_depend>
-  <depend>grid_map</depend>
   <depend>grid_map_core</depend>
+  <depend>grid_map_ros</depend>
   <depend>grid_map_msgs</depend>
   <depend>filters</depend>
   <export>
