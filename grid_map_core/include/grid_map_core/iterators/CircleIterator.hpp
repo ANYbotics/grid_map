@@ -71,7 +71,7 @@ private:
    * Check if current index is inside the circle.
    * @return true if inside, false otherwise.
    */
-  bool isInside();
+  bool isInside() const;
 
   /*!
    * Finds the submap that fully contains the circle and returns the parameters.
