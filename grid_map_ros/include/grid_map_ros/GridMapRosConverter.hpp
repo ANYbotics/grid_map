@@ -8,8 +8,7 @@
 
 #pragma once
 
-#include <grid_map_core/TypeDefs.hpp>
-#include <grid_map_core/GridMap.hpp>
+#include <grid_map_core/grid_map_core.hpp>
 #include <grid_map_msgs/GridMap.h>
 
 // STL
@@ -23,11 +22,10 @@
 #include <ros/ros.h>
 #include <sensor_msgs/PointCloud2.h>
 #include <sensor_msgs/Image.h>
+#include <sensor_msgs/image_encodings.h>
 #include <nav_msgs/OccupancyGrid.h>
 #include <nav_msgs/GridCells.h>
-
-// Open CV
-#include <opencv2/core/core.hpp>
+#include <cv_bridge/cv_bridge.h>
 
 namespace grid_map {
 
@@ -149,9 +147,9 @@ class GridMapRosConverter
    * @param[in] image the image to be added. If it is a color image
    * (bgr or bgra encoding), it will be transformed in a grayscale image.
    * @param[in] layer the layer that is filled with the image data.
-   * @param[in] lowerValue value of the layer corresponding to black pixels.
-   * @param[in] upperValue value of the layer corresponding to white pixels.
    * @param[out] gridMap the grid map to be populated.
+   * @param[in](optional) lowerValue value of the layer corresponding to black image pixels.
+   * @param[in](optional) upperValue value of the layer corresponding to white image pixels.
    * @return true if successful, false otherwise.
    */
   static bool addLayerFromImage(const sensor_msgs::Image& image, const std::string& layer,
@@ -168,19 +166,89 @@ class GridMapRosConverter
   static bool addColorLayerFromImage(const sensor_msgs::Image& image, const std::string& layer,
                                      grid_map::GridMap& gridMap);
 
-    /*!
+  /*!
    * Creates a cv image from a grid map layer.
+   * This conversion sets the corresponding black and white pixel value to the
+   * min. and max. data of the layer data.
    * @param[in] grid map to be added.
    * @param[in] layer the layer that is converted to the image.
+   * @param[in] encoding the desired encoding of the image.
    * @param[out] cv image to be populated.
-   * @param[in](optional) dataMin the lower height limit.
-   * @param[in](optional) dataMax the upper height limit.
    * @return true if successful, false otherwise.
    */
   static bool toCvImage(const grid_map::GridMap& gridMap, const std::string& layer,
-                        cv::Mat& cvImage,
-                        const float dataMin = std::numeric_limits<float>::min(),
-                        const float dataMax = std::numeric_limits<float>::max());
+                        const std::string encoding, cv_bridge::CvImage& cvImage);
+
+/*!
+ * Creates a cv image from a grid map layer.
+ * @param[in] grid map to be added.
+ * @param[in] layer the layer that is converted to the image.
+ * @param[in] encoding the desired encoding of the image.
+ * @param[in] lowerValue value of the layer corresponding to black image pixels.
+ * @param[in] upperValue value of the layer corresponding to white image pixels.
+ * @param[out] cv image to be populated.
+ * @return true if successful, false otherwise.
+ */
+  static bool toCvImage(const grid_map::GridMap& gridMap, const std::string& layer,
+                        const std::string encoding, const float lowerValue,
+                        const float upperValue, cv_bridge::CvImage& cvImage);
+
+  /*!
+   * Creates a cv mat from a grid map layer.
+   * @param[in] grid map to be added.
+   * @param[in] layer the layer that is converted to the image.
+   * @param[in] encoding the desired encoding of the image.
+   * @param[in] lowerValue value of the layer corresponding to black image pixels.
+   * @param[in] upperValue value of the layer corresponding to white image pixels.
+   * @param[out] cv mat to be populated.
+   * @return true if successful, false otherwise.
+   */
+  template<typename Type_, int NChannels_>
+  static bool toCvMat(const grid_map::GridMap& gridMap, const std::string& layer,
+                      const int encoding, const float lowerValue, const float upperValue,
+                      cv::Mat& cvMat)
+  {
+    // Initialize image.
+    if (gridMap.getSize()(0) > 0 && gridMap.getSize()(1) > 0) {
+      cvMat = cv::Mat::zeros(gridMap.getSize()(0), gridMap.getSize()(1), encoding);
+    } else {
+      ROS_ERROR("Invalid grid map?");
+      return false;
+    }
+
+    // Get max image value.
+    unsigned int imageMax = (unsigned int)std::numeric_limits<Type_>::max();
+
+    // Clamp outliers.
+    grid_map::GridMap map = gridMap;
+    map.get(layer) = map.get(layer).unaryExpr(grid_map::Clamp<float>(lowerValue, upperValue));
+
+    // Convert to image.
+    bool isColor = false;
+    if (cvMat.channels() >= 3) isColor = true;
+    bool hasAlpha = false;
+    if (cvMat.channels() >= 4) hasAlpha = true;
+
+    for (GridMapIterator iterator(map); !iterator.isPastEnd(); ++iterator) {
+      if (map.isValid(*iterator, layer)) {
+        const float value = map.at(layer, *iterator);
+        Type_ imageValue = (Type_) (((value - lowerValue) / (upperValue - lowerValue)) * (float) imageMax);
+        const Index imageIndex(iterator.getUnwrappedIndex());
+        unsigned int channel = 0;
+        cvMat.at<cv::Vec<Type_, NChannels_>>(imageIndex(0), imageIndex(1))[channel] = imageValue;
+
+        if (isColor) {
+          cvMat.at<cv::Vec<Type_, NChannels_>>(imageIndex(0), imageIndex(1))[++channel] = imageValue;
+          cvMat.at<cv::Vec<Type_, NChannels_>>(imageIndex(0), imageIndex(1))[++channel] = imageValue;
+        }
+        if (hasAlpha) {
+          cvMat.at<cv::Vec<Type_, NChannels_>>(imageIndex(0), imageIndex(1))[++channel] = imageMax;
+        }
+      }
+    }
+
+    return true;
+  };
 
   /*!
    * Saves a grid map into a ROS bag. The timestamp of the grid map
