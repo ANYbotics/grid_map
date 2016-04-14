@@ -1,0 +1,157 @@
+/*
+ * GridMapCvConverter.hpp
+ *
+ *  Created on: Apr 14, 2016
+ *      Author: Péter Fankhauser
+ *	 Institute: ETH Zurich, Autonomous Systems Lab
+ */
+
+#pragma once
+
+#include <grid_map_core/grid_map_core.hpp>
+
+// OpenCV
+#include <opencv/cv.h>
+
+namespace grid_map {
+
+/*!
+ * Conversions between grid maps and OpenCV images.
+ */
+class GridMapCvConverter
+{
+ public:
+  /*!
+   * Default constructor.
+   */
+  GridMapCvConverter();
+
+  /*!
+   * Destructor.
+   */
+  virtual ~GridMapCvConverter();
+
+  /*!
+   * Adds a layer with data from image.
+   * @param[in] image the image to be added. If it is a color image
+   * (bgr or bgra encoding), it will be transformed in a grayscale image.
+   * @param[in] layer the layer that is filled with the image data.
+   * @param[out] gridMap the grid map to be populated.
+   * @param[in](optional) lowerValue value of the layer corresponding to black image pixels.
+   * @param[in](optional) upperValue value of the layer corresponding to white image pixels.
+   * @return true if successful, false otherwise.
+   */
+  template<typename Type_, int NChannels_>
+  static bool addLayerFromImage(const cv::Mat& image, const std::string& layer,
+                                grid_map::GridMap& gridMap, const float lowerValue,
+                                const float upperValue, const double alphaThreshold = 0.5)
+  {
+    if (gridMap.getSize()(0) != image.rows || gridMap.getSize()(1) != image.cols) {
+      std::cerr << "Image size does not correspond to grid map size!" << std::endl;
+      return false;
+    }
+
+    bool isColor = false;
+    if (image.channels() >= 3) isColor = true;
+    bool hasAlpha = false;
+    if (image.channels() >= 4) hasAlpha = true;
+
+    cv::Mat imageMono;
+    if (isColor && !hasAlpha) {
+      cv::cvtColor(image, imageMono, CV_BGR2GRAY);
+    } else if (isColor && hasAlpha) {
+      cv::cvtColor(image, imageMono, CV_BGRA2GRAY);
+    } else if (!isColor && !hasAlpha){
+      imageMono = image;
+    } else {
+      std::cerr << "Something went wrong when adding grid map layer form image!" << std::endl;
+      return false;
+    }
+
+    const float mapValueDifference = upperValue - lowerValue;
+    const float maxImageValue = (float)std::numeric_limits<Type_>::max();
+    const Type_ alphaTreshold = (Type_)(alphaThreshold * std::numeric_limits<Type_>::max());
+
+    gridMap.add(layer);
+    grid_map::Matrix& data = gridMap[layer];
+
+    for (GridMapIterator iterator(gridMap); !iterator.isPastEnd(); ++iterator) {
+      const Index index(*iterator);
+
+      // Check for alpha layer.
+      if (hasAlpha) {
+        const Type_ alpha = image.at<cv::Vec<Type_, NChannels_>>(index(0), index(1))[NChannels_ - 1];
+        if (alpha < alphaTreshold) continue;
+      }
+
+      // Compute value.
+      const Type_ imageValue = imageMono.at<Type_>(index(0), index(1));
+      const float mapValue = lowerValue + mapValueDifference * ((float) imageValue / maxImageValue);
+      data(index(0), index(1)) = mapValue;
+    }
+
+    return true;
+  };
+
+  /*!
+   * Creates a cv mat from a grid map layer.
+   * @param[in] grid map to be added.
+   * @param[in] layer the layer that is converted to the image.
+   * @param[in] encoding the desired encoding of the image.
+   * @param[in] lowerValue the value of the layer corresponding to black image pixels.
+   * @param[in] upperValue the value of the layer corresponding to white image pixels.
+   * @param[out] image the image to be populated.
+   * @return true if successful, false otherwise.
+   */
+  template<typename Type_, int NChannels_>
+  static bool toImage(const grid_map::GridMap& gridMap, const std::string& layer,
+                      const int encoding, const float lowerValue, const float upperValue,
+                      cv::Mat& image)
+  {
+    // Initialize image.
+    if (gridMap.getSize()(0) > 0 && gridMap.getSize()(1) > 0) {
+      image = cv::Mat::zeros(gridMap.getSize()(0), gridMap.getSize()(1), encoding);
+    } else {
+      std::cerr << "Invalid grid map?" << std::endl;
+      return false;
+    }
+
+    // Get max image value.
+    unsigned int imageMax = (unsigned int)std::numeric_limits<Type_>::max();
+
+    // Clamp outliers.
+    grid_map::GridMap map = gridMap;
+    map.get(layer) = map.get(layer).unaryExpr(grid_map::Clamp<float>(lowerValue, upperValue));
+    const grid_map::Matrix& data = gridMap[layer];
+
+    // Convert to image.
+    bool isColor = false;
+    if (image.channels() >= 3) isColor = true;
+    bool hasAlpha = false;
+    if (image.channels() >= 4) hasAlpha = true;
+
+    for (GridMapIterator iterator(map); !iterator.isPastEnd(); ++iterator) {
+      const Index index(*iterator);
+      if (std::isfinite(data(index(0), index(1)))) {
+        const float& value = data(index(0), index(1));
+        const Type_ imageValue = (Type_) (((value - lowerValue) / (upperValue - lowerValue)) * (float) imageMax);
+        const Index imageIndex(iterator.getUnwrappedIndex());
+        unsigned int channel = 0;
+        image.at<cv::Vec<Type_, NChannels_>>(imageIndex(0), imageIndex(1))[channel] = imageValue;
+
+        if (isColor) {
+          image.at<cv::Vec<Type_, NChannels_>>(imageIndex(0), imageIndex(1))[++channel] = imageValue;
+          image.at<cv::Vec<Type_, NChannels_>>(imageIndex(0), imageIndex(1))[++channel] = imageValue;
+        }
+        if (hasAlpha) {
+          image.at<cv::Vec<Type_, NChannels_>>(imageIndex(0), imageIndex(1))[++channel] = imageMax;
+        }
+      }
+    }
+
+    return true;
+  };
+
+};
+
+} /* namespace */

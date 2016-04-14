@@ -1,5 +1,5 @@
 /*
- * GridMapTest.cpp
+ * GridMapRosTest.cpp
  *
  *  Created on: Mar 24, 2015
  *      Author: Peter Fankhauser, Martin Wermelinger
@@ -192,17 +192,15 @@ TEST(ImageConversion, roundTripBGRA8)
   const float minValue = -1.0;
   const float maxValue = 1.0;
 
-  // Convert to CV image.
-  cv_bridge::CvImage cvImage;
-  GridMapRosConverter::toCvImage(gridMapInput, "layer", sensor_msgs::image_encodings::BGRA8,
-                                 minValue, maxValue, cvImage);
-  sensor_msgs::Image rosImage;
-  cvImage.toImageMsg(rosImage);
+  // Convert to image message.
+  sensor_msgs::Image image;
+  GridMapRosConverter::toImage(gridMapInput, "layer", sensor_msgs::image_encodings::BGRA8, minValue,
+                               maxValue, image);
 
   // Convert back to grid map.
   GridMap gridMapOutput;
-  GridMapRosConverter::initializeFromImage(rosImage, gridMapInput.getResolution(), gridMapOutput);
-  GridMapRosConverter::addLayerFromImage(rosImage, "layer", gridMapOutput, minValue, maxValue);
+  GridMapRosConverter::initializeFromImage(image, gridMapInput.getResolution(), gridMapOutput);
+  GridMapRosConverter::addLayerFromImage(image, "layer", gridMapOutput, minValue, maxValue);
 
   // Check data.
   const float resolution = (maxValue - minValue) / (float) std::numeric_limits<unsigned char>::max();
@@ -218,17 +216,15 @@ TEST(ImageConversion, roundTripMONO16)
   const float minValue = -1.0;
   const float maxValue = 1.0;
 
-  // Convert to CV image.
-  cv_bridge::CvImage cvImage;
-  GridMapRosConverter::toCvImage(gridMapInput, "layer", sensor_msgs::image_encodings::MONO16,
-                                 minValue, maxValue, cvImage);
-  sensor_msgs::Image rosImage;
-  cvImage.toImageMsg(rosImage);
+  // Convert to image message.
+  sensor_msgs::Image image;
+  GridMapRosConverter::toImage(gridMapInput, "layer", sensor_msgs::image_encodings::MONO16,
+                               minValue, maxValue, image);
 
   // Convert back to grid map.
   GridMap gridMapOutput;
-  GridMapRosConverter::initializeFromImage(rosImage, gridMapInput.getResolution(), gridMapOutput);
-  GridMapRosConverter::addLayerFromImage(rosImage, "layer", gridMapOutput, minValue, maxValue);
+  GridMapRosConverter::initializeFromImage(image, gridMapInput.getResolution(), gridMapOutput);
+  GridMapRosConverter::addLayerFromImage(image, "layer", gridMapOutput, minValue, maxValue);
 
   // Check data.
   // TODO Why is factor 300 necessary?

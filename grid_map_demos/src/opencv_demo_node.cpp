@@ -1,6 +1,7 @@
 #include <ros/ros.h>
 #include <grid_map_ros/grid_map_ros.hpp>
-#include <cv_bridge/cv_bridge.h>
+#include <grid_map_cv/grid_map_cv.hpp>
+#include <opencv/cv.h>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv/highgui.h>
 
@@ -11,9 +12,9 @@ int main(int argc, char** argv)
 {
   // Initialize node and publisher.
   init(argc, argv, "opencv_demo");
-  NodeHandle nh("~");
-  Publisher publisher = nh.advertise<grid_map_msgs::GridMap>("grid_map", 1, true);
-  const bool useTransparency = false;
+  NodeHandle nodeHandle("~");
+  Publisher publisher = nodeHandle.advertise<grid_map_msgs::GridMap>("grid_map", 1, true);
+  const bool useTransparency = true;
 
   // Create grid map.
   GridMap map({"original", "elevation"});
@@ -44,42 +45,40 @@ int main(int argc, char** argv)
   }
 
   // Convert to CV image.
-  cv_bridge::CvImage originalImage;
-  std::string encoding;
+  cv::Mat originalImage;
   if (useTransparency) {
-    encoding = sensor_msgs::image_encodings::RGBA16;
+    // Note: The template parameters have to be set based on your encoding
+    // of the image. For 8-bit images use `unsigned char`.
+    GridMapCvConverter::toImage<unsigned short, 4>(map, "original", CV_16UC4, 0.0, 0.3, originalImage);
   } else {
-    encoding = sensor_msgs::image_encodings::MONO16;
+    GridMapCvConverter::toImage<unsigned short, 1>(map, "original", CV_16UC1, 0.0, 0.3, originalImage);
   }
-  GridMapRosConverter::toCvImage(map, "original", encoding, 0.0, 0.3, originalImage);
 
   // Create OpenCV window.
   cv::namedWindow("OpenCV Demo");
 
   // Work with copy of image in a loop.
-  while (nh.ok()) {
+  while (nodeHandle.ok()) {
 
     // Initialize.
     ros::Time time = ros::Time::now();
     map.setTimestamp(time.toNSec());
-    cv_bridge::CvImage modifiedImage(originalImage.header, originalImage.encoding);
+    cv::Mat modifiedImage;
     int blurRadius = 200 - abs((int)(200.0 * sin(time.toSec())));
     blurRadius = blurRadius - (blurRadius % 2) + 1;
 
     // Apply Gaussian blur.
-    cv::GaussianBlur(originalImage.image, modifiedImage.image, cv::Size(blurRadius, blurRadius), 0.0, 0.0);
+    cv::GaussianBlur(originalImage, modifiedImage, cv::Size(blurRadius, blurRadius), 0.0, 0.0);
 
     // Visualize as image.
-    cv::imshow("OpenCV Demo", modifiedImage.image);
+    cv::imshow("OpenCV Demo", modifiedImage);
     cv::waitKey(40);
 
     // Convert resulting image to a grid map.
-    // Note: The template parameters have to be set based on your encoding
-    // of the image. For MONO8 encoding use `unsigned char`.
     if (useTransparency) {
-      GridMapRosConverter::addLayerFromImage<unsigned short, 4>(modifiedImage.image, "elevation", map, 0.0, 0.3, 0.3);
+      GridMapCvConverter::addLayerFromImage<unsigned short, 4>(modifiedImage, "elevation", map, 0.0, 0.3, 0.3);
     } else {
-      GridMapRosConverter::addLayerFromImage<unsigned short, 1>(modifiedImage.image, "elevation", map, 0.0, 0.3);
+      GridMapCvConverter::addLayerFromImage<unsigned short, 1>(modifiedImage, "elevation", map, 0.0, 0.3);
     }
 
     // Publish grid map.

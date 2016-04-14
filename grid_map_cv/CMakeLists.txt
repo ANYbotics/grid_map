@@ -1,25 +1,14 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(grid_map_ros)
+project(grid_map_cv)
 
 set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
 
 ## Find catkin macros and libraries
 find_package(catkin REQUIRED COMPONENTS
-  roscpp
   grid_map_core
-  grid_map_msgs
-  grid_map_cv
-  sensor_msgs
-  nav_msgs
-  std_msgs
-  geometry_msgs
-  cv_bridge
-  rosbag
-  visualization_msgs
 )
 
-## System dependencies are found with CMake's conventions
-#find_package(Eigen3 REQUIRED)
+find_package(OpenCV REQUIRED)
 
 ###################################
 ## catkin specific configuration ##
@@ -34,19 +23,10 @@ catkin_package(
   INCLUDE_DIRS
     include
   LIBRARIES
-    ${PROJECT_NAME}
   CATKIN_DEPENDS
-    roscpp
     grid_map_core
-    grid_map_msgs
-    sensor_msgs
-    nav_msgs
-    std_msgs
-    geometry_msgs
-    cv_bridge
-    visualization_msgs
   DEPENDS
-    #Eigen3
+    OpenCV
 )
 
 ###########
@@ -58,34 +38,12 @@ include_directories(
   include
   ${catkin_INCLUDE_DIRS}
   ${EIGEN3_INCLUDE_DIR}
-)
-
-## Declare a cpp library
-add_library(${PROJECT_NAME}
-  src/GridMapRosConverter.cpp
-  src/GridMapMsgHelpers.cpp
-  src/PolygonRosConverter.cpp
-)
-
-target_link_libraries(${PROJECT_NAME}
-  ${catkin_LIBRARIES}
-)
-
-add_dependencies(${PROJECT_NAME}
-  ${catkin_EXPORTED_TARGETS}
+  ${OpenCV_INCLUDE_DIRS}
 )
 
 #############
 ## Install ##
 #############
-
-# Mark executables and/or libraries for installation
-install(
-  TARGETS ${PROJECT_NAME}
-  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-)
 
 # Mark cpp header files for installation
 install(
@@ -100,7 +58,4 @@ install(
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
 ## Add gtest based cpp test target and link libraries
-catkin_add_gtest(${PROJECT_NAME}-test test/test_grid_map_ros.cpp test/GridMapRosTest.cpp)
-if(TARGET ${PROJECT_NAME}-test)
-  target_link_libraries(${PROJECT_NAME}-test grid_map_ros)
-endif()
+catkin_add_gtest(${PROJECT_NAME}-test test/test_grid_map_cv.cpp test/GridMapCvTest.cpp)

@@ -12,6 +12,7 @@
   <depend>roscpp</depend>
   <depend>grid_map_core</depend>
   <depend>grid_map_msgs</depend>
+  <depend>grid_map_cv</depend>
   <depend>sensor_msgs</depend>
   <depend>nav_msgs</depend>
   <depend>std_msgs</depend>
