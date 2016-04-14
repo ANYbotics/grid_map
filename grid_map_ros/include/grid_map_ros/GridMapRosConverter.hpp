@@ -156,6 +156,58 @@ class GridMapRosConverter
                                 grid_map::GridMap& gridMap, const float lowerValue = 0.0,
                                 const float upperValue = 1.0);
 
+  template<typename Type_, int NChannels_>
+  static bool addLayerFromImage(const cv::Mat& cvMat, const std::string& layer,
+                                grid_map::GridMap& gridMap, const float lowerValue,
+                                const float upperValue, const double alphaThreshold = 0.5)
+  {
+    if (gridMap.getSize()(0) != cvMat.rows || gridMap.getSize()(1) != cvMat.cols) {
+      std::cerr << "Image size does not correspond to grid map size!" << std::endl;
+      return false;
+    }
+
+    bool isColor = false;
+    if (cvMat.channels() >= 3) isColor = true;
+    bool hasAlpha = false;
+    if (cvMat.channels() >= 4) hasAlpha = true;
+
+    cv::Mat cvMatMono;
+    if (isColor && !hasAlpha) {
+      cv::cvtColor(cvMat, cvMatMono, CV_BGR2GRAY);
+    } else if (isColor && hasAlpha) {
+      cv::cvtColor(cvMat, cvMatMono, CV_BGRA2GRAY);
+    } else if (!isColor && !hasAlpha){
+      cvMatMono = cvMat;
+    } else {
+      std::cerr << "Something went wrong when adding grid map layer form image!" << std::endl;
+      return false;
+    }
+
+    const float mapValueDifference = upperValue - lowerValue;
+    const float maxImageValue = (float)std::numeric_limits<Type_>::max();
+    const Type_ alphaTreshold = (Type_)(alphaThreshold * std::numeric_limits<Type_>::max());
+
+    gridMap.add(layer);
+    grid_map::Matrix& data = gridMap[layer];
+
+    for (GridMapIterator iterator(gridMap); !iterator.isPastEnd(); ++iterator) {
+      const Index index(*iterator);
+
+      // Check for alpha layer.
+      if (hasAlpha) {
+        const Type_ alpha = cvMat.at<cv::Vec<Type_, NChannels_>>(index(0), index(1))[NChannels_ - 1];
+        if (alpha < alphaTreshold) continue;
+      }
+
+      // Compute value.
+      const Type_ imageValue = cvMatMono.at<Type_>(index(0), index(1));
+      const float mapValue = lowerValue + mapValueDifference * ((float) imageValue / maxImageValue);
+      data(index(0), index(1)) = mapValue;
+    }
+
+    return true;
+  };
+
   /*!
    * Adds a color layer with data from an image.
    * @param[in] image the image to be added.
@@ -222,6 +274,7 @@ class GridMapRosConverter
     // Clamp outliers.
     grid_map::GridMap map = gridMap;
     map.get(layer) = map.get(layer).unaryExpr(grid_map::Clamp<float>(lowerValue, upperValue));
+    const grid_map::Matrix& data = gridMap[layer];
 
     // Convert to image.
     bool isColor = false;
@@ -230,9 +283,10 @@ class GridMapRosConverter
     if (cvMat.channels() >= 4) hasAlpha = true;
 
     for (GridMapIterator iterator(map); !iterator.isPastEnd(); ++iterator) {
-      if (map.isValid(*iterator, layer)) {
-        const float value = map.at(layer, *iterator);
-        Type_ imageValue = (Type_) (((value - lowerValue) / (upperValue - lowerValue)) * (float) imageMax);
+      const Index index(*iterator);
+      if (std::isfinite(data(index(0), index(1)))) {
+        const float& value = data(index(0), index(1));
+        const Type_ imageValue = (Type_) (((value - lowerValue) / (upperValue - lowerValue)) * (float) imageMax);
         const Index imageIndex(iterator.getUnwrappedIndex());
         unsigned int channel = 0;
         cvMat.at<cv::Vec<Type_, NChannels_>>(imageIndex(0), imageIndex(1))[channel] = imageValue;

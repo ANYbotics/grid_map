@@ -323,89 +323,33 @@ bool GridMapRosConverter::addLayerFromImage(const sensor_msgs::Image& image,
                                             const std::string& layer, grid_map::GridMap& gridMap,
                                             const float lowerValue, const float upperValue)
 {
-  // TODO Speed up this method, lots of potential.
-  namespace enc = sensor_msgs::image_encodings;
-  cv_bridge::CvImagePtr cvPtrAlpha, cvPtrMono;
-
-  // If alpha channel exist, read it.
-  if (image.encoding == enc::BGRA8
-      || image.encoding == enc::BGRA16) {
-    try {
-      cvPtrAlpha = cv_bridge::toCvCopy(image, image.encoding);
-    } catch (cv_bridge::Exception& e) {
-      ROS_ERROR("cv_bridge exception: %s", e.what());
-      return false;
-    }
-  }
-
-  unsigned int depth;
-  // Convert color image to grayscale.
+  cv_bridge::CvImageConstPtr cvImage;
   try {
-    if (image.encoding == enc::BGRA8
-        || image.encoding == enc::BGR8
-        || image.encoding == enc::MONO8) {
-      cvPtrMono = cv_bridge::toCvCopy(image,
-                                      enc::MONO8);
-      depth = std::pow(2, 8);
-      ROS_DEBUG("Color image converted to mono8");
-    } else if (image.encoding == enc::BGRA16
-        || image.encoding == enc::BGR16
-        || image.encoding == enc::MONO16) {
-      cvPtrMono = cv_bridge::toCvCopy(image, enc::MONO16);
-      depth = std::pow(2, 16);
-      ROS_DEBUG("Color image converted to mono16");
-    } else {
-      ROS_ERROR("Expected BGR, BGRA, or MONO image encoding.");
-      return false;
-    }
+    // TODO Use `toCvShared()`?
+    cvImage = cv_bridge::toCvCopy(image, image.encoding);
   } catch (cv_bridge::Exception& e) {
     ROS_ERROR("cv_bridge exception: %s", e.what());
     return false;
   }
 
-  gridMap.add(layer);
-
-  if (gridMap.getSize()(0) != image.height || gridMap.getSize()(1) != image.width) {
-    ROS_ERROR("Image size does not correspond to grid map size!");
-    return false;
+  const int cvEncoding = cv_bridge::getCvType(image.encoding);
+  switch (cvEncoding) {
+    case CV_8UC1:
+      return addLayerFromImage<unsigned char, 1>(cvImage->image, layer, gridMap, lowerValue, upperValue);
+    case CV_8UC3:
+      return addLayerFromImage<unsigned char, 3>(cvImage->image, layer, gridMap, lowerValue, upperValue);
+    case CV_8UC4:
+      return addLayerFromImage<unsigned char, 4>(cvImage->image, layer, gridMap, lowerValue, upperValue);
+    case CV_16UC1:
+      return addLayerFromImage<unsigned short, 1>(cvImage->image, layer, gridMap, lowerValue, upperValue);
+    case CV_16UC3:
+      return addLayerFromImage<unsigned short, 3>(cvImage->image, layer, gridMap, lowerValue, upperValue);
+    case CV_16UC4:
+      return addLayerFromImage<unsigned short, 4>(cvImage->image, layer, gridMap, lowerValue, upperValue);
+    default:
+      ROS_ERROR("Expected MONO8, MONO16, RGB(A)8, RGB(A)16, BGR(A)8, or BGR(A)16 image encoding.");
+      return false;
   }
-
-  for (GridMapIterator iterator(gridMap); !iterator.isPastEnd(); ++iterator) {
-    // Set transparent values.
-    if (image.encoding == enc::BGRA8) {
-      const auto& cvAlpha = cvPtrAlpha->image.at<cv::Vec4b>((*iterator)(0),
-                                                            (*iterator)(1));
-      unsigned int alpha = cvAlpha[3];
-      if (cvAlpha[3] < depth / 2)
-        continue;
-    }
-    if (image.encoding == enc::BGRA16) {
-      const auto& cvAlpha = cvPtrAlpha->image.at<cv::Vec<uchar, 8>>(
-          (*iterator)(0), (*iterator)(1));
-      int alpha = (cvAlpha[7] << 8) + cvAlpha[8];
-      if (alpha < depth / 2)
-        continue;
-    }
-
-    // Compute value.
-    unsigned int grayValue;
-    if (depth == std::pow(2, 8)) {
-      uchar cvGrayscale = cvPtrMono->image.at<uchar>((*iterator)(0),
-                                                     (*iterator)(1));
-      grayValue = cvGrayscale;
-    }
-    if (depth == std::pow(2, 16)) {
-      const auto& cvGrayscale = cvPtrMono->image.at<cv::Vec2b>((*iterator)(0),
-                                                               (*iterator)(1));
-      grayValue = (cvGrayscale[1] << 8) + cvGrayscale[2];
-    }
-
-    const float value = lowerValue
-        + (upperValue - lowerValue) * ((float) grayValue / (float) (depth - 1));
-    gridMap.at(layer, *iterator) = value;
-  }
-
-  return true;
 }
 
 bool GridMapRosConverter::addColorLayerFromImage(const sensor_msgs::Image& image,
