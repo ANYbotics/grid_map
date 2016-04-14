@@ -322,7 +322,8 @@ bool GridMapRosConverter::initializeFromImage(const sensor_msgs::Image& image,
 
 bool GridMapRosConverter::addLayerFromImage(const sensor_msgs::Image& image,
                                             const std::string& layer, grid_map::GridMap& gridMap,
-                                            const float lowerValue, const float upperValue)
+                                            const float lowerValue, const float upperValue,
+                                            const double alphaThreshold)
 {
   cv_bridge::CvImageConstPtr cvImage;
   try {
@@ -336,17 +337,17 @@ bool GridMapRosConverter::addLayerFromImage(const sensor_msgs::Image& image,
   const int cvEncoding = cv_bridge::getCvType(image.encoding);
   switch (cvEncoding) {
     case CV_8UC1:
-      return GridMapCvConverter::addLayerFromImage<unsigned char, 1>(cvImage->image, layer, gridMap, lowerValue, upperValue);
+      return GridMapCvConverter::addLayerFromImage<unsigned char, 1>(cvImage->image, layer, gridMap, lowerValue, upperValue, alphaThreshold);
     case CV_8UC3:
-      return GridMapCvConverter::addLayerFromImage<unsigned char, 3>(cvImage->image, layer, gridMap, lowerValue, upperValue);
+      return GridMapCvConverter::addLayerFromImage<unsigned char, 3>(cvImage->image, layer, gridMap, lowerValue, upperValue, alphaThreshold);
     case CV_8UC4:
-      return GridMapCvConverter::addLayerFromImage<unsigned char, 4>(cvImage->image, layer, gridMap, lowerValue, upperValue);
+      return GridMapCvConverter::addLayerFromImage<unsigned char, 4>(cvImage->image, layer, gridMap, lowerValue, upperValue, alphaThreshold);
     case CV_16UC1:
-      return GridMapCvConverter::addLayerFromImage<unsigned short, 1>(cvImage->image, layer, gridMap, lowerValue, upperValue);
+      return GridMapCvConverter::addLayerFromImage<unsigned short, 1>(cvImage->image, layer, gridMap, lowerValue, upperValue, alphaThreshold);
     case CV_16UC3:
-      return GridMapCvConverter::addLayerFromImage<unsigned short, 3>(cvImage->image, layer, gridMap, lowerValue, upperValue);
+      return GridMapCvConverter::addLayerFromImage<unsigned short, 3>(cvImage->image, layer, gridMap, lowerValue, upperValue, alphaThreshold);
     case CV_16UC4:
-      return GridMapCvConverter::addLayerFromImage<unsigned short, 4>(cvImage->image, layer, gridMap, lowerValue, upperValue);
+      return GridMapCvConverter::addLayerFromImage<unsigned short, 4>(cvImage->image, layer, gridMap, lowerValue, upperValue, alphaThreshold);
     default:
       ROS_ERROR("Expected MONO8, MONO16, RGB(A)8, RGB(A)16, BGR(A)8, or BGR(A)16 image encoding.");
       return false;

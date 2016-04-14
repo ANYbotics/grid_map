@@ -150,11 +150,13 @@ class GridMapRosConverter
    * @param[out] gridMap the grid map to be populated.
    * @param[in](optional) lowerValue value of the layer corresponding to black image pixels.
    * @param[in](optional) upperValue value of the layer corresponding to white image pixels.
+   * @param[in](optional) alphaThreshold the threshold ([0.0, 1.0]) for the alpha value at which
+   * cells in the grid map are marked as empty.
    * @return true if successful, false otherwise.
    */
   static bool addLayerFromImage(const sensor_msgs::Image& image, const std::string& layer,
                                 grid_map::GridMap& gridMap, const float lowerValue = 0.0,
-                                const float upperValue = 1.0);
+                                const float upperValue = 1.0, const double alphaThreshold = 0.5);
 
   /*!
    * Adds a color layer with data from an image.

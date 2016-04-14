@@ -39,12 +39,14 @@ class GridMapCvConverter
    * @param[out] gridMap the grid map to be populated.
    * @param[in](optional) lowerValue value of the layer corresponding to black image pixels.
    * @param[in](optional) upperValue value of the layer corresponding to white image pixels.
+   * @param[in](optional) alphaThreshold the threshold ([0.0, 1.0]) for the alpha value at which
+   * cells in the grid map are marked as empty.
    * @return true if successful, false otherwise.
    */
   template<typename Type_, int NChannels_>
   static bool addLayerFromImage(const cv::Mat& image, const std::string& layer,
-                                grid_map::GridMap& gridMap, const float lowerValue,
-                                const float upperValue, const double alphaThreshold = 0.5)
+                                grid_map::GridMap& gridMap, const float lowerValue = 0.0,
+                                const float upperValue = 1.0, const double alphaThreshold = 0.5)
   {
     if (gridMap.getSize()(0) != image.rows || gridMap.getSize()(1) != image.cols) {
       std::cerr << "Image size does not correspond to grid map size!" << std::endl;
@@ -91,6 +93,27 @@ class GridMapCvConverter
     }
 
     return true;
+  };
+
+  /*!
+   * Creates a cv mat from a grid map layer.
+   * This conversion sets the corresponding black and white pixel value to the
+   * min. and max. data of the layer data.
+   * @param[in] grid map to be added.
+   * @param[in] layer the layer that is converted to the image.
+   * @param[in] encoding the desired encoding of the image.
+   * @param[in] lowerValue the value of the layer corresponding to black image pixels.
+   * @param[in] upperValue the value of the layer corresponding to white image pixels.
+   * @param[out] image the image to be populated.
+   * @return true if successful, false otherwise.
+   */
+  template<typename Type_, int NChannels_>
+  static bool toImage(const grid_map::GridMap& gridMap, const std::string& layer,
+                      const int encoding, cv::Mat& image)
+  {
+    const float minValue = gridMap.get(layer).minCoeffOfFinites();
+    const float maxValue = gridMap.get(layer).maxCoeffOfFinites();
+    return toImage<Type_, NChannels_>(gridMap, layer, encoding, minValue, maxValue, image);
   };
 
   /*!
