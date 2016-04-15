@@ -32,6 +32,30 @@ class GridMapCvConverter
   virtual ~GridMapCvConverter();
 
   /*!
+   * Initializes a the geometry of a grid map from a cv image. This changes
+   * the geometry of the map and deletes all contents of the layers!
+   * @param[in] image the cv image.
+   * @param[in] resolution the desired resolution of the grid map [m/cell].
+   * @param[out] gridMap the grid map to be initialized.
+   * @param[in] (optional) position of the grid map, default to [0,0], [m].
+   * @param[in] (optional) frame id of the grid map, default is "map".
+   * @param[in] (optional) timestamp.
+   * @return true if successful, false otherwise.
+   */
+  static bool initializeFromImage(const cv::Mat& image, const double resolution,
+		  	  	  	  	   grid_map::GridMap& gridMap, const grid_map::Position& position = grid_map::Position::Zero(),
+						   const std::string frameId = "map", const Time timestamp = ros::Time::now().toNSec())
+  {
+    const double lengthX = resolution * image.rows;
+    const double lengthY = resolution * image.cols;
+    Length length(lengthX, lengthY);
+    gridMap.setGeometry(length, resolution, position);
+    gridMap.setFrameId(frameId);
+    gridMap.setTimestamp(timestamp);
+    return true;
+  }
+
+  /*!
    * Adds a layer with data from image.
    * @param[in] image the image to be added. If it is a color image
    * (bgr or bgra encoding), it will be transformed in a grayscale image.

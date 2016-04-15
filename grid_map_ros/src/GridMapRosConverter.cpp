@@ -311,12 +311,15 @@ void GridMapRosConverter::toGridCells(const grid_map::GridMap& gridMap, const st
 bool GridMapRosConverter::initializeFromImage(const sensor_msgs::Image& image,
                                               const double resolution, grid_map::GridMap& gridMap, const grid_map::Position& position)
 {
-  const double lengthX = resolution * image.height;
-  const double lengthY = resolution * image.width;
-  Length length(lengthX, lengthY);
-  gridMap.setGeometry(length, resolution, position);
-  gridMap.setFrameId(image.header.frame_id);
-  gridMap.setTimestamp(image.header.stamp.toNSec());
+  cv_bridge::CvImageConstPtr cvImage;
+  try {
+    // TODO Use `toCvShared()`?
+    cvImage = cv_bridge::toCvCopy(image, image.encoding);
+  } catch (cv_bridge::Exception& e) {
+    ROS_ERROR("cv_bridge exception: %s", e.what());
+    return false;
+  }
+  GridMapCvConverter::initializeFromImage(cvImage->image,resolution,gridMap,position,image.header.frame_id,image.header.stamp.toNSec());
   return true;
 }
 
