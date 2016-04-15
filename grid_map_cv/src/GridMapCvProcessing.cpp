@@ -22,7 +22,7 @@ GridMapCvProcessing::~GridMapCvProcessing()
 bool GridMapCvProcessing::changeResolution(const grid_map::GridMap& gridMapSource,
                              grid_map::GridMap& gridMapResult,
                              const double resolution,
-                             const int interpolationAlgrithm)
+                             const int interpolationAlgorithm)
 {
   const double sizeFactor = gridMapSource.getResolution() / resolution;
   bool firstLayer = true;
@@ -38,7 +38,7 @@ bool GridMapCvProcessing::changeResolution(const grid_map::GridMap& gridMapSourc
       result = GridMapCvConverter::toImage<unsigned short, 1>(gridMapSource, layer, CV_16UC1, minValue, maxValue, imageSource);
     }
     if (!result) return false;
-    cv::resize(imageSource, imageResult, cv::Size(0.0, 0.0), sizeFactor, sizeFactor, interpolationAlgrithm);
+    cv::resize(imageSource, imageResult, cv::Size(0.0, 0.0), sizeFactor, sizeFactor, interpolationAlgorithm);
     if (firstLayer) {
       if (!GridMapCvConverter::initializeFromImage(imageResult, resolution, gridMapResult, gridMapSource.getPosition()))
         return false;
