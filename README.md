@@ -11,6 +11,7 @@ Features:
 * **Based on Eigen:** Grid map data is stored as [Eigen] data types. Users can apply available Eigen algorithms directly to the map data for versatile and efficient data manipulation.
 * **Convenience functions:** Several helper methods allow for convenient and memory safe cell data access. For example, iterator functions for rectangular, circular, polygonal regions and lines are implemented.
 * **ROS interface:** Grid maps can be directly converted to ROS message types such as PointCloud2, OccupancyGrid, GridCells, and our custom GridMap message.
+* **OpenCV interface:** Grid maps can be seamlessly converted from and to [OpenCV] image types to make use of the tools provided by [OpenCV].
 * **Visualizations:** The *grid_map_visualization* package helps to visualize grid maps in various form in [RViz].
 
 The grid map package has been tested with [ROS] Indigo and Jade under Ubuntu 14.04. This is research code, expect that it changes often and any fitness for a particular purpose is disclaimed.
@@ -19,7 +20,7 @@ The source code is released under a [BSD 3-Clause license](LICENSE).
 
 **Author: Péter Fankhauser<br />
 Maintainer: Péter Fankhauser, pfankhauser@ethz.ch<br />
-With contributions by: Martin Wermelinger, Remo Diethelm, Ralph Kaestner, Elena Stumm, Daniel Stonier, Christos Zalidis<br />
+With contributions by: Martin Wermelinger, Remo Diethelm, Ralph Kaestner, Elena Stumm, Dominic Jud, Daniel Stonier, Christos Zalidis<br />
 Affiliation: Autonomous Systems Lab, ETH Zurich**
 
 ![Grid map example in rviz](grid_map_visualization/doc/point_cloud.jpg)
@@ -54,29 +55,33 @@ in Robot Operating System (ROS) – The Complete Reference (Volume 1), A. Koubaa
 To install all packages from the grid map library as Debian packages use
 
     sudo apt-get install ros-indigo-grid-map
-    
+
 ### Building from Source
 
 #### Dependencies
 
-Except for ROS packages that are part of the standard installation (*roscpp*, *tf*, *filters*, *sensor_msgs*, *nav_msgs*, and *cv_bridge*), the grid map library depends only on the linear algebra library [Eigen].
+The *grid_map_core* package depends only on the linear algebra library [Eigen].
 
     sudo apt-get install libeigen3-dev
+
+The *grid_map_cv* package depends additionally on [OpenCV].
+
+The other packages depend additionally on the [ROS] standard installation (*roscpp*, *tf*, *filters*, *sensor_msgs*, *nav_msgs*, and *cv_bridge*).
 
 
 #### Building
 
-To install, clone the latest version from this repository into your catkin workspace and compile the package using
+To build from source, clone the latest version from this repository into your catkin workspace and compile the package using
 
     cd catkin_ws/src
     git clone https://github.com/ethz-asl/grid_map.git
     cd ../
     catkin_make
-    
+
 To maximize performance, make sure to build in *Release* mode. You can specify the build type by setting
 
     catkin_make -DCMAKE_BUILD_TYPE=Release
-    
+
 
 ### Packages Overview
 
@@ -85,9 +90,10 @@ This repository consists of following packages:
 * ***grid_map*** is the meta-package for the grid map library.
 * ***grid_map_core*** implements the algorithms of the grid map library. It provides the `GridMap` class and several helper classes such as the iterators. This package is implemented without [ROS] dependencies.
 * ***grid_map_ros*** is the main package for [ROS] dependent projects using the grid map library. It provides the interfaces to convert the base classes to several [ROS] message types.
+* ***grid_map_cv*** provides conversions of grid maps from and to [OpenCV] image types.
 * ***grid_map_msgs*** holds the [ROS] message and service definitions around the [grid_map_msg/GridMap] message type.
 * ***grid_map_visualization*** contains a node written to convert GridMap messages to other [ROS] message types for visualization in [RViz]. The visualization parameters are configurable through [ROS] parameters.
-* ***grid_map_filters*** builds on the ROS [filters](http://wiki.ros.org/filters) package to process grid maps as a sequence of filters. 
+* ***grid_map_filters*** builds on the ROS [filters](http://wiki.ros.org/filters) package to process grid maps as a sequence of filters.
 * ***grid_map_demos*** contains several nodes for demonstration purposes.
 
 
@@ -100,7 +106,7 @@ Run the unit tests with
 or
 
     catkin build grid_map --no-deps --verbose --catkin-make-args run_tests
-    
+
 if you are using [catkin tools](http://catkin-tools.readthedocs.org/).
 
 ## Usage
@@ -112,20 +118,30 @@ The *grid_map_demos* package contains several demonstration nodes. Use this code
 * *[simple_demo](grid_map_demos/src/simple_demo_node.cpp)* demonstrates a simple example for using the grid map library. This ROS node creates a grid map, adds data to it, and publishes it. To see the result in RViz, execute the command
 
         roslaunch grid_map_demos simple_demo.launch
-        
+
 * *[tutorial_demo](grid_map_demos/src/tutorial_demo_node.cpp)* is an extended demonstration of the library's functionalities. Launch the *tutorial_demo* with
-        
+
         roslaunch grid_map_demos tutorial_demo.launch
 
 * *[iterators_demo](grid_map_demos/src/IteratorsDemo.cpp)* showcases the usage of the grid map iterators. Launch it with
 
         roslaunch grid_map_demos iterators_demo.launch
-        
+
 * *[image_to_gridmap_demo](grid_map_demos/src/ImageToGridmapDemo.cpp)* demonstrates how to convert data from an [image](grid_map_demos/scripts/example_image.png) to a grid map. Start the demonstration with
-        
+
         roslaunch grid_map_demos image_to_gridmap_demo.launch
 
     ![Image to grid map demo result](grid_map_demos/doc/image_to_grid_map_demo_result.png)
+
+* *[opencv_demo](grid_map_demos/src/opencv_demo_node.cpp)* demonstrates map manipulations with help of [OpenCV] functions. Start the demonstration with
+
+        roslaunch grid_map_demos opencv_demo.launch
+
+    ![OpenCV demo result](grid_map_demos/doc/opencv_demo_result.gif)
+
+* *[resolution_change_demo](grid_map_demos/src/resolution_change_demo_node.cpp)* shows how the resolution of a grid map can be changed with help of the [OpenCV] image scaling methods. The see the results, use
+
+        roslaunch grid_map_demos resolution_change_demo.launch
 
 
 ### Conventions & Definitions
@@ -179,7 +195,7 @@ Beware that while iterators are convenient, it is often the cleanest and most ef
 
         map["layer"] = 2.0 * map["layer"];
 
-* Max. values between two layers: 
+* Max. values between two layers:
 
         map["max"] = map["layer_1"].cwiseMax(map["layer_2"]);
 
@@ -198,7 +214,7 @@ There are two different methods to change the position of the map:
 
 `setPosition(...)` | `move(...)`
 :---: | :---:
-![Grid map iterator](grid_map_core/doc/setposition_method.gif) | ![Submap iterator](grid_map_core/doc/move_method.gif)| 
+![Grid map iterator](grid_map_core/doc/setposition_method.gif) | ![Submap iterator](grid_map_core/doc/move_method.gif)|
 
 
 ## Nodes
@@ -216,7 +232,7 @@ Point cloud | Vectors | Occupancy grid | Grid cells
 * **`grid_map_topic`** (string, default: "/grid_map")
 
     The name of the grid map topic to be visualized. See below for the description of the visualizers.
-    
+
 
 #### Subscribed Topics
 
@@ -253,7 +269,7 @@ The published topics are configured with the [YAML parameter file](grid_map_demo
 * **`vectors`** ([visualization_msgs/Marker])
 
     Visualizes vector data of the grid map as visual markers. Specify the layers which hold the *x*-, *y*-, and *z*-components of the vectors with the `layer_prefix` parameter. The parameter `position_layer` defines the layer to be used as start point of the vectors.
-    
+
         name: surface_normals
         type: vectors
         params:
@@ -262,11 +278,11 @@ The published topics are configured with the [YAML parameter file](grid_map_demo
          scale: 0.06
          line_width: 0.005
          color: 15600153 # red
-    
+
 * **`occupancy_grid`** ([nav_msgs/OccupancyGrid])
 
     Visualizes a layer of the grid map as occupancy grid. Specify the layer to be visualized with the `layer` parameter, and the upper and lower bound with `data_min` and `data_max`.
-        
+
         name: traversability_grid
         type: occupancy_grid
         params:
@@ -277,18 +293,18 @@ The published topics are configured with the [YAML parameter file](grid_map_demo
 * **`grid_cells`** ([nav_msgs/GridCells])
 
     Visualizes a layer of the grid map as grid cells. Specify the layer to be visualized with the `layer` parameter, and the upper and lower bounds with `lower_threshold` and `upper_threshold`.
-    
+
         name: elevation_cells
         type: grid_cells
         params:
          layer: elevation
          lower_threshold: -0.08 # optional, default: -inf
          upper_threshold: 0.08 # optional, default: inf
-    
+
 * **`region`** ([visualization_msgs/Marker])
-    
+
     Shows the boundary of the grid map.
-    
+
         name: map_region
         type: map_region
         params:
@@ -328,6 +344,7 @@ Please report bugs and request features using the [Issue Tracker](https://github
 [ROS]: http://www.ros.org
 [RViz]: http://wiki.ros.org/rviz
 [Eigen]: http://eigen.tuxfamily.org
+[OpenCV]: http://opencv.org/
 [grid_map_msgs/GridMapInfo]: http://docs.ros.org/api/grid_map_msgs/html/msg/GridMapInfo.html
 [grid_map_msgs/GridMap]: http://docs.ros.org/api/grid_map_msgs/html/msg/GridMap.html
 [grid_map_msgs/GetGridMap]: http://docs.ros.org/api/grid_map_msgs/html/srv/GetGridMap.html

@@ -7,13 +7,14 @@ set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   grid_map_ros
+  grid_map_cv
   grid_map_msgs
   geometry_msgs
   sensor_msgs
 )
 
 ## System dependencies are found with CMake's conventions
-#find_package(Eigen3 REQUIRED)
+find_package(OpenCV REQUIRED)
 
 ###################################
 ## catkin specific configuration ##
@@ -41,6 +42,7 @@ include_directories(
   include
   ${catkin_INCLUDE_DIRS}
   ${EIGEN3_INCLUDE_DIR}
+  ${OpenCV_INCLUDE_DIRS}
 )
 
 ## Declare a cpp executable
@@ -76,6 +78,16 @@ add_executable(
   src/iterator_benchmark.cpp
 )
 
+add_executable(
+  opencv_demo
+  src/opencv_demo_node.cpp
+)
+
+add_executable(
+  resolution_change_demo
+  src/resolution_change_demo_node.cpp
+)
+
 ## Specify libraries to link a library or executable target against
 target_link_libraries(
   simple_demo
@@ -107,6 +119,17 @@ target_link_libraries(
   ${catkin_LIBRARIES}
 )
 
+target_link_libraries(
+  opencv_demo
+  ${catkin_LIBRARIES}
+  ${OpenCV_LIBRARIES}
+)
+
+target_link_libraries(
+  resolution_change_demo
+  ${catkin_LIBRARIES}
+)
+
 #############
 ## Install ##
 #############
@@ -118,7 +141,7 @@ catkin_install_python(
 
 # Mark executables and/or libraries for installation
 install(
-  TARGETS simple_demo tutorial_demo iterators_demo image_to_gridmap_demo move_demo iterator_benchmark
+  TARGETS simple_demo tutorial_demo iterators_demo image_to_gridmap_demo move_demo iterator_benchmark opencv_demo resolution_change_demo
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}

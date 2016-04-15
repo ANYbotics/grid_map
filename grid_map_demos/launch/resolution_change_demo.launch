@@ -1,0 +1,10 @@
+<launch>
+  <!-- Launch the grid map resolution change demo node -->
+  <node pkg="grid_map_demos" type="resolution_change_demo" name="grid_map_resolution_change_demo" output="screen" />
+  <!-- Launch the grid map visualizer -->
+  <node pkg="grid_map_visualization" type="grid_map_visualization" name="grid_map_visualization" output="screen">
+    <rosparam command="load" file="$(find grid_map_demos)/config/resolution_change_demo.yaml" />
+  </node>
+  <!-- Launch RViz with the demo configuration -->
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find grid_map_demos)/rviz/grid_map_iterators_demo.rviz" />
+</launch>

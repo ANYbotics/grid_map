@@ -1,5 +1,5 @@
 /*
- * GridMapTest.cpp
+ * GridMapRosTest.cpp
  *
  *  Created on: Mar 24, 2015
  *      Author: Peter Fankhauser, Martin Wermelinger
@@ -8,6 +8,7 @@
 
 #include "grid_map_core/GridMap.hpp"
 #include "grid_map_core/iterators/GridMapIterator.hpp"
+#include "grid_map_core/gtest_eigen.hpp"
 #include "grid_map_ros/GridMapRosConverter.hpp"
 #include "grid_map_msgs/GridMap.h"
 
@@ -25,6 +26,8 @@
 
 // ROS
 #include <nav_msgs/OccupancyGrid.h>
+#include <cv_bridge/cv_bridge.h>
+#include <sensor_msgs/image_encodings.h>
 
 using namespace std;
 using namespace grid_map;
@@ -178,4 +181,58 @@ TEST(OccupancyGridConversion, roundTrip)
     size_t i = std::distance(occupancyGrid.data.begin(), iterator);
     EXPECT_EQ((int)*iterator, (int)occupancyGridResult.data[i]);
   }
+}
+
+TEST(ImageConversion, roundTripBGRA8)
+{
+  // Create grid map.
+  GridMap mapIn({"layer"});
+  mapIn.setGeometry(grid_map::Length(2.0, 1.0), 0.01);
+  mapIn["layer"].setRandom();
+  const float minValue = -1.0;
+  const float maxValue = 1.0;
+
+  // Convert to image message.
+  sensor_msgs::Image image;
+  GridMapRosConverter::toImage(mapIn, "layer", sensor_msgs::image_encodings::BGRA8, minValue,
+                               maxValue, image);
+
+  // Convert back to grid map.
+  GridMap mapOut;
+  GridMapRosConverter::initializeFromImage(image, mapIn.getResolution(), mapOut);
+  GridMapRosConverter::addLayerFromImage(image, "layer", mapOut, minValue, maxValue);
+
+  // Check data.
+  const float resolution = (maxValue - minValue) / (float) std::numeric_limits<unsigned char>::max();
+  expectNear(mapIn["layer"], mapOut["layer"], resolution, "");
+  EXPECT_TRUE((mapIn.getLength() == mapOut.getLength()).all());
+  EXPECT_TRUE((mapIn.getSize() == mapOut.getSize()).all());
+}
+
+TEST(ImageConversion, roundTripMONO16)
+{
+  // Create grid map.
+  GridMap mapIn({"layer"});
+  mapIn.setGeometry(grid_map::Length(2.0, 1.0), 0.01);
+  mapIn["layer"].setRandom();
+  const float minValue = -1.0;
+  const float maxValue = 1.0;
+
+  // Convert to image message.
+  sensor_msgs::Image image;
+  GridMapRosConverter::toImage(mapIn, "layer", sensor_msgs::image_encodings::MONO16,
+                               minValue, maxValue, image);
+
+  // Convert back to grid map.
+  GridMap mapOut;
+  GridMapRosConverter::initializeFromImage(image, mapIn.getResolution(), mapOut);
+  GridMapRosConverter::addLayerFromImage(image, "layer", mapOut, minValue, maxValue);
+
+  // Check data.
+  // TODO Why is factor 300 necessary?
+  const float resolution = 300.0 * (maxValue - minValue) / (float) std::numeric_limits<unsigned short>::max();
+  expectNear(mapIn["layer"], mapOut["layer"], resolution, "");
+  EXPECT_EQ(mapIn.getTimestamp(), mapOut.getTimestamp());
+  EXPECT_TRUE((mapIn.getLength() == mapOut.getLength()).all());
+  EXPECT_TRUE((mapIn.getSize() == mapOut.getSize()).all());
 }

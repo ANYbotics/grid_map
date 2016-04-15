@@ -47,7 +47,6 @@ TEST(GridMap, Move)
   EXPECT_EQ(2, regions[1].getSize()[1]);
 }
 
-
 TEST(AddDataFrom, extendMapAligned)
 {
   GridMap map1, map2;

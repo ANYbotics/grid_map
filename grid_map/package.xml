@@ -11,6 +11,7 @@
   <buildtool_depend>catkin</buildtool_depend>
   <exec_depend>grid_map_core</exec_depend>
   <exec_depend>grid_map_ros</exec_depend>
+  <exec_depend>grid_map_cv</exec_depend>
   <exec_depend>grid_map_msgs</exec_depend>
   <exec_depend>grid_map_filters</exec_depend>
   <exec_depend>grid_map_visualization</exec_depend>

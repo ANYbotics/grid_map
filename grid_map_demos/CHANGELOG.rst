@@ -4,6 +4,7 @@ Changelog for package grid_map_demos
 
 Forthcoming
 -----------
+* Added new demonstrators for OpenCV based operations.
 * Added comment on iterator performance (`#45 <https://github.com/ethz-asl/grid_map/issues/45>`_).
 * Contributors: Peter Fankhauser
 
@@ -11,7 +12,7 @@ Forthcoming
 ------------------
 * New iterator_benchmark demo to exemplify the usage of the iterators and their computational performance.
 * Added new move_demo to illustrate the difference between the `move` and `setPosition` method.
-* Contributors: Péter Fankhauser, Christos Zalidis, Daniel Stonier 
+* Contributors: Péter Fankhauser, Christos Zalidis, Daniel Stonier
 
 1.1.3 (2016-01-11)
 ------------------
