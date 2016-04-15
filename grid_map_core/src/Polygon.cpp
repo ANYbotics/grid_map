@@ -23,7 +23,7 @@ Polygon::Polygon(std::vector<Position> vertices)
 
 Polygon::~Polygon() {}
 
-bool Polygon::isInside(const Position& point)
+bool Polygon::isInside(const Position& point) const
 {
   int cross = 0;
   for (int i = 0, j = vertices_.size() - 1; i < vertices_.size(); j = i++) {

@@ -70,7 +70,7 @@ bool SpiralIterator::isPastEnd() const
   return (distance_ == nRings_ && pointsRing_.empty());
 }
 
-bool SpiralIterator::isInside(const Index index)
+bool SpiralIterator::isInside(const Index index) const
 {
   Eigen::Vector2d position;
   getPositionFromIndex(position, index, mapLength_, mapPosition_, resolution_, bufferSize_);

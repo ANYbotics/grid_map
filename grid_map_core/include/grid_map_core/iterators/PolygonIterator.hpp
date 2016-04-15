@@ -68,7 +68,7 @@ private:
    * Check if current index is inside polygon.
    * @return true if inside, false otherwise.
    */
-  bool isInside();
+  bool isInside() const;
 
   /*!
    * Finds the submap that fully contains the polygon and returns the parameters.

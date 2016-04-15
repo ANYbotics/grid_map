@@ -77,7 +77,7 @@ private:
    * Check if index is inside the circle.
    * @return true if inside, false otherwise.
    */
-  bool isInside(const Index index);
+  bool isInside(const Index index) const;
 
   /*!
    * Uses the current distance to get the points of a ring
