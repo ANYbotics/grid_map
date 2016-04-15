@@ -43,7 +43,7 @@ class Polygon
    * @param point the point to be checked.
    * @return true if inside, false otherwise.
    */
-  bool isInside(const Position& point);
+  bool isInside(const Position& point) const;
 
   /*!
    * Add a vertex to the polygon
