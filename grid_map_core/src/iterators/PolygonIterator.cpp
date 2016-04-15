@@ -67,7 +67,7 @@ bool PolygonIterator::isPastEnd() const
   return internalIterator_->isPastEnd();
 }
 
-bool PolygonIterator::isInside()
+bool PolygonIterator::isInside() const
 {
   Position position;
   getPositionFromIndex(position, *(*internalIterator_), mapLength_, mapPosition_, resolution_, bufferSize_, bufferStartIndex_);
