@@ -23,6 +23,7 @@ catkin_package(
   INCLUDE_DIRS
     include
   LIBRARIES
+    ${PROJECT_NAME}
   CATKIN_DEPENDS
     grid_map_core
   DEPENDS
@@ -41,9 +42,31 @@ include_directories(
   ${OpenCV_INCLUDE_DIRS}
 )
 
+## Declare a cpp library
+add_library(${PROJECT_NAME}
+  src/GridMapCvProcessing.cpp
+)
+
+target_link_libraries(${PROJECT_NAME}
+  ${catkin_LIBRARIES}
+  ${OpenCV_LIBRARIES}
+)
+
+add_dependencies(${PROJECT_NAME}
+  ${catkin_EXPORTED_TARGETS}
+)
+
 #############
 ## Install ##
 #############
+
+# Mark executables and/or libraries for installation
+install(
+  TARGETS ${PROJECT_NAME}
+  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
 
 # Mark cpp header files for installation
 install(
@@ -60,5 +83,5 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
 ## Add gtest based cpp test target and link libraries
 catkin_add_gtest(${PROJECT_NAME}-test test/test_grid_map_cv.cpp test/GridMapCvTest.cpp)
 if(TARGET ${PROJECT_NAME}-test)
-  target_link_libraries(${PROJECT_NAME}-test ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
+  target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 endif()

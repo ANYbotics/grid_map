@@ -139,6 +139,10 @@ The *grid_map_demos* package contains several demonstration nodes. Use this code
 
     ![OpenCV demo result](grid_map_demos/doc/opencv_demo_result.gif)
 
+* *[resolution_change_demo](grid_map_demos/src/resolution_change_demo_node.cpp)* shows how the resolution of a grid map can be changed with help of the [OpenCV] image scaling methods. The see the results, use
+
+        roslaunch grid_map_demos resolution_change_demo.launch
+
 
 ### Conventions & Definitions
 

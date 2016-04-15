@@ -132,15 +132,17 @@ class GridMapRosConverter
                           nav_msgs::GridCells& gridCells);
 
   /*!
-   * Initializes a the geometry of a grid map from an image messages. This changes
+   * Initializes the geometry of a grid map from an image messages. This changes
    * the geometry of the map and deletes all contents of the layers!
    * @param[in] image the image.
    * @param[in] resolution the desired resolution of the grid map [m/cell].
    * @param[out] gridMap the grid map to be initialized.
+   * @param[in](optional) position the position of the grid map.
    * @return true if successful, false otherwise.
    */
   static bool initializeFromImage(const sensor_msgs::Image& image, const double resolution,
-                                  grid_map::GridMap& gridMap, const grid_map::Position& position = grid_map::Position::Zero());
+                                  grid_map::GridMap& gridMap,
+                                  const grid_map::Position& position = grid_map::Position::Zero());
 
   /*!
    * Adds a layer with data from image.

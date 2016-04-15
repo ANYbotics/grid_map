@@ -14,7 +14,7 @@ int main(int argc, char** argv)
   init(argc, argv, "opencv_demo");
   NodeHandle nodeHandle("~");
   Publisher publisher = nodeHandle.advertise<grid_map_msgs::GridMap>("grid_map", 1, true);
-  const bool useTransparency = true;
+  const bool useTransparency = false;
 
   // Create grid map.
   GridMap map({"original", "elevation"});

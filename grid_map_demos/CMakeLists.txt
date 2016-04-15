@@ -83,6 +83,11 @@ add_executable(
   src/opencv_demo_node.cpp
 )
 
+add_executable(
+  resolution_change_demo
+  src/resolution_change_demo_node.cpp
+)
+
 ## Specify libraries to link a library or executable target against
 target_link_libraries(
   simple_demo
@@ -120,6 +125,11 @@ target_link_libraries(
   ${OpenCV_LIBRARIES}
 )
 
+target_link_libraries(
+  resolution_change_demo
+  ${catkin_LIBRARIES}
+)
+
 #############
 ## Install ##
 #############
@@ -131,7 +141,7 @@ catkin_install_python(
 
 # Mark executables and/or libraries for installation
 install(
-  TARGETS simple_demo tutorial_demo iterators_demo image_to_gridmap_demo move_demo iterator_benchmark opencv_demo
+  TARGETS simple_demo tutorial_demo iterators_demo image_to_gridmap_demo move_demo iterator_benchmark opencv_demo resolution_change_demo
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}

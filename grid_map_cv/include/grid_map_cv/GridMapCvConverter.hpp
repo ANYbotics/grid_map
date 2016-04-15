@@ -32,26 +32,21 @@ class GridMapCvConverter
   virtual ~GridMapCvConverter();
 
   /*!
-   * Initializes a the geometry of a grid map from a cv image. This changes
+   * Initializes the geometry of a grid map from an image. This changes
    * the geometry of the map and deletes all contents of the layers!
-   * @param[in] image the cv image.
+   * @param[in] image the image.
    * @param[in] resolution the desired resolution of the grid map [m/cell].
    * @param[out] gridMap the grid map to be initialized.
-   * @param[in] (optional) position of the grid map, default to [0,0], [m].
-   * @param[in] (optional) frame id of the grid map, default is "map".
-   * @param[in] (optional) timestamp.
+   * @param[in](optional) position the position of the grid map.
    * @return true if successful, false otherwise.
    */
   static bool initializeFromImage(const cv::Mat& image, const double resolution,
-		  	  	  	  	   grid_map::GridMap& gridMap, const grid_map::Position& position = grid_map::Position::Zero(),
-						   const std::string frameId = "map", const Time timestamp = ros::Time::now().toNSec())
+                                  grid_map::GridMap& gridMap, const grid_map::Position& position)
   {
     const double lengthX = resolution * image.rows;
     const double lengthY = resolution * image.cols;
     Length length(lengthX, lengthY);
     gridMap.setGeometry(length, resolution, position);
-    gridMap.setFrameId(frameId);
-    gridMap.setTimestamp(timestamp);
     return true;
   }
 
