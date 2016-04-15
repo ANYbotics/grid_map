@@ -4,6 +4,7 @@ Changelog for package grid_map_filters
 
 Forthcoming
 -----------
+* Contributors: Peter Fankhauser
 
 1.2.0 (2016-03-03)
 ------------------

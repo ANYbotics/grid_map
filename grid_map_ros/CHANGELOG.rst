@@ -4,9 +4,12 @@ Changelog for package grid_map_ros
 
 Forthcoming
 -----------
+* Separated OpenCV to grid map conversions to grid_map_cv package.
+* Improved efficiency and generalized image to grid map conversion.
+* Added image conversion for different encodings and depth resolutions.
 * Fix scaling of image value to height conversion.
 * Improved efficiency of the grid map to point cloud conversion by omitting invalid cells.
-* Contributors: Peter Fankhauser, Daniel Stonier, Martin Wermelinger
+* Contributors: Peter Fankhauser, Daniel Stonier, Martin Wermelinger, Dominic Jud
 
 1.2.0 (2016-03-03)
 ------------------

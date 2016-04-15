@@ -4,10 +4,11 @@ Changelog for package grid_map_core
 
 Forthcoming
 -----------
+* Made the `isInside` checks `const`.
 * Fixes polygon iterator bug when using moved maps.
 * Added unit test for polygon iterator on a moved map.
 * Added comment about size of the returning submap.
-* Contributors: Peter Fankhauser, Martin Wermelinger
+* Contributors: Peter Fankhauser, Martin Wermelinger, Marcus Liebhardt
 
 1.2.0 (2016-03-03)
 ------------------
@@ -19,7 +20,7 @@ Forthcoming
 * Updated documentation for spiral and ellipse iterator, and iterator performance.
 * const correctness for grid's getSubmap.
 * Cleanup of arguments and return types.
-* Contributors: Péter Fankhauser, Christos Zalidis, Daniel Stonier 
+* Contributors: Péter Fankhauser, Christos Zalidis, Daniel Stonier
 
 1.1.3 (2016-01-11)
 ------------------
