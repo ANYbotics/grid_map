@@ -1,9 +1,7 @@
 #include <ros/ros.h>
 #include <grid_map_ros/grid_map_ros.hpp>
 #include <grid_map_cv/grid_map_cv.hpp>
-#include <opencv/cv.h>
-#include <opencv2/imgproc/imgproc.hpp>
-#include <opencv/highgui.h>
+#include <opencv2/opencv.hpp>
 
 using namespace grid_map;
 using namespace ros;

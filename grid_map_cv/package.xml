@@ -10,5 +10,5 @@
   <author email="pfankhauser@ethz.ch">Péter Fankhauser</author>
   <buildtool_depend>catkin</buildtool_depend>
   <depend>grid_map_core</depend>
-  <depend>opencv3</depend>
+  <depend>opencv2</depend>
 </package>

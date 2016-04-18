@@ -11,7 +11,10 @@
 #include <grid_map_core/grid_map_core.hpp>
 
 // OpenCV
-#include <opencv/cv.h>
+#include <opencv2/opencv.hpp>
+
+// STD
+#include <iostream>
 
 namespace grid_map {
 
