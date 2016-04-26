@@ -8,6 +8,7 @@ Forthcoming
 * Fixes polygon iterator bug when using moved maps.
 * Added unit test for polygon iterator on a moved map.
 * Added comment about size of the returning submap.
+* Reduced test build warning.
 * Contributors: Peter Fankhauser, Martin Wermelinger, Marcus Liebhardt
 
 1.2.0 (2016-03-03)
