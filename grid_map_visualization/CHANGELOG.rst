@@ -2,8 +2,8 @@
 Changelog for package grid_map_visualization
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.3.0 (2016-04-26)
+------------------
 * Added new visualizer for flat point clouds and updated documentation and demos.
 * Contributors: Peter Fankhauser, Daniel Stonier
 

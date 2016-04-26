@@ -2,8 +2,8 @@
 Changelog for package grid_map_core
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.3.0 (2016-04-26)
+------------------
 * Made the `isInside` checks `const`.
 * Fixes polygon iterator bug when using moved maps.
 * Added unit test for polygon iterator on a moved map.
