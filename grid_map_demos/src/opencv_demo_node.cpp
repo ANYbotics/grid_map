@@ -2,7 +2,13 @@
 #include <grid_map_ros/grid_map_ros.hpp>
 #include <grid_map_cv/grid_map_cv.hpp>
 #include <cv_bridge/cv_bridge.h>
-#include <opencv/highgui.h>
+
+#include "opencv2/core/version.hpp"
+#if CV_MAJOR_VERSION == 2
+#include <opencv2/highgui/highgui.hpp>
+#elif CV_MAJOR_VERSION == 3
+#include <opencv2/highgui.h>
+#endif
 
 using namespace grid_map;
 using namespace ros;
