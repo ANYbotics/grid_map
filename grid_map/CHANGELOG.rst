@@ -2,6 +2,9 @@
 Changelog for package grid_map
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.3.0 (2016-04-26)
 ------------------
 * Separated OpenCV to grid map conversions to grid_map_cv package. The new methods

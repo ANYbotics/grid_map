@@ -2,6 +2,9 @@
 Changelog for package grid_map_ros
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.3.0 (2016-04-26)
 ------------------
 * Added new convenience function to change the resolution of grid maps with help of OpenCV interpolation methods (`#60 <https://github.com/ethz-asl/grid_map/issues/60>`_).
