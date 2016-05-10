@@ -21,200 +21,199 @@
 #include <vector>
 
 using namespace std;
-using namespace Eigen;
 using namespace grid_map;
 
 TEST(PositionFromIndex, Simple)
 {
-  Array2d mapLength(3.0, 2.0);
-  Vector2d mapPosition(-1.0, 2.0);
+  Length mapLength(3.0, 2.0);
+  Position mapPosition(-1.0, 2.0);
   double resolution = 1.0;
-  Array2i bufferSize(3, 2);
-  Vector2d position;
+  Size bufferSize(3, 2);
+  Position position;
 
-  EXPECT_TRUE(getPositionFromIndex(position, Array2i(0, 0), mapLength, mapPosition, resolution, bufferSize));
+  EXPECT_TRUE(getPositionFromIndex(position, Index(0, 0), mapLength, mapPosition, resolution, bufferSize));
   EXPECT_DOUBLE_EQ(1.0 + mapPosition.x(), position.x());
   EXPECT_DOUBLE_EQ(0.5 + mapPosition.y(), position.y());
 
-  EXPECT_TRUE(getPositionFromIndex(position, Array2i(1, 0), mapLength, mapPosition, resolution, bufferSize));
+  EXPECT_TRUE(getPositionFromIndex(position, Index(1, 0), mapLength, mapPosition, resolution, bufferSize));
   EXPECT_DOUBLE_EQ(0.0 + mapPosition.x(), position.x());
   EXPECT_DOUBLE_EQ(0.5 + mapPosition.y(), position.y());
 
-  EXPECT_TRUE(getPositionFromIndex(position, Array2i(1, 1), mapLength, mapPosition, resolution, bufferSize));
+  EXPECT_TRUE(getPositionFromIndex(position, Index(1, 1), mapLength, mapPosition, resolution, bufferSize));
   EXPECT_DOUBLE_EQ(0.0 + mapPosition.x(), position.x());
   EXPECT_DOUBLE_EQ(-0.5 + mapPosition.y(), position.y());
 
-  EXPECT_TRUE(getPositionFromIndex(position, Array2i(2, 1), mapLength, mapPosition, resolution, bufferSize));
+  EXPECT_TRUE(getPositionFromIndex(position, Index(2, 1), mapLength, mapPosition, resolution, bufferSize));
   EXPECT_DOUBLE_EQ(-1.0 + mapPosition.x(), position.x());
   EXPECT_DOUBLE_EQ(-0.5 + mapPosition.y(), position.y());
 
-  EXPECT_FALSE(getPositionFromIndex(position, Array2i(3, 1), mapLength, mapPosition, resolution, bufferSize));
+  EXPECT_FALSE(getPositionFromIndex(position, Index(3, 1), mapLength, mapPosition, resolution, bufferSize));
 }
 
 TEST(PositionFromIndex, CircularBuffer)
 {
-  Array2d mapLength(0.5, 0.4);
-  Vector2d mapPosition(-0.1, 13.4);
+  Length mapLength(0.5, 0.4);
+  Position mapPosition(-0.1, 13.4);
   double resolution = 0.1;
-  Array2i bufferSize(5, 4);
-  Array2i bufferStartIndex(3, 1);
-  Vector2d position;
+  Size bufferSize(5, 4);
+  Index bufferStartIndex(3, 1);
+  Position position;
 
-  EXPECT_TRUE(getPositionFromIndex(position, Array2i(3, 1), mapLength, mapPosition, resolution, bufferSize, bufferStartIndex));
+  EXPECT_TRUE(getPositionFromIndex(position, Index(3, 1), mapLength, mapPosition, resolution, bufferSize, bufferStartIndex));
   EXPECT_DOUBLE_EQ(0.2 + mapPosition.x(), position.x());
   EXPECT_DOUBLE_EQ(0.15 + mapPosition.y(), position.y());
 
-  EXPECT_TRUE(getPositionFromIndex(position, Array2i(4, 2), mapLength, mapPosition, resolution, bufferSize, bufferStartIndex));
+  EXPECT_TRUE(getPositionFromIndex(position, Index(4, 2), mapLength, mapPosition, resolution, bufferSize, bufferStartIndex));
   EXPECT_DOUBLE_EQ(0.1 + mapPosition.x(), position.x());
   EXPECT_DOUBLE_EQ(0.05 + mapPosition.y(), position.y());
 
-  EXPECT_TRUE(getPositionFromIndex(position, Array2i(2, 0), mapLength, mapPosition, resolution, bufferSize, bufferStartIndex));
+  EXPECT_TRUE(getPositionFromIndex(position, Index(2, 0), mapLength, mapPosition, resolution, bufferSize, bufferStartIndex));
   EXPECT_DOUBLE_EQ(-0.2 + mapPosition.x(), position.x());
   EXPECT_DOUBLE_EQ(-0.15 + mapPosition.y(), position.y());
 
-  EXPECT_TRUE(getPositionFromIndex(position, Array2i(0, 0), mapLength, mapPosition, resolution, bufferSize, bufferStartIndex));
+  EXPECT_TRUE(getPositionFromIndex(position, Index(0, 0), mapLength, mapPosition, resolution, bufferSize, bufferStartIndex));
   EXPECT_DOUBLE_EQ(0.0 + mapPosition.x(), position.x());
   EXPECT_DOUBLE_EQ(-0.15 + mapPosition.y(), position.y());
 
-  EXPECT_TRUE(getPositionFromIndex(position, Array2i(4, 3), mapLength, mapPosition, resolution, bufferSize, bufferStartIndex));
+  EXPECT_TRUE(getPositionFromIndex(position, Index(4, 3), mapLength, mapPosition, resolution, bufferSize, bufferStartIndex));
   EXPECT_DOUBLE_EQ(0.1 + mapPosition.x(), position.x());
   EXPECT_DOUBLE_EQ(-0.05 + mapPosition.y(), position.y());
 
-  EXPECT_FALSE(getPositionFromIndex(position, Array2i(5, 3), mapLength, mapPosition, resolution, bufferSize, bufferStartIndex));
+  EXPECT_FALSE(getPositionFromIndex(position, Index(5, 3), mapLength, mapPosition, resolution, bufferSize, bufferStartIndex));
 }
 
 TEST(IndexFromPosition, Simple)
 {
-  Array2d mapLength(3.0, 2.0);
-  Vector2d mapPosition(-12.4, -7.1);
+  Length mapLength(3.0, 2.0);
+  Position mapPosition(-12.4, -7.1);
   double resolution = 1.0;
-  Array2i bufferSize(3, 2);
-  Array2i index;
+  Index bufferSize(3, 2);
+  Index index;
 
-  EXPECT_TRUE(getIndexFromPosition(index, Vector2d(1.0, 0.5) + mapPosition, mapLength, mapPosition, resolution, bufferSize));
+  EXPECT_TRUE(getIndexFromPosition(index, Position(1.0, 0.5) + mapPosition, mapLength, mapPosition, resolution, bufferSize));
   EXPECT_EQ(0, index(0));
   EXPECT_EQ(0, index(1));
 
-  EXPECT_TRUE(getIndexFromPosition(index, Vector2d(-1.0, -0.5) + mapPosition, mapLength, mapPosition, resolution, bufferSize));
+  EXPECT_TRUE(getIndexFromPosition(index, Position(-1.0, -0.5) + mapPosition, mapLength, mapPosition, resolution, bufferSize));
   EXPECT_EQ(2, index(0));
   EXPECT_EQ(1, index(1));
 
-  EXPECT_TRUE(getIndexFromPosition(index, Vector2d(0.6, 0.1) + mapPosition, mapLength, mapPosition, resolution, bufferSize));
+  EXPECT_TRUE(getIndexFromPosition(index, Position(0.6, 0.1) + mapPosition, mapLength, mapPosition, resolution, bufferSize));
   EXPECT_EQ(0, index(0));
   EXPECT_EQ(0, index(1));
 
-  EXPECT_TRUE(getIndexFromPosition(index, Vector2d(0.4, -0.1) + mapPosition, mapLength, mapPosition, resolution, bufferSize));
+  EXPECT_TRUE(getIndexFromPosition(index, Position(0.4, -0.1) + mapPosition, mapLength, mapPosition, resolution, bufferSize));
   EXPECT_EQ(1, index(0));
   EXPECT_EQ(1, index(1));
 
-  EXPECT_TRUE(getIndexFromPosition(index, Vector2d(0.4, 0.1) + mapPosition, mapLength, mapPosition, resolution, bufferSize));
+  EXPECT_TRUE(getIndexFromPosition(index, Position(0.4, 0.1) + mapPosition, mapLength, mapPosition, resolution, bufferSize));
   EXPECT_EQ(1, index(0));
   EXPECT_EQ(0, index(1));
 
-  EXPECT_FALSE(getIndexFromPosition(index, Vector2d(4.0, 0.5) + mapPosition, mapLength, mapPosition, resolution, bufferSize));
+  EXPECT_FALSE(getIndexFromPosition(index, Position(4.0, 0.5) + mapPosition, mapLength, mapPosition, resolution, bufferSize));
 }
 
 TEST(IndexFromPosition, EdgeCases)
 {
-  Array2d mapLength(3.0, 2.0);
-  Vector2d mapPosition(0.0, 0.0);
+  Length mapLength(3.0, 2.0);
+  Position mapPosition(0.0, 0.0);
   double resolution = 1.0;
-  Array2i bufferSize(3, 2);
-  Array2i index;
+  Size bufferSize(3, 2);
+  Index index;
 
-  EXPECT_TRUE(getIndexFromPosition(index, Vector2d(0.0, DBL_EPSILON), mapLength, mapPosition, resolution, bufferSize));
+  EXPECT_TRUE(getIndexFromPosition(index, Position(0.0, DBL_EPSILON), mapLength, mapPosition, resolution, bufferSize));
   EXPECT_EQ(1, index(0));
   EXPECT_EQ(0, index(1));
 
-  EXPECT_TRUE(getIndexFromPosition(index, Vector2d(0.5 - DBL_EPSILON, -DBL_EPSILON), mapLength, mapPosition, resolution, bufferSize));
+  EXPECT_TRUE(getIndexFromPosition(index, Position(0.5 - DBL_EPSILON, -DBL_EPSILON), mapLength, mapPosition, resolution, bufferSize));
   EXPECT_EQ(1, index(0));
   EXPECT_EQ(1, index(1));
 
-  EXPECT_TRUE(getIndexFromPosition(index, Vector2d(-0.5 - DBL_EPSILON, -DBL_EPSILON), mapLength, mapPosition, resolution, bufferSize));
+  EXPECT_TRUE(getIndexFromPosition(index, Position(-0.5 - DBL_EPSILON, -DBL_EPSILON), mapLength, mapPosition, resolution, bufferSize));
   EXPECT_EQ(2, index(0));
   EXPECT_EQ(1, index(1));
 
-  EXPECT_FALSE(getIndexFromPosition(index, Vector2d(-1.5, 1.0), mapLength, mapPosition, resolution, bufferSize));
+  EXPECT_FALSE(getIndexFromPosition(index, Position(-1.5, 1.0), mapLength, mapPosition, resolution, bufferSize));
 }
 
 TEST(IndexFromPosition, CircularBuffer)
 {
-  Array2d mapLength(0.5, 0.4);
-  Vector2d mapPosition(0.4, -0.9);
+  Length mapLength(0.5, 0.4);
+  Position mapPosition(0.4, -0.9);
   double resolution = 0.1;
-  Array2i bufferSize(5, 4);
-  Array2i bufferStartIndex(3, 1);
-  Array2i index;
+  Size bufferSize(5, 4);
+  Index bufferStartIndex(3, 1);
+  Index index;
 
-  EXPECT_TRUE(getIndexFromPosition(index, Vector2d(0.2, 0.15) + mapPosition, mapLength, mapPosition, resolution, bufferSize, bufferStartIndex));
+  EXPECT_TRUE(getIndexFromPosition(index, Position(0.2, 0.15) + mapPosition, mapLength, mapPosition, resolution, bufferSize, bufferStartIndex));
   EXPECT_EQ(3, index(0));
   EXPECT_EQ(1, index(1));
 
-  EXPECT_TRUE(getIndexFromPosition(index, Vector2d(0.03, -0.17) + mapPosition, mapLength, mapPosition, resolution, bufferSize, bufferStartIndex));
+  EXPECT_TRUE(getIndexFromPosition(index, Position(0.03, -0.17) + mapPosition, mapLength, mapPosition, resolution, bufferSize, bufferStartIndex));
   EXPECT_EQ(0, index(0));
   EXPECT_EQ(0, index(1));
 }
 
 TEST(checkIfPositionWithinMap, Inside)
 {
-  Array2d mapLength(50.0, 25.0);
-  Vector2d mapPosition(11.4, 0.0);
+  Length mapLength(50.0, 25.0);
+  Position mapPosition(11.4, 0.0);
 
-  EXPECT_TRUE(checkIfPositionWithinMap(Vector2d(0.0, 0.0) + mapPosition, mapLength, mapPosition));
-  EXPECT_TRUE(checkIfPositionWithinMap(Vector2d(5.0, 5.0) + mapPosition, mapLength, mapPosition));
-  EXPECT_TRUE(checkIfPositionWithinMap(Vector2d(20.0, 10.0) + mapPosition, mapLength, mapPosition));
-  EXPECT_TRUE(checkIfPositionWithinMap(Vector2d(20.0, -10.0) + mapPosition, mapLength, mapPosition));
-  EXPECT_TRUE(checkIfPositionWithinMap(Vector2d(-20.0, 10.0) + mapPosition, mapLength, mapPosition));
-  EXPECT_TRUE(checkIfPositionWithinMap(Vector2d(-20.0, -10.0) + mapPosition, mapLength, mapPosition));
+  EXPECT_TRUE(checkIfPositionWithinMap(Position(0.0, 0.0) + mapPosition, mapLength, mapPosition));
+  EXPECT_TRUE(checkIfPositionWithinMap(Position(5.0, 5.0) + mapPosition, mapLength, mapPosition));
+  EXPECT_TRUE(checkIfPositionWithinMap(Position(20.0, 10.0) + mapPosition, mapLength, mapPosition));
+  EXPECT_TRUE(checkIfPositionWithinMap(Position(20.0, -10.0) + mapPosition, mapLength, mapPosition));
+  EXPECT_TRUE(checkIfPositionWithinMap(Position(-20.0, 10.0) + mapPosition, mapLength, mapPosition));
+  EXPECT_TRUE(checkIfPositionWithinMap(Position(-20.0, -10.0) + mapPosition, mapLength, mapPosition));
 }
 
 TEST(checkIfPositionWithinMap, Outside)
 {
-  Array2d mapLength(10.0, 5.0);
-  Vector2d mapPosition(-3.0, 145.2);
+  Length mapLength(10.0, 5.0);
+  Position mapPosition(-3.0, 145.2);
 
-  EXPECT_FALSE(checkIfPositionWithinMap(Vector2d(5.5, 0.0) + mapPosition, mapLength, mapPosition));
-  EXPECT_FALSE(checkIfPositionWithinMap(Vector2d(-5.5, 0.0) + mapPosition, mapLength, mapPosition));
-  EXPECT_FALSE(checkIfPositionWithinMap(Vector2d(-5.5, 3.0) + mapPosition, mapLength, mapPosition));
-  EXPECT_FALSE(checkIfPositionWithinMap(Vector2d(-5.5, -3.0) + mapPosition, mapLength, mapPosition));
-  EXPECT_FALSE(checkIfPositionWithinMap(Vector2d(3.0, 3.0) + mapPosition, mapLength, mapPosition));
+  EXPECT_FALSE(checkIfPositionWithinMap(Position(5.5, 0.0) + mapPosition, mapLength, mapPosition));
+  EXPECT_FALSE(checkIfPositionWithinMap(Position(-5.5, 0.0) + mapPosition, mapLength, mapPosition));
+  EXPECT_FALSE(checkIfPositionWithinMap(Position(-5.5, 3.0) + mapPosition, mapLength, mapPosition));
+  EXPECT_FALSE(checkIfPositionWithinMap(Position(-5.5, -3.0) + mapPosition, mapLength, mapPosition));
+  EXPECT_FALSE(checkIfPositionWithinMap(Position(3.0, 3.0) + mapPosition, mapLength, mapPosition));
 }
 
 TEST(checkIfPositionWithinMap, EdgeCases)
 {
-  Array2d mapLength(2.0, 3.0);
-  Vector2d mapPosition(0.0, 0.0);
+  Length mapLength(2.0, 3.0);
+  Position mapPosition(0.0, 0.0);
 
-  EXPECT_FALSE(checkIfPositionWithinMap(Vector2d(1.0, -1.5), mapLength, mapPosition));
-  EXPECT_FALSE(checkIfPositionWithinMap(Vector2d(-1.0, 1.5), mapLength, mapPosition));
-  EXPECT_FALSE(checkIfPositionWithinMap(Vector2d(1.0 + DBL_EPSILON, 1.0), mapLength, mapPosition));
-  EXPECT_TRUE(checkIfPositionWithinMap(Vector2d((2.0 + DBL_EPSILON) / 2.0, 1.0), mapLength, mapPosition));
-  EXPECT_FALSE(checkIfPositionWithinMap(Vector2d(0.5, -1.5 - (2.0 * DBL_EPSILON)), mapLength, mapPosition));
-  EXPECT_TRUE(checkIfPositionWithinMap(Vector2d(-0.5, (3.0 + DBL_EPSILON) / 2.0), mapLength, mapPosition));
+  EXPECT_FALSE(checkIfPositionWithinMap(Position(1.0, -1.5), mapLength, mapPosition));
+  EXPECT_FALSE(checkIfPositionWithinMap(Position(-1.0, 1.5), mapLength, mapPosition));
+  EXPECT_FALSE(checkIfPositionWithinMap(Position(1.0 + DBL_EPSILON, 1.0), mapLength, mapPosition));
+  EXPECT_TRUE(checkIfPositionWithinMap(Position((2.0 + DBL_EPSILON) / 2.0, 1.0), mapLength, mapPosition));
+  EXPECT_FALSE(checkIfPositionWithinMap(Position(0.5, -1.5 - (2.0 * DBL_EPSILON)), mapLength, mapPosition));
+  EXPECT_TRUE(checkIfPositionWithinMap(Position(-0.5, (3.0 + DBL_EPSILON) / 2.0), mapLength, mapPosition));
 }
 
 TEST(getIndexShiftFromPositionShift, All)
 {
   double resolution = 1.0;
-  Array2i indexShift;
+  Index indexShift;
 
-  EXPECT_TRUE(getIndexShiftFromPositionShift(indexShift, Vector2d(0.0, 0.0), resolution));
+  EXPECT_TRUE(getIndexShiftFromPositionShift(indexShift, Vector(0.0, 0.0), resolution));
   EXPECT_EQ(0, indexShift(0));
   EXPECT_EQ(0, indexShift(1));
 
-  EXPECT_TRUE(getIndexShiftFromPositionShift(indexShift, Vector2d(0.35, -0.45), resolution));
+  EXPECT_TRUE(getIndexShiftFromPositionShift(indexShift, Vector(0.35, -0.45), resolution));
   EXPECT_EQ(0, indexShift(0));
   EXPECT_EQ(0, indexShift(1));
 
-  EXPECT_TRUE(getIndexShiftFromPositionShift(indexShift, Vector2d(0.55, -0.45), resolution));
+  EXPECT_TRUE(getIndexShiftFromPositionShift(indexShift, Vector(0.55, -0.45), resolution));
   EXPECT_EQ(-1, indexShift(0));
   EXPECT_EQ(0, indexShift(1));
 
-  EXPECT_TRUE(getIndexShiftFromPositionShift(indexShift, Vector2d(-1.3, -2.65), resolution));
+  EXPECT_TRUE(getIndexShiftFromPositionShift(indexShift, Vector(-1.3, -2.65), resolution));
   EXPECT_EQ(1, indexShift(0));
   EXPECT_EQ(3, indexShift(1));
 
-  EXPECT_TRUE(getIndexShiftFromPositionShift(indexShift, Vector2d(-0.4, 0.09), 0.2));
+  EXPECT_TRUE(getIndexShiftFromPositionShift(indexShift, Vector(-0.4, 0.09), 0.2));
   EXPECT_EQ(2, indexShift(0));
   EXPECT_EQ(0, indexShift(1));
 }
@@ -222,30 +221,30 @@ TEST(getIndexShiftFromPositionShift, All)
 TEST(getPositionShiftFromIndexShift, All)
 {
   double resolution = 0.3;
-  Vector2d positionShift;
+  Vector positionShift;
 
-  EXPECT_TRUE(getPositionShiftFromIndexShift(positionShift, Array2i(0, 0), resolution));
+  EXPECT_TRUE(getPositionShiftFromIndexShift(positionShift, Index(0, 0), resolution));
   EXPECT_DOUBLE_EQ(0.0, positionShift.x());
   EXPECT_DOUBLE_EQ(0.0, positionShift.y());
 
-  EXPECT_TRUE(getPositionShiftFromIndexShift(positionShift, Array2i(1, -1), resolution));
+  EXPECT_TRUE(getPositionShiftFromIndexShift(positionShift, Index(1, -1), resolution));
   EXPECT_DOUBLE_EQ(-0.3, positionShift.x());
   EXPECT_DOUBLE_EQ(0.3, positionShift.y());
 
-  EXPECT_TRUE(getPositionShiftFromIndexShift(positionShift, Array2i(2, 1), resolution));
+  EXPECT_TRUE(getPositionShiftFromIndexShift(positionShift, Index(2, 1), resolution));
   EXPECT_DOUBLE_EQ(-0.6, positionShift.x());
   EXPECT_DOUBLE_EQ(-0.3, positionShift.y());
 }
 
 TEST(checkIfIndexWithinRange, All)
 {
-  Array2i bufferSize(10, 15);
-  EXPECT_TRUE(checkIfIndexWithinRange(Array2i(0, 0), bufferSize));
-  EXPECT_TRUE(checkIfIndexWithinRange(Array2i(9, 14), bufferSize));
-  EXPECT_FALSE(checkIfIndexWithinRange(Array2i(10, 5), bufferSize));
-  EXPECT_FALSE(checkIfIndexWithinRange(Array2i(5, 300), bufferSize));
-  EXPECT_FALSE(checkIfIndexWithinRange(Array2i(-1, 0), bufferSize));
-  EXPECT_FALSE(checkIfIndexWithinRange(Array2i(0, -300), bufferSize));
+  Size bufferSize(10, 15);
+  EXPECT_TRUE(checkIfIndexWithinRange(Index(0, 0), bufferSize));
+  EXPECT_TRUE(checkIfIndexWithinRange(Index(9, 14), bufferSize));
+  EXPECT_FALSE(checkIfIndexWithinRange(Index(10, 5), bufferSize));
+  EXPECT_FALSE(checkIfIndexWithinRange(Index(5, 300), bufferSize));
+  EXPECT_FALSE(checkIfIndexWithinRange(Index(-1, 0), bufferSize));
+  EXPECT_FALSE(checkIfIndexWithinRange(Index(0, -300), bufferSize));
 }
 
 TEST(mapIndexWithinRange, All)
@@ -294,9 +293,9 @@ TEST(limitPositionToRange, Simple)
 {
   double epsilon = 11.0 * numeric_limits<double>::epsilon();
 
-  Array2d mapLength(30.0, 10.0);
-  Vector2d mapPosition(0.0, 0.0);
-  Vector2d position;
+  Length mapLength(30.0, 10.0);
+  Position mapPosition(0.0, 0.0);
+  Position position;
 
   position << 0.0, 0.0;
   limitPositionToRange(position, mapLength, mapPosition);
@@ -350,9 +349,9 @@ TEST(limitPositionToRange, Position)
 {
   double epsilon = 11.0 * numeric_limits<double>::epsilon();
 
-  Array2d mapLength(30.0, 10.0);
-  Vector2d mapPosition(1.0, 2.0);
-  Vector2d position;
+  Length mapLength(30.0, 10.0);
+  Position mapPosition(1.0, 2.0);
+  Position position;
 
   position << 0.0, 0.0;
   limitPositionToRange(position, mapLength, mapPosition);
@@ -405,21 +404,21 @@ TEST(limitPositionToRange, Position)
 TEST(getSubmapInformation, Simple)
 {
   // Map
-  Array2d mapLength(5.0, 4.0);
-  Vector2d mapPosition(0.0, 0.0);
+  Length mapLength(5.0, 4.0);
+  Position mapPosition(0.0, 0.0);
   double resolution = 1.0;
-  Array2i bufferSize(5, 4);
+  Size bufferSize(5, 4);
 
   // Requested submap
-  Vector2d requestedSubmapPosition;
-  Vector2d requestedSubmapLength;
+  Position requestedSubmapPosition;
+  Position requestedSubmapLength;
 
   // The returned submap indeces
-  Array2i submapTopLeftIndex;
-  Array2i submapSize;
-  Eigen::Vector2d submapPosition;
-  Eigen::Array2d submapLength;
-  Eigen::Array2i requestedIndexInSubmap;
+  Index submapTopLeftIndex;
+  Index submapSize;
+  Position submapPosition;
+  Length submapLength;
+  Index requestedIndexInSubmap;
 
   requestedSubmapPosition << 0.0, 0.5;
   requestedSubmapLength << 0.9, 2.9;
@@ -440,21 +439,21 @@ TEST(getSubmapInformation, Simple)
 TEST(getSubmapInformation, Zero)
 {
   // Map
-  Array2d mapLength(5.0, 4.0);
-  Vector2d mapPosition(0.0, 0.0);
+  Length mapLength(5.0, 4.0);
+  Position mapPosition(0.0, 0.0);
   double resolution = 1.0;
-  Array2i bufferSize(5, 4);
+  Size bufferSize(5, 4);
 
   // Requested submap
-  Vector2d requestedSubmapPosition;
-  Vector2d requestedSubmapLength;
+  Position requestedSubmapPosition;
+  Length requestedSubmapLength;
 
   // The returned submap indeces
-  Array2i submapTopLeftIndex;
-  Array2i submapSize;
-  Eigen::Vector2d submapPosition;
-  Eigen::Array2d submapLength;
-  Eigen::Array2i requestedIndexInSubmap;
+  Index submapTopLeftIndex;
+  Index submapSize;
+  Position submapPosition;
+  Length submapLength;
+  Index requestedIndexInSubmap;
 
   requestedSubmapPosition << -1.0, -0.5;
   requestedSubmapLength << 0.0, 0.0;
@@ -476,21 +475,21 @@ TEST(getSubmapInformation, Zero)
 TEST(getSubmapInformation, ExceedingBoundaries)
 {
   // Map
-  Array2d mapLength(5.0, 4.0);
-  Vector2d mapPosition(0.0, 0.0);
+  Length mapLength(5.0, 4.0);
+  Position mapPosition(0.0, 0.0);
   double resolution = 1.0;
-  Array2i bufferSize(5, 4);
+  Size bufferSize(5, 4);
 
   // Requested submap
-  Vector2d requestedSubmapPosition;
-  Vector2d requestedSubmapLength;
+  Position requestedSubmapPosition;
+  Length requestedSubmapLength;
 
   // The returned submap indeces
-  Array2i submapTopLeftIndex;
-  Array2i submapSize;
-  Eigen::Vector2d submapPosition;
-  Eigen::Array2d submapLength;
-  Eigen::Array2i requestedIndexInSubmap;
+  Index submapTopLeftIndex;
+  Size submapSize;
+  Position submapPosition;
+  Length submapLength;
+  Index requestedIndexInSubmap;
 
   requestedSubmapPosition << 2.0, 1.5;
   requestedSubmapLength << 2.9, 2.9;
@@ -529,22 +528,22 @@ TEST(getSubmapInformation, ExceedingBoundaries)
 TEST(getSubmapInformation, CircularBuffer)
 {
   // Map
-  Array2d mapLength(5.0, 4.0);
-  Vector2d mapPosition(0.0, 0.0);
+  Length mapLength(5.0, 4.0);
+  Position mapPosition(0.0, 0.0);
   double resolution = 1.0;
-  Array2i bufferSize(5, 4);
-  Array2i bufferStartIndex(2, 1);
+  Size bufferSize(5, 4);
+  Index bufferStartIndex(2, 1);
 
   // Requested submap
-  Vector2d requestedSubmapPosition;
-  Vector2d requestedSubmapLength;
+  Position requestedSubmapPosition;
+  Length requestedSubmapLength;
 
   // The returned submap indeces
-  Array2i submapTopLeftIndex;
-  Array2i submapSize;
-  Eigen::Vector2d submapPosition;
-  Eigen::Array2d submapLength;
-  Eigen::Array2i requestedIndexInSubmap;
+  Index submapTopLeftIndex;
+  Size submapSize;
+  Position submapPosition;
+  Length submapLength;
+  Index requestedIndexInSubmap;
 
   requestedSubmapPosition << 0.0, 0.5;
   requestedSubmapLength << 0.9, 2.9;
@@ -599,22 +598,22 @@ TEST(getSubmapInformation, CircularBuffer)
 TEST(getSubmapInformation, Debug1)
 {
   // Map
-  Array2d mapLength(4.98, 4.98);
-  Vector2d mapPosition(-4.98, -5.76);
+  Length mapLength(4.98, 4.98);
+  Position mapPosition(-4.98, -5.76);
   double resolution = 0.06;
-  Array2i bufferSize(83, 83);
-  Array2i bufferStartIndex(0, 13);
+  Size bufferSize(83, 83);
+  Index bufferStartIndex(0, 13);
 
   // Requested submap
-  Vector2d requestedSubmapPosition(-7.44, -3.42);
-  Vector2d requestedSubmapLength(0.12, 0.12);
+  Position requestedSubmapPosition(-7.44, -3.42);
+  Length requestedSubmapLength(0.12, 0.12);
 
   // The returned submap indeces
-  Array2i submapTopLeftIndex;
-  Array2i submapSize;
-  Eigen::Vector2d submapPosition;
-  Eigen::Array2d submapLength;
-  Eigen::Array2i requestedIndexInSubmap;
+  Index submapTopLeftIndex;
+  Size submapSize;
+  Position submapPosition;
+  Length submapLength;
+  Index requestedIndexInSubmap;
 
   EXPECT_TRUE(getSubmapInformation(submapTopLeftIndex, submapSize, submapPosition, submapLength, requestedIndexInSubmap,
                                    requestedSubmapPosition, requestedSubmapLength,
@@ -628,22 +627,22 @@ TEST(getSubmapInformation, Debug1)
 TEST(getSubmapInformation, Debug2)
 {
   // Map
-  Array2d mapLength(4.98, 4.98);
-  Vector2d mapPosition(2.46, -25.26);
+  Length mapLength(4.98, 4.98);
+  Position mapPosition(2.46, -25.26);
   double resolution = 0.06;
-  Array2i bufferSize(83, 83);
-  Array2i bufferStartIndex(42, 6);
+  Size bufferSize(83, 83);
+  Index bufferStartIndex(42, 6);
 
   // Requested submap
-  Vector2d requestedSubmapPosition(0.24, -26.82);
-  Vector2d requestedSubmapLength(0.624614, 0.462276);
+  Position requestedSubmapPosition(0.24, -26.82);
+  Length requestedSubmapLength(0.624614, 0.462276);
 
   // The returned submap indeces
-  Array2i submapTopLeftIndex;
-  Array2i submapSize;
-  Eigen::Vector2d submapPosition;
-  Eigen::Array2d submapLength;
-  Eigen::Array2i requestedIndexInSubmap;
+  Index submapTopLeftIndex;
+  Size submapSize;
+  Position submapPosition;
+  Length submapLength;
+  Index requestedIndexInSubmap;
 
   EXPECT_TRUE(getSubmapInformation(submapTopLeftIndex, submapSize, submapPosition, submapLength, requestedIndexInSubmap,
                                    requestedSubmapPosition, requestedSubmapLength,
@@ -763,8 +762,8 @@ TEST(getBufferRegionsForSubmap, CircularBuffer)
 
 TEST(checkIncrementIndex, Simple)
 {
-  Eigen::Array2i index(0, 0);
-  Eigen::Array2i bufferSize(4, 3);
+  Index index(0, 0);
+  Size bufferSize(4, 3);
 
   EXPECT_TRUE(incrementIndex(index, bufferSize));
   EXPECT_EQ(0, index[0]);
@@ -799,9 +798,9 @@ TEST(checkIncrementIndex, Simple)
 
 TEST(checkIncrementIndex, CircularBuffer)
 {
-  Eigen::Array2i bufferSize(4, 3);
-  Eigen::Array2i bufferStartIndex(2, 1);
-  Eigen::Array2i index(bufferStartIndex);
+  Size bufferSize(4, 3);
+  Index bufferStartIndex(2, 1);
+  Index index(bufferStartIndex);
 
   EXPECT_TRUE(incrementIndex(index, bufferSize, bufferStartIndex));
   EXPECT_EQ(2, index[0]);
@@ -854,11 +853,11 @@ TEST(checkIncrementIndex, CircularBuffer)
 
 TEST(checkIncrementIndexForSubmap, Simple)
 {
-  Eigen::Array2i submapIndex(0, 0);
-  Eigen::Array2i index;
-  Eigen::Array2i submapTopLeftIndex(3, 1);
-  Eigen::Array2i submapBufferSize(2, 4);
-  Eigen::Array2i bufferSize(8, 5);
+  Index submapIndex(0, 0);
+  Index index;
+  Index submapTopLeftIndex(3, 1);
+  Size submapBufferSize(2, 4);
+  Size bufferSize(8, 5);
 
   EXPECT_TRUE(incrementIndexForSubmap(submapIndex, index, submapTopLeftIndex, submapBufferSize, bufferSize));
   EXPECT_EQ(0, submapIndex[0]);
@@ -899,12 +898,12 @@ TEST(checkIncrementIndexForSubmap, Simple)
 
 TEST(checkIncrementIndexForSubmap, CircularBuffer)
 {
-  Eigen::Array2i submapIndex(0, 0);
-  Eigen::Array2i index;
-  Eigen::Array2i submapTopLeftIndex(6, 3);
-  Eigen::Array2i submapBufferSize(2, 4);
-  Eigen::Array2i bufferSize(8, 5);
-  Eigen::Array2i bufferStartIndex(3, 2);
+  Index submapIndex(0, 0);
+  Index index;
+  Index submapTopLeftIndex(6, 3);
+  Size submapBufferSize(2, 4);
+  Size bufferSize(8, 5);
+  Index bufferStartIndex(3, 2);
 
   EXPECT_TRUE(incrementIndexForSubmap(submapIndex, index, submapTopLeftIndex, submapBufferSize, bufferSize, bufferStartIndex));
   EXPECT_EQ(0, submapIndex[0]);
