@@ -2,8 +2,8 @@
 Changelog for package grid_map_visualization
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.3.3 (2016-05-10)
+------------------
 * Release for ROS Kinetic.
 * Contributors: Peter Fankhauser
 
