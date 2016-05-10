@@ -1,7 +1,7 @@
 #include <ros/ros.h>
 #include <grid_map_ros/grid_map_ros.hpp>
 #include <grid_map_cv/grid_map_cv.hpp>
-#include <opencv2/opencv.hpp>
+#include <cv_bridge/cv_bridge.h>
 
 using namespace grid_map;
 using namespace ros;

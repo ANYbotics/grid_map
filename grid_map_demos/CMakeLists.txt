@@ -11,10 +11,8 @@ find_package(catkin REQUIRED COMPONENTS
   grid_map_msgs
   geometry_msgs
   sensor_msgs
+  cv_bridge
 )
-
-## System dependencies are found with CMake's conventions
-find_package(OpenCV REQUIRED)
 
 ###################################
 ## catkin specific configuration ##
@@ -42,7 +40,6 @@ include_directories(
   include
   ${catkin_INCLUDE_DIRS}
   ${EIGEN3_INCLUDE_DIR}
-  ${OpenCV_INCLUDE_DIRS}
 )
 
 ## Declare a cpp executable
@@ -122,7 +119,6 @@ target_link_libraries(
 target_link_libraries(
   opencv_demo
   ${catkin_LIBRARIES}
-  ${OpenCV_LIBRARIES}
 )
 
 target_link_libraries(

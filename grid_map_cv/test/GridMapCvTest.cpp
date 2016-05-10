@@ -14,7 +14,7 @@
 #include <gtest/gtest.h>
 
 // OpenCV
-#include <opencv/cv.h>
+#include <cv_bridge/cv_bridge.h>
 
 using namespace std;
 using namespace grid_map;

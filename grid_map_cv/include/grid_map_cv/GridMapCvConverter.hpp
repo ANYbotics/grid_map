@@ -11,7 +11,7 @@
 #include <grid_map_core/grid_map_core.hpp>
 
 // OpenCV
-#include <opencv2/opencv.hpp>
+#include <cv_bridge/cv_bridge.h>
 
 // STD
 #include <iostream>
