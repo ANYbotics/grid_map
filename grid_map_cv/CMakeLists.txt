@@ -6,9 +6,8 @@ set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
 ## Find catkin macros and libraries
 find_package(catkin REQUIRED COMPONENTS
   grid_map_core
+  cv_bridge
 )
-
-find_package(OpenCV REQUIRED)
 
 ###################################
 ## catkin specific configuration ##
@@ -26,8 +25,8 @@ catkin_package(
     ${PROJECT_NAME}
   CATKIN_DEPENDS
     grid_map_core
+    cv_bridge
   DEPENDS
-    OpenCV
 )
 
 ###########
@@ -39,7 +38,6 @@ include_directories(
   include
   ${catkin_INCLUDE_DIRS}
   ${EIGEN3_INCLUDE_DIR}
-  ${OpenCV_INCLUDE_DIRS}
 )
 
 ## Declare a cpp library
@@ -49,7 +47,6 @@ add_library(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME}
   ${catkin_LIBRARIES}
-  ${OpenCV_LIBRARIES}
 )
 
 add_dependencies(${PROJECT_NAME}

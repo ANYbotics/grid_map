@@ -8,8 +8,8 @@ env:
     - JOB_PATH=/tmp/devel_job
   matrix:
     - ROS_DISTRO_NAME=indigo OS_NAME=ubuntu OS_CODE_NAME=trusty ARCH=amd64
-    #- ROS_DISTRO_NAME=jade OS_NAME=ubuntu OS_CODE_NAME=trusty ARCH=amd64
-    #- ROS_DISTRO_NAME=kinetic OS_NAME=ubuntu OS_CODE_NAME=xenial ARCH=amd64
+    - ROS_DISTRO_NAME=jade OS_NAME=ubuntu OS_CODE_NAME=trusty ARCH=amd64
+    - ROS_DISTRO_NAME=kinetic OS_NAME=ubuntu OS_CODE_NAME=xenial ARCH=amd64
 install:
   # either install the latest released version of ros_buildfarm
   # (TODO the current release 1.0.1 is not sufficient so for now use the master branch)

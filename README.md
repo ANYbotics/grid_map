@@ -14,7 +14,7 @@ Features:
 * **OpenCV interface:** Grid maps can be seamlessly converted from and to [OpenCV] image types to make use of the tools provided by [OpenCV].
 * **Visualizations:** The *grid_map_visualization* package helps to visualize grid maps in various form in [RViz].
 
-The grid map package has been tested with [ROS] Indigo and Jade under Ubuntu 14.04. This is research code, expect that it changes often and any fitness for a particular purpose is disclaimed.
+The grid map package has been tested with [ROS] Indigo, Jade (under Ubuntu 14.04) and Kinetic (under Ubuntu 16.04). This is research code, expect that it changes often and any fitness for a particular purpose is disclaimed.
 
 The source code is released under a [BSD 3-Clause license](LICENSE).
 
@@ -318,12 +318,12 @@ The published topics are configured with the [YAML parameter file](grid_map_demo
 
 ### Devel Job Status
 
-| | Indigo | Jade |
-| --- | --- | --- |
-| grid_map | [![Build Status](http://build.ros.org/buildStatus/icon?job=Idev__grid_map__ubuntu_trusty_amd64)](http://build.ros.org/job/Idev__grid_map__ubuntu_trusty_amd64/) | [![Build Status](http://build.ros.org/buildStatus/icon?job=Jdev__grid_map__ubuntu_trusty_amd64)](http://build.ros.org/job/Jdev__grid_map__ubuntu_trusty_amd64/) |
-| doc | [![Build Status](http://build.ros.org/buildStatus/icon?job=Idoc__grid_map__ubuntu_trusty_amd64)](http://build.ros.org/job/Idoc__grid_map__ubuntu_trusty_amd64/) | [![Build Status](http://build.ros.org/buildStatus/icon?job=Jdoc__grid_map__ubuntu_trusty_amd64)](http://build.ros.org/job/Jdoc__grid_map__ubuntu_trusty_amd64/) |
+| | Indigo | Jade | Kinetic |
+| --- | --- | --- | --- |
+| grid_map | [![Build Status](http://build.ros.org/buildStatus/icon?job=Idev__grid_map__ubuntu_trusty_amd64)](http://build.ros.org/job/Idev__grid_map__ubuntu_trusty_amd64/) | [![Build Status](http://build.ros.org/buildStatus/icon?job=Jdev__grid_map__ubuntu_trusty_amd64)](http://build.ros.org/job/Jdev__grid_map__ubuntu_trusty_amd64/) | [![Build Status](http://build.ros.org/buildStatus/icon?job=Kdev__grid_map__ubuntu_xenial_amd64)](http://build.ros.org/job/Kdev__grid_map__ubuntu_xenial_amd64/) |
+| doc | [![Build Status](http://build.ros.org/buildStatus/icon?job=Idoc__grid_map__ubuntu_trusty_amd64)](http://build.ros.org/job/Idoc__grid_map__ubuntu_trusty_amd64/) | [![Build Status](http://build.ros.org/buildStatus/icon?job=Jdoc__grid_map__ubuntu_trusty_amd64)](http://build.ros.org/job/Jdoc__grid_map__ubuntu_trusty_amd64/) | [![Build Status](http://build.ros.org/buildStatus/icon?job=Kdoc__grid_map__ubuntu_xenial_amd64)](http://build.ros.org/job/Kdoc__grid_map__ubuntu_xenial_amd64/) |
 
-### Trusty AMD64 Debian Job Status
+### Release Job Status
 
 | | Indigo | Jade |
 | --- | --- | --- |
