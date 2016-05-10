@@ -2,6 +2,11 @@
 Changelog for package grid_map_demos
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Updated dependency to OpenCV for compatibility with ROS Kinetic and OpenCV 2/3.
+* Contributors: Peter Fankhauser
+
 1.3.1 (2016-05-10)
 ------------------
 * Updated grid map loader demo.
