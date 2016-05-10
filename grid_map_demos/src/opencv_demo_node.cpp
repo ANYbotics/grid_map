@@ -2,6 +2,7 @@
 #include <grid_map_ros/grid_map_ros.hpp>
 #include <grid_map_cv/grid_map_cv.hpp>
 #include <cv_bridge/cv_bridge.h>
+#include <opencv/highgui.h>
 
 using namespace grid_map;
 using namespace ros;
