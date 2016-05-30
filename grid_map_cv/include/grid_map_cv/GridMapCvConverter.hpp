@@ -197,6 +197,70 @@ class GridMapCvConverter
     return true;
   };
 
+  template<typename Type_, int NChannels_>
+  static bool toWeightedImage(const grid_map::GridMap& gridMap, const std::string& layer, const std::string& weight,
+                      const int encoding, cv::Mat& image)
+  {
+    const float minValue = gridMap.get(layer).minCoeffOfFinites();
+    const float maxValue = gridMap.get(layer).maxCoeffOfFinites();
+    return toWeightedImage<Type_, NChannels_>(gridMap, layer, weight, encoding, minValue, maxValue, image);
+  };
+
+  template<typename Type_, int NChannels_>
+  static bool toWeightedImage(const grid_map::GridMap& gridMap, const std::string& layer, const std::string& weight,
+                      const int encoding, const float lowerValue, const float upperValue,
+                      cv::Mat& image)
+  {
+    // Initialize image.
+    if (gridMap.getSize()(0) > 0 && gridMap.getSize()(1) > 0) {
+      image = cv::Mat::zeros(gridMap.getSize()(0), gridMap.getSize()(1), encoding);
+    } else {
+      std::cerr << "Invalid grid map?" << std::endl;
+      return false;
+    }
+
+    // Get max image value.
+    unsigned int imageMax = (unsigned int)std::numeric_limits<Type_>::max();
+
+    const float minWeight = gridMap.get(weight).minCoeffOfFinites();
+    const float maxWeight = gridMap.get(weight).maxCoeffOfFinites();
+
+    // Clamp outliers.
+    grid_map::GridMap map = gridMap;
+    map.get(layer) = map.get(layer).unaryExpr(grid_map::Clamp<float>(lowerValue, upperValue));
+    const grid_map::Matrix& data = gridMap[layer];
+    const grid_map::Matrix& weights = gridMap[weight];
+
+    // Convert to image.
+    bool isColor = false;
+    if (image.channels() >= 3) isColor = true;
+    bool hasAlpha = false;
+    if (image.channels() >= 4) hasAlpha = true;
+
+    for (GridMapIterator iterator(map); !iterator.isPastEnd(); ++iterator) {
+      const Index index(*iterator);
+      if (std::isfinite(data(index(0), index(1)))) {
+        const float& value = data(index(0), index(1));
+        const Type_ imageValue = (Type_) (((value - lowerValue) / (upperValue - lowerValue)) * (float) imageMax);
+        const float& alpha = weights(index(0), index(1));
+        const Type_ imageWeight = (Type_) (((alpha - minWeight) / (maxWeight - minWeight)) * (float) imageMax);
+        const Index imageIndex(iterator.getUnwrappedIndex());
+        unsigned int channel = 0;
+        image.at<cv::Vec<Type_, NChannels_>>(imageIndex(0), imageIndex(1))[channel] = imageValue;
+
+        if (isColor) {
+          image.at<cv::Vec<Type_, NChannels_>>(imageIndex(0), imageIndex(1))[++channel] = imageValue;
+          image.at<cv::Vec<Type_, NChannels_>>(imageIndex(0), imageIndex(1))[++channel] = imageValue;
+        }
+        if (hasAlpha) {
+          image.at<cv::Vec<Type_, NChannels_>>(imageIndex(0), imageIndex(1))[++channel] = imageWeight;
+        }
+      }
+    }
+
+    return true;
+  };
+
 };
 
 } /* namespace */
