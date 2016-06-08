@@ -592,8 +592,8 @@ void GridMap::getDataBoundingSubmap(const std::string& layer, Index& startIndex,
     if (minIndex(1) != -1 && maxIndex(1) != -1 ) { break; }
   }
   startIndex = minIndex;
-  size(0) = (size_(0) + maxIndex(0) + 1 - minIndex(0)) % size_(0);
-  size(1) = (size_(1) + maxIndex(1) + 1 - minIndex(1)) % size_(1);
+  size(0) = (size_(0) + maxIndex(0) - minIndex(0)) % size_(0) + 1;
+  size(1) = (size_(1) + maxIndex(1) - minIndex(1)) % size_(1) + 1;
 }
 
 void GridMap::setStartIndex(const Index& startIndex) {
