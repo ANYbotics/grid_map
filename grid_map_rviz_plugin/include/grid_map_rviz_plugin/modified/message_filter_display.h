@@ -34,11 +34,11 @@
 #include <OgreSceneNode.h>
 
 #include <message_filters/subscriber.h>
-#include "message_filter_mod.h"
+#include "grid_map_rviz_plugin/modified/message_filter.h"
 #endif
 
 #include "rviz/display_context.h"
-#include "frame_manager_mod.h"
+#include "grid_map_rviz_plugin/modified/frame_manager.h"
 #include "rviz/properties/ros_topic_property.h"
 
 #include "rviz/display.h"

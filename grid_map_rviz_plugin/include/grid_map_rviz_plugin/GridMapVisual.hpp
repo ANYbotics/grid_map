@@ -6,8 +6,7 @@
  *  Institute: ETH Zurich, Autonomous Systems Lab
  */
 
-#ifndef GRID_MAP_VISUAL_H
-#define GRID_MAP_VISUAL_H
+#pragma once
 
 #include <OGRE/OgreMaterial.h>
 #include <OGRE/OgreSharedPtr.h>
@@ -60,34 +59,32 @@ namespace grid_map_rviz_plugin
     // Set the coordinate frame pose
     void setFramePosition(const Ogre::Vector3& position);
     void setFrameOrientation(const Ogre::Quaternion& orientation);
-    
+
     // get grid map layer names
     std::vector<std::string> getLayerNames();
 
-  private:       
+  private:
     Ogre::SceneNode* frame_node_;
     Ogre::SceneManager* scene_manager_;
-    
+
     // ManualObject for mesh display
     Ogre::ManualObject* manual_object_;
     Ogre::MaterialPtr material_;
     std::string material_name_;
-    
+
     // lines for mesh
     boost::shared_ptr<rviz::BillboardLine> mesh_lines_;
-    
+
     // grid map
     grid_map::GridMap map_;
     bool have_map_;
-    
+
     // helper functions
     void normalizeIntensity(float& intensity, float min_intensity, float max_intensity);
     Ogre::ColourValue getRainbowColor(float intensity);
-    Ogre::ColourValue getInterpolatedColor(float intensity, 
-					   Ogre::ColourValue min_color, 
+    Ogre::ColourValue getInterpolatedColor(float intensity,
+					   Ogre::ColourValue min_color,
 					   Ogre::ColourValue max_color);
   };
 
 } // end namespace grid_map_rviz_plugin
-
-#endif // GRID_MAP_VISUAL_H

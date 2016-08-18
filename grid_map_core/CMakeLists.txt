@@ -4,8 +4,7 @@ project(grid_map_core)
 set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
 
 ## Find catkin macros and libraries
-find_package(catkin REQUIRED COMPONENTS
-)
+find_package(catkin REQUIRED COMPONENTS)
 
 ## System dependencies are found with CMake's conventions
 #find_package(Eigen3 REQUIRED)
@@ -73,7 +72,8 @@ target_link_libraries(${PROJECT_NAME}
 #############
 
 # Mark executables and/or libraries for installation
-install(TARGETS ${PROJECT_NAME}
+install(
+  TARGETS ${PROJECT_NAME}
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}

@@ -6,12 +6,11 @@
  *  Institute: ETH Zurich, Autonomous Systems Lab
  */
 
-#ifndef GRID_MAP_DISPLAY_H
-#define GRID_MAP_DISPLAY_H
+#pragma once
 
 #ifndef Q_MOC_RUN
 #include <boost/circular_buffer.hpp>
-#include "message_filter_display_mod.h"
+#include "grid_map_rviz_plugin/modified/message_filter_display.h"
 #include <sensor_msgs/Imu.h>
 #endif
 
@@ -48,16 +47,16 @@ namespace grid_map_rviz_plugin
     virtual void onInitialize();
 
     virtual void reset();
-   
-  private Q_SLOTS: 
+
+  private Q_SLOTS:
     // Qt slots
     void updateHistoryLength();
     void updateHeightMode();
     void updateColorMode();
     void updateUseRainbow();
-    void updateAutocomputeIntensityBounds();    
+    void updateAutocomputeIntensityBounds();
     void updateVisualization();
-    
+
   private:
     // Callback for incoming ROS messages
     void processMessage(const grid_map_msgs::GridMap::ConstPtr& msg);
@@ -70,10 +69,10 @@ namespace grid_map_rviz_plugin
     rviz::IntProperty* history_length_property_;
     rviz::BoolProperty* show_grid_lines_property_;
     rviz::EnumProperty* height_mode_property_;
-    rviz::EditableEnumProperty* height_transformer_property_; 
+    rviz::EditableEnumProperty* height_transformer_property_;
     rviz::EnumProperty* color_mode_property_;
     rviz::EditableEnumProperty* color_transformer_property_;
-    rviz::ColorProperty* color_property_;    
+    rviz::ColorProperty* color_property_;
     rviz::BoolProperty* use_rainbow_property_;
     rviz::ColorProperty* min_color_property_;
     rviz::ColorProperty* max_color_property_;
@@ -83,5 +82,3 @@ namespace grid_map_rviz_plugin
   };
 
 } // end namespace grid_map_rviz_plugin
-
-#endif // GRID_MAP_DISPLAY_H
