@@ -70,10 +70,13 @@ void GridMapVisual::computeVisualization(float alpha, bool showGridLines, bool f
     ROS_DEBUG("Unable to visualize grid map, map must contain at least one layer.");
     return;
   }
-  if ((!flatTerrain && !map_.exists(heightLayer)) || (!flatColor && !map_.exists(heightLayer))) {
+  if ((!flatTerrain && !map_.exists(heightLayer)) || (!flatColor && !map_.exists(colorLayer))) {
     ROS_DEBUG("Unable to visualize grid map, requested layer(s) not available.");
     return;
   }
+
+  // Convert to simple format, makes things easier.
+  map_.convertToDefaultStartIndex();
 
   // basic grid map data
   size_t rows = map_.getSize()(0);
@@ -83,8 +86,8 @@ void GridMapVisual::computeVisualization(float alpha, bool showGridLines, bool f
     return;
   }
   double resolution = map_.getResolution();
-  grid_map::Matrix& heightData = map_[flatTerrain ? layerNames[0] : heightLayer];
-  grid_map::Matrix& colorData = map_[flatColor ? layerNames[0] : colorLayer];
+  const grid_map::Matrix& heightData = map_[flatTerrain ? layerNames[0] : heightLayer];
+  const grid_map::Matrix& colorData = map_[flatColor ? layerNames[0] : colorLayer];
 
   // initialize ManualObject
   if (!manualObject_) {

@@ -343,6 +343,11 @@ class GridMap
   bool extendToInclude(const GridMap& other);
 
   /*!
+   * Rearranges data such that the buffer start index is at (0,0).
+   */
+  void convertToDefaultStartIndex();
+
+  /*!
    * Clears all cells (set to NAN) for a layer.
    * @param layer the layer to be cleared.
    */

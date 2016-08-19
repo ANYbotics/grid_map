@@ -57,7 +57,7 @@ public:
   /*!
    * Returns the the linear (1-dim.) index of the cell the iterator is pointing at.
    * Note: Use this access for improved efficiency when working with large maps.
-   * Example: See `runGridMapIteratorVersion2()` of `grid_map_demos/src/iterator_benchmark.cpp`.
+   * Example: See `runGridMapIteratorVersion3()` of `grid_map_demos/src/iterator_benchmark.cpp`.
    * @return the 1d linear index.
    */
   const size_t& getLinearIndex() const;

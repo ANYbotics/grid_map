@@ -20,7 +20,7 @@ The source code is released under a [BSD 3-Clause license](LICENSE).
 
 **Author: Péter Fankhauser<br />
 Maintainer: Péter Fankhauser, pfankhauser@ethz.ch<br />
-With contributions by: Martin Wermelinger, Remo Diethelm, Ralph Kaestner, Elena Stumm, Dominic Jud, Daniel Stonier, Christos Zalidis<br />
+With contributions by: Martin Wermelinger, Philipp Krüsi, Remo Diethelm, Ralph Kaestner, Elena Stumm, Dominic Jud, Daniel Stonier, Christos Zalidis<br />
 Affiliation: Autonomous Systems Lab, ETH Zurich**
 
 ![Grid map example in rviz](grid_map_visualization/doc/point_cloud.jpg)

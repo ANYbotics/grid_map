@@ -292,7 +292,7 @@ GridMap GridMap::getSubmap(const Position& position, const Length& length,
     return GridMap(layers_);
   }
 
-  for (auto& data : data_) {
+  for (const auto& data : data_) {
     for (const auto& bufferRegion : bufferRegions) {
       Index index = bufferRegion.getStartIndex();
       Size size = bufferRegion.getSize();
@@ -548,6 +548,37 @@ void GridMap::setStartIndex(const Index& startIndex) {
 const Index& GridMap::getStartIndex() const
 {
   return startIndex_;
+}
+
+void GridMap::convertToDefaultStartIndex()
+{
+  if ((startIndex_ == 0).all()) return;
+
+  std::vector<BufferRegion> bufferRegions;
+  if (!getBufferRegionsForSubmap(bufferRegions, startIndex_, size_, size_, startIndex_)) {
+    throw std::out_of_range("Cannot access submap of this size.");
+  }
+
+  for (auto& data : data_) {
+    auto tempData(data.second);
+    for (const auto& bufferRegion : bufferRegions) {
+      Index index = bufferRegion.getStartIndex();
+      Size size = bufferRegion.getSize();
+
+      if (bufferRegion.getQuadrant() == BufferRegion::Quadrant::TopLeft) {
+        tempData.topLeftCorner(size(0), size(1)) = data.second.block(index(0), index(1), size(0), size(1));
+      } else if (bufferRegion.getQuadrant() == BufferRegion::Quadrant::TopRight) {
+        tempData.topRightCorner(size(0), size(1)) = data.second.block(index(0), index(1), size(0), size(1));
+      } else if (bufferRegion.getQuadrant() == BufferRegion::Quadrant::BottomLeft) {
+        tempData.bottomLeftCorner(size(0), size(1)) = data.second.block(index(0), index(1), size(0), size(1));
+      } else if (bufferRegion.getQuadrant() == BufferRegion::Quadrant::BottomRight) {
+        tempData.bottomRightCorner(size(0), size(1)) = data.second.block(index(0), index(1), size(0), size(1));
+      }
+    }
+    data.second = tempData;
+  }
+
+  startIndex_.setZero();
 }
 
 void GridMap::clear(const std::string& layer)
