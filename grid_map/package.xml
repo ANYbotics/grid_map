@@ -15,6 +15,7 @@
   <exec_depend>grid_map_msgs</exec_depend>
   <exec_depend>grid_map_filters</exec_depend>
   <exec_depend>grid_map_visualization</exec_depend>
+  <exec_depend>grid_map_rviz_plugin</exec_depend>
   <exec_depend>grid_map_loader</exec_depend>
   <exec_depend>grid_map_demos</exec_depend>
   <export>

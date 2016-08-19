@@ -1,0 +1,8 @@
+<library path="lib/libgrid_map_rviz_plugin">
+  <class name="grid_map_rviz_plugin/GridMap"
+         type="grid_map_rviz_plugin::GridMapDisplay"
+         base_class_type="rviz::Display">
+    <description>Displays grid_map_msgs/GridMap messages.</description>
+    <message_type>grid_map_msgs/GridMap</message_type>
+  </class>
+</library>

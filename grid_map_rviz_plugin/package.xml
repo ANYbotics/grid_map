@@ -1,0 +1,23 @@
+<package>
+  <name>grid_map_rviz_plugin</name>
+  <version>1.3.3</version>
+  <description>RViz plugin for displaying grid_map messages.</description>
+  <maintainer email="kruesip@ethz.ch">Philipp Krüsi</maintainer>
+  <license>BSD</license>
+  <author>Philipp Krüsi</author>
+  <author>Péter Fankhauser</author>
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>qtbase5-dev</build_depend>
+  <build_depend>rviz</build_depend>
+  <build_depend>grid_map_ros</build_depend>
+  <build_depend>grid_map_msgs</build_depend>
+  <run_depend>libqt5-core</run_depend>
+  <run_depend>libqt5-gui</run_depend>
+  <run_depend>libqt5-widgets</run_depend>
+  <run_depend>rviz</run_depend>
+  <run_depend>grid_map_ros</run_depend>
+  <run_depend>grid_map_msgs</run_depend>
+  <export>
+      <rviz plugin="${prefix}/plugin_description.xml"/>
+  </export>
+</package>
