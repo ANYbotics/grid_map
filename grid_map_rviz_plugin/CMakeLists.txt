@@ -6,6 +6,7 @@ set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
 find_package(catkin REQUIRED COMPONENTS
 	rviz
 	grid_map_ros
+	grid_map_msgs
 )
 
 catkin_package(
@@ -16,6 +17,7 @@ catkin_package(
   CATKIN_DEPENDS
 		rviz
 		grid_map_ros
+		grid_map_msgs
   DEPENDS
 )
 

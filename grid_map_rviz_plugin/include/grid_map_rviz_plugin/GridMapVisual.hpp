@@ -2,7 +2,7 @@
  * GridMapVisual.cpp
  *
  *  Created on: Aug 3, 2016
- *  Author: Philipp Krüsi
+ *  Author: Philipp Krüsi, Péter Fankhauser
  *  Institute: ETH Zurich, Autonomous Systems Lab
  */
 
@@ -14,77 +14,63 @@
 #include <grid_map_msgs/GridMap.h>
 #include <grid_map_core/GridMap.hpp>
 
-namespace Ogre
-{
-  class Vector3;
-  class Quaternion;
-  class ManualObject;
-  class ColourValue;
+namespace Ogre {
+class Vector3;
+class Quaternion;
+class ManualObject;
+class ColourValue;
 }
 
-namespace rviz
-{
-  class BillboardLine;
+namespace rviz {
+class BillboardLine;
 }
 
-namespace grid_map_rviz_plugin
+namespace grid_map_rviz_plugin {
+
+// Visualizes a single grid_map_msgs::GridMap message.
+class GridMapVisual
 {
-  // An instance of GridMapVisual visualizes a single grid_map_msgs::GridMap message
-  class GridMapVisual
-  {
-  public:
-    // Constructor
-    GridMapVisual(Ogre::SceneManager* scene_manager, Ogre::SceneNode* parent_node);
+ public:
+  GridMapVisual(Ogre::SceneManager* sceneManager, Ogre::SceneNode* parentNode);
+  virtual ~GridMapVisual();
 
-    // Destructor
-    virtual ~GridMapVisual();
+  // Copy the grid map data to map_.
+  void setMessage(const grid_map_msgs::GridMap::ConstPtr& msg);
+  // Compute the visualization of map_.
+  void computeVisualization(float alpha, bool showGridLines, bool flatTerrain,
+                            std::string heightLayer, bool flatColor, Ogre::ColourValue meshColor,
+                            std::string colorLayer, bool useRainbow, Ogre::ColourValue minColor,
+                            Ogre::ColourValue maxColor, bool autocomputeIntensity,
+                            float minIntensity, float maxIntensity);
 
-    // Copy the grid map data to map_
-    void setMessage(const grid_map_msgs::GridMap::ConstPtr& msg);
-    // Compute the visualization of map_
-    void computeVisualization(float alpha,
-			      bool show_grid_lines,
-			      bool flat_terrain,
-			      std::string height_layer,
-			      bool flat_color,
-			      Ogre::ColourValue mesh_color,
-			      std::string color_layer,
-			      bool use_rainbow,
-			      Ogre::ColourValue min_color,
-			      Ogre::ColourValue max_color,
-			      bool autocompute_intensity,
-			      float min_intensity,
-			      float max_intensity);
+  // Set the coordinate frame pose.
+  void setFramePosition(const Ogre::Vector3& position);
+  void setFrameOrientation(const Ogre::Quaternion& orientation);
 
-    // Set the coordinate frame pose
-    void setFramePosition(const Ogre::Vector3& position);
-    void setFrameOrientation(const Ogre::Quaternion& orientation);
+  // Get grid map layer names.
+  std::vector<std::string> getLayerNames();
 
-    // get grid map layer names
-    std::vector<std::string> getLayerNames();
+ private:
+  Ogre::SceneNode* frameNode_;
+  Ogre::SceneManager* sceneManager_;
 
-  private:
-    Ogre::SceneNode* frame_node_;
-    Ogre::SceneManager* scene_manager_;
+  // ManualObject for mesh display.
+  Ogre::ManualObject* manualObject_;
+  Ogre::MaterialPtr material_;
+  std::string materialName_;
 
-    // ManualObject for mesh display
-    Ogre::ManualObject* manual_object_;
-    Ogre::MaterialPtr material_;
-    std::string material_name_;
+  // Lines for mesh.
+  boost::shared_ptr<rviz::BillboardLine> meshLines_;
 
-    // lines for mesh
-    boost::shared_ptr<rviz::BillboardLine> mesh_lines_;
+  // Grid map.
+  grid_map::GridMap map_;
+  bool haveMap_;
 
-    // grid map
-    grid_map::GridMap map_;
-    bool have_map_;
+  // Helper methods.
+  void normalizeIntensity(float& intensity, float minIntensity, float maxIntensity);
+  Ogre::ColourValue getRainbowColor(float intensity);
+  Ogre::ColourValue getInterpolatedColor(float intensity, Ogre::ColourValue minColor,
+                                         Ogre::ColourValue maxColor);
+};
 
-    // helper functions
-    void normalizeIntensity(float& intensity, float min_intensity, float max_intensity);
-    Ogre::ColourValue getRainbowColor(float intensity);
-    Ogre::ColourValue getInterpolatedColor(float intensity,
-					   Ogre::ColourValue min_color,
-					   Ogre::ColourValue max_color);
-  };
-
-} // end namespace grid_map_rviz_plugin
+}  // namespace
