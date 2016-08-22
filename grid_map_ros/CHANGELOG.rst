@@ -2,6 +2,9 @@
 Changelog for package grid_map_ros
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.3.3 (2016-05-10)
 ------------------
 * Release for ROS Kinetic.

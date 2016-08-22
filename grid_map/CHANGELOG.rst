@@ -2,6 +2,11 @@
 Changelog for package grid_map
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Added new package grid_map_rviz_plugin.
+* Contributors: Peter Fankhauser
+
 1.3.3 (2016-05-10)
 ------------------
 * Release for ROS Kinetic.

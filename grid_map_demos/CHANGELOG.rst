@@ -2,6 +2,11 @@
 Changelog for package grid_map_demos
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Added Grid Map RViz plugin to RViz configuration.
+* Contributors: Peter Fankhauser
+
 1.3.3 (2016-05-10)
 ------------------
 * Release for ROS Kinetic.
