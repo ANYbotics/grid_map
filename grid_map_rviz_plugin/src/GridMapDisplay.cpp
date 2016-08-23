@@ -67,6 +67,11 @@ GridMapDisplay::GridMapDisplay()
       "Use Rainbow", true,
       "Whether to use a rainbow of colors or to interpolate between two colors.", this,
       SLOT(updateUseRainbow()));
+  
+  invertRainbowProperty_ = new rviz::BoolProperty(
+      "Invert Rainbow", false,
+      "Whether to invert the rainbow colors.", this,
+      SLOT(updateVisualization()));
 
   minColorProperty_ = new rviz::ColorProperty(
       "Min Color", QColor(0, 0, 0), "Color to assign to cells with the minimum intensity.  "
@@ -136,6 +141,7 @@ void GridMapDisplay::updateColorMode()
   colorProperty_->setHidden(!flatColor);
   colorTransformerProperty_->setHidden(flatColor);
   useRainbowProperty_->setHidden(flatColor);
+  invertRainbowProperty_->setHidden(flatColor);
   autocomputeIntensityBoundsProperty_->setHidden(flatColor);
   bool useRainbow = useRainbowProperty_->getBool();
   minColorProperty_->setHidden(flatColor || (!flatColor && useRainbow));
@@ -148,8 +154,10 @@ void GridMapDisplay::updateColorMode()
 void GridMapDisplay::updateUseRainbow()
 {
   updateVisualization();
-  minColorProperty_->setHidden(useRainbowProperty_->getBool());
-  maxColorProperty_->setHidden(useRainbowProperty_->getBool());
+  bool useRainbow = useRainbowProperty_->getBool();
+  minColorProperty_->setHidden(useRainbow);
+  maxColorProperty_->setHidden(useRainbow);
+  invertRainbowProperty_->setHidden(!useRainbow);
 }
 
 void GridMapDisplay::updateAutocomputeIntensityBounds()
@@ -169,6 +177,7 @@ void GridMapDisplay::updateVisualization()
   Ogre::ColourValue meshColor = colorProperty_->getOgreColor();
   std::string colorLayer = colorTransformerProperty_->getStdString();
   bool useRainbow = useRainbowProperty_->getBool();
+  bool invertRainbow = invertRainbowProperty_->getBool();
   Ogre::ColourValue minColor = minColorProperty_->getOgreColor();
   Ogre::ColourValue maxColor = maxColorProperty_->getOgreColor();
   bool autocomputeIntensity = autocomputeIntensityBoundsProperty_->getBool();
@@ -177,8 +186,8 @@ void GridMapDisplay::updateVisualization()
 
   for (size_t i = 0; i < visuals_.size(); i++) {
     visuals_[i]->computeVisualization(alpha, showGridLines, flatTerrain, heightLayer, flatColor,
-                                      meshColor, colorLayer, useRainbow, minColor, maxColor,
-                                      autocomputeIntensity, minIntensity, maxIntensity);
+                                      meshColor, colorLayer, useRainbow, invertRainbow, minColor, 
+				      maxColor, autocomputeIntensity, minIntensity, maxIntensity);
   }
 }
 
@@ -211,7 +220,9 @@ void GridMapDisplay::processMessage(const grid_map_msgs::GridMap::ConstPtr& msg)
                                colorModeProperty_->getOptionInt() == 1,
                                colorProperty_->getOgreColor(),
                                colorTransformerProperty_->getStdString(),
-                               useRainbowProperty_->getBool(), minColorProperty_->getOgreColor(),
+                               useRainbowProperty_->getBool(), 
+			       invertRainbowProperty_->getBool(),
+                               minColorProperty_->getOgreColor(),
                                maxColorProperty_->getOgreColor(),
                                autocomputeIntensityBoundsProperty_->getBool(),
                                minIntensityProperty_->getFloat(),

@@ -72,6 +72,7 @@ Q_OBJECT
   rviz::EditableEnumProperty* colorTransformerProperty_;
   rviz::ColorProperty* colorProperty_;
   rviz::BoolProperty* useRainbowProperty_;
+  rviz::BoolProperty* invertRainbowProperty_;
   rviz::ColorProperty* minColorProperty_;
   rviz::ColorProperty* maxColorProperty_;
   rviz::BoolProperty* autocomputeIntensityBoundsProperty_;

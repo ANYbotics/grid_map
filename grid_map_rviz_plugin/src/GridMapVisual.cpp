@@ -55,8 +55,9 @@ void GridMapVisual::setMessage(const grid_map_msgs::GridMap::ConstPtr& msg)
 void GridMapVisual::computeVisualization(float alpha, bool showGridLines, bool flatTerrain,
                                          std::string heightLayer, bool flatColor,
                                          Ogre::ColourValue meshColor, std::string colorLayer,
-                                         bool useRainbow, Ogre::ColourValue minColor,
-                                         Ogre::ColourValue maxColor, bool autocomputeIntensity,
+                                         bool useRainbow, bool invertRainbow, 
+					 Ogre::ColourValue minColor, Ogre::ColourValue maxColor, 
+					 bool autocomputeIntensity,
                                          float minIntensity, float maxIntensity)
 {
   if (!haveMap_) {
@@ -152,7 +153,9 @@ void GridMapVisual::computeVisualization(float alpha, bool showGridLines, bool f
               normalizeIntensity(intensity, minIntensity, maxIntensity);
               Ogre::ColourValue color =
                   useRainbow ?
-                      getRainbowColor(intensity) :
+                      (invertRainbow ? 
+			  getRainbowColor(1.0 - intensity) :
+			  getRainbowColor(intensity)) :
                       getInterpolatedColor(intensity, minColor, maxColor);
               colors.push_back(color);
             }
