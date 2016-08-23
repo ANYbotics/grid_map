@@ -87,5 +87,10 @@ bool SubmapIterator::isPastEnd() const
   return isPastEnd_;
 }
 
+const Size& SubmapIterator::getSubmapSize() const
+{
+  return submapSize_;
+}
+
 } /* namespace grid_map */
 

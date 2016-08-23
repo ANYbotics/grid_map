@@ -76,6 +76,11 @@ bool EllipseIterator::isPastEnd() const
   return internalIterator_->isPastEnd();
 }
 
+const Size& EllipseIterator::getSubmapSize() const
+{
+  return internalIterator_->getSubmapSize();
+}
+
 bool EllipseIterator::isInside() const
 {
   Position position;

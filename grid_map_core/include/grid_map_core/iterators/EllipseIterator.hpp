@@ -67,6 +67,12 @@ public:
    */
   bool isPastEnd() const;
 
+  /*!
+   * Returns the size of the submap covered by the iterator.
+   * @return the size of the submap covered by the iterator.
+   */
+  const Size& getSubmapSize() const;
+
 private:
 
   /*!
