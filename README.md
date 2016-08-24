@@ -47,6 +47,14 @@ in Robot Operating System (ROS) – The Complete Reference (Volume 1), A. Koubaa
             url = {http://www.springer.com/de/book/9783319260525}
         }
 
+## Documentation
+
+An introduction to the grid map library including a tutorial is given in [this book chapter](http://www.researchgate.net/publication/284415855).
+
+The C++ API is documented here:
+* [grid_map_core](http://docs.ros.org/api/grid_map_core/html/index.html)
+* [grid_map_ros](http://docs.ros.org/api/grid_map_ros/html/index.html)
+* [grid_map_cv](http://docs.ros.org/api/grid_map_cv/html/index.html)
 
 ## Installation
 
