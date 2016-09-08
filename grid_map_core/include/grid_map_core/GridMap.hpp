@@ -153,6 +153,12 @@ class GridMap
   const std::vector<std::string>& getBasicLayers() const;
 
   /*!
+   * True if basic layers are defined.
+   * @return true if basic layers are defined, false otherwise.
+   */
+  bool hasBasicLayers() const;
+
+  /*!
    * Checks if another grid map contains the same layers as this grid map.
    * The other grid map could contain more layers than the checked ones.
    * Does not check the selection of basic layers.

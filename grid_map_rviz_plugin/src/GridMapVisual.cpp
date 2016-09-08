@@ -65,7 +65,7 @@ void GridMapVisual::computeVisualization(float alpha, bool showGridLines, bool f
     return;
   }
 
-  // get list of layers, and check if the requested ones are present
+  // Get list of layers and check if the requested ones are present.
   std::vector<std::string> layerNames = map_.getLayers();
   if (layerNames.size() < 1) {
     ROS_DEBUG("Unable to visualize grid map, map must contain at least one layer.");
@@ -127,7 +127,9 @@ void GridMapVisual::computeVisualization(float alpha, bool showGridLines, bool f
     maxIntensity = colorData.maxCoeffOfFinites();
   }
 
-  // plot mesh
+  if (!map_.hasBasicLayers()) map_.setBasicLayers({heightLayer});
+
+  // Plot mesh.
   for (size_t i = 0; i < rows - 1; ++i) {
     for (size_t j = 0; j < cols - 1; ++j) {
       bool left_valid = true;
@@ -140,7 +142,7 @@ void GridMapVisual::computeVisualization(float alpha, bool showGridLines, bool f
           grid_map::Index index(i + k, j + l);
           map_.getPosition(index, position);
           float height = heightData(index(0), index(1));
-          if (std::isnan(height)) {
+          if (!map_.isValid(index)) {
             if ((k + l) <= 1) left_valid = false;
             if ((k + l) >= 1) right_valid = false;
             vertices.push_back(Ogre::Vector3());
@@ -152,10 +154,7 @@ void GridMapVisual::computeVisualization(float alpha, bool showGridLines, bool f
               float intensity = colorData(index(0), index(1));
               normalizeIntensity(intensity, minIntensity, maxIntensity);
               Ogre::ColourValue color =
-                  useRainbow ?
-                      (invertRainbow ? 
-			  getRainbowColor(1.0 - intensity) :
-			  getRainbowColor(intensity)) :
+                  useRainbow ? (invertRainbow ?  getRainbowColor(1.0 - intensity) : getRainbowColor(intensity)) :
                       getInterpolatedColor(intensity, minColor, maxColor);
               colors.push_back(color);
             }

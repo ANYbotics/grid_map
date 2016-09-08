@@ -82,6 +82,11 @@ const std::vector<std::string>& GridMap::getBasicLayers() const
   return basicLayers_;
 }
 
+bool GridMap::hasBasicLayers() const
+{
+  return basicLayers_.size() > 0;
+}
+
 bool GridMap::hasSameLayers(const GridMap& other) const
 {
   for (const auto& layer : layers_) {
