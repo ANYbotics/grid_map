@@ -104,6 +104,7 @@ catkin_add_gtest(${PROJECT_NAME}-test
   test/GridMapMathTest.cpp
   test/GridMapTest.cpp
   test/GridMapIteratorTest.cpp
+  test/LineIteratorTest.cpp
   test/EllipseIteratorTest.cpp
   test/SubmapIteratorTest.cpp
   test/PolygonIteratorTest.cpp

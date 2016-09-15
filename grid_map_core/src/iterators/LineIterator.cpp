@@ -13,32 +13,44 @@ using namespace std;
 
 namespace grid_map {
 
-LineIterator::LineIterator(const grid_map::GridMap& gridMap, const Eigen::Array2i& start, const Eigen::Array2i& end)
-    : start_(start),
-      end_(end)
+LineIterator::LineIterator(const grid_map::GridMap& gridMap, const Position& start, const Position& end)
 {
-  mapLength_ = gridMap.getLength();
-  mapPosition_ = gridMap.getPosition();
-  resolution_ = gridMap.getResolution();
-  bufferSize_ = gridMap.getSize();
-  bufferStartIndex_ = gridMap.getStartIndex();
-  Eigen::Array2i submapStartIndex;
-  Eigen::Array2i submapBufferSize;
-  initializeParameters();
+    Index startIndex, endIndex;
+    if (getIndexLimitedToMapRange(gridMap, start, end, startIndex) && getIndexLimitedToMapRange(gridMap, end, start, endIndex))
+        construct(gridMap, startIndex, endIndex);
 }
 
-LineIterator::LineIterator(const grid_map::GridMap& gridMap, const Eigen::Vector2d& start, const Eigen::Vector2d& end)
+LineIterator::LineIterator(const grid_map::GridMap& gridMap, const Index& start, const Index& end)
 {
-    gridMap.getIndex(start,start_);
-    gridMap.getIndex(end,end_);
+    construct(gridMap, start, end);
+}
+
+bool LineIterator::construct(const grid_map::GridMap& gridMap, const Index& start, const Index& end)
+{
+    start_ = start;
+    end_ = end;
     mapLength_ = gridMap.getLength();
     mapPosition_ = gridMap.getPosition();
     resolution_ = gridMap.getResolution();
     bufferSize_ = gridMap.getSize();
     bufferStartIndex_ = gridMap.getStartIndex();
-    Eigen::Array2i submapStartIndex;
+    Index submapStartIndex;
     Eigen::Array2i submapBufferSize;
     initializeParameters();
+    return true;
+}
+
+bool LineIterator::getIndexLimitedToMapRange(const grid_map::GridMap& gridMap, const Position& start, const Position& end, Index& index)
+{
+  Position newStart = start;
+  Eigen::Vector2d direction = (end - start).normalized();
+  while (!gridMap.getIndex(newStart, index))
+  {
+	  newStart += (gridMap.getResolution()-std::numeric_limits<double>::epsilon())*direction;
+	  if ((end - newStart).norm() < gridMap.getResolution()-std::numeric_limits<double>::epsilon())
+		  return false;
+  }
+  return true;
 }
 
 LineIterator& LineIterator::operator =(const LineIterator& other)
@@ -66,7 +78,7 @@ bool LineIterator::operator !=(const LineIterator& other) const
   return (index_ != other.index_).any();
 }
 
-const Eigen::Array2i& LineIterator::operator *() const
+const Index& LineIterator::operator *() const
 {
   return index_;
 }

@@ -27,18 +27,37 @@ public:
   /*!
    * Constructor.
    * @param gridMap the grid map to iterate on.
-   * @param start the starting index of the line.
-   * @param end the ending index of the line.
+   * @param start the starting point of the line.
+   * @param end the ending point of the line.
    */
-  LineIterator(const grid_map::GridMap& gridMap, const Eigen::Array2i& start, const Eigen::Array2i& end);
+  LineIterator(const grid_map::GridMap& gridMap, const Position& start, const Position& end);
 
   /*!
    * Constructor.
    * @param gridMap the grid map to iterate on.
-   * @param start the starting point of the line.
-   * @param end the ending point of the line.
+   * @param start the starting index of the line.
+   * @param end the ending index of the line.
    */
-  LineIterator(const grid_map::GridMap& gridMap, const Eigen::Vector2d& start, const Eigen::Vector2d& end);
+  LineIterator(const grid_map::GridMap& gridMap, const Index& start, const Index& end);
+
+  /*!
+   * Construct function.
+   * @param gridMap the grid map to iterate on.
+   * @param start the starting index of the line.
+   * @param end the ending index of the line.
+   * @return true if successful
+   */
+  bool construct(const grid_map::GridMap& gridMap, const Index& start, const Index& end);
+
+  /*!
+   * Find index of position (might be outside the map) on the map.
+   * @param gridMap the grid map to iterate on.
+   * @param start the position that will be limited to the map range.
+   * @param end the ending position of the line.
+   * @param index the index of the moved start position.
+   * @return true if successful
+   */
+  bool getIndexLimitedToMapRange(const grid_map::GridMap& gridMap, const Position& start, const Position& end, Index& index);
 
   /*!
    * Assignment operator.
@@ -57,7 +76,7 @@ public:
    * Dereference the iterator with const.
    * @return the value to which the iterator is pointing.
    */
-  const Eigen::Array2i& operator *() const;
+  const Index& operator *() const;
 
   /*!
    * Increase the iterator to the next element.
@@ -77,13 +96,13 @@ private:
   void initializeParameters();
 
   //! Current index.
-  Eigen::Array2i index_;
+  Index index_;
 
   //! Starting index of the line.
-  Eigen::Array2i start_;
+  Index start_;
 
   //! Ending index of the line.
-  Eigen::Array2i end_;
+  Index end_;
 
   //! Current cell number.
   unsigned int iCell_;
@@ -100,7 +119,7 @@ private:
   Eigen::Vector2d mapPosition_;
   double resolution_;
   Eigen::Array2i bufferSize_;
-  Eigen::Array2i bufferStartIndex_;
+  Index bufferStartIndex_;
 };
 
 } /* namespace */
