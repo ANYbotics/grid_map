@@ -118,6 +118,46 @@ class GridMapCvConverter
   };
 
   /*!
+   * Adds a color layer with data from an image.
+   * @param[in] image the image to be added.
+   * @param[in] layer the layer that is filled with the image.
+   * @param[out] gridMap the grid map to be populated.
+   * @return true if successful, false otherwise.
+   */
+  template<typename Type_, int NChannels_>
+  static bool addColorLayerFromImage(const cv::Mat& image, const std::string& layer,
+                                     grid_map::GridMap& gridMap)
+  {
+    if (gridMap.getSize()(0) != image.rows || gridMap.getSize()(1) != image.cols) {
+      std::cerr << "Image size does not correspond to grid map size!" << std::endl;
+      return false;
+    }
+
+    bool hasAlpha = false;
+    if (image.channels() >= 4) hasAlpha = true;
+
+    cv::Mat imageRGB;
+    if (hasAlpha) {
+      cv::cvtColor(image, imageRGB, CV_RGBA2RGB);
+    } else {
+      imageRGB = image;
+    }
+
+    gridMap.add(layer);
+
+    for (GridMapIterator iterator(gridMap); !iterator.isPastEnd(); ++iterator) {
+      const auto& cvColor = imageRGB.at<cv::Vec<Type_, 3>>((*iterator)(0), (*iterator)(1));
+      Eigen::Vector3i colorVector;
+      colorVector(0) = cvColor[0];
+      colorVector(1) = cvColor[1];
+      colorVector(2) = cvColor[2];
+      colorVectorToValue(colorVector, gridMap.at(layer, *iterator));
+    }
+
+    return true;
+  }
+
+  /*!
    * Creates a cv mat from a grid map layer.
    * This conversion sets the corresponding black and white pixel value to the
    * min. and max. data of the layer data.

@@ -147,35 +147,4 @@ bool multiArrayMessageMapToMatrixEigen(MultiArrayMessageType_& m, EigenType_& e)
   return true;
 }
 
-/*!
- * Transforms an int color value (concatenated RGB values) to an int color vector (RGB from 0-255).
- * @param [in] colorValue the concatenated RGB color value.
- * @param [out] colorVector the color vector in RGB from 0-255.
- * @return true if successful.
- */
-bool colorValueToVector(const unsigned long& colorValue, Eigen::Vector3i& colorVector);
-
-/*!
- * Transforms an int color value (concatenated RGB values) to a float color vector (RGB from 0.0-1.0).
- * @param [in] colorValue the concatenated RGB color value.
- * @param [out] colorVector the color vector in RGB from 0.0-1.0.
- * @return true if successful.
- */
-bool colorValueToVector(const unsigned long& colorValue, Eigen::Vector3f& colorVector);
-
-/*!
- * Transforms an int color vector (RGB from 0-255) to a concatenated RGB int color.
- * @param [in] colorVector the color vector in RGB from 0-255.
- * @param [out] colorValue the concatenated RGB color value.
- * @return true if successful.
- */
-bool colorVectorToValue(const Eigen::Vector3i& colorVector, unsigned long& colorValue);
-
-/*!
- * Transforms a color vector (RGB from 0-255) to a concatenated 3 single-byte float value.
- * @param [in] colorVector the color vector in RGB from 0-255.
- * @param [out] colorValue the concatenated RGB color value.
- */
-void colorVectorToValue(const Eigen::Vector3i& colorVector, float& colorValue);
-
 } /* namespace */
