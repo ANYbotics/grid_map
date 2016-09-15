@@ -2,6 +2,12 @@
 Changelog for package grid_map_core
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Improved line iterator with start and end positions.
+* Added method to retrieve submap size for iterators.
+* Contributors: Peter Fankhauser, Dominic Jud
+
 1.4.0 (2016-08-22)
 ------------------
 * Added convenience function to convert a grid map to form with circular buffer at (0,0).

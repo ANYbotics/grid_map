@@ -2,15 +2,12 @@
  * LineIteratorTest.cpp
  *
  *  Created on: Sep 14, 2016
- *      Author: Péter Fankhauser
- *	 Institute: ETH Zurich, Autonomous Systems Lab
+ *      Author: Dominic Jud
+ *	 Institute: ETH Zurich, Robotic Systems Lab
  */
 
 #include "grid_map_core/iterators/LineIterator.hpp"
 #include "grid_map_core/GridMap.hpp"
-
-// Eigen
-#include <Eigen/Core>
 
 // gtest
 #include <gtest/gtest.h>
@@ -18,11 +15,6 @@
 // Limits
 #include <cfloat>
 
-// Vector
-#include <vector>
-
-using namespace std;
-using namespace Eigen;
 using namespace grid_map;
 
 TEST(LineIterator, StartOutsideMap)

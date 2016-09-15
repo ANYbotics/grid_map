@@ -41,25 +41,6 @@ public:
   LineIterator(const grid_map::GridMap& gridMap, const Index& start, const Index& end);
 
   /*!
-   * Construct function.
-   * @param gridMap the grid map to iterate on.
-   * @param start the starting index of the line.
-   * @param end the ending index of the line.
-   * @return true if successful
-   */
-  bool construct(const grid_map::GridMap& gridMap, const Index& start, const Index& end);
-
-  /*!
-   * Find index of position (might be outside the map) on the map.
-   * @param gridMap the grid map to iterate on.
-   * @param start the position that will be limited to the map range.
-   * @param end the ending position of the line.
-   * @param index the index of the moved start position.
-   * @return true if successful
-   */
-  bool getIndexLimitedToMapRange(const grid_map::GridMap& gridMap, const Position& start, const Position& end, Index& index);
-
-  /*!
    * Assignment operator.
    * @param iterator the iterator to copy data from.
    * @return a reference to *this.
@@ -92,8 +73,31 @@ public:
 
 private:
 
-  // TODO
-  void initializeParameters();
+
+  /*!
+   * Construct function.
+   * @param gridMap the grid map to iterate on.
+   * @param start the starting index of the line.
+   * @param end the ending index of the line.
+   * @return true if successful, false otherwise.
+   */
+  bool initialize(const grid_map::GridMap& gridMap, const Index& start, const Index& end);
+
+  /*!
+   * Computes the parameters requires for the line drawing algorithm.
+   */
+  void initializeIterationParameters();
+
+  /*!
+   * Finds the index of a position on a line within the limits of the map.
+   * @param[in] gridMap the grid map that defines the map boundaries.
+   * @param[in] start the position that will be limited to the map range.
+   * @param[in] end the ending position of the line.
+   * @param[out] index the index of the moved start position.
+   * @return true if successful, false otherwise.
+   */
+  bool getIndexLimitedToMapRange(const grid_map::GridMap& gridMap, const Position& start,
+                                 const Position& end, Index& index);
 
   //! Current index.
   Index index_;
@@ -111,14 +115,14 @@ private:
   unsigned int nCells_;
 
   //! Helper variables for Bresenham Line Drawing algorithm.
-  Eigen::Array2i increment1_, increment2_;
+  Size increment1_, increment2_;
   int denominator_, numerator_, numeratorAdd_;
 
   //! Map information needed to get position from iterator.
-  Eigen::Array2d mapLength_;
-  Eigen::Vector2d mapPosition_;
+  Length mapLength_;
+  Position mapPosition_;
   double resolution_;
-  Eigen::Array2i bufferSize_;
+  Size bufferSize_;
   Index bufferStartIndex_;
 };
 
