@@ -13,23 +13,18 @@ using namespace std;
 
 namespace grid_map {
 
-LineIterator::LineIterator(const grid_map::GridMap& gridMap, const Eigen::Array2i& start, const Eigen::Array2i& end)
-    : start_(start),
-      end_(end)
+LineIterator::LineIterator(const grid_map::GridMap& gridMap, const Position& start,
+                           const Position& end)
 {
-  mapLength_ = gridMap.getLength();
-  mapPosition_ = gridMap.getPosition();
-  resolution_ = gridMap.getResolution();
-  bufferSize_ = gridMap.getSize();
-  bufferStartIndex_ = gridMap.getStartIndex();
-  Eigen::Array2i submapStartIndex;
-  Eigen::Array2i submapBufferSize;
-  initializeParameters();
+  Index startIndex, endIndex;
+  if (getIndexLimitedToMapRange(gridMap, start, end, startIndex)
+      && getIndexLimitedToMapRange(gridMap, end, start, endIndex))
+    initialize(gridMap, startIndex, endIndex);
 }
 
-LineIterator::LineIterator(const grid_map::GridMap& gridMap, const Eigen::Vector2d& start, const Eigen::Vector2d& end)
+LineIterator::LineIterator(const grid_map::GridMap& gridMap, const Index& start, const Index& end)
 {
-  // TODO Implement this constructor with range checking.
+  initialize(gridMap, start, end);
 }
 
 LineIterator& LineIterator::operator =(const LineIterator& other)
@@ -57,7 +52,7 @@ bool LineIterator::operator !=(const LineIterator& other) const
   return (index_ != other.index_).any();
 }
 
-const Eigen::Array2i& LineIterator::operator *() const
+const Index& LineIterator::operator *() const
 {
   return index_;
 }
@@ -79,12 +74,41 @@ bool LineIterator::isPastEnd() const
   return iCell_ >= nCells_;
 }
 
-void LineIterator::initializeParameters()
+bool LineIterator::initialize(const grid_map::GridMap& gridMap, const Index& start, const Index& end)
+{
+    start_ = start;
+    end_ = end;
+    mapLength_ = gridMap.getLength();
+    mapPosition_ = gridMap.getPosition();
+    resolution_ = gridMap.getResolution();
+    bufferSize_ = gridMap.getSize();
+    bufferStartIndex_ = gridMap.getStartIndex();
+    Index submapStartIndex;
+    Size submapBufferSize;
+    initializeIterationParameters();
+    return true;
+}
+
+bool LineIterator::getIndexLimitedToMapRange(const grid_map::GridMap& gridMap,
+                                             const Position& start, const Position& end,
+                                             Index& index)
+{
+  Position newStart = start;
+  Vector direction = (end - start).normalized();
+  while (!gridMap.getIndex(newStart, index)) {
+    newStart += (gridMap.getResolution() - std::numeric_limits<double>::epsilon()) * direction;
+    if ((end - newStart).norm() < gridMap.getResolution() - std::numeric_limits<double>::epsilon())
+      return false;
+  }
+  return true;
+}
+
+void LineIterator::initializeIterationParameters()
 {
   iCell_ = 0;
   index_ = start_;
 
-  Eigen::Array2i delta = (end_ - start_).abs();
+  Size delta = (end_ - start_).abs();
 
   if (end_.x() >= start_.x()) {
     // x-values increasing.
