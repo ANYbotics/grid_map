@@ -4,6 +4,8 @@ Changelog for package grid_map
 
 Forthcoming
 -----------
+* Added new grid_map_pcl package.
+* Contributors: Peter Fankhauser, Dominic Jud
 
 1.4.0 (2016-08-22)
 ------------------
