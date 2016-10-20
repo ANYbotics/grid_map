@@ -43,6 +43,7 @@ void ImageToGridmapDemo::imageCallback(const sensor_msgs::Image& msg)
     mapInitialized_ = true;
   }
   grid_map::GridMapRosConverter::addLayerFromImage(msg, "elevation", map_, minHeight_, maxHeight_);
+  grid_map::GridMapRosConverter::addColorLayerFromImage(msg, "color", map_);
 
   // Publish as grid map.
   grid_map_msgs::GridMap mapMessage;

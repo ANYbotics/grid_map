@@ -359,32 +359,28 @@ bool GridMapRosConverter::addColorLayerFromImage(const sensor_msgs::Image& image
                                                  const std::string& layer,
                                                  grid_map::GridMap& gridMap)
 {
-  cv_bridge::CvImagePtr cvPtr;
+  cv_bridge::CvImageConstPtr cvImage;
   try {
-    cvPtr = cv_bridge::toCvCopy(image, image.encoding);
+    cvImage = cv_bridge::toCvCopy(image, image.encoding);
   } catch (cv_bridge::Exception& e) {
     ROS_ERROR("cv_bridge exception: %s", e.what());
     return false;
   }
 
-  gridMap.add(layer);
-
-  if (gridMap.getSize()(0) != image.height || gridMap.getSize()(1) != image.width) {
-    ROS_ERROR("Image size does not correspond to grid map size!");
-    return false;
+  const int cvEncoding = cv_bridge::getCvType(image.encoding);
+  switch (cvEncoding) {
+    case CV_8UC3:
+      return GridMapCvConverter::addColorLayerFromImage<unsigned char, 3>(cvImage->image, layer, gridMap);
+    case CV_8UC4:
+      return GridMapCvConverter::addColorLayerFromImage<unsigned char, 4>(cvImage->image, layer, gridMap);
+    case CV_16UC3:
+      return GridMapCvConverter::addColorLayerFromImage<unsigned short, 3>(cvImage->image, layer, gridMap);
+    case CV_16UC4:
+      return GridMapCvConverter::addColorLayerFromImage<unsigned short, 4>(cvImage->image, layer, gridMap);
+    default:
+      ROS_ERROR("Expected RGB(A)8, RGB(A)16, BGR(A)8, or BGR(A)16 image encoding.");
+      return false;
   }
-
-  for (GridMapIterator iterator(gridMap); !iterator.isPastEnd(); ++iterator) {
-    const auto& cvColor = cvPtr->image.at<cv::Vec3b>((*iterator)(0), (*iterator)(1));
-    Eigen::Vector3i colorVector;
-    // TODO Add cases for different image encodings.
-    colorVector(2) = cvColor[0];  // From BGR to RGB.
-    colorVector(1) = cvColor[1];
-    colorVector(0) = cvColor[2];
-    colorVectorToValue(colorVector, gridMap.at(layer, *iterator));
-  }
-
-  return true;
 }
 
 bool GridMapRosConverter::toImage(const grid_map::GridMap& gridMap, const std::string& layer,

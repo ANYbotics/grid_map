@@ -9,6 +9,7 @@
 #include "grid_map_visualization/GridMapVisualizationHelpers.hpp"
 
 #include <grid_map_ros/GridMapMsgHelpers.hpp>
+#include <grid_map_core/GridMapMath.hpp>
 
 using namespace Eigen;
 

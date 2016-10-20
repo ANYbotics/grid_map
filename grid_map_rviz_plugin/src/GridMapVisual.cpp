@@ -19,6 +19,7 @@
 #include <rviz/ogre_helpers/billboard_line.h>
 
 #include <grid_map_ros/grid_map_ros.hpp>
+#include <grid_map_core/GridMapMath.hpp>
 #include "grid_map_rviz_plugin/GridMapVisual.hpp"
 
 namespace grid_map_rviz_plugin {
@@ -54,7 +55,8 @@ void GridMapVisual::setMessage(const grid_map_msgs::GridMap::ConstPtr& msg)
 
 void GridMapVisual::computeVisualization(float alpha, bool showGridLines, bool flatTerrain,
                                          std::string heightLayer, bool flatColor,
-                                         Ogre::ColourValue meshColor, std::string colorLayer,
+                                         Ogre::ColourValue meshColor, 
+					 bool mapLayerColor, std::string colorLayer,
                                          bool useRainbow, bool invertRainbow, 
 					 Ogre::ColourValue minColor, Ogre::ColourValue maxColor, 
 					 bool autocomputeIntensity,
@@ -122,7 +124,7 @@ void GridMapVisual::computeVisualization(float alpha, bool showGridLines, bool f
   bool plottedFirstLine = false;
 
   // Determine max and min intensity.
-  if (autocomputeIntensity && !flatColor) {
+  if (autocomputeIntensity && !flatColor && !mapLayerColor) {
     minIntensity = colorData.minCoeffOfFinites();
     maxIntensity = colorData.maxCoeffOfFinites();
   }
@@ -151,12 +153,19 @@ void GridMapVisual::computeVisualization(float alpha, bool showGridLines, bool f
             vertices.push_back(
                 Ogre::Vector3(position(0), position(1), flatTerrain ? 0.0 : height));
             if (!flatColor) {
-              float intensity = colorData(index(0), index(1));
-              normalizeIntensity(intensity, minIntensity, maxIntensity);
-              Ogre::ColourValue color =
-                  useRainbow ? (invertRainbow ?  getRainbowColor(1.0 - intensity) : getRainbowColor(intensity)) :
-                      getInterpolatedColor(intensity, minColor, maxColor);
-              colors.push_back(color);
+              float color = colorData(index(0), index(1));
+	      Ogre::ColourValue colorValue;
+	      if (mapLayerColor) {
+		Eigen::Vector3f colorVectorRGB;
+		grid_map::colorValueToVector(color, colorVectorRGB);
+		colorValue = Ogre::ColourValue(colorVectorRGB(0), colorVectorRGB(1), colorVectorRGB(2));		
+	      } else {
+		normalizeIntensity(color, minIntensity, maxIntensity);
+		colorValue =
+		    useRainbow ? (invertRainbow ?  getRainbowColor(1.0 - color) : getRainbowColor(color)) :
+			getInterpolatedColor(color, minColor, maxColor);
+	      }
+              colors.push_back(colorValue);
             }
           }
         }

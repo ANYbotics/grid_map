@@ -4,6 +4,8 @@ Changelog for package grid_map_cv
 
 Forthcoming
 -----------
+* Improved transformation of images to color grid map layers.
+* Contributors: Peter Fankhauser
 
 1.4.0 (2016-08-22)
 ------------------

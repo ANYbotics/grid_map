@@ -39,8 +39,8 @@ class GridMapVisual
   // Compute the visualization of map_.
   void computeVisualization(float alpha, bool showGridLines, bool flatTerrain,
                             std::string heightLayer, bool flatColor, Ogre::ColourValue meshColor,
-                            std::string colorLayer, bool useRainbow, bool invertRainbow, 
-			    Ogre::ColourValue minColor, Ogre::ColourValue maxColor, 
+                            bool mapLayerColor, std::string colorLayer, bool useRainbow, 
+			    bool invertRainbow, Ogre::ColourValue minColor, Ogre::ColourValue maxColor, 
 			    bool autocomputeIntensity, float minIntensity, float maxIntensity);
 
   // Set the coordinate frame pose.
