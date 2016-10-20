@@ -119,7 +119,7 @@ class GridMapCvConverter
 
   /*!
    * Adds a color layer with data from an image.
-   * @param[in] image the image to be added.
+   * @param[in] image the image to be added (BGR format).
    * @param[in] layer the layer that is filled with the image.
    * @param[out] gridMap the grid map to be populated.
    * @return true if successful, false otherwise.
@@ -138,7 +138,7 @@ class GridMapCvConverter
 
     cv::Mat imageRGB;
     if (hasAlpha) {
-      cv::cvtColor(image, imageRGB, CV_RGBA2RGB);
+      cv::cvtColor(image, imageRGB, CV_BGRA2RGB);
     } else {
       imageRGB = image;
     }
