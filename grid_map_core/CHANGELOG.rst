@@ -6,6 +6,7 @@ Forthcoming
 -----------
 * Improved line iterator with start and end positions.
 * Added method to retrieve submap size for iterators.
+* Improved transformation of images to color grid map layers.
 * Contributors: Peter Fankhauser, Dominic Jud
 
 1.4.0 (2016-08-22)

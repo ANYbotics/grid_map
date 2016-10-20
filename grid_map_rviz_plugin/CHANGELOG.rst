@@ -4,9 +4,10 @@ Changelog for package grid_map_rviz_plugin
 
 Forthcoming
 -----------
+* Added functionality to display color from grid map layer.
 * Added better handling of basic layers in Grid Map RViz plugin.
 * Added functionality to invert rainbow colors in RViz plugin.
-* Contributors: Philipp Kruesi
+* Contributors: Philipp Kruesi, Péter Fankhauser
 
 1.4.0 (2016-08-22)
 ------------------
