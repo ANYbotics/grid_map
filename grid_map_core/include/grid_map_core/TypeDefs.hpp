@@ -7,15 +7,6 @@
  */
 
 // Eigen
-
-#ifndef EIGEN_FUNCTORS_PLUGIN
-#define EIGEN_FUNCTORS_PLUGIN "grid_map_core/eigen_plugins/FunctorsPlugin.hpp"
-#endif
-
-#ifndef EIGEN_DENSEBASE_PLUGIN
-#define EIGEN_DENSEBASE_PLUGIN "grid_map_core/eigen_plugins/DenseBasePlugin.hpp"
-#endif
-
 #include <Eigen/Core>
 
 #pragma once
