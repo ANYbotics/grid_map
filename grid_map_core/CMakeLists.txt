@@ -6,6 +6,9 @@ set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
 ## Find catkin macros and libraries
 find_package(catkin REQUIRED COMPONENTS)
 
+## Define Eigen addons. 
+include(cmake/${PROJECT_NAME}-extras.cmake)
+
 ## System dependencies are found with CMake's conventions
 #find_package(Eigen3 REQUIRED)
 # Solution to find Eigen3 with Saucy.
@@ -34,7 +37,8 @@ catkin_package(
   CATKIN_DEPENDS
   DEPENDS
     #Eigen3
-  CFG_EXTRAS ${PROJECT_NAME}-extras.cmake
+  CFG_EXTRAS
+    ${PROJECT_NAME}-extras.cmake
 )
 
 ###########
