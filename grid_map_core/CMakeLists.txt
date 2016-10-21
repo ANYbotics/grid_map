@@ -34,6 +34,7 @@ catkin_package(
   CATKIN_DEPENDS
   DEPENDS
     #Eigen3
+  CFG_EXTRAS ${PROJECT_NAME}-extras.cmake
 )
 
 ###########
