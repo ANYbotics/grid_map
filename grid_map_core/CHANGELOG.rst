@@ -2,8 +2,8 @@
 Changelog for package grid_map_core
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.4.1 (2016-10-23)
+------------------
 * Improved line iterator with start and end positions.
 * Added method to retrieve submap size for iterators.
 * Improved transformation of images to color grid map layers.
