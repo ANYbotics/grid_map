@@ -11,6 +11,8 @@
 #include "grid_map_core/SubmapGeometry.hpp"
 #include "grid_map_core/iterators/GridMapIterator.hpp"
 
+#include <Eigen/Dense>
+
 #include <iostream>
 #include <cassert>
 #include <math.h>
@@ -178,13 +180,30 @@ float& GridMap::atPosition(const std::string& layer, const Position& position)
   throw std::out_of_range("GridMap::atPosition(...) : Position is out of range.");
 }
 
-float GridMap::atPosition(const std::string& layer, const Position& position) const
+float GridMap::atPosition(const std::string& layer, const Position& position, InterpolationMethods interpolationMethod) const
 {
-  Index index;
-  if (getIndex(position, index)) {
-    return at(layer, index);
+  switch (interpolationMethod) {
+      case InterpolationMethods::INTER_LINEAR:
+      {
+        float value;
+        if (atPositionLinearInterpolated(layer, position, value))
+          return value;
+        else
+            interpolationMethod = InterpolationMethods::INTER_NEAREST;
+      }
+      case  InterpolationMethods::INTER_NEAREST:
+      {
+        Index index;
+        if (getIndex(position, index)) {
+        return at(layer, index);
+        }
+        else
+        throw std::out_of_range("GridMap::atPosition(...) : Position is out of range.");
+        break;
+      }
+      default:
+        throw std::runtime_error("GridMap::atPosition(...) : Specified interpolation method not implemented.");
   }
-  throw std::out_of_range("GridMap::atPosition(...) : Position is out of range.");
 }
 
 float& GridMap::at(const std::string& layer, const Index& index)
@@ -627,6 +646,61 @@ void GridMap::clearCols(unsigned int index, unsigned int nCols)
   for (auto& layer : layersToClear) {
     data_.at(layer).block(0, index, getSize()(0), nCols).setConstant(NAN);
   }
+}
+
+bool GridMap::atPositionLinearInterpolated(const std::string& layer, const Position& position, float& value) const
+{
+  std::vector<Position> points(4);
+  std::vector<Index> indices(4);
+  getIndex(position, indices[0]);
+  getPosition(indices[0], points[0]);
+
+  if (position.x() >= points[0].x()) //second point is above first point
+  {
+    indices[1] = indices[0] + Index(-1,0);
+    if (!getPosition(indices[1], points[1])) //check if still on map
+      return false;
+  }
+  else
+  {
+    indices[1] = indices[0] + Index(1,0);
+    if (!getPosition(indices[1], points[1]))
+      return false;
+  }
+
+  if (position.y() >= points[0].y()) //third point is right of first point
+  {
+    indices[2] = indices[0] + Index(0,-1);
+    if (!getPosition(indices[2], points[2]))
+      return false;
+  }
+  else
+  {
+    indices[2] = indices[0] + Index(0,1);
+    if (!getPosition(indices[2], points[2]))
+      return false;
+  }
+
+  indices[3].x() = indices[1].x();
+  indices[3].y() = indices[2].y();
+  if (!getPosition(indices[3], points[3]))
+    return false;
+
+  Eigen::Vector4d b;
+  Eigen::Matrix4d A;
+
+  for (unsigned int i=0; i<points.size(); ++i)
+  {
+    b(i) = at(layer, indices[i]);
+    A.row(i) << 1, points[i].x(), points[i].y(), points[i].x()*points[i].y();
+  }
+
+  Eigen::Vector4d x = A.colPivHouseholderQr().solve(b);
+  //Eigen::Vector4d x = A.fullPivLu().solve(b);
+
+  value = x(0) + x(1)*position.x() + x(2)*position.y() + x(3)*position.x()*position.y();
+
+  return true;
 }
 
 void GridMap::resize(const Index& size)

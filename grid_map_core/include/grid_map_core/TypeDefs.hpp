@@ -23,4 +23,10 @@ namespace grid_map {
   typedef Eigen::Array2d Length;
   typedef uint64_t Time;
 
+  enum class InterpolationMethods{
+      INTER_NEAREST, // nearest neighbor interpolation
+      INTER_LINEAR   // bilinear interpolation
+      // ToDo: INTER_CUBIC
+  };
+
 } /* namespace */

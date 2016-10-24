@@ -182,8 +182,10 @@ class GridMap
    * @param position the requested position.
    * @return the data of the cell.
    * @throw std::out_of_range if no map layer with name `layer` is present.
+   * @throw std::runtime_error if the specified interpolation method is not implemented.
    */
-  float atPosition(const std::string& layer, const Position& position) const;
+  float atPosition(const std::string& layer, const Position& position,
+                   InterpolationMethods interpolationMethod = InterpolationMethods::INTER_NEAREST) const;
 
   /*!
    * Get cell data for requested index.
@@ -453,6 +455,15 @@ class GridMap
    * @param nRows the number of rows to reset.
    */
   void clearRows(unsigned int index, unsigned int nRows);
+
+  /*!
+   * Get cell data at requested position. Linearly interpolated from 2x2 cells.
+   * @param layer the name of the layer to be accessed.
+   * @param position the requested position.
+   * @param value the data of the cell.
+   * @return true if linear interpolation was successful
+   */
+  bool atPositionLinearInterpolated(const std::string& layer, const Position& position, float& value) const;
 
   /*!
    * Resize the buffer.
