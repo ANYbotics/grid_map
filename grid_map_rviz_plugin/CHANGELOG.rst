@@ -2,6 +2,9 @@
 Changelog for package grid_map_rviz_plugin
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.4.1 (2016-10-23)
 ------------------
 * Added functionality to display color from grid map layer.
