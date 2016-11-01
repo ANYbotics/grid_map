@@ -2,6 +2,9 @@
 Changelog for package grid_map_ros
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.4.1 (2016-10-23)
 ------------------
 * Improved transformation of images to color grid map layers.

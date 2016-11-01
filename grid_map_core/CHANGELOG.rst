@@ -2,6 +2,11 @@
 Changelog for package grid_map_core
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Added linear interpolation method for data access.
+* Contributors: Dominic Jud, Peter Fankhauser
+
 1.4.1 (2016-10-23)
 ------------------
 * Improved line iterator with start and end positions.
