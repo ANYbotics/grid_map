@@ -174,13 +174,13 @@ TEST(ValueAtPosition, LinearInterpolated)
 
   double value;
 
-  //Close to the border -> reverting to INTER_NEAREST
+  // Close to the border -> reverting to INTER_NEAREST.
   value = map.atPosition("types", Position(-0.5,-1.2), InterpolationMethods::INTER_LINEAR);
   EXPECT_DOUBLE_EQ(2.0, value);
-  //In between 1.0 and 2.0 field
+  // In between 1.0 and 2.0 field.
   value = map.atPosition("types", Position(-0.5,0.0), InterpolationMethods::INTER_LINEAR);
   EXPECT_DOUBLE_EQ(1.5, value);
-  //Calculated "by Hand"
+  // Calculated "by Hand".
   value = map.atPosition("types", Position(0.69,0.38), InterpolationMethods::INTER_LINEAR);
   EXPECT_NEAR(2.1963200, value, 0.0000001);
 }

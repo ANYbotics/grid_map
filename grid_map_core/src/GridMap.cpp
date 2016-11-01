@@ -648,58 +648,48 @@ void GridMap::clearCols(unsigned int index, unsigned int nCols)
   }
 }
 
-bool GridMap::atPositionLinearInterpolated(const std::string& layer, const Position& position, float& value) const
+bool GridMap::atPositionLinearInterpolated(const std::string& layer, const Position& position,
+                                           float& value) const
 {
   std::vector<Position> points(4);
   std::vector<Index> indices(4);
   getIndex(position, indices[0]);
   getPosition(indices[0], points[0]);
 
-  if (position.x() >= points[0].x()) //second point is above first point
-  {
-    indices[1] = indices[0] + Index(-1,0);
-    if (!getPosition(indices[1], points[1])) //check if still on map
-      return false;
-  }
-  else
-  {
-    indices[1] = indices[0] + Index(1,0);
-    if (!getPosition(indices[1], points[1]))
-      return false;
+  if (position.x() >= points[0].x()) {
+    // Second point is above first point.
+    indices[1] = indices[0] + Index(-1, 0);
+    if (!getPosition(indices[1], points[1])) return false; // Check if still on map.
+  } else {
+    indices[1] = indices[0] + Index(1, 0);
+    if (!getPosition(indices[1], points[1])) return false;
   }
 
-  if (position.y() >= points[0].y()) //third point is right of first point
-  {
-    indices[2] = indices[0] + Index(0,-1);
-    if (!getPosition(indices[2], points[2]))
-      return false;
-  }
-  else
-  {
-    indices[2] = indices[0] + Index(0,1);
-    if (!getPosition(indices[2], points[2]))
-      return false;
+  if (position.y() >= points[0].y()) {
+    // Third point is right of first point.
+    indices[2] = indices[0] + Index(0, -1);
+    if (!getPosition(indices[2], points[2])) return false;
+  } else {
+    indices[2] = indices[0] + Index(0, 1);
+    if (!getPosition(indices[2], points[2])) return false;
   }
 
   indices[3].x() = indices[1].x();
   indices[3].y() = indices[2].y();
-  if (!getPosition(indices[3], points[3]))
-    return false;
+  if (!getPosition(indices[3], points[3])) return false;
 
   Eigen::Vector4d b;
   Eigen::Matrix4d A;
 
-  for (unsigned int i=0; i<points.size(); ++i)
-  {
+  for (unsigned int i = 0; i < points.size(); ++i) {
     b(i) = at(layer, indices[i]);
-    A.row(i) << 1, points[i].x(), points[i].y(), points[i].x()*points[i].y();
+    A.row(i) << 1, points[i].x(), points[i].y(), points[i].x() * points[i].y();
   }
 
   Eigen::Vector4d x = A.colPivHouseholderQr().solve(b);
   //Eigen::Vector4d x = A.fullPivLu().solve(b);
 
-  value = x(0) + x(1)*position.x() + x(2)*position.y() + x(3)*position.x()*position.y();
-
+  value = x(0) + x(1) * position.x() + x(2) * position.y() + x(3) * position.x() * position.y();
   return true;
 }
 

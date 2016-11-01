@@ -457,11 +457,11 @@ class GridMap
   void clearRows(unsigned int index, unsigned int nRows);
 
   /*!
-   * Get cell data at requested position. Linearly interpolated from 2x2 cells.
+   * Get cell data at requested position, linearly interpolated from 2x2 cells.
    * @param layer the name of the layer to be accessed.
    * @param position the requested position.
    * @param value the data of the cell.
-   * @return true if linear interpolation was successful
+   * @return true if linear interpolation was successful.
    */
   bool atPositionLinearInterpolated(const std::string& layer, const Position& position, float& value) const;
 
