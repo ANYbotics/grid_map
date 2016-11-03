@@ -93,3 +93,28 @@ TEST(ImageConversion, roundTrip16UC1)
   EXPECT_TRUE((mapIn.getLength() == mapOut.getLength()).all());
   EXPECT_TRUE((mapIn.getSize() == mapOut.getSize()).all());
 }
+
+TEST(ImageConversion, roundTrip32FC1)
+{
+  // Create grid map.
+  GridMap mapIn({"layer"});
+  mapIn.setGeometry(grid_map::Length(2.0, 1.0), 0.01);
+  mapIn["layer"].setRandom();
+  const float minValue = -1.0;
+  const float maxValue = 1.0;
+
+  // Convert to image.
+  cv::Mat image;
+  GridMapCvConverter::toImage<float, 1>(mapIn, "layer", CV_32FC1, minValue, maxValue, image);
+
+  // Convert back to grid map.
+  GridMap mapOut(mapIn);
+  mapOut["layer"].setConstant(NAN);
+  GridMapCvConverter::addLayerFromImage<float, 1>(image, "layer", mapOut, minValue, maxValue);
+
+  // Check data.
+  const float resolution = (maxValue - minValue) / (float) std::numeric_limits<unsigned char>::max();
+  expectNear(mapIn["layer"], mapOut["layer"], resolution, "");
+  EXPECT_TRUE((mapIn.getLength() == mapOut.getLength()).all());
+  EXPECT_TRUE((mapIn.getSize() == mapOut.getSize()).all());
+}
