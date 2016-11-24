@@ -1,15 +1,16 @@
 /*
- * CostmapConverterTest.cpp
+ * Costmap2DConverterTest.cpp
  *
  *  Created on: Nov 23, 2016
  *      Author: Peter Fankhauser
  *	 Institute: ETH Zurich, Robotic Systems Lab
  */
 
-#include "grid_map_core/GridMap.hpp"
-#include "grid_map_ros/CostmapConverter.hpp"
+// Grid map
+#include <grid_map_core/GridMap.hpp>
+#include <grid_map_ros/Costmap2DConverter.hpp>
 
-// gtest
+// Gtest
 #include <gtest/gtest.h>
 
 // Eigen
@@ -19,13 +20,13 @@ using namespace grid_map;
 
 TEST(Costmap2DConversion, initializeFrom)
 {
-  CostmapConverter<GridMap> costmapConverter;
+  Costmap2DConverter<GridMap> costmap2dConverter;
   // Create Costmap2D.
   costmap_2d::Costmap2D costmap2d(8, 5, 1.0, 2.0, 3.0);
 
   // Convert to grid map.
   GridMap gridMap;
-  costmapConverter.initializeFromCostmap2d(costmap2d, gridMap);
+  costmap2dConverter.initializeFromCostmap2d(costmap2d, gridMap);
 
   // Check map info.
   // Different conventions: Costmap2d returns the *centerpoint* of the last cell in the map.
@@ -42,7 +43,7 @@ TEST(Costmap2DConversion, initializeFrom)
 
 TEST(Costmap2DConversion, convertFrom)
 {
-  CostmapConverter<GridMap> costmapConverter;
+  Costmap2DConverter<GridMap> costmap2dConverter;
 
   // Create Costmap2D.
   costmap_2d::Costmap2D costmap2d(8, 5, 1.0, 2.0, 3.0);
@@ -50,33 +51,27 @@ TEST(Costmap2DConversion, convertFrom)
   // Create grid map.
   const std::string layer("layer");
   GridMap gridMap;
-  costmapConverter.initializeFromCostmap2d(costmap2d, gridMap);
+  costmap2dConverter.initializeFromCostmap2d(costmap2d, gridMap);
+
+  // Set test data.
+  using TestValue = std::tuple<Position, unsigned char, double>;
+  std::vector<TestValue> testValues;
+  testValues.push_back(TestValue(Position(8.5, 4.5), 1, 1.0));
+  testValues.push_back(TestValue(Position(3.2, 5.1), 254, 100.0));
+  testValues.push_back(TestValue(Position(5.2, 7.8), 255, -1.0));
 
   // Fill in test data to Costmap2D.
-  Position position1(8.5, 4.5);
-  Position position2(3.2, 5.1);
-  Position position3(5.2, 7.8);
-  {
+  for (const auto& testValue : testValues) {
     unsigned int xIndex, yIndex;
-    ASSERT_TRUE(costmap2d.worldToMap(position1.x(), position1.y(), xIndex, yIndex));
-    costmap2d.getCharMap()[costmap2d.getIndex(xIndex, yIndex)] = 1;
-  }
-  {
-    unsigned int xIndex, yIndex;
-    ASSERT_TRUE(costmap2d.worldToMap(position2.x(), position2.y(), xIndex, yIndex));
-    costmap2d.getCharMap()[costmap2d.getIndex(xIndex, yIndex)] = 254;
-  }
-  {
-    unsigned int xIndex, yIndex;
-    ASSERT_TRUE(costmap2d.worldToMap(position3.x(), position3.y(), xIndex, yIndex));
-    costmap2d.getCharMap()[costmap2d.getIndex(xIndex, yIndex)] = 255;
+    ASSERT_TRUE(costmap2d.worldToMap(std::get<0>(testValue).x(), std::get<0>(testValue).y(), xIndex, yIndex));
+    costmap2d.getCharMap()[costmap2d.getIndex(xIndex, yIndex)] = std::get<1>(testValue);
   }
 
   // Copy data.
-  costmapConverter.fromCostmap2d(costmap2d, layer, gridMap);
+  costmap2dConverter.addLayerFromCostmap2d(costmap2d, layer, gridMap);
 
   // Check data.
-  EXPECT_EQ(1.0, gridMap.atPosition(layer, position1));
-  EXPECT_EQ(100.0, gridMap.atPosition(layer, position2));
-  EXPECT_EQ(-1.0, gridMap.atPosition(layer, position3));
+  for (const auto& testValue : testValues) {
+    EXPECT_EQ(std::get<2>(testValue), gridMap.atPosition(layer, std::get<0>(testValue)));
+  }
 }

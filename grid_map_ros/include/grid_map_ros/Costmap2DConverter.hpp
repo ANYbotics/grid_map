@@ -10,6 +10,7 @@
 
 // ROS
 #include <costmap_2d/costmap_2d.h>
+#include <costmap_2d/costmap_2d_ros.h>
 #include <ros/ros.h>
 
 // STD
@@ -18,15 +19,15 @@
 namespace grid_map {
 
 template<typename MapType>
-class CostmapConverter
+class Costmap2DConverter
 {
  public:
-  CostmapConverter()
+  Costmap2DConverter()
   {
     initializeConversionTable();
   }
 
-  virtual ~CostmapConverter()
+  virtual ~Costmap2DConverter()
   {
   }
 
@@ -37,13 +38,19 @@ class CostmapConverter
     length += Length::Constant(0.5 * costmap2d.getResolution());
     const double resolution =  costmap2d.getResolution();
     Position position(costmap2d.getOriginX(), costmap2d.getOriginY());
-    // Different conventions
+    // Different conventions.
     position += Position(0.5 * length);
     outputMap.setGeometry(length, resolution, position);
   }
 
-  bool fromCostmap2d(const costmap_2d::Costmap2D& costmap2d, const std::string& layer,
-                     MapType& outputMap)
+  void initializeFromCostmap2d(costmap_2d::Costmap2DROS& costmap2d, MapType& outputMap)
+  {
+    initializeFromCostmap2d(*(costmap2d.getCostmap()), outputMap);
+    outputMap.setFrameId(costmap2d.getGlobalFrameID());
+  }
+
+  bool addLayerFromCostmap2d(const costmap_2d::Costmap2D& costmap2d, const std::string& layer,
+                             MapType& outputMap)
   {
     // Check compliance.
     Size size(costmap2d.getSizeInCellsX(), costmap2d.getSizeInCellsY());
@@ -68,6 +75,12 @@ class CostmapConverter
 
     outputMap.add(layer, data);
     return true;
+  }
+
+  bool addLayerFromCostmap2d(costmap_2d::Costmap2DROS& costmap2d, const std::string& layer,
+                             MapType& outputMap)
+  {
+    return addLayerFromCostmap2d(*(costmap2d.getCostmap()), layer, outputMap);
   }
 
  private:

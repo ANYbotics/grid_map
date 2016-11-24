@@ -109,7 +109,7 @@ catkin_add_gtest(
 	${PROJECT_NAME}-test
 	test/test_grid_map_ros.cpp
 	test/GridMapRosTest.cpp
-	test/CostmapConverterTest.cpp
+	test/Costmap2DConverterTest.cpp
 )
 endif()
 
