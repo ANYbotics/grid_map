@@ -93,8 +93,18 @@ class GridMapCvConverter
     }
 
     const float mapValueDifference = upperValue - lowerValue;
-    const float maxImageValue = (float)std::numeric_limits<Type_>::max();
-    const Type_ alphaTreshold = (Type_)(alphaThreshold * std::numeric_limits<Type_>::max());
+
+    float maxImageValue;
+    if (std::is_same<Type_, float>::value || std::is_same<Type_, double>::value) {
+      maxImageValue = 1.0;
+    } else if (std::is_same<Type_, unsigned short>::value || std::is_same<Type_, unsigned char>::value) {
+      maxImageValue = (float)std::numeric_limits<Type_>::max();
+    } else {
+      std::cerr << "This image type is not supported." << std::endl;
+      return false;
+    }
+
+    const Type_ alphaTreshold = (Type_)(alphaThreshold * maxImageValue);
 
     gridMap.add(layer);
     grid_map::Matrix& data = gridMap[layer];
@@ -202,7 +212,15 @@ class GridMapCvConverter
     }
 
     // Get max image value.
-    unsigned int imageMax = (unsigned int)std::numeric_limits<Type_>::max();
+    Type_ imageMax;
+    if (std::is_same<Type_, float>::value || std::is_same<Type_, double>::value) {
+      imageMax = 1.0;
+    } else if (std::is_same<Type_, unsigned short>::value || std::is_same<Type_, unsigned char>::value) {
+      imageMax = (Type_)std::numeric_limits<Type_>::max();
+    } else {
+      std::cerr << "This image type is not supported." << std::endl;
+      return false;
+    }
 
     // Clamp outliers.
     grid_map::GridMap map = gridMap;
