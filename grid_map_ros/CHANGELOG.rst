@@ -4,6 +4,8 @@ Changelog for package grid_map_ros
 
 Forthcoming
 -----------
+* Added conversion for Costmap2D from ROS Navigation.
+* Contributors: Peter Fankhauser, Stefan Kohlbrecher
 
 1.4.1 (2016-10-23)
 ------------------

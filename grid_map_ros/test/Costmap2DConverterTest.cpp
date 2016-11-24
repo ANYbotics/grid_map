@@ -18,7 +18,7 @@
 
 using namespace grid_map;
 
-TEST(Costmap2DConversion, initializeFrom)
+TEST(Costmap2DConversion, initializeFromCostmap2d)
 {
   Costmap2DConverter<GridMap> costmap2dConverter;
   // Create Costmap2D.
@@ -41,7 +41,7 @@ TEST(Costmap2DConversion, initializeFrom)
   EXPECT_EQ(costmap2d.getOriginY(), position.y());
 }
 
-TEST(Costmap2DConversion, convertFrom)
+TEST(Costmap2DConversion, addLayerFromCostmap2d)
 {
   Costmap2DConverter<GridMap> costmap2dConverter;
 
