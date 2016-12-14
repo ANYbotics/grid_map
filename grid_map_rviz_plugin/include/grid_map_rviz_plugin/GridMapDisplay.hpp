@@ -11,7 +11,6 @@
 #ifndef Q_MOC_RUN
 #include <boost/circular_buffer.hpp>
 #include "grid_map_rviz_plugin/modified/message_filter_display.h"
-#include <sensor_msgs/Imu.h>
 #endif
 
 #include <grid_map_msgs/GridMap.h>
