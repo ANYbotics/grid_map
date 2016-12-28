@@ -91,7 +91,7 @@ public:
   /**
    * @brief Default constructor
    *
-   * Initiliases the cost translation table with the default policy for the template
+   * Initialises the cost translation table with the default policy for the template
    * map type class.
    **/
   Costmap2DConverter()
@@ -172,7 +172,7 @@ public:
    *
    * @param costmap2d : from this costmap type object
    * @param layer : name of the layer to insert
-   * @param outputMap : to this costmap type object
+   * @param outputMap : to this map type object
    *
    * @warning this does not lock the costmap2d object, you should take care to do so from outside this function.
    **/
@@ -183,6 +183,21 @@ public:
     return addLayerFromCostmap2D(*(costmap2d.getCostmap()), layer, outputMap);
   }
 
+  /**
+   * @brief Initialise the output map at the robot pose of the underlying Costmap2DROS object.
+   *
+   * @param costmap2d : the underlying Costmap2DROS object
+   * @param geometry: size of the subwindow to snapshot around the robot pose
+   * @param outputMap : initialise the output map with the required parameters
+   *
+   * This needs some beyond just fixing the centre of the output map to the robot pose
+   * itself. To avoid introducing error, you want to shift the centre so the
+   * underlying costmap2d cells align with the newly created map object. This does
+   * that here.
+   *
+   * @warning this does not lock the costmap2d object, you should take care to do so from
+   * outside this function in scope with any addLayerFromCostmap2DAtRobotPose calls you wish to make.
+   **/
   bool initializeFromCostmap2DAtRobotPose(costmap_2d::Costmap2DROS& costmap2d,
                                           const Length& geometry,
                                           MapType& outputMap)
@@ -256,6 +271,17 @@ public:
     return true;
   }
 
+  /**
+   * @brief Fill a layer in the output map with data from the subwindow centred at the robot pose
+   *
+   * @param costmap2d : the underlying Costmap2DROS object
+   * @param layer : layer name to add
+   * @param outputMap : the initialised and filled in map output map
+   *
+   * @warning this does not lock the costmap2d object, you should take care to do so from
+   * outside this function in scope with any initializeFromCostmap2DAtRobotPose calls
+   * you wish to make.
+   **/
   bool addLayerFromCostmap2DAtRobotPose(costmap_2d::Costmap2DROS& costmap2d,
                                         const std::string& layer,
                                         MapType& outputMap)
@@ -279,26 +305,19 @@ public:
     ** Properties
     ****************************************/
     const double resolution = costmap2d.getCostmap()->getResolution();
-//    const Length geometry = outputMap.getLength();
-//    // Note: don't use getSizeInMeters() here - it doesn't give the actual grid size...for
-//    // some reason they designed it so that it cuts it short at the centre of the last cell
-//    //            e.g. 10 cells, resolution 1.0 -> getSizeInMeters() == 9.5
-//    double original_size_x = costmap2d.getCostmap()->getSizeInCellsX() * resolution;
-//    double original_size_y = costmap2d.getCostmap()->getSizeInCellsY() * resolution;
-//    // Note: don't use getSizeInMeters() here - it doesn't give the actual grid size...for
-//    // some reason they designed it so that it cuts it short at the centre of the last cell
-//    //            e.g. 10 cells, resolution 1.0 -> getSizeInMeters() == 9.5
     const Length geometry = outputMap.getLength();
+    const Position position = outputMap.getPosition();
 
     /****************************************
     ** Copy Data
     ****************************************/
     bool is_valid_window = false;
     costmap_2d::Costmap2D costmap_subwindow;
+    // TODO
     is_valid_window = costmap_subwindow.copyCostmapWindow(
                             *(costmap2d.getCostmap()),
-                            outputMap.getPosition().x() - geometry.x() / 2.0, // subwindow_bottom_left_x
-                            outputMap.getPosition().y() - geometry.y() / 2.0, // subwindow_bottom_left_y
+                            position.x() - geometry.x() / 2.0, // subwindow_bottom_left_x
+                            position.y() - geometry.y() / 2.0, // subwindow_bottom_left_y
                             geometry.x(),
                             geometry.y());
     if ( !is_valid_window ) {

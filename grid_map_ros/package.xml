@@ -20,5 +20,6 @@
   <depend>cv_bridge</depend>
   <depend>rosbag</depend>
   <depend>costmap_2d</depend>
+  <depend>tf</depend>
   <depend>visualization_msgs</depend>
 </package>
