@@ -11,4 +11,5 @@
 #include <grid_map_core/grid_map_core.hpp>
 #include <grid_map_ros/GridMapRosConverter.hpp>
 #include <grid_map_ros/PolygonRosConverter.hpp>
+#include <grid_map_ros/Costmap2DConverter.hpp>
 #include <grid_map_ros/GridMapMsgHelpers.hpp>

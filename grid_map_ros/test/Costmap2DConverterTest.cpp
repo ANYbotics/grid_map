@@ -26,7 +26,7 @@ TEST(Costmap2DConversion, initializeFromCostmap2d)
 
   // Convert to grid map.
   GridMap gridMap;
-  costmap2dConverter.initializeFromCostmap2d(costmap2d, gridMap);
+  costmap2dConverter.initializeFromCostmap2D(costmap2d, gridMap);
 
   // Check map info.
   // Different conventions: Costmap2d returns the *centerpoint* of the last cell in the map.
@@ -51,7 +51,7 @@ TEST(Costmap2DConversion, addLayerFromCostmap2d)
   // Create grid map.
   const std::string layer("layer");
   GridMap gridMap;
-  costmap2dConverter.initializeFromCostmap2d(costmap2d, gridMap);
+  costmap2dConverter.initializeFromCostmap2D(costmap2d, gridMap);
 
   // Set test data.
   using TestValue = std::tuple<Position, unsigned char, double>;
@@ -68,7 +68,7 @@ TEST(Costmap2DConversion, addLayerFromCostmap2d)
   }
 
   // Copy data.
-  costmap2dConverter.addLayerFromCostmap2d(costmap2d, layer, gridMap);
+  costmap2dConverter.addLayerFromCostmap2D(costmap2d, layer, gridMap);
 
   // Check data.
   for (const auto& testValue : testValues) {

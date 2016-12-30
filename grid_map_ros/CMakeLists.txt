@@ -16,6 +16,7 @@ find_package(catkin REQUIRED COMPONENTS
   cv_bridge
   rosbag
   costmap_2d
+  tf
   visualization_msgs
 )
 
@@ -48,6 +49,7 @@ catkin_package(
     cv_bridge
     rosbag
     costmap_2d
+    tf
     visualization_msgs
   DEPENDS
     #Eigen3

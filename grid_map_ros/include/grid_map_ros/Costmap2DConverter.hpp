@@ -4,52 +4,137 @@
  *  Created on: Nov 23, 2016
  *      Author: Peter Fankhauser, ETH Zurich
  *              Stefan Kohlbrecher, TU Darmstadt
+ *              Daniel Stonier, Yujin Robot
  */
 
 #pragma once
 
+#include <grid_map_core/grid_map_core.hpp>
+
 // ROS
 #include <costmap_2d/costmap_2d.h>
 #include <costmap_2d/costmap_2d_ros.h>
+#include <tf/tf.h>
 #include <ros/ros.h>
 
 // STD
 #include <vector>
+//#include <sstream>
 
 namespace grid_map {
 
+/*!
+ * @brief Direct cost translations for costmap_2d -> grid/cost maps.
+ *
+ * This maps the cost directly, simply casting from the underlying
+ * unsigned char to whatever onto float fields between 0.0 and 100.0 with
+ * reserved values allocated for the costmap_2d.
+ */
+class Costmap2DDirectTranslationTable
+{
+ public:
+  Costmap2DDirectTranslationTable() {}
+
+  template<typename DataType>
+  void apply(std::vector<DataType>& costTranslationTable) const
+  {
+    costTranslationTable.resize(256);
+    for (unsigned int i = 0; i < costTranslationTable.size(); ++i) {
+      costTranslationTable[i] = static_cast<DataType>(i);
+    }
+  }
+};
+
+/**
+ * @brief Cost translations to [0, 100] for costmap_2d -> grid/cost maps.
+ *
+ * This maps the cost onto float fields between 0.0 and 100.0 with
+ * reserved values allocated for the costmap_2d.
+ */
+class Costmap2DCenturyTranslationTable
+{
+ public:
+  Costmap2DCenturyTranslationTable() {}
+
+  void apply(std::vector<float>& costTranslationTable) const
+  {
+    costTranslationTable.resize(256);
+    costTranslationTable[0] = 0.0;     // costmap_2d::FREE_SPACE;
+    costTranslationTable[253] = 99.0;  // costmap_2d::INSCRIBED_INFLATED_OBSTACLE;
+    costTranslationTable[254] = 100.0;  // costmap_2d::LETHAL_OBSTACLE
+    costTranslationTable[255] = -1.0;  // costmap_2d::NO_INFORMATION
+
+    // Regular cost values scale the range 1 to 252 (inclusive) to fit
+    // into 1 to 98 (inclusive).
+    for (int i = 1; i < 253; i++) {
+      costTranslationTable[i] = char(1 + (97 * (i - 1)) / 251);
+    }
+  }
+};
+
+template<typename DataType>
+class Costmap2DDefaultTranslationTable : public Costmap2DDirectTranslationTable {};
+
+template<>
+class Costmap2DDefaultTranslationTable<float> : public Costmap2DCenturyTranslationTable {};
+
+/*!
+ * Converter.
+ */
 template<typename MapType>
 class Costmap2DConverter
 {
- public:
+public:
+
+  /*!
+   * Initialises the cost translation table with the default policy for the template
+   * map type class.
+   */
   Costmap2DConverter()
   {
-    initializeConversionTable();
+    initializeCostTranslationTable(Costmap2DDefaultTranslationTable<typename MapType::DataType>());
+  }
+
+  /*!
+   * Initialise the cost translation table with the user specified translation table functor.
+   * @param translationTable the specified translation table.
+   */
+  template <typename TranslationTable>
+  Costmap2DConverter(const TranslationTable& translationTable)
+  {
+    initializeCostTranslationTable(translationTable);
   }
 
   virtual ~Costmap2DConverter()
   {
   }
 
-  void initializeFromCostmap2d(const costmap_2d::Costmap2D& costmap2d, MapType& outputMap)
+  void initializeFromCostmap2D(costmap_2d::Costmap2DROS& costmap2d, MapType& outputMap)
   {
-    Length length(costmap2d.getSizeInMetersX(), costmap2d.getSizeInMetersY());
-    // Different conventions: Costmap2d returns the *centerpoint* of the last cell in the map.
-    length += Length::Constant(0.5 * costmap2d.getResolution());
-    const double resolution =  costmap2d.getResolution();
+    initializeFromCostmap2D(*(costmap2d.getCostmap()), outputMap);
+    outputMap.setFrameId(costmap2d.getGlobalFrameID());
+  }
+
+  void initializeFromCostmap2D(const costmap_2d::Costmap2D& costmap2d, MapType& outputMap)
+  {
+    const double resolution = costmap2d.getResolution();
+    Length length(costmap2d.getSizeInCellsX()*resolution, costmap2d.getSizeInCellsY()*resolution);
     Position position(costmap2d.getOriginX(), costmap2d.getOriginY());
     // Different conventions.
     position += Position(0.5 * length);
     outputMap.setGeometry(length, resolution, position);
   }
 
-  void initializeFromCostmap2d(costmap_2d::Costmap2DROS& costmap2d, MapType& outputMap)
-  {
-    initializeFromCostmap2d(*(costmap2d.getCostmap()), outputMap);
-    outputMap.setFrameId(costmap2d.getGlobalFrameID());
-  }
-
-  bool addLayerFromCostmap2d(const costmap_2d::Costmap2D& costmap2d, const std::string& layer,
+  /*!
+   * Load the costmap2d into the specified layer.
+   * @warning This does not lock the costmap2d object, you should take care to do so from outside this function.
+   * @param costmap2d from this costmap type object.
+   * @param layer the name of the layer to insert.
+   * @param outputMap to this costmap type object.
+   * @return true if successful, false otherwise.
+   */
+  bool addLayerFromCostmap2D(const costmap_2d::Costmap2D& costmap2d,
+                             const std::string& layer,
                              MapType& outputMap)
   {
     // Check compliance.
@@ -59,14 +144,13 @@ class Costmap2DConverter
       return false;
     }
     if (!outputMap.getStartIndex().isZero()) {
-      ROS_ERROR("CostmapConverter::fromCostmap2d() does not support non-zero start indices!");
+      ROS_ERROR("CostmapConverter::fromCostmap2D() does not support non-zero start indices!");
       return false;
     }
-
     // Copy data.
     // Reverse iteration is required because of different conventions
-    // between Costmap2d and grid map.
-    grid_map::Matrix data(size(0), size(1));
+    // between Costmap2D and grid map.
+    typename MapType::Matrix data(size(0), size(1));
     const size_t nCells = outputMap.getSize().prod();
     for (size_t i = 0, j = nCells - 1; i < nCells; ++i, --j) {
       const unsigned char cost = costmap2d.getCharMap()[j];
@@ -77,31 +161,154 @@ class Costmap2DConverter
     return true;
   }
 
-  bool addLayerFromCostmap2d(costmap_2d::Costmap2DROS& costmap2d, const std::string& layer,
+  /*!
+   * Load the costmap2d into the specified layer.
+   * @warning This does not lock the costmap2d object, you should take care to do so from outside this function.
+   * @param costmap2d from this costmap type object.
+   * @param layer the name of the layer to insert.
+   * @param outputMap to this costmap type object.
+   * @return true if successful, false otherwise.
+   */
+  bool addLayerFromCostmap2D(costmap_2d::Costmap2DROS& costmap2d, const std::string& layer,
                              MapType& outputMap)
   {
-    return addLayerFromCostmap2d(*(costmap2d.getCostmap()), layer, outputMap);
+    return addLayerFromCostmap2D(*(costmap2d.getCostmap()), layer, outputMap);
   }
 
- private:
-  void initializeConversionTable()
+  /*!
+   * Initialize the output map at the robot pose of the underlying Costmap2DROS object.
+   *
+   * Note: This needs some beyond just fixing the center of the output map to the robot pose
+   * itself. To avoid introducing error, you want to shift the center so the
+   * underlying costmap2d cells align with the newly created map object. This does
+   * that here.
+   *
+   * @warning this does not lock the costmap2d object, you should take care to do so from
+   * outside this function in scope with any addLayerFromCostmap2DAtRobotPose calls you wish to make.
+   *
+   * @param costmap2d : the underlying Costmap2DROS object
+   * @param geometry: size of the subwindow to snapshot around the robot pose
+   * @param outputMap : initialise the output map with the required parameters
+   */
+  bool initializeFromCostmap2DAtRobotPose(costmap_2d::Costmap2DROS& costmap2d, const Length& length,
+                                          MapType& outputMap)
   {
-    costTranslationTable_.resize(256);
+    const double resolution = costmap2d.getCostmap()->getResolution();
 
-    // Special values.
-    costTranslationTable_[0] = 0; // NO obstacle
-    costTranslationTable_[253] = 99; // INSCRIBED obstacle
-    costTranslationTable_[254] = 100; // LETHAL obstacle
-    costTranslationTable_[255] = -1; // UNKNOWN
-
-    // Regular cost values scale the range 1 to 252 (inclusive) to fit
-    // into 1 to 98 (inclusive).
-    for (int i = 1; i < 253; i++) {
-      costTranslationTable_[i] = char(1 + (97 * (i - 1)) / 251);
+    // Get the Robot Pose Transform.
+    tf::Stamped<tf::Pose> tfPose;
+    if(!costmap2d.getRobotPose(tfPose))
+    {
+      std::ostringstream error_message;
+      error_message << "Could not get robot pose, is it actually published?";
+      ROS_ERROR_STREAM("CostmapConverter:: " << error_message.str());
+      return false;
+      // throw std::runtime_error(error_message.str());
     }
+
+    // Determine new costmap origin.
+    Position robotPosition(tfPose.getOrigin().x() , tfPose.getOrigin().y());
+    Position rosMapOrigin(costmap2d.getCostmap()->getOriginX(), costmap2d.getCostmap()->getOriginY());
+    Position newCostMapOrigin;
+
+    // Note:
+    //   You cannot directly use the robot pose as the new 'costmap center'
+    //   since the underlying grid is not necessarily exactly aligned with
+    //   that (two cases to consider, rolling window and globally fixed).
+    //
+    // Relevant diagrams:
+    //  - https://github.com/ethz-asl/grid_map
+
+    // Float versions of the cell co-ordinates, use static_cast<int> to get the indices.
+    Position robotCellPosition = (robotPosition - rosMapOrigin) / resolution;
+
+    // if there is an odd number of cells
+    //   centre of the new grid map in the centre of the current cell
+    // if there is an even number of cells
+    //   centre of the new grid map at the closest vertex between cells
+    // of the current cell
+    int number_of_cells_x = length.x()/resolution;
+    int number_of_cells_y = length.y()/resolution;
+    if ( number_of_cells_x % 2 ) { // odd
+      newCostMapOrigin(0) = std::floor(robotCellPosition.x())*resolution + resolution/2.0 + rosMapOrigin.x();
+    } else {
+      newCostMapOrigin(0) = std::round(robotCellPosition.x())*resolution + rosMapOrigin.x();
+    }
+    if ( number_of_cells_y % 2 ) { // odd
+      newCostMapOrigin(1) = std::floor(robotCellPosition.y())*resolution + resolution/2.0 + rosMapOrigin.y();
+    } else {
+      newCostMapOrigin(1) = std::round(robotCellPosition.y())*resolution + rosMapOrigin.y();
+    }
+
+    // TODO check the robot pose is in the window
+    // TODO check the geometry fits within the costmap2d window
+
+    // Initialize the output map.
+    outputMap.setFrameId(costmap2d.getGlobalFrameID());
+    outputMap.setTimestamp(ros::Time::now().toNSec());
+    outputMap.setGeometry(length, resolution, newCostMapOrigin);
+    return true;
   }
 
-  std::vector<char> costTranslationTable_;
+  /**
+   * Fill a layer in the output map with data from the subwindow centered at the robot pose.
+   * @warning This does not lock the costmap2d object, you should take care to do so from
+   * outside this function in scope with any initializeFromCostmap2DAtRobotPose calls
+   * you wish to make.
+   * @param costmap2d the underlying Costmap2DROS object.
+   * @param layer the layer name to add.
+   * @param outputMap the initialized and filled in map output map.
+   */
+  bool addLayerFromCostmap2DAtRobotPose(costmap_2d::Costmap2DROS& costmap2d,
+                                        const std::string& layer, MapType& outputMap)
+  {
+    // Asserts.
+    if (outputMap.getResolution() != costmap2d.getCostmap()->getResolution()) {
+      std::ostringstream error_message;
+      error_message << "Costmap2D and output map have different resolutions!";
+      ROS_ERROR_STREAM("CostmapConverter::" << error_message.str());
+      return false;
+    }
+    // 1) would be nice to check the output map centre has been initialised where it should be
+    //      i.e. the robot pose didn't move since or the initializeFrom wasn't called
+    //    but this would mean listening to tf's again and anyway, it gets shifted to make sure
+    //    the costmaps align, so these wouldn't be exactly the same anyway
+    // 2) check the geometry fits inside the costmap2d subwindow is done below
+
+    // Properties.
+    const double resolution = costmap2d.getCostmap()->getResolution();
+    const Length geometry = outputMap.getLength();
+    const Position position = outputMap.getPosition();
+
+    // Copy data.
+    bool isValidWindow = false;
+    costmap_2d::Costmap2D costmap_subwindow;
+    // TODO
+    isValidWindow = costmap_subwindow.copyCostmapWindow(
+                            *(costmap2d.getCostmap()),
+                            position.x() - geometry.x() / 2.0, // subwindow_bottom_left_x
+                            position.y() - geometry.y() / 2.0, // subwindow_bottom_left_y
+                            geometry.x(),
+                            geometry.y());
+    if ( !isValidWindow ) {
+      // handle differently - e.g. copy the internal part only and lethal elsewhere, but other parts would have to handle being outside too
+      std::ostringstream error_message;
+      error_message << "Subwindow landed outside the costmap, aborting.";
+      ROS_ERROR_STREAM("CostmapConverter:: " << error_message.str());
+      return false;
+//      throw std::out_of_range(error_message.str());
+    }
+    addLayerFromCostmap2D(costmap_subwindow, layer, outputMap);
+    return true;
+  }
+
+private:
+  template <typename TranslationTable>
+  void initializeCostTranslationTable(const TranslationTable& translation_table) {
+    translation_table.apply(costTranslationTable_);
+  }
+
+  std::vector<typename MapType::DataType> costTranslationTable_;
 };
 
-} /* namespace grid_map */
+} // namespace grid_map
