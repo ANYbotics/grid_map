@@ -49,7 +49,6 @@ bool GridMapPclConverter::addLayerFromPolygonMesh(const pcl::PolygonMesh& mesh,
   pcl::getMinMax3D(cloud, minBound, maxBound);
 
   gridMap.add(layer);
-  grid_map::Matrix& data = gridMap[layer];
 
   for (GridMapIterator iterator(gridMap); !iterator.isPastEnd(); ++iterator) {
     const Index index(*iterator);

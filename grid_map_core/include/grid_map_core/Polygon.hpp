@@ -143,7 +143,7 @@ class Polygon
    * Offsets the polygon inward (buffering) by a margin.
    * Use a negative margin to offset the polygon outward.
    * @param margin the margin to offset the polygon by (in [m]).
-   * @return true if succesful, false otherwise.
+   * @return true if successful, false otherwise.
    */
   bool offsetInward(const double margin);
 

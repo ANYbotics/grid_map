@@ -19,7 +19,7 @@ typedef high_resolution_clock clk;
 /*!
  * Convenient use of iterator.
  */
-void runGridMapIteratorVersion1(GridMap& map, const string& layer_from, const string layer_to)
+void runGridMapIteratorVersion1(GridMap& map, const string& layer_from, const string& layer_to)
 {
   for (GridMapIterator iterator(map); !iterator.isPastEnd(); ++iterator) {
     const float value_from = map.at(layer_from, *iterator);
@@ -31,7 +31,7 @@ void runGridMapIteratorVersion1(GridMap& map, const string& layer_from, const st
 /*!
  * Improved efficiency by storing direct access to data layers.
  */
-void runGridMapIteratorVersion2(GridMap& map, const string& layer_from, const string layer_to)
+void runGridMapIteratorVersion2(GridMap& map, const string& layer_from, const string& layer_to)
 {
   const auto& data_from = map[layer_from];
   auto& data_to = map[layer_to];
@@ -46,7 +46,7 @@ void runGridMapIteratorVersion2(GridMap& map, const string& layer_from, const st
 /*!
  * Improved efficiency by using linear index.
  */
-void runGridMapIteratorVersion3(GridMap& map, const string& layer_from, const string layer_to)
+void runGridMapIteratorVersion3(GridMap& map, const string& layer_from, const string& layer_to)
 {
   const auto& data_from = map[layer_from];
   auto& data_to = map[layer_to];
@@ -62,7 +62,7 @@ void runGridMapIteratorVersion3(GridMap& map, const string& layer_from, const st
  * Whenever possible, make use of the Eigen methods for maximum efficiency
  * and readability.
  */
-void runEigenFunction(GridMap& map, const string& layer_from, const string layer_to)
+void runEigenFunction(GridMap& map, const string& layer_from, const string& layer_to)
 {
   map[layer_to] = map[layer_to].cwiseMax(map[layer_from]);
 }
@@ -70,7 +70,7 @@ void runEigenFunction(GridMap& map, const string& layer_from, const string layer
 /*!
  * For comparison.
  */
-void runCustomIndexIteration(GridMap& map, const string& layer_from, const string layer_to)
+void runCustomIndexIteration(GridMap& map, const string& layer_from, const string& layer_to)
 {
   const auto& data_from = map[layer_from];
   auto& data_to = map[layer_to];
@@ -86,7 +86,7 @@ void runCustomIndexIteration(GridMap& map, const string& layer_from, const strin
 /*!
  * For comparison.
  */
-void runCustomLinearIndexIteration(GridMap& map, const string& layer_from, const string layer_to)
+void runCustomLinearIndexIteration(GridMap& map, const string& layer_from, const string& layer_to)
 {
   const auto& data_from = map[layer_from];
   auto& data_to = map[layer_to];

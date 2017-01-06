@@ -14,9 +14,13 @@
 
 namespace grid_map {
 
-Polygon::Polygon() {}
+Polygon::Polygon()
+    : timestamp_(0)
+{
+}
 
 Polygon::Polygon(std::vector<Position> vertices)
+    : Polygon()
 {
   vertices_ = vertices;
 }
@@ -110,9 +114,8 @@ Position Polygon::getCentroid() const
   std::vector<Position> vertices = getVertices();
   vertices.push_back(vertices.at(0));
   double area = 0.0;
-  double a;
   for (int i = 0; i < vertices.size() - 1; i++) {
-    a = vertices[i].x() * vertices[i+1].y() - vertices[i+1].x() * vertices[i].y();
+    const double a = vertices[i].x() * vertices[i+1].y() - vertices[i+1].x() * vertices[i].y();
     area += a;
     centroid.x() += a * (vertices[i].x() + vertices[i+1].x());
     centroid.y() += a * (vertices[i].y() + vertices[i+1].y());
