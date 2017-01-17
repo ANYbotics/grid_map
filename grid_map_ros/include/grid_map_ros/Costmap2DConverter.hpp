@@ -138,11 +138,11 @@ public:
     // Check compliance.
     Size size(costmap2d.getSizeInCellsX(), costmap2d.getSizeInCellsY());
     if ((outputMap.getSize() != size).any()) {
-      ROS_ERROR("Costmap2D and output map have different sizes!");
+      errorMessage_ = "Costmap2D and output map have different sizes!";
       return false;
     }
     if (!outputMap.getStartIndex().isZero()) {
-      ROS_ERROR("CostmapConverter::fromCostmap2D() does not support non-zero start indices!");
+      errorMessage_ = "does not support non-zero start indices!";
       return false;
     }
     // Copy data.
@@ -197,11 +197,8 @@ public:
     tf::Stamped<tf::Pose> tfPose;
     if(!costmap2d.getRobotPose(tfPose))
     {
-      std::ostringstream error_message;
-      error_message << "Could not get robot pose, is it actually published?";
-      ROS_ERROR_STREAM("CostmapConverter:: " << error_message.str());
+      errorMessage_ =  "could not get robot pose, is it actually published?";
       return false;
-      // throw std::runtime_error(error_message.str());
     }
 
     // Determine new costmap origin.
@@ -260,11 +257,11 @@ public:
   bool addLayerFromCostmap2DAtRobotPose(costmap_2d::Costmap2DROS& costmap2d,
                                         const std::string& layer, MapType& outputMap)
   {
-    // Asserts.
-    if (outputMap.getResolution() != costmap2d.getCostmap()->getResolution()) {
-      std::ostringstream error_message;
-      error_message << "Costmap2D and output map have different resolutions!";
-      ROS_ERROR_STREAM("CostmapConverter::" << error_message.str());
+    /****************************************
+    ** Asserts
+    ****************************************/
+    if ( outputMap.getResolution() != costmap2d.getCostmap()->getResolution()) {
+      errorMessage_ = "Costmap2D and output map have different resolutions!";
       return false;
     }
     // 1) would be nice to check the output map centre has been initialised where it should be
@@ -290,18 +287,26 @@ public:
                             geometry.y());
     if ( !isValidWindow ) {
       // handle differently - e.g. copy the internal part only and lethal elsewhere, but other parts would have to handle being outside too
-      std::ostringstream error_message;
-      error_message << "Subwindow landed outside the costmap, aborting.";
-      ROS_ERROR_STREAM("CostmapConverter:: " << error_message.str());
+      errorMessage_ = "subwindow landed outside the costmap, aborting";
       return false;
-//      throw std::out_of_range(error_message.str());
     }
     addLayerFromCostmap2D(costmap_subwindow, layer, outputMap);
     return true;
   }
 
+  /**
+   * @brief Human readable error message string.
+   *
+   * Can be used to get a human readable description of the error type after
+   * one of the class methods has failed.
+   *
+   * @return std::string
+   */
+  std::string errorMessage() const { return errorMessage_; }
+
 private:
   std::vector<typename MapType::DataType> costTranslationTable_;
+  std::string errorMessage_;
 };
 
 } // namespace grid_map
