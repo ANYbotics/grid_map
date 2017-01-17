@@ -113,6 +113,7 @@ catkin_add_gtest(
 	test/GridMapRosTest.cpp
 	test/Costmap2DConverterTest.cpp
 )
+add_subdirectory(rostest)
 endif()
 
 if(TARGET ${PROJECT_NAME}-test)
