@@ -77,10 +77,19 @@ class Costmap2DDefaultTranslationTable : public Costmap2DDirectTranslationTable 
 template<>
 class Costmap2DDefaultTranslationTable<float> : public Costmap2DCenturyTranslationTable {};
 
-/*!
- * Converter.
+/*****************************************************************************
+** Converter
+*****************************************************************************/
+
+/**
+ * @brief Convert Costmap2DRos objects into cost or grid maps.
+ *
+ * @tparam MapType : either grid_map::GridMap or cost_map::CostMap
+ * @tparam TranslationTable : class that creates a cost -> new type conversion table
+ *
+ * @sa Costmap2DDirectTranslationTable, Costmap2DCenturyTranslationTable
  */
-template<typename MapType>
+template<typename MapType, typename TranslationTable=Costmap2DDefaultTranslationTable<typename MapType::DataType>>
 class Costmap2DConverter
 {
 public:
@@ -91,17 +100,7 @@ public:
    */
   Costmap2DConverter()
   {
-    initializeCostTranslationTable(Costmap2DDefaultTranslationTable<typename MapType::DataType>());
-  }
-
-  /*!
-   * Initialise the cost translation table with the user specified translation table functor.
-   * @param translationTable the specified translation table.
-   */
-  template <typename TranslationTable>
-  Costmap2DConverter(const TranslationTable& translationTable)
-  {
-    initializeCostTranslationTable(translationTable);
+    TranslationTable::create(costTranslationTable_);
   }
 
   virtual ~Costmap2DConverter()
@@ -302,11 +301,6 @@ public:
   }
 
 private:
-  template <typename TranslationTable>
-  void initializeCostTranslationTable(const TranslationTable& translation_table) {
-    translation_table.apply(costTranslationTable_);
-  }
-
   std::vector<typename MapType::DataType> costTranslationTable_;
 };
 
