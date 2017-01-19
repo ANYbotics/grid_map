@@ -1,6 +1,3 @@
-/**
- * @file /grid_map_ros/rostest/costmap_2d_ros/costmap_2d_ros.cpp
- */
 /*****************************************************************************
 ** Includes
 *****************************************************************************/
@@ -16,8 +13,9 @@
 ** Helpers
 *****************************************************************************/
 
-void broadcastCostmap2DROSTestSuiteTransforms(TransformBroadcaster& broadcaster) {
-  broadcaster.add("base_link_5x5", tf::Vector3(1.0,  1.0, 0.0), tf::Quaternion(0, 0, 0, 1));
+void broadcastCostmap2DROSTestSuiteTransforms(TransformBroadcaster& broadcaster)
+{
+  broadcaster.add("base_link_5x5", tf::Vector3(1.0, 1.0, 0.0), tf::Quaternion(0, 0, 0, 1));
   broadcaster.add("base_link_4x4", tf::Vector3(1.0, -3.0, 0.0), tf::Quaternion(0, 0, 0, 1));
   broadcaster.add("base_link_5x5_3x3_offset", tf::Vector3(-3.7, 2.4, 0.0), tf::Quaternion(0, 0, 0, 1));
   broadcaster.add("base_link_5x5_3x3_centre", tf::Vector3(-3.5, -3.5, 0.0), tf::Quaternion(0, 0, 0, 1));
@@ -30,28 +28,26 @@ void broadcastCostmap2DROSTestSuiteTransforms(TransformBroadcaster& broadcaster)
 *****************************************************************************/
 
 ROSCostmapServer::ROSCostmapServer(const std::string& name,
-                                   const std::string& base_link_transform_name,
-                                   const grid_map::Position& origin,
-                                   const double& width,
-                                   const double& height
-)
-: transform_listener(ros::Duration(1.0))
+                                   const std::string& baseLinkTransformName,
+                                   const grid_map::Position& origin, const double& width,
+                                   const double& height)
+    : transformListener(ros::Duration(1.0))
 {
-  ros::NodeHandle private_node_handle("~");
+  ros::NodeHandle privateNodeHandle("~");
   // lots of parameters here affect the construction ( e.g. rolling window)
   // if you don't have any parameters set, then this
   //  - alot of defaults which get dumped on the ros param server
   //  - fires up an obstacle layer and an inflation layer
   //  - creates a publisher for an occupancy grid
-  private_node_handle.setParam(name + "/robot_base_frame", base_link_transform_name);
-  private_node_handle.setParam(name + "/origin_x", origin.x());
-  private_node_handle.setParam(name + "/origin_y", origin.y());
-  private_node_handle.setParam(name + "/width", width);
-  private_node_handle.setParam(name + "/height", height);
-  private_node_handle.setParam(name + "/plugins", std::vector<std::string>());
-  private_node_handle.setParam(name + "/resolution", 0.5);
-  private_node_handle.setParam(name + "/robot_radius", 0.03); // clears 1 cell if inside, up to 4 cells on a vertex
-  costmap = std::make_shared<ROSCostmap>(name, transform_listener);
+  privateNodeHandle.setParam(name + "/robot_base_frame", baseLinkTransformName);
+  privateNodeHandle.setParam(name + "/origin_x", origin.x());
+  privateNodeHandle.setParam(name + "/origin_y", origin.y());
+  privateNodeHandle.setParam(name + "/width", width);
+  privateNodeHandle.setParam(name + "/height", height);
+  privateNodeHandle.setParam(name + "/plugins", std::vector<std::string>());
+  privateNodeHandle.setParam(name + "/resolution", 0.5);
+  privateNodeHandle.setParam(name + "/robot_radius", 0.03); // clears 1 cell if inside, up to 4 cells on a vertex
+  costmap = std::make_shared<ROSCostmap>(name, transformListener);
 
   for ( unsigned int index = 0; index < costmap->getCostmap()->getSizeInCellsY(); ++index ) {
     unsigned int dimension = costmap->getCostmap()->getSizeInCellsX();
@@ -71,30 +67,34 @@ ROSCostmapServer::ROSCostmapServer(const std::string& name,
 ** TransformBroadcaster
 *****************************************************************************/
 
-TransformBroadcaster::~TransformBroadcaster() {
-  broadcasting_thread.join();
+TransformBroadcaster::~TransformBroadcaster()
+{
+  broadcastingThread_.join();
 }
 
-void TransformBroadcaster::shutdown() {
-  shutdown_flag = true;
+void TransformBroadcaster::shutdown()
+{
+  shutdownFlag_ = true;
 }
 
-void TransformBroadcaster::add(const std::string& name, tf::Vector3 origin, const tf::Quaternion& orientation) {
+void TransformBroadcaster::add(const std::string& name, tf::Vector3 origin,
+                               const tf::Quaternion& orientation)
+{
   tf::Transform transform;
   transform.setOrigin(origin);
   transform.setRotation(orientation);
-  transforms.insert(std::pair<std::string, tf::Transform>(name, transform));
+  transforms_.insert(std::pair<std::string, tf::Transform>(name, transform));
 }
 
 void TransformBroadcaster::startBroadCastingThread() {
-  broadcasting_thread = std::thread(&TransformBroadcaster::broadcast, this);
+  broadcastingThread_ = std::thread(&TransformBroadcaster::broadcast, this);
 }
 
-void TransformBroadcaster::broadcast() {
+void TransformBroadcaster::broadcast()
+{
   tf::TransformBroadcaster tf_broadcaster;
-  while(ros::ok() && !shutdown_flag )
-  {
-    for (std::pair<std::string, tf::Transform> p: transforms) {
+  while (ros::ok() && !shutdownFlag_) {
+    for (std::pair<std::string, tf::Transform> p : transforms_) {
       tf::StampedTransform stamped_transform(p.second, ros::Time::now(), "map", p.first);
       tf_broadcaster.sendTransform(stamped_transform);
     }
@@ -106,30 +106,29 @@ void TransformBroadcaster::broadcast() {
 ** Converter Functions
 *****************************************************************************/
 
-bool fromCostmap2DROS(costmap_2d::Costmap2DROS& ros_costmap,
-                      const std::string& layer_name,
-                      grid_map::GridMap& grid_map) {
+bool fromCostmap2DROS(costmap_2d::Costmap2DROS& ros_costmap, const std::string& layer_name,
+                      grid_map::GridMap& grid_map)
+{
 
   grid_map::Costmap2DConverter<grid_map::GridMap> converter;
   boost::lock_guard<costmap_2d::Costmap2D::mutex_t> lock(*(ros_costmap.getCostmap()->getMutex()));
   converter.initializeFromCostmap2D(ros_costmap, grid_map);
-  if ( !converter.addLayerFromCostmap2D(ros_costmap, layer_name, grid_map) ) {
+  if (!converter.addLayerFromCostmap2D(ros_costmap, layer_name, grid_map)) {
     return false;
   }
   return true;
 }
 
 bool fromCostmap2DROSAtRobotPose(costmap_2d::Costmap2DROS& ros_costmap,
-                                 const grid_map::Length& geometry,
-                                 const std::string& layer_name,
+                                 const grid_map::Length& geometry, const std::string& layer_name,
                                  grid_map::GridMap& grid_map)
 {
   grid_map::Costmap2DConverter<grid_map::GridMap> converter;
   boost::lock_guard<costmap_2d::Costmap2D::mutex_t> lock(*(ros_costmap.getCostmap()->getMutex()));
-  if ( !converter.initializeFromCostmap2DAtRobotPose(ros_costmap, geometry, grid_map) ) {
+  if (!converter.initializeFromCostmap2DAtRobotPose(ros_costmap, geometry, grid_map)) {
     return false;
   }
-  if (!converter.addLayerFromCostmap2DAtRobotPose(ros_costmap, layer_name, grid_map) ) {
+  if (!converter.addLayerFromCostmap2DAtRobotPose(ros_costmap, layer_name, grid_map)) {
     return false;
   }
   return true;
@@ -139,7 +138,8 @@ bool fromCostmap2DROSAtRobotPose(costmap_2d::Costmap2DROS& ros_costmap,
 ** Tests
 *****************************************************************************/
 
-TEST(Costmap2DROSConversion, full_window) {
+TEST(Costmap2DROSConversion, full_window)
+{
   std::cout << std::endl;
   ROS_INFO("***********************************************************");
   ROS_INFO("                 Copy Full Window");
@@ -151,12 +151,14 @@ TEST(Costmap2DROSConversion, full_window) {
   fromCostmap2DROS(*(ros_costmap_5x5.getROSCostmap()), layer_name, grid_map_5x5);
   // assert map properties
   ASSERT_EQ(grid_map_5x5.getFrameId(), ros_costmap_5x5.getROSCostmap()->getGlobalFrameID());
-  ASSERT_EQ(grid_map_5x5.getLength().x(),
-            ros_costmap_5x5.getROSCostmap()->getCostmap()->getSizeInCellsX()*ros_costmap_5x5.getROSCostmap()->getCostmap()->getResolution()
-            );
-  ASSERT_EQ(grid_map_5x5.getLength().y(),
-            ros_costmap_5x5.getROSCostmap()->getCostmap()->getSizeInCellsY()*ros_costmap_5x5.getROSCostmap()->getCostmap()->getResolution()
-            );
+  ASSERT_EQ(
+      grid_map_5x5.getLength().x(),
+      ros_costmap_5x5.getROSCostmap()->getCostmap()->getSizeInCellsX()
+          * ros_costmap_5x5.getROSCostmap()->getCostmap()->getResolution());
+  ASSERT_EQ(
+      grid_map_5x5.getLength().y(),
+      ros_costmap_5x5.getROSCostmap()->getCostmap()->getSizeInCellsY()
+          * ros_costmap_5x5.getROSCostmap()->getCostmap()->getResolution());
   ASSERT_EQ(grid_map_5x5.getSize()[0], ros_costmap_5x5.getROSCostmap()->getCostmap()->getSizeInCellsX());
   ASSERT_EQ(grid_map_5x5.getSize()[1], ros_costmap_5x5.getROSCostmap()->getCostmap()->getSizeInCellsY());
   grid_map::Length position = grid_map_5x5.getPosition() - 0.5 * grid_map_5x5.getLength().matrix();
@@ -164,15 +166,16 @@ TEST(Costmap2DROSConversion, full_window) {
   ASSERT_EQ(position.y(), ros_costmap_5x5.getROSCostmap()->getCostmap()->getOriginY());
 
   // assert map data
-  for ( unsigned int i = 0; i < 5; ++i ) {
-    for ( unsigned int j = 0; j < 5; ++j ) {
-      std::cout << static_cast<int>(ros_costmap_5x5.getROSCostmap()->getCostmap()->getCost(i,j)) << " ";
+  for (unsigned int i = 0; i < 5; ++i) {
+    for (unsigned int j = 0; j < 5; ++j) {
+      std::cout << static_cast<int>(ros_costmap_5x5.getROSCostmap()->getCostmap()->getCost(i, j))
+                << " ";
     }
     std::cout << std::endl;
   }
-  for ( unsigned int i = 0; i < 5; ++i ) {
-    for ( unsigned int j = 0; j < 5; ++j ) {
-      std::cout << static_cast<int>(grid_map_5x5.at(layer_name, grid_map::Index(i,j))) << " ";
+  for (unsigned int i = 0; i < 5; ++i) {
+    for (unsigned int j = 0; j < 5; ++j) {
+      std::cout << static_cast<int>(grid_map_5x5.at(layer_name, grid_map::Index(i, j))) << " ";
     }
     std::cout << std::endl;
   }
@@ -187,7 +190,8 @@ TEST(Costmap2DROSConversion, full_window) {
   std::cout << std::endl;
 }
 
-TEST(Costmap2DROSConversion, cost_map_centres) {
+TEST(Costmap2DROSConversion, cost_map_centres)
+{
   std::cout << std::endl;
   ROS_INFO("***********************************************************");
   ROS_INFO("                 Check Subwindow Centres");
@@ -225,14 +229,14 @@ TEST(Costmap2DROSConversion, cost_map_centres) {
 ** Main program
 *****************************************************************************/
 
-int main(int argc, char **argv) {
-
+int main(int argc, char **argv)
+{
   ros::init(argc, argv, "test_from_ros_costmaps");
 
   TransformBroadcaster broadcaster;
   broadcastCostmap2DROSTestSuiteTransforms(broadcaster);
 
-  testing::InitGoogleTest(&argc,argv);
+  testing::InitGoogleTest(&argc, argv);
   int result = RUN_ALL_TESTS();
   broadcaster.shutdown();
   return result;

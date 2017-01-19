@@ -1,12 +1,4 @@
-/**
- * @file /grid_map_ros/rostest/costmap_2d_ros/costmap_2d_ros.hpp
- */
-/*****************************************************************************
-** Ifdefs
-*****************************************************************************/
-
-#ifndef grid_map_ros_ROSTEST_COSTMAP_2D_ROS_HPP_
-#define grid_map_ros_ROSTEST_COSTMAP_2D_ROS_HPP_
+#pragma once
 
 /*****************************************************************************
 ** Includes
@@ -30,7 +22,7 @@
  */
 class TransformBroadcaster {
 public:
-  TransformBroadcaster() : shutdown_flag(false) {}
+  TransformBroadcaster() : shutdownFlag_(false) {}
   virtual ~TransformBroadcaster();
   void add(const std::string& name, tf::Vector3 origin, const tf::Quaternion& orientation);
 
@@ -39,9 +31,9 @@ public:
   void shutdown();
 
 private:
-  std::map<std::string, tf::Transform> transforms;
-  std::thread broadcasting_thread;
-  std::atomic<bool> shutdown_flag;
+  std::map<std::string, tf::Transform> transforms_;
+  std::thread broadcastingThread_;
+  std::atomic<bool> shutdownFlag_;
 };
 
 /**
@@ -59,18 +51,14 @@ public:
   typedef costmap_2d::Costmap2DROS ROSCostmap;
   typedef std::shared_ptr<ROSCostmap> ROSCostmapPtr;
 
-  ROSCostmapServer(const std::string& name,
-                   const std::string& base_link_transform_name,
-                   const grid_map::Position& origin,
-                   const double& width,
-                   const double& height
-  );
+  ROSCostmapServer(const std::string& name, const std::string& baseLinkTransformName,
+                   const grid_map::Position& origin, const double& width, const double& height);
 
   ROSCostmapPtr getROSCostmap() { return costmap; };
 
 private:
   ROSCostmapPtr costmap;
-  tf::TransformListener transform_listener;
+  tf::TransformListener transformListener;
 };
 
 
@@ -85,6 +73,3 @@ private:
  * @param[in] broadcaster : uninitialised broadcaster object
  */
 void broadcastCostmap2DROSTestSuiteTransforms(TransformBroadcaster& broadcaster);
-
-
-#endif /* grid_map_ros_ROSTEST_COSTMAP_2D_ROS_HPP_ */

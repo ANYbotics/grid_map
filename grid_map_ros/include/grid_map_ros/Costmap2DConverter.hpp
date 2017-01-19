@@ -19,7 +19,6 @@
 
 // STD
 #include <vector>
-//#include <sstream>
 
 namespace grid_map {
 
@@ -36,10 +35,10 @@ class Costmap2DDirectTranslationTable
   Costmap2DDirectTranslationTable() {}
 
   template<typename DataType>
-  static void create(std::vector<DataType>& cost_translation_table) {
-    cost_translation_table.resize(256);
-    for (unsigned int i = 0; i < cost_translation_table.size(); ++i ) {
-      cost_translation_table[i] = static_cast<DataType>(i);
+  static void create(std::vector<DataType>& costTranslationTable) {
+    costTranslationTable.resize(256);
+    for (unsigned int i = 0; i < costTranslationTable.size(); ++i ) {
+      costTranslationTable[i] = static_cast<DataType>(i);
     }
   }
 };
@@ -56,17 +55,17 @@ class Costmap2DCenturyTranslationTable
   Costmap2DCenturyTranslationTable() {}
 
   template<typename DataType>
-  static void create(std::vector<DataType>& cost_translation_table) {
-    cost_translation_table.resize(256);
-    cost_translation_table[0] = 0.0;     // costmap_2d::FREE_SPACE;
-    cost_translation_table[253] = 99.0;  // costmap_2d::INSCRIBED_INFLATED_OBSTACLE;
-    cost_translation_table[254] = 100.0; // costmap_2d::LETHAL_OBSTACLE
-    cost_translation_table[255] = -1.0;  // costmap_2d::NO_INFORMATION
+  static void create(std::vector<DataType>& costTranslationTable) {
+    costTranslationTable.resize(256);
+    costTranslationTable[0] = 0.0;     // costmap_2d::FREE_SPACE;
+    costTranslationTable[253] = 99.0;  // costmap_2d::INSCRIBED_INFLATED_OBSTACLE;
+    costTranslationTable[254] = 100.0; // costmap_2d::LETHAL_OBSTACLE
+    costTranslationTable[255] = -1.0;  // costmap_2d::NO_INFORMATION
 
     // Regular cost values scale the range 1 to 252 (inclusive) to fit
     // into 1 to 98 (inclusive).
     for (int i = 1; i < 253; i++) {
-      cost_translation_table[i] = char(1 + (97 * (i - 1)) / 251);
+      costTranslationTable[i] = char(1 + (97 * (i - 1)) / 251);
     }
   }
 };
@@ -95,7 +94,7 @@ class Costmap2DConverter
 public:
 
   /*!
-   * Initialises the cost translation table with the default policy for the template
+   * Initializes the cost translation table with the default policy for the template
    * map type class.
    */
   Costmap2DConverter()
@@ -142,7 +141,7 @@ public:
       return false;
     }
     if (!outputMap.getStartIndex().isZero()) {
-      errorMessage_ = "does not support non-zero start indices!";
+      errorMessage_ = "Does not support non-zero start indices!";
       return false;
     }
     // Copy data.
@@ -197,7 +196,7 @@ public:
     tf::Stamped<tf::Pose> tfPose;
     if(!costmap2d.getRobotPose(tfPose))
     {
-      errorMessage_ =  "could not get robot pose, is it actually published?";
+      errorMessage_ =  "Could not get robot pose, is it actually published?";
       return false;
     }
 
@@ -222,14 +221,14 @@ public:
     // if there is an even number of cells
     //   centre of the new grid map at the closest vertex between cells
     // of the current cell
-    int number_of_cells_x = length.x()/resolution;
-    int number_of_cells_y = length.y()/resolution;
-    if ( number_of_cells_x % 2 ) { // odd
+    int numberOfCellsX = length.x()/resolution;
+    int numberOfCellsY = length.y()/resolution;
+    if (numberOfCellsX % 2) {  // odd
       newCostMapOrigin(0) = std::floor(robotCellPosition.x())*resolution + resolution/2.0 + rosMapOrigin.x();
     } else {
       newCostMapOrigin(0) = std::round(robotCellPosition.x())*resolution + rosMapOrigin.x();
     }
-    if ( number_of_cells_y % 2 ) { // odd
+    if (numberOfCellsY % 2) {  // odd
       newCostMapOrigin(1) = std::floor(robotCellPosition.y())*resolution + resolution/2.0 + rosMapOrigin.y();
     } else {
       newCostMapOrigin(1) = std::round(robotCellPosition.y())*resolution + rosMapOrigin.y();
@@ -260,7 +259,7 @@ public:
     /****************************************
     ** Asserts
     ****************************************/
-    if ( outputMap.getResolution() != costmap2d.getCostmap()->getResolution()) {
+    if (outputMap.getResolution() != costmap2d.getCostmap()->getResolution()) {
       errorMessage_ = "Costmap2D and output map have different resolutions!";
       return false;
     }
@@ -277,20 +276,20 @@ public:
 
     // Copy data.
     bool isValidWindow = false;
-    costmap_2d::Costmap2D costmap_subwindow;
+    costmap_2d::Costmap2D costmapSubwindow;
     // TODO
-    isValidWindow = costmap_subwindow.copyCostmapWindow(
+    isValidWindow = costmapSubwindow.copyCostmapWindow(
                             *(costmap2d.getCostmap()),
                             position.x() - geometry.x() / 2.0, // subwindow_bottom_left_x
                             position.y() - geometry.y() / 2.0, // subwindow_bottom_left_y
                             geometry.x(),
                             geometry.y());
-    if ( !isValidWindow ) {
+    if (!isValidWindow) {
       // handle differently - e.g. copy the internal part only and lethal elsewhere, but other parts would have to handle being outside too
-      errorMessage_ = "subwindow landed outside the costmap, aborting";
+      errorMessage_ = "Subwindow landed outside the costmap, aborting.";
       return false;
     }
-    addLayerFromCostmap2D(costmap_subwindow, layer, outputMap);
+    addLayerFromCostmap2D(costmapSubwindow, layer, outputMap);
     return true;
   }
 
