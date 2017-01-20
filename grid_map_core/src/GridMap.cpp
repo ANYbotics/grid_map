@@ -651,45 +651,55 @@ void GridMap::clearCols(unsigned int index, unsigned int nCols)
 bool GridMap::atPositionLinearInterpolated(const std::string& layer, const Position& position,
                                            float& value) const
 {
-  std::vector<Position> points(4);
-  std::vector<Index> indices(4);
+  Position point;
+  Index    indices[4];
+  bool     idxTempDir;
+  size_t   idxShift[4];
+  
   getIndex(position, indices[0]);
-  getPosition(indices[0], points[0]);
-
-  if (position.x() >= points[0].x()) {
-    // Second point is above first point.
-    indices[1] = indices[0] + Index(-1, 0);
-    if (!getPosition(indices[1], points[1])) return false; // Check if still on map.
-  } else {
-    indices[1] = indices[0] + Index(1, 0);
-    if (!getPosition(indices[1], points[1])) return false;
+  getPosition(indices[0], point);
+  
+  if ( position.x() >= point.x() ) {
+      indices[1] = indices[0] + Index(-1, 0); // Second point is above first point.
+      idxTempDir = true; 
+  } else { 
+      indices[1] = indices[0] + Index(+1, 0);
+      idxTempDir = false; 
   }
-
-  if (position.y() >= points[0].y()) {
-    // Third point is right of first point.
-    indices[2] = indices[0] + Index(0, -1);
-    if (!getPosition(indices[2], points[2])) return false;
-  } else {
-    indices[2] = indices[0] + Index(0, 1);
-    if (!getPosition(indices[2], points[2])) return false;
+  if ( position.y() >= point.y() ) { 
+      indices[2] = indices[0] + Index(0, -1); // Third point is right of first point.
+      if(idxTempDir){idxShift[0]=0;idxShift[1]=1;idxShift[2]=2;idxShift[3]=3;} 
+      else          {idxShift[0]=1;idxShift[1]=0;idxShift[2]=3;idxShift[3]=2;} 
+      
+      
+  } else { 
+      indices[2] = indices[0] + Index(0, +1); 
+      if(idxTempDir){idxShift[0]=2;idxShift[1]=3;idxShift[2]=0;idxShift[3]=1;} 
+      else          {idxShift[0]=3;idxShift[1]=2;idxShift[2]=1;idxShift[3]=0;} 
   }
-
   indices[3].x() = indices[1].x();
   indices[3].y() = indices[2].y();
-  if (!getPosition(indices[3], points[3])) return false;
-
-  Eigen::Vector4d b;
-  Eigen::Matrix4d A;
-
-  for (unsigned int i = 0; i < points.size(); ++i) {
-    b(i) = at(layer, indices[i]);
-    A.row(i) << 1, points[i].x(), points[i].y(), points[i].x() * points[i].y();
+  
+  
+  const Size&   mapSize       = getSize();
+  const size_t  bufferSize    = mapSize(0) * mapSize(1);
+  const size_t  startIndexLin = getLinearIndexFromIndex( startIndex_, mapSize );
+  const size_t  endIndexLin   = startIndexLin + bufferSize;
+  const auto&   layerMat      = operator[](layer);
+  float         f[4];
+  for (size_t i = 0; i < 4; ++i) {
+      const size_t indexLin = getLinearIndexFromIndex( indices[idxShift[i]], mapSize );
+      if ( ( indexLin < startIndexLin ) || ( indexLin > endIndexLin ) ) { return false; }
+      f[i] = layerMat( indexLin );
   }
-
-  Eigen::Vector4d x = A.colPivHouseholderQr().solve(b);
-  //Eigen::Vector4d x = A.fullPivLu().solve(b);
-
-  value = x(0) + x(1) * position.x() + x(2) * position.y() + x(3) * position.x() * position.y();
+  getPosition(indices[idxShift[0]], point);
+  const Position positionRed     = ( position - point ) / resolution_;
+  const Position positionRedFlip = Position(1.,1.) - positionRed;
+  
+  value = f[0] * positionRedFlip.x() * positionRedFlip.y() + 
+          f[1] *     positionRed.x() * positionRedFlip.y() +
+	  f[2] * positionRedFlip.x() *     positionRed.y() + 
+	  f[3] *     positionRed.x() *     positionRed.y();
   return true;
 }
 
