@@ -2,8 +2,8 @@
 Changelog for package grid_map_rviz_plugin
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.4.2 (2017-01-24)
+------------------
 * Cleanup thanks to message traits.
 * Contributors: Peter Fankhauser
 

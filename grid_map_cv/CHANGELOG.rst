@@ -2,8 +2,8 @@
 Changelog for package grid_map_cv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.4.2 (2017-01-24)
+------------------
 * Fixed conversion to/from images in float&double format.
 * Contributors: Peter Fankhauser
 
