@@ -6,6 +6,10 @@
  *  Institute: ETH Zurich, Autonomous Systems Lab
  */
 
+#include "grid_map_rviz_plugin/GridMapVisual.hpp"
+#include "grid_map_rviz_plugin/GridMapDisplay.hpp"
+#include "grid_map_rviz_plugin/modified/frame_manager.h"
+
 #include <OGRE/OgreSceneNode.h>
 #include <OGRE/OgreSceneManager.h>
 
@@ -19,11 +23,8 @@
 #include <rviz/properties/enum_property.h>
 #include <rviz/properties/editable_enum_property.h>
 
-#include "grid_map_rviz_plugin/modified/frame_manager.h"
-#include "grid_map_rviz_plugin/GridMapVisual.hpp"
-#include "grid_map_rviz_plugin/GridMapDisplay.hpp"
-
 namespace grid_map_rviz_plugin {
+
 GridMapDisplay::GridMapDisplay()
 {
   alphaProperty_ = new rviz::FloatProperty("Alpha", 1.0,

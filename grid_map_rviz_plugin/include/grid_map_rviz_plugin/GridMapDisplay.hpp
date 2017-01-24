@@ -9,11 +9,11 @@
 #pragma once
 
 #ifndef Q_MOC_RUN
+#include <grid_map_ros/grid_map_ros.hpp>
+#include <grid_map_msgs/GridMap.h>
 #include <boost/circular_buffer.hpp>
 #include "grid_map_rviz_plugin/modified/message_filter_display.h"
 #endif
-
-#include <grid_map_msgs/GridMap.h>
 
 namespace Ogre {
 class SceneNode;
@@ -29,15 +29,13 @@ class EditableEnumProperty;
 }
 
 namespace grid_map_rviz_plugin {
+
 class GridMapVisual;
-class GridMapDisplay : public MessageFilterDisplayMod<grid_map_msgs::GridMap,
-    grid_map_msgs::GridMapInfo>
+class GridMapDisplay : public MessageFilterDisplayMod<grid_map_msgs::GridMap>
 {
 Q_OBJECT
  public:
-  // Constructor
   GridMapDisplay();
-  // Destructor
   virtual ~GridMapDisplay();
 
  protected:
@@ -46,7 +44,6 @@ Q_OBJECT
   virtual void reset();
 
  private Q_SLOTS:
-  // Qt slots
   void updateHistoryLength();
   void updateHeightMode();
   void updateColorMode();
