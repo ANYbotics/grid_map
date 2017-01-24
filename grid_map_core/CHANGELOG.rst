@@ -5,7 +5,9 @@ Changelog for package grid_map_core
 Forthcoming
 -----------
 * Added linear interpolation method for data access.
-* Contributors: Dominic Jud, Peter Fankhauser
+* Increased efficiency for linear interpolation method.
+* Addressing C++ compiler warnings.
+* Contributors: Dominic Jud, Peter Fankhauser, Horatiu George Todoran
 
 1.4.1 (2016-10-23)
 ------------------

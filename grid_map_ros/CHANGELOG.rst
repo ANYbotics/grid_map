@@ -4,7 +4,8 @@ Changelog for package grid_map_ros
 
 Forthcoming
 -----------
-* Added conversion for Costmap2D from ROS Navigation.
+* Added conversion for Costmap2D from ROS Navigation (`#84 <https://github.com/ethz-asl/grid_map/issues/84>`_).
+* Added Grid Map message traits to simplify code of the Grid Map RViz plugin (`#87 <https://github.com/ethz-asl/grid_map/issues/87>`_).
 * Contributors: Peter Fankhauser, Stefan Kohlbrecher, Daniel Stonier
 
 1.4.1 (2016-10-23)

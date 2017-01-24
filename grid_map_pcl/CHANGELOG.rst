@@ -4,6 +4,8 @@ Changelog for package grid_map_pcl
 
 Forthcoming
 -----------
+* Addressing C++ compiler warnings.
+* Contributors: Peter Fankhauser
 
 1.4.1 (2016-10-23)
 ------------------
