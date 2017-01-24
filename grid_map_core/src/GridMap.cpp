@@ -652,54 +652,55 @@ bool GridMap::atPositionLinearInterpolated(const std::string& layer, const Posit
                                            float& value) const
 {
   Position point;
-  Index    indices[4];
-  bool     idxTempDir;
-  size_t   idxShift[4];
+  Index indices[4];
+  bool idxTempDir;
+  size_t idxShift[4];
   
   getIndex(position, indices[0]);
   getPosition(indices[0], point);
   
-  if ( position.x() >= point.x() ) {
-      indices[1] = indices[0] + Index(-1, 0); // Second point is above first point.
-      idxTempDir = true; 
-  } else { 
-      indices[1] = indices[0] + Index(+1, 0);
-      idxTempDir = false; 
+  if (position.x() >= point.x()) {
+    indices[1] = indices[0] + Index(-1, 0); // Second point is above first point.
+    idxTempDir = true;
+  } else {
+    indices[1] = indices[0] + Index(+1, 0);
+    idxTempDir = false;
   }
-  if ( position.y() >= point.y() ) { 
+  if (position.y() >= point.y()) {
       indices[2] = indices[0] + Index(0, -1); // Third point is right of first point.
-      if(idxTempDir){idxShift[0]=0;idxShift[1]=1;idxShift[2]=2;idxShift[3]=3;} 
-      else          {idxShift[0]=1;idxShift[1]=0;idxShift[2]=3;idxShift[3]=2;} 
+      if(idxTempDir){ idxShift[0]=0; idxShift[1]=1; idxShift[2]=2; idxShift[3]=3; }
+      else          { idxShift[0]=1; idxShift[1]=0; idxShift[2]=3; idxShift[3]=2; }
       
       
   } else { 
       indices[2] = indices[0] + Index(0, +1); 
-      if(idxTempDir){idxShift[0]=2;idxShift[1]=3;idxShift[2]=0;idxShift[3]=1;} 
-      else          {idxShift[0]=3;idxShift[1]=2;idxShift[2]=1;idxShift[3]=0;} 
+      if(idxTempDir){ idxShift[0]=2; idxShift[1]=3; idxShift[2]=0; idxShift[3]=1; }
+      else          { idxShift[0]=3; idxShift[1]=2; idxShift[2]=1; idxShift[3]=0; }
   }
   indices[3].x() = indices[1].x();
   indices[3].y() = indices[2].y();
   
-  
-  const Size&   mapSize       = getSize();
-  const size_t  bufferSize    = mapSize(0) * mapSize(1);
-  const size_t  startIndexLin = getLinearIndexFromIndex( startIndex_, mapSize );
-  const size_t  endIndexLin   = startIndexLin + bufferSize;
-  const auto&   layerMat      = operator[](layer);
+  const Size& mapSize = getSize();
+  const size_t bufferSize = mapSize(0) * mapSize(1);
+  const size_t startIndexLin = getLinearIndexFromIndex(startIndex_, mapSize);
+  const size_t endIndexLin = startIndexLin + bufferSize;
+  const auto& layerMat = operator[](layer);
   float         f[4];
+
   for (size_t i = 0; i < 4; ++i) {
-      const size_t indexLin = getLinearIndexFromIndex( indices[idxShift[i]], mapSize );
-      if ( ( indexLin < startIndexLin ) || ( indexLin > endIndexLin ) ) { return false; }
-      f[i] = layerMat( indexLin );
+    const size_t indexLin = getLinearIndexFromIndex(indices[idxShift[i]], mapSize);
+    if ((indexLin < startIndexLin) || (indexLin > endIndexLin)) return false;
+    f[i] = layerMat(indexLin);
   }
+
   getPosition(indices[idxShift[0]], point);
   const Position positionRed     = ( position - point ) / resolution_;
   const Position positionRedFlip = Position(1.,1.) - positionRed;
   
   value = f[0] * positionRedFlip.x() * positionRedFlip.y() + 
           f[1] *     positionRed.x() * positionRedFlip.y() +
-	  f[2] * positionRedFlip.x() *     positionRed.y() + 
-	  f[3] *     positionRed.x() *     positionRed.y();
+          f[2] * positionRedFlip.x() *     positionRed.y() +
+          f[3] *     positionRed.x() *     positionRed.y();
   return true;
 }
 
