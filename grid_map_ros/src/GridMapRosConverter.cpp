@@ -226,6 +226,7 @@ bool GridMapRosConverter::fromOccupancyGrid(const nav_msgs::OccupancyGrid& occup
     return false;
   }
 
+  // TODO: Split to `initializeFrom` and `from` as for Costmap2d.
   if ((gridMap.getSize() != size).any() || gridMap.getResolution() != resolution
       || (gridMap.getLength() != length).any() || gridMap.getPosition() != position
       || gridMap.getFrameId() != frameId || !gridMap.getStartIndex().isZero()) {

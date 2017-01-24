@@ -15,6 +15,8 @@ find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
   cv_bridge
   rosbag
+  costmap_2d
+  tf
   visualization_msgs
 )
 
@@ -39,11 +41,15 @@ catkin_package(
     roscpp
     grid_map_core
     grid_map_msgs
+    grid_map_cv
     sensor_msgs
     nav_msgs
     std_msgs
     geometry_msgs
     cv_bridge
+    rosbag
+    costmap_2d
+    tf
     visualization_msgs
   DEPENDS
     #Eigen3
@@ -101,7 +107,13 @@ install(
 if(CATKIN_ENABLE_TESTING)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
 ## Add gtest based cpp test target and link libraries
-catkin_add_gtest(${PROJECT_NAME}-test test/test_grid_map_ros.cpp test/GridMapRosTest.cpp)
+catkin_add_gtest(
+	${PROJECT_NAME}-test
+	test/test_grid_map_ros.cpp
+	test/GridMapRosTest.cpp
+	test/Costmap2DConverterTest.cpp
+)
+add_subdirectory(rostest)
 endif()
 
 if(TARGET ${PROJECT_NAME}-test)

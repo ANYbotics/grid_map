@@ -39,6 +39,10 @@ class SubmapGeometry;
 class GridMap
 {
  public:
+  // Type traits for use with template methods/classes using GridMap as a template parameter.
+  typedef grid_map::DataType DataType;
+  typedef grid_map::Matrix Matrix;
+
   /*!
    * Constructor.
    * @param layers a vector of strings containing the definition/description of the data layer.
