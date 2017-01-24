@@ -1,8 +1,8 @@
 <package>
   <name>grid_map_rviz_plugin</name>
   <version>1.4.1</version>
-  <description>RViz plugin for displaying grid_map messages.</description>
-  <maintainer email="kruesip@ethz.ch">Philipp Krüsi</maintainer>
+  <description>RViz plugin for displaying grid map messages.</description>
+  <maintainer email="pfankhauser@ethz.ch">Péter Fankhauser</maintainer>
   <license>BSD</license>
   <author>Philipp Krüsi</author>
   <author>Péter Fankhauser</author>

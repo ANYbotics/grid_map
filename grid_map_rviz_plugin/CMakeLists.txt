@@ -15,9 +15,9 @@ catkin_package(
   LIBRARIES
     ${PROJECT_NAME}
   CATKIN_DEPENDS
-		rviz
-		grid_map_ros
-		grid_map_msgs
+	rviz
+	grid_map_ros
+	grid_map_msgs
   DEPENDS
 )
 
@@ -34,9 +34,6 @@ set(CMAKE_AUTOMOC ON)
 set(INCLUDE_FILES
 	include/grid_map_rviz_plugin/GridMapDisplay.hpp
 	include/grid_map_rviz_plugin/GridMapVisual.hpp
-	include/grid_map_rviz_plugin/modified/frame_manager.h
-	include/grid_map_rviz_plugin/modified/message_filter.h
-	include/grid_map_rviz_plugin/modified/message_filter_display.h
 )
 
 ## This plugin includes Qt widgets, so we must include Qt.
@@ -48,7 +45,7 @@ if(rviz_QT_VERSION VERSION_LESS "5")
   include(${QT_USE_FILE})
 	qt4_wrap_cpp(MOC_FILES
   	${INCLUDE_FILES}
-	)
+  )
 else()
   message(STATUS "Using Qt5 based on the rviz_QT_VERSION: ${rviz_QT_VERSION}")
   find_package(Qt5 ${rviz_QT_VERSION} EXACT REQUIRED Core Widgets)
@@ -56,7 +53,7 @@ else()
   set(QT_LIBRARIES Qt5::Widgets)
 	QT5_WRAP_CPP(MOC_FILES
   	${INCLUDE_FILES}
-	)
+  )
 endif()
 
 ## Avoid Qt signals and slots defining "emit", "slots", etc.
@@ -73,8 +70,8 @@ set(SOURCE_FILES
 ## library to be called ${PROJECT_NAME} and specify the list of
 ## source files we collected above in ${SOURCE_FILES}.
 add_library(${PROJECT_NAME}
-	${SOURCE_FILES}
-	${MOC_FILES}
+  ${SOURCE_FILES}
+  ${MOC_FILES}
 )
 
 ## Link the executable with whatever Qt libraries have been defined by
@@ -82,30 +79,30 @@ add_library(${PROJECT_NAME}
 ## set(QT_LIBRARIES Qt5::Widgets), and with whatever libraries
 ## catkin has included.
 target_link_libraries(${PROJECT_NAME}
-	${QT_LIBRARIES}
-	${catkin_LIBRARIES}
+  ${QT_LIBRARIES}
+  ${catkin_LIBRARIES}
 )
 
 ## Install rules
 install(
-	DIRECTORY include/${PROJECT_NAME}
+  DIRECTORY include/${PROJECT_NAME}
   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
 )
 
 install(
-	TARGETS ${PROJECT_NAME}
+  TARGETS ${PROJECT_NAME}
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
 install(
-	FILES plugin_description.xml
+  FILES plugin_description.xml
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
 
 install(
-	DIRECTORY icons
+  DIRECTORY icons
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/icons
 )
 
