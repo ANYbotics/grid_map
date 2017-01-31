@@ -35,7 +35,7 @@ in Robot Operating System (ROS) – The Complete Reference (Volume 1), A. Koubaa
 
 
         @incollection{Fankhauser2016GridMapLibrary,
-            author = {Fankhauser, Péter and Hutter, Marco},
+            author = {Fankhauser, P{\'{e}}ter and Hutter, Marco},
             booktitle = {Robot Operating System (ROS) – The Complete Reference (Volume 1)},
             title = {{A Universal Grid Map Library: Implementation and Use Case for Rough Terrain Navigation}},
             chapter = {5},
