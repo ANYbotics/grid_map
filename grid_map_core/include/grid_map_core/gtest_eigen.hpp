@@ -38,8 +38,12 @@ namespace grid_map {
 		{
 		  for(int c = 0; c < A.cols(); c++)
 			{
-			  ASSERT_EQ(A(r,c),B(r,c)) << message << "\nEquality comparison failed at (" << r << "," << c << ")\n"
-                                       << "\nMatrix A:\n" << A << "\nand matrix B\n" << B; 
+		    if (isnan(A(r,c))) {
+		      ASSERT_TRUE(isnan(B(r,c)));
+		    } else {
+			    ASSERT_EQ(A(r,c),B(r,c)) << message << "\nEquality comparison failed at (" << r << "," << c << ")\n"
+                                       << "\nMatrix A:\n" << A << "\nand matrix B\n" << B;
+		    }
 			}
 		}
     }
@@ -57,8 +61,12 @@ namespace grid_map {
 		{
 		  for(int c = 0; c < A.cols(); c++)
 			{
-			  ASSERT_NEAR(A(r,c),B(r,c),tolerance) << message << "\nTolerance comparison failed at (" << r << "," << c << ")\n"
-												   << "\nMatrix A:\n" << A << "\nand matrix B\n" << B; 
+		    if (isnan(A(r,c))) {
+		      ASSERT_TRUE(isnan(B(r,c)));
+		    } else {
+			    ASSERT_NEAR(A(r,c),B(r,c),tolerance) << message << "\nTolerance comparison failed at (" << r << "," << c << ")\n"
+												   << "\nMatrix A:\n" << A << "\nand matrix B\n" << B;
+		    }
 			}
 		}
     }
@@ -73,8 +81,12 @@ namespace grid_map {
         {
           for(int c = 0; c < A.cols(); c++)
             {
-              EXPECT_NEAR(A(r,c),B(r,c),tolerance) << message << "\nTolerance comparison failed at (" << r << "," << c << ")\n"
-												   << "\nMatrix A:\n" << A << "\nand matrix B\n" << B;
+              if (isnan(A(r,c))) {
+                EXPECT_TRUE(isnan(B(r,c)));
+              } else {
+                EXPECT_NEAR(A(r,c),B(r,c),tolerance) << message << "\nTolerance comparison failed at (" << r << "," << c << ")\n"
+                             << "\nMatrix A:\n" << A << "\nand matrix B\n" << B;
+              }
             }
         }
     }
@@ -100,7 +112,7 @@ namespace grid_map {
 		  (fa == 0.0  && fb < 1e-6)  ||  // One exactly zero and the other small
 		  (fb == 0.0  && fa < 1e-6) )    // ditto
 		return true;
-      
+
       double diff = fabs(a - b)/std::max(fa,fb);
       if(diff > percentTolerance * 1e-2)
 		{
@@ -110,7 +122,7 @@ namespace grid_map {
 		}
       return true;
     }
-    
+
 #define ASSERT_DOUBLE_MX_EQ(A, B, PERCENT_TOLERANCE, MSG)				\
     ASSERT_EQ((size_t)(A).rows(), (size_t)(B).rows())  << MSG << "\nMatrix " << #A << ":\n" << A << "\nand matrix " << #B << "\n" << B << "\nare not the same size"; \
     ASSERT_EQ((size_t)(A).cols(), (size_t)(B).cols())  << MSG << "\nMatrix " << #A << ":\n" << A << "\nand matrix " << #B << "\n" << B << "\nare not the same size"; \
@@ -127,7 +139,7 @@ namespace grid_map {
 			  << "\nMatrix " << #A << ":\n" << A << "\nand matrix " << #B << "\n" << B; \
 		  }																\
       }
-    
+
 #define ASSERT_DOUBLE_SPARSE_MX_EQ(A, B, PERCENT_TOLERANCE, MSG)       \
     ASSERT_EQ((size_t)(A).rows(), (size_t)(B).rows())  << MSG << "\nMatrix " << #A << ":\n" << A << "\nand matrix " << #B << "\n" << B << "\nare not the same size"; \
     ASSERT_EQ((size_t)(A).cols(), (size_t)(B).cols())  << MSG << "\nMatrix " << #A << ":\n" << A << "\nand matrix " << #B << "\n" << B << "\nare not the same size"; \

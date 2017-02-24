@@ -48,8 +48,9 @@ TEST(ImageConversion, roundTrip8UC4)
 {
   // Create grid map.
   GridMap mapIn({"layer"});
-  mapIn.setGeometry(grid_map::Length(2.0, 1.0), 0.01);
+  mapIn.setGeometry(grid_map::Length(2.0, 1.0), 0.1);
   mapIn["layer"].setRandom();
+  mapIn["layer"](1, 2) = NAN; // To check for transparnecy/nan handling.
   const float minValue = -1.0;
   const float maxValue = 1.0;
 
