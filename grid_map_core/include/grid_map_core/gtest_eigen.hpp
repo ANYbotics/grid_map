@@ -10,6 +10,7 @@
 #include <gtest/gtest.h>
 #include <Eigen/Core>
 #include <iostream>
+#include <cmath>
 
 namespace grid_map {
 
