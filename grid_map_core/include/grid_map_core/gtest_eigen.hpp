@@ -39,8 +39,8 @@ namespace grid_map {
 		{
 		  for(int c = 0; c < A.cols(); c++)
 			{
-		    if (isnan(A(r,c))) {
-		      ASSERT_TRUE(isnan(B(r,c)));
+		    if (std::isnan(A(r,c))) {
+		      ASSERT_TRUE(std::isnan(B(r,c)));
 		    } else {
 			    ASSERT_EQ(A(r,c),B(r,c)) << message << "\nEquality comparison failed at (" << r << "," << c << ")\n"
                                        << "\nMatrix A:\n" << A << "\nand matrix B\n" << B;
@@ -62,8 +62,8 @@ namespace grid_map {
 		{
 		  for(int c = 0; c < A.cols(); c++)
 			{
-		    if (isnan(A(r,c))) {
-		      ASSERT_TRUE(isnan(B(r,c)));
+		    if (std::isnan(A(r,c))) {
+		      ASSERT_TRUE(std::isnan(B(r,c)));
 		    } else {
 			    ASSERT_NEAR(A(r,c),B(r,c),tolerance) << message << "\nTolerance comparison failed at (" << r << "," << c << ")\n"
 												   << "\nMatrix A:\n" << A << "\nand matrix B\n" << B;
@@ -82,8 +82,8 @@ namespace grid_map {
         {
           for(int c = 0; c < A.cols(); c++)
             {
-              if (isnan(A(r,c))) {
-                EXPECT_TRUE(isnan(B(r,c)));
+              if (std::isnan(A(r,c))) {
+                EXPECT_TRUE(std::isnan(B(r,c)));
               } else {
                 EXPECT_NEAR(A(r,c),B(r,c),tolerance) << message << "\nTolerance comparison failed at (" << r << "," << c << ")\n"
                              << "\nMatrix A:\n" << A << "\nand matrix B\n" << B;
