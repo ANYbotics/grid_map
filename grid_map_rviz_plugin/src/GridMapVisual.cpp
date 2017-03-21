@@ -224,7 +224,7 @@ void GridMapVisual::computeVisualization(float alpha, bool showGridLines, bool f
   manualObject_->end();
   material_->getTechnique(0)->setLightingEnabled(false);
   material_->getTechnique(0)->setSceneBlending(Ogre::SBT_TRANSPARENT_ALPHA);
-  material_->getTechnique(0)->setDepthWriteEnabled(true);
+  material_->getTechnique(0)->setDepthWriteEnabled(false);
 }
 
 void GridMapVisual::setFramePosition(const Ogre::Vector3& position)
