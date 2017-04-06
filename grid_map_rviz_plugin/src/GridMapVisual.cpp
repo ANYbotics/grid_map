@@ -115,7 +115,7 @@ void GridMapVisual::computeVisualization(float alpha, bool showGridLines, bool f
 
   meshLines_->clear();
   if (showGridLines) {
-    meshLines_->setColor(0.0, 0.0, 0.0, 1.0);
+    meshLines_->setColor(0.0, 0.0, 0.0, alpha);
     meshLines_->setLineWidth(resolution / 10.0);
     meshLines_->setMaxPointsPerLine(2);
     size_t nLines = rows * (cols - 1) + cols * (rows - 1);
