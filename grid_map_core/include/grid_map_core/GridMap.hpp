@@ -55,6 +55,14 @@ class GridMap
   GridMap();
 
   /*!
+   * Default copy assign and copy constructors.
+   */
+  GridMap(const GridMap&) = default;
+  GridMap& operator=(const GridMap&) = default;
+  GridMap(GridMap&&) = default;
+  GridMap& operator=(GridMap&&) = default;
+
+  /*!
    * Destructor.
    */
   virtual ~GridMap();

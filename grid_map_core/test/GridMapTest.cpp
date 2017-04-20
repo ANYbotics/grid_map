@@ -17,6 +17,43 @@
 using namespace std;
 using namespace grid_map;
 
+TEST(GridMap, CopyConstructor)
+{
+  GridMap map({"layer_a", "layer_b"});
+  map.setGeometry(Length(1.0, 2.0), 0.1, Position(0.1, 0.2));
+  map["layer_a"].setConstant(1.0);
+  map["layer_b"].setConstant(2.0);
+  GridMap mapCopy(map);
+  EXPECT_EQ(map.getSize()[0], mapCopy.getSize()[0]);
+  EXPECT_EQ(map.getSize()[1], mapCopy.getSize()[1]);
+  EXPECT_EQ(map.getLength().x(), mapCopy.getLength().x());
+  EXPECT_EQ(map.getLength().y(), mapCopy.getLength().y());
+  EXPECT_EQ(map.getPosition().x(), mapCopy.getPosition().x());
+  EXPECT_EQ(map.getPosition().y(), mapCopy.getPosition().y());
+  EXPECT_EQ(map.getLayers().size(), mapCopy.getLayers().size());
+  EXPECT_EQ(map["layer_a"](0, 0), mapCopy["layer_a"](0, 0));
+  EXPECT_EQ(map["layer_b"](0, 0), mapCopy["layer_b"](0, 0));
+}
+
+TEST(GridMap, CopyAssign)
+{
+  GridMap map({"layer_a", "layer_b"});
+  map.setGeometry(Length(1.0, 2.0), 0.1, Position(0.1, 0.2));
+  map["layer_a"].setConstant(1.0);
+  map["layer_b"].setConstant(2.0);
+  GridMap mapCopy;
+  mapCopy = map;
+  EXPECT_EQ(map.getSize()[0], mapCopy.getSize()[0]);
+  EXPECT_EQ(map.getSize()[1], mapCopy.getSize()[1]);
+  EXPECT_EQ(map.getLength().x(), mapCopy.getLength().x());
+  EXPECT_EQ(map.getLength().y(), mapCopy.getLength().y());
+  EXPECT_EQ(map.getPosition().x(), mapCopy.getPosition().x());
+  EXPECT_EQ(map.getPosition().y(), mapCopy.getPosition().y());
+  EXPECT_EQ(map.getLayers().size(), mapCopy.getLayers().size());
+  EXPECT_EQ(map["layer_a"](0, 0), mapCopy["layer_a"](0, 0));
+  EXPECT_EQ(map["layer_b"](0, 0), mapCopy["layer_b"](0, 0));
+}
+
 TEST(GridMap, Move)
 {
   GridMap map;
@@ -47,7 +84,7 @@ TEST(GridMap, Move)
   EXPECT_EQ(2, regions[1].getSize()[1]);
 }
 
-TEST(AddDataFrom, extendMapAligned)
+TEST(AddDataFrom, ExtendMapAligned)
 {
   GridMap map1, map2;
   map1.setGeometry(Length(5.1, 5.1), 1.0, Position(0.0, 0.0)); // bufferSize(5, 5)
@@ -73,7 +110,7 @@ TEST(AddDataFrom, extendMapAligned)
   EXPECT_DOUBLE_EQ(0.0, map1.atPosition("zero", Position(0.0, 0.0)));
 }
 
-TEST(AddDataFrom, extendMapNotAligned)
+TEST(AddDataFrom, ExtendMapNotAligned)
 {
   GridMap map1, map2;
   map1.setGeometry(Length(6.1, 6.1), 1.0, Position(0.0, 0.0)); // bufferSize(6, 6)
@@ -105,7 +142,7 @@ TEST(AddDataFrom, extendMapNotAligned)
   EXPECT_DOUBLE_EQ(1.0, map1.atPosition("nan", Position(3.0, 3.0)));
 }
 
-TEST(AddDataFrom, copyData)
+TEST(AddDataFrom, CopyData)
 {
   GridMap map1, map2;
   map1.setGeometry(Length(5.1, 5.1), 1.0, Position(0.0, 0.0)); // bufferSize(5, 5)
