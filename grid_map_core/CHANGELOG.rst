@@ -2,6 +2,13 @@
 Changelog for package grid_map_core
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Added default copy constructor and assign operator methods after the rule of five.
+* Fixing build error on ROS Kinetic.
+* Extend grid_map_cv unit test for transparent pixels/nan-values.
+* Contributors: Peter Fankhauser
+
 1.4.2 (2017-01-24)
 ------------------
 * Added linear interpolation method for data access.

@@ -2,6 +2,11 @@
 Changelog for package grid_map_cv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Extend grid_map_cv unit test for transparent pixels/nan-values.
+* Contributors: Peter Fankhauser
+
 1.4.2 (2017-01-24)
 ------------------
 * Fixed conversion to/from images in float&double format.

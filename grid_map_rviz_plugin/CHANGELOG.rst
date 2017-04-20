@@ -2,6 +2,11 @@
 Changelog for package grid_map_rviz_plugin
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fixed package XML tag.
+* Contributors: Peter Fankhauser
+
 1.4.2 (2017-01-24)
 ------------------
 * Cleanup thanks to message traits.
