@@ -8,6 +8,7 @@ find_package(catkin REQUIRED COMPONENTS
   grid_map_core
 )
 find_package(octomap REQUIRED)
+message(STATUS "Found Octomap: ${OCTOMAP_INCLUDE_DIRS}")
 
 ###################################
 ## catkin specific configuration ##

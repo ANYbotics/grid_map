@@ -50,16 +50,11 @@ TEST(OctomapConversion, convertOctomapToGridMap)
   ASSERT_TRUE(res);
 
   // Check map info.
-  // Different conventions: Costmap2d returns the *centerpoint* of the last cell in the map.
-  /*
-  Length length = gridMap.getLength() - Length::Constant(0.5 * gridMap.getResolution());
-  Length position = gridMap.getPosition() - 0.5 * gridMap.getLength().matrix();
-  EXPECT_EQ(costmap2d.getSizeInMetersX(), length.x());
-  EXPECT_EQ(costmap2d.getSizeInMetersY(), length.y());
-  EXPECT_EQ(costmap2d.getSizeInCellsX(), gridMap.getSize()[0]);
-  EXPECT_EQ(costmap2d.getSizeInCellsY(), gridMap.getSize()[1]);
-  EXPECT_EQ(costmap2d.getResolution(), gridMap.getResolution());
-  EXPECT_EQ(costmap2d.getOriginX(), position.x());
-  EXPECT_EQ(costmap2d.getOriginY(), position.y());
-  */
+  Length length = gridMap.getLength();
+  Vector3 octo_length;
+  octomap.getMetricSize(octo_length.x(), octo_length.y(), octo_length.z());
+  EXPECT_FLOAT_EQ(octo_length.x(), length.x());
+  EXPECT_FLOAT_EQ(octo_length.y(), length.y());
+  EXPECT_FLOAT_EQ(octomap.getResolution(), gridMap.getResolution());
+  EXPECT_FLOAT_EQ(2.0 + 0.5*octomap.getResolution(), gridMap.atPosition("elevation", Position(1.0, 1.0)));
 }
