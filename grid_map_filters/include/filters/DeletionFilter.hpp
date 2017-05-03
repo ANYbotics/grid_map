@@ -6,8 +6,7 @@
  *   Institute: ETH Zurich, Autonomous Systems Lab
  */
 
-#ifndef DELETIONFILTER_HPP
-#define DELETIONFILTER_HPP
+#pragma once
 
 #include <filters/filter_base.h>
 
@@ -17,7 +16,7 @@
 namespace grid_map_filters {
 
 /*!
- * Deletion Filter class that deletes layers of a grid map.
+ * Deletion filter class deletes layers of a grid map.
  */
 template<typename T>
 class DeletionFilter : public filters::FilterBase<T>
@@ -35,7 +34,7 @@ class DeletionFilter : public filters::FilterBase<T>
   virtual ~DeletionFilter();
 
   /*!
-   * Configures the filter from parameters on the Parameter Server
+   * Configures the filter from parameters on the parameter server.
    */
   virtual bool configure();
 
@@ -48,11 +47,9 @@ class DeletionFilter : public filters::FilterBase<T>
 
  private:
 
-  //! List of layers that should be deleted
+  //! List of layers that should be deleted.
   std::vector<std::string> layers_;
 
 };
 
 } /* namespace */
-
-#endif
