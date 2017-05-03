@@ -44,9 +44,14 @@ class GridMapOctomapConverter
    * This changes the geometry of the grid map and deletes all layer contents.
    * @param[in] octomap the octomap
    * @param[out] gridMap the grid map to be initialized
+   * @param[in] min_point (optional) minimum coordinate for bounding box
+   * @param[in] max_point (optional) maximum coordinate for bounding box
    * @return true if successful, false otherwise
    */
-  static bool fromOctomap(const octomap::OcTree& octomap, grid_map::GridMap& gridMap);
+  static bool fromOctomap(const octomap::OcTree& octomap,
+                          grid_map::GridMap& gridmap,
+                          const grid_map::Position3* min_point = nullptr,
+                          const grid_map::Position3* max_point = nullptr);
 
 };
 
