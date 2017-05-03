@@ -54,6 +54,8 @@ add_library(${PROJECT_NAME}
   src/MinFilter.cpp
   src/ThresholdFilter.cpp
   src/DeletionFilter.cpp
+  src/MinInRadiusFilter.cpp
+  src/MeanInRadiusFilter.cpp
 )
 
 target_link_libraries(${PROJECT_NAME}
