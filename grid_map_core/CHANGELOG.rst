@@ -4,7 +4,7 @@ Changelog for package grid_map_core
 
 Forthcoming
 -----------
-* Added Eigen macro for bit-alignment (`#93 <https://github.com/ethz-asl/grid_map/issues/93>`_).
+* Added Eigen macro for bit-alignment (`#88 <https://github.com/ethz-asl/grid_map/issues/88>`_).
 * Added default copy constructor and assign operator methods after the rule of five.
 * Fixing build error on ROS Kinetic.
 * Fixing return value in `getQuadrant` member function.
