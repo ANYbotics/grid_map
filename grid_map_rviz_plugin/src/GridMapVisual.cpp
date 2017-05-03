@@ -115,7 +115,7 @@ void GridMapVisual::computeVisualization(float alpha, bool showGridLines, bool f
 
   meshLines_->clear();
   if (showGridLines) {
-    meshLines_->setColor(0.0, 0.0, 0.0, 1.0);
+    meshLines_->setColor(0.0, 0.0, 0.0, alpha);
     meshLines_->setLineWidth(resolution / 10.0);
     meshLines_->setMaxPointsPerLine(2);
     size_t nLines = rows * (cols - 1) + cols * (rows - 1);
@@ -154,17 +154,17 @@ void GridMapVisual::computeVisualization(float alpha, bool showGridLines, bool f
                 Ogre::Vector3(position(0), position(1), flatTerrain ? 0.0 : height));
             if (!flatColor) {
               float color = colorData(index(0), index(1));
-	      Ogre::ColourValue colorValue;
-	      if (mapLayerColor) {
-		Eigen::Vector3f colorVectorRGB;
-		grid_map::colorValueToVector(color, colorVectorRGB);
-		colorValue = Ogre::ColourValue(colorVectorRGB(0), colorVectorRGB(1), colorVectorRGB(2));		
-	      } else {
-		normalizeIntensity(color, minIntensity, maxIntensity);
-		colorValue =
-		    useRainbow ? (invertRainbow ?  getRainbowColor(1.0 - color) : getRainbowColor(color)) :
-			getInterpolatedColor(color, minColor, maxColor);
-	      }
+              Ogre::ColourValue colorValue;
+              if (mapLayerColor) {
+                Eigen::Vector3f colorVectorRGB;
+                grid_map::colorValueToVector(color, colorVectorRGB);
+                colorValue = Ogre::ColourValue(colorVectorRGB(0), colorVectorRGB(1), colorVectorRGB(2));
+              } else {
+                normalizeIntensity(color, minIntensity, maxIntensity);
+                colorValue =
+                    useRainbow ? (invertRainbow ?  getRainbowColor(1.0 - color) : getRainbowColor(color)) :
+                      getInterpolatedColor(color, minColor, maxColor);
+              }
               colors.push_back(colorValue);
             }
           }
@@ -223,8 +223,14 @@ void GridMapVisual::computeVisualization(float alpha, bool showGridLines, bool f
 
   manualObject_->end();
   material_->getTechnique(0)->setLightingEnabled(false);
-  material_->getTechnique(0)->setSceneBlending(Ogre::SBT_TRANSPARENT_ALPHA);
-  material_->getTechnique(0)->setDepthWriteEnabled(true);
+
+  if (alpha < 0.9998) {
+    material_->getTechnique(0)->setSceneBlending(Ogre::SBT_TRANSPARENT_ALPHA);
+    material_->getTechnique(0)->setDepthWriteEnabled(false);
+  } else {
+    material_->getTechnique(0)->setSceneBlending(Ogre::SBT_REPLACE);
+    material_->getTechnique(0)->setDepthWriteEnabled(true);
+  }
 }
 
 void GridMapVisual::setFramePosition(const Ogre::Vector3& position)
