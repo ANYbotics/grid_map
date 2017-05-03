@@ -8,8 +8,6 @@
 
 #include "grid_map_octomap/GridMapOctomapConverter.hpp"
 
-#include <limits>
-
 namespace grid_map {
 
 GridMapOctomapConverter::GridMapOctomapConverter()

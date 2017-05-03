@@ -42,6 +42,8 @@ class GridMapOctomapConverter
    * cell resolution equal to the leaf voxel size in the octomap. Only creates
    * a layer for elevation.
    * This changes the geometry of the grid map and deletes all layer contents.
+   * Note: bounding box coordinates are not checked for sanity - if you provide
+   * values outside of the gridmap, undefined behavior may result.
    * @param[in] octomap the octomap
    * @param[out] gridMap the grid map to be initialized
    * @param[in] min_point (optional) minimum coordinate for bounding box
