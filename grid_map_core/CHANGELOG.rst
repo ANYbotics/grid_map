@@ -6,8 +6,9 @@ Forthcoming
 -----------
 * Added default copy constructor and assign operator methods after the rule of five.
 * Fixing build error on ROS Kinetic.
+* Fixing return value in `getQuadrant`. member function.
 * Extend grid_map_cv unit test for transparent pixels/nan-values.
-* Contributors: Peter Fankhauser
+* Contributors: Peter Fankhauser, Sascha
 
 1.4.2 (2017-01-24)
 ------------------
