@@ -89,7 +89,7 @@ void CircleIterator::findSubmapParameters(const Position& center, const double r
   getIndexFromPosition(startIndex, topLeft, mapLength_, mapPosition_, resolution_, bufferSize_, bufferStartIndex_);
   Index endIndex;
   getIndexFromPosition(endIndex, bottomRight, mapLength_, mapPosition_, resolution_, bufferSize_, bufferStartIndex_);
-  bufferSize = endIndex - startIndex + Index::Ones();
+  bufferSize = getSubmapSizeFromCornerIndeces(startIndex, endIndex, bufferSize_, bufferStartIndex_);
 }
 
 } /* namespace grid_map */

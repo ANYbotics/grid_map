@@ -89,10 +89,10 @@ private:
   //! Radius of the circle.
   double radius_;
 
-  //! Square of the radius for efficiency.
+  //! Square of the radius (for efficiency).
   double radiusSquare_;
 
-  //! Grid submap iterator.
+  //! Grid submap iterator. // TODO Think of using unique_ptr instead.
   std::shared_ptr<SubmapIterator> internalIterator_;
 
   //! Map information needed to get position from iterator.

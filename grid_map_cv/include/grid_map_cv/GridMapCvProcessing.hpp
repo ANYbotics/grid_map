@@ -39,8 +39,8 @@ class GridMapCvProcessing
    * @param[in](optional) interpolationAlgorithm the interpolation method.
    * @return true if successful, false otherwise.
    */
-  static bool changeResolution(const grid_map::GridMap& gridMapSource,
-                               grid_map::GridMap& gridMapResult,
+  static bool changeResolution(const GridMap& gridMapSource,
+                               GridMap& gridMapResult,
                                const double resolution,
                                const int interpolationAlgorithm = cv::INTER_CUBIC);
 

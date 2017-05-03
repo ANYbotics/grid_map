@@ -103,7 +103,7 @@ void EllipseIterator::findSubmapParameters(const Position& center, const Length&
   getIndexFromPosition(startIndex, topLeft, mapLength_, mapPosition_, resolution_, bufferSize_, bufferStartIndex_);
   Index endIndex;
   getIndexFromPosition(endIndex, bottomRight, mapLength_, mapPosition_, resolution_, bufferSize_, bufferStartIndex_);
-  bufferSize = endIndex - startIndex + Eigen::Array2i::Ones();
+  bufferSize = getSubmapSizeFromCornerIndeces(startIndex, endIndex, bufferSize_, bufferStartIndex_);
 }
 
 } /* namespace grid_map */
