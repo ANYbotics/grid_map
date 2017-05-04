@@ -162,6 +162,6 @@ install(
 
 # Mark other files for installation
 install(
-  DIRECTORY config doc launch rviz scripts
+  DIRECTORY config data doc launch rviz scripts
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
