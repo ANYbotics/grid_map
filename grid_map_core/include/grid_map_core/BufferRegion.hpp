@@ -55,6 +55,9 @@ class BufferRegion
 
   //! Quadrant type of the buffer region.
   Quadrant quadrant_;
+
+ public:
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
 
 } /* namespace grid_map */

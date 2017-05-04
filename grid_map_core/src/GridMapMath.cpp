@@ -105,6 +105,7 @@ inline BufferRegion::Quadrant getQuadrant(const Index& index, const Index& buffe
   if (index[0] >= bufferStartIndex[0] && index[1] <  bufferStartIndex[1]) return BufferRegion::Quadrant::TopRight;
   if (index[0] <  bufferStartIndex[0] && index[1] >= bufferStartIndex[1]) return BufferRegion::Quadrant::BottomLeft;
   if (index[0] <  bufferStartIndex[0] && index[1] <  bufferStartIndex[1]) return BufferRegion::Quadrant::BottomRight;
+  return BufferRegion::Quadrant::Undefined;
 }
 
 } // namespace

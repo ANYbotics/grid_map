@@ -6,8 +6,7 @@
  *   Institute: ETH Zurich, Autonomous Systems Lab
  */
 
-#ifndef MINFILTER_HPP
-#define MINFILTER_HPP
+#pragma once
 
 #include <filters/filter_base.h>
 
@@ -17,7 +16,7 @@
 namespace grid_map_filters {
 
 /*!
- * Min Filter class that takes the minimum out of different layers of a grid map.
+ * Minimum filter class takes the minimum out of different layers of a grid map.
  */
 template<typename T>
 class MinFilter : public filters::FilterBase<T>
@@ -35,7 +34,7 @@ class MinFilter : public filters::FilterBase<T>
   virtual ~MinFilter();
 
   /*!
-   * Configures the filter from parameters on the Parameter Server
+   * Configures the filter from parameters on the parameter server.
    */
   virtual bool configure();
 
@@ -57,5 +56,3 @@ class MinFilter : public filters::FilterBase<T>
 };
 
 } /* namespace */
-
-#endif

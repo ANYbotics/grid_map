@@ -6,8 +6,7 @@
  *   Institute: ETH Zurich, Autonomous Systems Lab
  */
 
-#ifndef THRESHOLDFILTER_HPP
-#define THRESHOLDFILTER_HPP
+#pragma once
 
 #include <filters/filter_base.h>
 
@@ -17,7 +16,7 @@
 namespace grid_map_filters {
 
 /*!
- * Threshold Filter class that sets values below a lower threshold to 0 and
+ * Threshold filter class sets values below a lower threshold to 0 and
  * values above an upper threshold to 1.
  */
 template<typename T>
@@ -36,7 +35,7 @@ class ThresholdFilter : public filters::FilterBase<T>
   virtual ~ThresholdFilter();
 
   /*!
-   * Configures the filter from parameters on the Parameter Server
+   * Configures the filter from parameters on the parameter server.
    */
   virtual bool configure();
 
@@ -67,5 +66,3 @@ class ThresholdFilter : public filters::FilterBase<T>
 };
 
 } /* namespace */
-
-#endif

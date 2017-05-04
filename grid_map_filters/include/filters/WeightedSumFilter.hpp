@@ -6,8 +6,7 @@
  *   Institute: ETH Zurich, Autonomous Systems Lab
  */
 
-#ifndef WEIGHTEDSUMFILTER_HPP
-#define WEIGHTEDSUMFILTER_HPP
+#pragma once
 
 #include <filters/filter_base.h>
 
@@ -17,7 +16,8 @@
 namespace grid_map_filters {
 
 /*!
- * Weighted Sum Filter class to compute the weighted sum of different layers of a grid map.
+ * Weighted sum filter class to compute the weighted sum of different
+ * layers of a grid map.
  */
 template<typename T>
 class WeightedSumFilter : public filters::FilterBase<T>
@@ -35,7 +35,7 @@ class WeightedSumFilter : public filters::FilterBase<T>
   virtual ~WeightedSumFilter();
 
   /*!
-   * Configures the filter from parameters on the Parameter Server
+   * Configures the filter from parameters on the parameter server.
    */
   virtual bool configure();
 
@@ -62,5 +62,3 @@ class WeightedSumFilter : public filters::FilterBase<T>
 };
 
 } /* namespace */
-
-#endif

@@ -124,6 +124,9 @@ private:
   double resolution_;
   Size bufferSize_;
   Index bufferStartIndex_;
+
+ public:
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
 
 } /* namespace */

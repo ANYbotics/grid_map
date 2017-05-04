@@ -204,6 +204,9 @@ class Polygon
 
   //! Vertices of the polygon.
   std::vector<Position> vertices_;
+
+ public:
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
 
 } /* namespace grid_map */

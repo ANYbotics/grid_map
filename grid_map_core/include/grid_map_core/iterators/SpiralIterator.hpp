@@ -110,6 +110,9 @@ private:
   Position mapPosition_;
   double resolution_;
   Size bufferSize_;
+
+ public:
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
 
 } /* namespace */

@@ -7,13 +7,10 @@
  */
 
 #include "filters/ThresholdFilter.hpp"
-#include <pluginlib/class_list_macros.h>
 
-// Grid Map lib
 #include <grid_map_core/GridMap.hpp>
 #include <grid_map_core/iterators/GridMapIterator.hpp>
-
-// ROS
+#include <pluginlib/class_list_macros.h>
 #include <ros/ros.h>
 
 using namespace filters;

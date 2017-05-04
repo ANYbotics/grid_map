@@ -65,6 +65,9 @@ class SubmapGeometry
   //! Index in the submap that corresponds to the requested
   //! position of the submap.
   Index requestedIndexInSubmap_;
+
+ public:
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
 
 } /* namespace grid_map */
