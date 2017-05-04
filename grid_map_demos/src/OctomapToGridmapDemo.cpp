@@ -61,17 +61,17 @@ void OctomapToGridmapDemo::convertAndPublishMap()
   grid_map::Position3 max_bound;
   octomap->getMetricMin(min_bound(0), min_bound(1), min_bound(2));
   octomap->getMetricMax(max_bound(0), max_bound(1), max_bound(2));
-  if(!isnan(minX_))
+  if(!std::isnan(minX_))
     min_bound(0) = minX_;
-  if(!isnan(maxX_))
+  if(!std::isnan(maxX_))
     max_bound(0) = maxX_;
-  if(!isnan(minY_))
+  if(!std::isnan(minY_))
     min_bound(1) = minY_;
-  if(!isnan(maxY_))
+  if(!std::isnan(maxY_))
     max_bound(1) = maxY_;
-  if(!isnan(minZ_))
+  if(!std::isnan(minZ_))
     min_bound(2) = minZ_;
-  if(!isnan(maxZ_))
+  if(!std::isnan(maxZ_))
     max_bound(2) = maxZ_;
   bool res = octomapConverter_.fromOctomap(*octomap, map_, &min_bound, &max_bound);
   map_.setFrameId(srv.response.map.header.frame_id);

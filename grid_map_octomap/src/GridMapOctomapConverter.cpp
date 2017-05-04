@@ -49,7 +49,11 @@ bool GridMapOctomapConverter::fromOctomap(const octomap::OcTree& octomap_input,
     for (std::vector<octomap::OcTreeNode*>::iterator it = collapsed_occ_nodes.begin();
                                             it != collapsed_occ_nodes.end(); ++it)
     {
-      (*it)->expandNode();
+      #if OCTOMAP_VERSION_BEFORE_ROS_KINETIC
+        (*it)->expandNode();
+      #else
+        octomap.expandNode(*it);
+      #endif
     }
     // std::cout << "Expanded " << collapsed_occ_nodes.size() << " nodes" << std::endl;
   } while(collapsed_occ_nodes.size() > 0);

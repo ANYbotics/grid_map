@@ -8,7 +8,7 @@ find_package(catkin REQUIRED COMPONENTS
   grid_map_core
 )
 find_package(octomap REQUIRED)
-message(STATUS "Found Octomap: ${OCTOMAP_INCLUDE_DIRS}")
+message(STATUS "Found Octomap (version ${octomap_VERSION}): ${OCTOMAP_INCLUDE_DIRS}")
 
 ###################################
 ## catkin specific configuration ##
@@ -36,11 +36,20 @@ catkin_package(
 ###########
 
 ## Specify additional locations of header files
-include_directories(
-  include
-  ${catkin_INCLUDE_DIRS}
-  ${OCTOMAP_INCLUDE_DIR}
-)
+if(${octomap_VERSION} VERSION_GREATER 1.6) # ROS Kinetic and above.
+  include_directories(
+    include
+    ${catkin_INCLUDE_DIRS}
+    ${OCTOMAP_INCLUDE_DIRS}
+  )
+else() # ROS Indigo and Jade.
+  add_definitions(-DOCTOMAP_VERSION_BEFORE_ROS_KINETIC)
+  include_directories(
+    include
+    ${catkin_INCLUDE_DIRS}
+    ${OCTOMAP_INCLUDE_DIR}
+  )
+endif()
 
 ## Declare a cpp library
 add_library(${PROJECT_NAME}
@@ -80,11 +89,17 @@ install(
 #############
 
 if(CATKIN_ENABLE_TESTING)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
-# Add gtest based cpp test target and link libraries
-catkin_add_gtest(${PROJECT_NAME}-test test/test_grid_map_octomap.cpp test/OctomapConverterTest.cpp)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
+  # Add gtest based cpp test target and link libraries
+  catkin_add_gtest(${PROJECT_NAME}-test
+    test/test_grid_map_octomap.cpp
+    test/OctomapConverterTest.cpp
+  )
 endif()
 
 if(TARGET ${PROJECT_NAME}-test)
-  target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME} ${OCTOMAP_LIBRARIES})
+  target_link_libraries(${PROJECT_NAME}-test
+    ${PROJECT_NAME}
+    ${OCTOMAP_LIBRARIES}
+  )
 endif()

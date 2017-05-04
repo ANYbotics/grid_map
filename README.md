@@ -100,6 +100,7 @@ This repository consists of following packages:
 * ***grid_map_core*** implements the algorithms of the grid map library. It provides the `GridMap` class and several helper classes such as the iterators. This package is implemented without [ROS] dependencies.
 * ***grid_map_ros*** is the main package for [ROS] dependent projects using the grid map library. It provides the interfaces to convert grid maps from and to several [ROS] message types.
 * ***grid_map_cv*** provides conversions of grid maps from and to [OpenCV] image types.
+* ***grid_map_octomap*** provides conversions of grid maps from OctoMap ([OctoMap]) data types.
 * ***grid_map_pcl*** provides conversions of grid maps from and to Point Cloud Library ([PCL]) types.
 * ***grid_map_msgs*** holds the [ROS] message and service definitions around the [grid_map_msg/GridMap] message type.
 * ***grid_map_rviz_plugin*** is an [RViz] plugin to visualize grid maps as 3d surface plots (height maps).
@@ -364,6 +365,7 @@ Please report bugs and request features using the [Issue Tracker](https://github
 [RViz]: http://wiki.ros.org/rviz
 [Eigen]: http://eigen.tuxfamily.org
 [OpenCV]: http://opencv.org/
+[OctoMap]: https://octomap.github.io/
 [PCL]: http://pointclouds.org/
 [grid_map_msgs/GridMapInfo]: http://docs.ros.org/api/grid_map_msgs/html/msg/GridMapInfo.html
 [grid_map_msgs/GridMap]: http://docs.ros.org/api/grid_map_msgs/html/msg/GridMap.html
