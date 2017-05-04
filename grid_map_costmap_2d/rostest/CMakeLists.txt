@@ -14,7 +14,7 @@ macro(${PROJECT_NAME}_add_rostest test_name)
   add_rostest_gtest(test_${test_name} ${test_name}/${test_name}.test ${test_name}/${test_name}.cpp)
   if (TARGET test_${test_name})
     add_dependencies(test_${test_name} ${catkin_EXPORTED_TARGETS})
-    target_link_libraries(test_${test_name} ${PROJECT_NAME} ${catkin_LIBRARIES})
+    target_link_libraries(test_${test_name} ${catkin_LIBRARIES})
   endif()
 endmacro()
 
@@ -22,4 +22,4 @@ endmacro()
 # Tests
 ##############################################################################
 
-grid_map_ros_add_rostest(costmap_2d_ros)
+grid_map_costmap_2d_add_rostest(costmap_2d_ros)
