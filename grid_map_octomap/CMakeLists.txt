@@ -36,18 +36,18 @@ catkin_package(
 ###########
 
 ## Specify additional locations of header files
-if(${octomap_VERSION} VERSION_GREATER 1.6) # ROS Kinetic and above.
-  include_directories(
-    include
-    ${catkin_INCLUDE_DIRS}
-    ${OCTOMAP_INCLUDE_DIRS}
-  )
-else() # ROS Indigo and Jade.
+if(${octomap_VERSION} VERSION_LESS 1.8) # ROS Indigo and Jade.
   add_definitions(-DOCTOMAP_VERSION_BEFORE_ROS_KINETIC)
   include_directories(
     include
     ${catkin_INCLUDE_DIRS}
     ${OCTOMAP_INCLUDE_DIR}
+  )
+else() # ROS Kinetic and above.
+  include_directories(
+    include
+    ${catkin_INCLUDE_DIRS}
+    ${OCTOMAP_INCLUDE_DIRS}
   )
 endif()
 
