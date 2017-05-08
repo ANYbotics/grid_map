@@ -8,6 +8,7 @@
 
 #include "filters/InpaintFilter.hpp"
 #include <pluginlib/class_list_macros.h>
+#include <ros/ros.h>
 
 // Grid Map
 #include <grid_map_core/grid_map_core.hpp>
@@ -72,13 +73,16 @@ bool InpaintFilter<T>::update(const T& mapIn, T& mapOut)
 
 	//Convert elevation layer to OpenCV image to fill in holes
 
+    ros::WallTime time1 = ros::WallTime::now();
 	//Get the inpaint mask (nonzero pixels indicate where values need to be filled in)
 	mapOut.add("inpaintMask",0.0);
-//	for (grid_map::GridMapIterator iterator(mapOut); !iterator.isPastEnd(); ++iterator) {
-//	  if (!mapOut.isValid(*iterator, inputLayer_)){
-//		  mapOut.at("inpaintMask",*iterator) = 1.0;
-//	  }
-//	}
+
+	mapOut.setBasicLayers(std::vector<std::string>());
+	for (grid_map::GridMapIterator iterator(mapOut); !iterator.isPastEnd(); ++iterator) {
+	  if (!mapOut.isValid(*iterator, inputLayer_)){
+		  mapOut.at("inpaintMask",*iterator) = 1.0;
+	  }
+	}
 	cv::Mat originalImage;
 	cv::Mat mask;
 	cv::Mat filledImage;
@@ -88,10 +92,14 @@ bool InpaintFilter<T>::update(const T& mapIn, T& mapOut)
 	grid_map::GridMapCvConverter::toImage<unsigned char, 3>(mapOut, inputLayer_, CV_8UC3, minValue, maxValue, originalImage);
 	grid_map::GridMapCvConverter::toImage<unsigned char, 1>(mapOut, "inpaintMask", CV_8UC1, mask);
 
-	cv::inpaint(originalImage,mask,filledImage,radius_,cv::INPAINT_TELEA);
+	cv::inpaint(originalImage,mask,filledImage,radius_,cv::INPAINT_NS);//INPAINT_TELEA
 
 	grid_map::GridMapCvConverter::addLayerFromImage<unsigned char, 3>(filledImage, type_, mapOut, minValue, maxValue);
 	//mapOut.erase("inpaintMask");
+
+	ros::WallTime time2 = ros::WallTime::now();
+	//std::cout<<"Max: "<<maxValue<<" Min: "<<minValue<<"\n";
+	//std::cout<<"Time for inpainting: "<<time2-time1<<"\n";
 
   return true;
 }
