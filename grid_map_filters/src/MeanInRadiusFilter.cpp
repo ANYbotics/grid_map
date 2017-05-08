@@ -35,7 +35,7 @@ template<typename T>
 bool MeanInRadiusFilter<T>::configure()
 {
   if (!FilterBase<T>::getParam(std::string("radius"), radius_)) {
-    ROS_ERROR("Step filter did not find param radius.");
+    ROS_ERROR("MeanInRadius filter did not find param radius.");
     return false;
   }
 
@@ -48,18 +48,18 @@ bool MeanInRadiusFilter<T>::configure()
 
 
   if (!FilterBase<T>::getParam(std::string("input_layer"), inputLayer_)) {
-      ROS_ERROR("Step filter did not find param input_layer.");
+      ROS_ERROR("MeanInRadius filter did not find param input_layer.");
       return false;
     }
 
-  ROS_DEBUG("MinInRadius input layer is = %s.", inputLayer_.c_str());
+  ROS_DEBUG("MeanInRadius input layer is = %s.", inputLayer_.c_str());
 
   if (!FilterBase<T>::getParam(std::string("map_type"), type_)) {
-    ROS_ERROR("Step filter did not find param map_type.");
+    ROS_ERROR("MeanInRadius filter did not find param map_type.");
     return false;
   }
 
-  ROS_DEBUG("MinInRadius map type = %s.", type_.c_str());
+  ROS_DEBUG("MeanInRadius map type = %s.", type_.c_str());
 
   return true;
 }
@@ -88,7 +88,6 @@ bool MeanInRadiusFilter<T>::update(const T& mapIn, T& mapOut)
       if (!mapOut.isValid(*submapIterator, inputLayer_))
         continue;
       value = mapOut.at(inputLayer_, *submapIterator);
-      // Init heightMax and heightMin
       valueSum+=value;
       counter ++;
     }

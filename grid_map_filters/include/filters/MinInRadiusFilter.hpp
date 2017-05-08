@@ -17,7 +17,7 @@
 namespace grid_map_filters {
 
 /*!
- * Step Filter class to the minimal value inside a radius.
+ * Filter class to compute the minimal value inside a radius.
  */
 template<typename T>
 class MinInRadiusFilter : public filters::FilterBase<T>
@@ -40,12 +40,10 @@ class MinInRadiusFilter : public filters::FilterBase<T>
   virtual bool configure();
 
   /*!
-   * Computes the step traversability value based on an elevation map and
-   * saves it as additional grid map layer.
-   * The step traversability is set between 0.0 and 1.0, where a value of 1.0 means fully
-   * traversable and 0.0 means not traversable. NAN indicates unknown values (terrain).
-   * @param mapIn grid map containing elevation map and surface normals.
-   * @param mapOut grid map containing mapIn and step traversability values.
+   * Computes for each value in the input layer the minimum of all values in a radius around it
+   * Saves this minimal value in an additional output layer
+   * @param mapIn grid map containing the input layer.
+   * @param mapOut grid map containing mapIn and layer with the minimal values.
    */
   virtual bool update(const T& mapIn, T& mapOut);
 

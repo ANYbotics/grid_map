@@ -35,7 +35,7 @@ template<typename T>
 bool MinInRadiusFilter<T>::configure()
 {
   if (!FilterBase<T>::getParam(std::string("radius"), radius_)) {
-    ROS_ERROR("Step filter did not find param radius.");
+    ROS_ERROR("MinInRadius filter did not find param radius.");
     return false;
   }
 
@@ -48,7 +48,7 @@ bool MinInRadiusFilter<T>::configure()
 
 
   if (!FilterBase<T>::getParam(std::string("input_layer"), inputLayer_)) {
-      ROS_ERROR("Step filter did not find param input_layer.");
+      ROS_ERROR("MinInRadius filter did not find param input_layer.");
       return false;
     }
 
@@ -67,7 +67,7 @@ bool MinInRadiusFilter<T>::configure()
 template<typename T>
 bool MinInRadiusFilter<T>::update(const T& mapIn, T& mapOut)
 {
-  // Add new layers to the elevation map.
+  // Add new layer to the elevation map.
   mapOut = mapIn;
   mapOut.add(type_);
 
@@ -84,14 +84,14 @@ bool MinInRadiusFilter<T>::update(const T& mapIn, T& mapOut)
     Eigen::Vector2d center;
     mapOut.getPosition(*iterator, center);
 
-    // Get the highest step in the circular window.
+    // Get minimal value in the circular window.
     bool init = false;
     for (grid_map::CircleIterator submapIterator(mapOut, center, radius_);
         !submapIterator.isPastEnd(); ++submapIterator) {
       if (!mapOut.isValid(*submapIterator, inputLayer_))
         continue;
       value = mapOut.at(inputLayer_, *submapIterator);
-      // Init heightMax and heightMin
+
       if (!init) {
         valueMin = value;
         init = true;
