@@ -19,28 +19,30 @@ GridMapCvProcessing::~GridMapCvProcessing()
 {
 }
 
-bool GridMapCvProcessing::changeResolution(const grid_map::GridMap& gridMapSource,
-                             grid_map::GridMap& gridMapResult,
+bool GridMapCvProcessing::changeResolution(const GridMap& gridMapSource,
+                             GridMap& gridMapResult,
                              const double resolution,
                              const int interpolationAlgorithm)
 {
-  const double sizeFactor = gridMapSource.getResolution() / resolution;
+  GridMap gridMapSourceCopy(gridMapSource);
+  gridMapSourceCopy.convertToDefaultStartIndex();
+  const double sizeFactor = gridMapSourceCopy.getResolution() / resolution;
   bool firstLayer = true;
-  for (const auto& layer : gridMapSource.getLayers()) {
+  for (const auto& layer : gridMapSourceCopy.getLayers()) {
     cv::Mat imageSource, imageResult;
-    const float minValue = gridMapSource.get(layer).minCoeffOfFinites();
-    const float maxValue = gridMapSource.get(layer).maxCoeffOfFinites();
-    const bool hasNaN = gridMapSource.get(layer).hasNaN();
+    const float minValue = gridMapSourceCopy.get(layer).minCoeffOfFinites();
+    const float maxValue = gridMapSourceCopy.get(layer).maxCoeffOfFinites();
+    const bool hasNaN = gridMapSourceCopy.get(layer).hasNaN();
     bool result;
     if (hasNaN) {
-      result = GridMapCvConverter::toImage<unsigned short, 4>(gridMapSource, layer, CV_16UC4, minValue, maxValue, imageSource);
+      result = GridMapCvConverter::toImage<unsigned short, 4>(gridMapSourceCopy, layer, CV_16UC4, minValue, maxValue, imageSource);
     } else {
-      result = GridMapCvConverter::toImage<unsigned short, 1>(gridMapSource, layer, CV_16UC1, minValue, maxValue, imageSource);
+      result = GridMapCvConverter::toImage<unsigned short, 1>(gridMapSourceCopy, layer, CV_16UC1, minValue, maxValue, imageSource);
     }
     if (!result) return false;
     cv::resize(imageSource, imageResult, cv::Size(0.0, 0.0), sizeFactor, sizeFactor, interpolationAlgorithm);
     if (firstLayer) {
-      if (!GridMapCvConverter::initializeFromImage(imageResult, resolution, gridMapResult, gridMapSource.getPosition()))
+      if (!GridMapCvConverter::initializeFromImage(imageResult, resolution, gridMapResult, gridMapSourceCopy.getPosition()))
         return false;
       firstLayer = false;
     }
@@ -51,10 +53,9 @@ bool GridMapCvProcessing::changeResolution(const grid_map::GridMap& gridMapSourc
     }
     if (!result) return false;
   }
-  gridMapResult.setFrameId(gridMapSource.getFrameId());
-  gridMapResult.setTimestamp(gridMapSource.getTimestamp());
-  gridMapResult.setBasicLayers(gridMapSource.getBasicLayers());
-  gridMapResult.setStartIndex(gridMapSource.getStartIndex());
+  gridMapResult.setFrameId(gridMapSourceCopy.getFrameId());
+  gridMapResult.setTimestamp(gridMapSourceCopy.getTimestamp());
+  gridMapResult.setBasicLayers(gridMapSourceCopy.getBasicLayers());
   return true;
 }
 

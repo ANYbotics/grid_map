@@ -6,9 +6,10 @@
  *	 Institute: ETH Zurich, Autonomous Systems Lab
  */
 
+#include "grid_map_cv/grid_map_cv.hpp"
+
 #include <grid_map_core/grid_map_core.hpp>
 #include <grid_map_core/gtest_eigen.hpp>
-#include "grid_map_cv/grid_map_cv.hpp"
 
 // gtest
 #include <gtest/gtest.h>

@@ -7,10 +7,9 @@
  */
 
 #include "filters/WeightedSumFilter.hpp"
-#include <pluginlib/class_list_macros.h>
 
-// Grid Map
 #include <grid_map_core/GridMap.hpp>
+#include <pluginlib/class_list_macros.h>
 
 using namespace filters;
 

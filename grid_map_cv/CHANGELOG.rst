@@ -4,8 +4,9 @@ Changelog for package grid_map_cv
 
 Forthcoming
 -----------
+* Fixed bug for change resolution function in OpenCV processing class (including unit tests). (`#91 <https://github.com/ethz-asl/grid_map/issues/91>`_).
 * Extend grid_map_cv unit test for transparent pixels/nan-values.
-* Contributors: Peter Fankhauser
+* Contributors: Peter Fankhauser, Marco Camurri
 
 1.4.2 (2017-01-24)
 ------------------

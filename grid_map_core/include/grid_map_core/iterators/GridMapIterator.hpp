@@ -102,6 +102,9 @@ private:
 
   //! Is iterator out of scope.
   bool isPastEnd_;
+
+ public:
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
 
 } /* namespace */

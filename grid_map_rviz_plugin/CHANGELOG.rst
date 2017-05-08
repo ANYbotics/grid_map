@@ -4,8 +4,9 @@ Changelog for package grid_map_rviz_plugin
 
 Forthcoming
 -----------
+* Fixes transparency issue for grid maps in RViz. (`#68 <https://github.com/ethz-asl/grid_map/issues/68>`_).
 * Fixed package XML tag.
-* Contributors: Peter Fankhauser
+* Contributors: Perry Franklin, Peter Fankhauser
 
 1.4.2 (2017-01-24)
 ------------------
