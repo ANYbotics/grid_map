@@ -6,7 +6,6 @@
 #include <iostream>
 #include <string>
 
-#include "../../include/grid_map_ros/grid_map_ros.hpp"
 #include "costmap_2d_ros.hpp"
 
 /*****************************************************************************
