@@ -54,6 +54,7 @@ An introduction to the grid map library including a tutorial is given in [this b
 The C++ API is documented here:
 * [grid_map_core](http://docs.ros.org/api/grid_map_core/html/index.html)
 * [grid_map_ros](http://docs.ros.org/api/grid_map_ros/html/index.html)
+* [grid_map_costmap_2d](http://docs.ros.org/api/grid_map_costmap_2d/html/index.html)
 * [grid_map_cv](http://docs.ros.org/api/grid_map_cv/html/index.html)
 * [grid_map_pcl](http://docs.ros.org/api/grid_map_pcl/html/index.html)
 
@@ -63,7 +64,7 @@ The C++ API is documented here:
 
 To install all packages from the grid map library as Debian packages use
 
-    sudo apt-get install ros-indigo-grid-map
+    sudo apt-get install ros-kinetic-grid-map
 
 ### Building from Source
 
@@ -73,9 +74,9 @@ The *grid_map_core* package depends only on the linear algebra library [Eigen].
 
     sudo apt-get install libeigen3-dev
 
-The *grid_map_cv* package depends additionally on [OpenCV] and the *grid_map_pcl* package depends additionally on [PCL].
+The other packages depend on the [ROS] standard installation (*roscpp*, *tf*, *filters*, *sensor_msgs*, *nav_msgs*, and *cv_bridge*).
 
-The other packages depend additionally on the [ROS] standard installation (*roscpp*, *tf*, *filters*, *sensor_msgs*, *nav_msgs*, and *cv_bridge*).
+The *grid_map_cv* package depends additionally on [OpenCV], *grid_map_pcl* on [PCL], *grid_map_costmap_2d* on [costmap_2d].
 
 
 #### Building
@@ -365,6 +366,7 @@ Please report bugs and request features using the [Issue Tracker](https://github
 [Eigen]: http://eigen.tuxfamily.org
 [OpenCV]: http://opencv.org/
 [PCL]: http://pointclouds.org/
+[costmap_2d]: http://wiki.ros.org/costmap_2d
 [grid_map_msgs/GridMapInfo]: http://docs.ros.org/api/grid_map_msgs/html/msg/GridMapInfo.html
 [grid_map_msgs/GridMap]: http://docs.ros.org/api/grid_map_msgs/html/msg/GridMap.html
 [grid_map_msgs/GetGridMap]: http://docs.ros.org/api/grid_map_msgs/html/srv/GetGridMap.html
