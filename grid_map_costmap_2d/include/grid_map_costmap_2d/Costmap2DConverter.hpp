@@ -15,7 +15,6 @@
 #include <costmap_2d/costmap_2d.h>
 #include <costmap_2d/costmap_2d_ros.h>
 #include <tf/tf.h>
-#include <ros/ros.h>
 
 // STD
 #include <vector>

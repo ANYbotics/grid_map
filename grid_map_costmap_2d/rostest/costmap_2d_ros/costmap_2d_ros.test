@@ -1,0 +1,3 @@
+<launch>
+  <test test-name="test_costmap_2d_ros" pkg="grid_map_costmap_2d" type="test_costmap_2d_ros"/>
+</launch>
