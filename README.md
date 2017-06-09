@@ -57,6 +57,7 @@ The C++ API is documented here:
 * [grid_map_costmap_2d](http://docs.ros.org/kinetic/api/grid_map_costmap_2d/html/index.html)
 * [grid_map_cv](http://docs.ros.org/kinetic/api/grid_map_cv/html/index.html)
 * [grid_map_filters](http://docs.ros.org/kinetic/api/grid_map_filters/html/index.html)
+* [grid_map_octomap](http://docs.ros.org/kinetic/api/grid_map_octomap/html/index.html)
 * [grid_map_pcl](http://docs.ros.org/kinetic/api/grid_map_pcl/html/index.html)
 
 ## Installation
@@ -108,7 +109,7 @@ Additional conversion packages:
 
 * ***grid_map_costmap_2d*** provides conversions of grid maps from [costmap_2d] map types.
 * ***grid_map_cv*** provides conversions of grid maps from and to [OpenCV] image types.
-* ***grid_map_octomap*** provides conversions of grid maps from OctoMap ([OctoMap]) data types.
+* ***grid_map_octomap*** provides conversions of grid maps from OctoMap ([OctoMap]) maps.
 * ***grid_map_pcl*** provides conversions of grid maps from Point Cloud Library ([PCL]) polygon meshes.
 
 ### Unit Tests
