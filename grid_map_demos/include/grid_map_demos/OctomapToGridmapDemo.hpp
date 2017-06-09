@@ -12,7 +12,6 @@
 #include <ros/ros.h>
 
 #include <grid_map_ros/grid_map_ros.hpp>
-#include <grid_map_octomap/GridMapOctomapConverter.hpp>
 
 #include <string>
 
@@ -64,9 +63,6 @@ class OctomapToGridmapDemo
 
   //! Octomap service client
   ros::ServiceClient client_;
-
-  // Octomap to Grid Map converter
-  grid_map::GridMapOctomapConverter octomapConverter_;
 
   //! Bounding box of octomap to convert.
   float minX_;

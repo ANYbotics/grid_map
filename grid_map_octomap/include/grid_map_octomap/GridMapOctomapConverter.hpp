@@ -2,7 +2,7 @@
  * GridMapOctomapConverter.hpp
  *
  *  Created on: May 1, 2017
- *      Author: Jeff Delmerico
+ *      Author: Jeff Delmerico, Peter Fankhauser
  *	 Institute: University of Zürich, Robotics and Perception Group
  */
 
@@ -38,22 +38,24 @@ class GridMapOctomapConverter
   virtual ~GridMapOctomapConverter();
 
   /*!
-   * Converts an octomap to a grid map in the same coordinate frame, with a
-   * cell resolution equal to the leaf voxel size in the octomap. Only creates
+   * Converts an Octomap to a grid map in the same coordinate frame, with a
+   * cell resolution equal to the leaf voxel size in the Octomap. Only creates
    * a layer for elevation.
    * This changes the geometry of the grid map and deletes all layer contents.
-   * Note: bounding box coordinates are not checked for sanity - if you provide
+   * Note: Bounding box coordinates are not checked for sanity - if you provide
    * values outside of the gridmap, undefined behavior may result.
-   * @param[in] octomap the octomap
-   * @param[out] gridMap the grid map to be initialized
-   * @param[in] min_point (optional) minimum coordinate for bounding box
-   * @param[in] max_point (optional) maximum coordinate for bounding box
-   * @return true if successful, false otherwise
+   * @param[in] octomap the octomap.
+   * @param[in] layer the layer that is filled with the octomap data.
+   * @param[out] gridMap the grid map to be initialized.
+   * @param[in] minPoint (optional) minimum coordinate for bounding box.
+   * @param[in] maxPoint (optional) maximum coordinate for bounding box.
+   * @return true if successful, false otherwise.
    */
   static bool fromOctomap(const octomap::OcTree& octomap,
-                          grid_map::GridMap& gridmap,
-                          const grid_map::Position3* min_point = nullptr,
-                          const grid_map::Position3* max_point = nullptr);
+                          const std::string& layer,
+                          grid_map::GridMap& gridMap,
+                          const grid_map::Position3* minPoint = nullptr,
+                          const grid_map::Position3* maxPoint = nullptr);
 
 };
 
