@@ -64,20 +64,10 @@ class GridMapPclConverter
                                       grid_map::GridMap& gridMap);
 
  private:
-/*  static bool rayTriangleIntersect(const pcl::PointXYZ& point, const Eigen::Vector3f& ray,
-                                   const pcl::Vertices& vertices,
-                                   const pcl::PointCloud<pcl::PointXYZ>& pointCloud,
-                                   pcl::PointXYZ& intersectionPoint);
-*/
   static bool rayTriangleIntersect(const Eigen::Vector3f& point,
                                    const Eigen::Vector3f& ray,
                                    const Eigen::Matrix3f& triangleVertices,
                                    Eigen::Vector3f& intersectionPoint);
-
-  /*  static void testInside(const pcl::PointCloud<pcl::PointXYZ>& pointCloud,
-                           const std::vector<pcl::Vertices>& polygons,
-                           const grid_map::Position& vertexPositionXY);*/
-
 
 };
 
