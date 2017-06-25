@@ -30,7 +30,7 @@
         This is a filter which calculates for each point in the map the mean value in a radius around it.
       </description>
     </class>
-    <class name="gridMapFilters/ZeroOneFilter" type="grid_map_filters::ZeroOneFilter<grid_map::GridMap>" base_class_type="filters::FilterBase<grid_map::GridMap>" >
+    <class name="gridMapFilters/BinaryFilter" type="grid_map_filters::BinaryFilter<grid_map::GridMap>" base_class_type="filters::FilterBase<grid_map::GridMap>" >
       <description>
         This is filter which sets the value in the new layer to one if the input layer is bigger than the threshold and to zero if its smaller.
       </description>

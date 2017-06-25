@@ -19,42 +19,38 @@ namespace grid_map_filters {
 template<typename T>
 MinInRadiusFilter<T>::MinInRadiusFilter()
     : radius_(0.02),
-	  inputLayer_("footscore"),
-      type_("minInRadius")
-{
+      inputLayer_("footscore"),
+      type_("minInRadius") {
 
 }
 
 template<typename T>
-MinInRadiusFilter<T>::~MinInRadiusFilter()
-{
+MinInRadiusFilter<T>::~MinInRadiusFilter() {
 
 }
 
 template<typename T>
-bool MinInRadiusFilter<T>::configure()
-{
-  if (!FilterBase<T>::getParam(std::string("radius"), radius_)) {
+bool MinInRadiusFilter<T>::configure() {
+  if (!FilterBase < T > ::getParam(std::string("radius"), radius_)) {
     ROS_ERROR("MinInRadius filter did not find param radius.");
     return false;
   }
 
   if (radius_ < 0.0) {
-    ROS_ERROR("Radius must be greater than zero.");
+    ROS_ERROR("MinInRadius filter: Radius must be greater than zero.");
     return false;
   }
 
   ROS_DEBUG("Radius = %f.", radius_);
 
-
-  if (!FilterBase<T>::getParam(std::string("input_layer"), inputLayer_)) {
-      ROS_ERROR("MinInRadius filter did not find param input_layer.");
-      return false;
-    }
+  if (!FilterBase < T > ::getParam(std::string("input_layer"), inputLayer_)) {
+    ROS_ERROR("MinInRadius filter did not find param input_layer.");
+    return false;
+  }
 
   ROS_DEBUG("MinInRadius input layer is = %s.", inputLayer_.c_str());
 
-  if (!FilterBase<T>::getParam(std::string("map_type"), type_)) {
+  if (!FilterBase < T > ::getParam(std::string("map_type"), type_)) {
     ROS_ERROR("Step filter did not find param map_type.");
     return false;
   }
@@ -65,8 +61,7 @@ bool MinInRadiusFilter<T>::configure()
 }
 
 template<typename T>
-bool MinInRadiusFilter<T>::update(const T& mapIn, T& mapOut)
-{
+bool MinInRadiusFilter<T>::update(const T& mapIn, T& mapOut) {
   // Add new layer to the elevation map.
   mapOut = mapIn;
   mapOut.add(type_);
@@ -86,8 +81,8 @@ bool MinInRadiusFilter<T>::update(const T& mapIn, T& mapOut)
 
     // Get minimal value in the circular window.
     bool init = false;
-    for (grid_map::CircleIterator submapIterator(mapOut, center, radius_);
-        !submapIterator.isPastEnd(); ++submapIterator) {
+    for (grid_map::CircleIterator submapIterator(mapOut, center, radius_); !submapIterator.isPastEnd();
+        ++submapIterator) {
       if (!mapOut.isValid(*submapIterator, inputLayer_))
         continue;
       value = mapOut.at(inputLayer_, *submapIterator);

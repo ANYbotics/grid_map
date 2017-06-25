@@ -1,13 +1,13 @@
 /*
- * ZeroOneFilter.hpp
+ * BinaryFilter.hpp
  *
  *  Created on: May 3, 2017
  *      Author: Tanja Baumann
  *   Institute: ETH Zurich, Robotic Systems Lab
  */
 
-#ifndef ZEROONEFILTER_HPP
-#define ZEROONEFILTER_HPP
+#ifndef BINARYFILTER_HPP
+#define BINARYFILTER_HPP
 
 #include <filters/filter_base.h>
 
@@ -17,22 +17,22 @@
 namespace grid_map_filters {
 
 /*!
- * Zero One Filter class to set all the values in a layer to 1 if the are bigger than the threshold and to 0 if they are smaller
+ * Binary Filter class to set all the values in a layer to 1 if the are bigger than the threshold and to 0 if they are smaller
  */
 template<typename T>
-class ZeroOneFilter : public filters::FilterBase<T>
+class BinaryFilter : public filters::FilterBase<T>
 {
 
  public:
   /*!
    * Constructor
    */
-	ZeroOneFilter();
+	BinaryFilter();
 
   /*!
    * Destructor.
    */
-  virtual ~ZeroOneFilter();
+  virtual ~BinaryFilter();
 
   /*!
    * Configures the filter from parameters on the Parameter Server
@@ -51,12 +51,11 @@ class ZeroOneFilter : public filters::FilterBase<T>
 
  private:
 
-  //! Maximum allowed step.
   double threshold_;
 
   //! input layer name
   std::string inputLayer_;
-  //! Step map type.
+  //! map type.
   std::string type_;
 };
 

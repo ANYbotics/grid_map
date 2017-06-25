@@ -11,7 +11,7 @@
 
 #include <filters/filter_base.h>
 
-//For inpainting
+//OpenCV
 #include "grid_map_cv/grid_map_cv.hpp"
 #include <opencv2/opencv.hpp>
 
@@ -24,14 +24,13 @@ namespace grid_map_filters {
  * Inpaint Filter class to use to OpenCV function inpaint to fill in holes in the input layer
  */
 template<typename T>
-class InpaintFilter : public filters::FilterBase<T>
-{
+class InpaintFilter : public filters::FilterBase<T> {
 
  public:
   /*!
    * Constructor
    */
-	InpaintFilter();
+  InpaintFilter();
 
   /*!
    * Destructor.
@@ -54,11 +53,11 @@ class InpaintFilter : public filters::FilterBase<T>
 
  private:
 
-  //! inapainting radius
+  //! inpainting radius
   double radius_;
   //! input layer name
   std::string inputLayer_;
-  //! Step map type.
+  //! map type
   std::string type_;
 };
 

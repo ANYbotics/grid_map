@@ -20,8 +20,7 @@ namespace grid_map_filters {
  * Filter class to compute the minimal value inside a radius.
  */
 template<typename T>
-class MinInRadiusFilter : public filters::FilterBase<T>
-{
+class MinInRadiusFilter : public filters::FilterBase<T> {
 
  public:
   /*!
@@ -49,12 +48,12 @@ class MinInRadiusFilter : public filters::FilterBase<T>
 
  private:
 
-  //! Maximum allowed step.
+  //! radius to take the minimum in
   double radius_;
 
   //! input layer name
   std::string inputLayer_;
-  //! Step map type.
+  //! map type.
   std::string type_;
 };
 

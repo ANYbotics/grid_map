@@ -20,41 +20,38 @@ namespace grid_map_filters {
 template<typename T>
 InpaintFilter<T>::InpaintFilter()
     : radius_(5.0),
-	  inputLayer_("elevation"),
-      type_("inpaint")
-{
+      inputLayer_("elevation"),
+      type_("inpaint") {
 
 }
 
 template<typename T>
-InpaintFilter<T>::~InpaintFilter()
-{
+InpaintFilter<T>::~InpaintFilter() {
 
 }
 
 template<typename T>
-bool InpaintFilter<T>::configure()
-{
-  if (!FilterBase<T>::getParam(std::string("radius"), radius_)) {
+bool InpaintFilter<T>::configure() {
+  if (!FilterBase < T > ::getParam(std::string("radius"), radius_)) {
     ROS_ERROR("InpaintRadius filter did not find param radius.");
     return false;
   }
 
   if (radius_ < 0.0) {
-	 ROS_ERROR("Radius must be greater than zero.");
-	 return false;
+    ROS_ERROR("Radius must be greater than zero.");
+    return false;
   }
 
-	  ROS_DEBUG("Radius = %f.", radius_);
+  ROS_DEBUG("Radius = %f.", radius_);
 
-  if (!FilterBase<T>::getParam(std::string("input_layer"), inputLayer_)) {
-      ROS_ERROR("Inpaint filter did not find param input_layer.");
-      return false;
+  if (!FilterBase < T > ::getParam(std::string("input_layer"), inputLayer_)) {
+    ROS_ERROR("Inpaint filter did not find param input_layer.");
+    return false;
   }
 
   ROS_DEBUG("Inpaint input layer is = %s.", inputLayer_.c_str());
 
-  if (!FilterBase<T>::getParam(std::string("map_type"), type_)) {
+  if (!FilterBase < T > ::getParam(std::string("map_type"), type_)) {
     ROS_ERROR("Inpaint filter did not find param map_type.");
     return false;
   }
@@ -65,45 +62,38 @@ bool InpaintFilter<T>::configure()
 }
 
 template<typename T>
-bool InpaintFilter<T>::update(const T& mapIn, T& mapOut)
-{
+bool InpaintFilter<T>::update(const T& mapIn, T& mapOut) {
   // Add new layer to the elevation map.
   mapOut = mapIn;
   mapOut.add(type_);
 
-	//Convert elevation layer to OpenCV image to fill in holes
+  //Convert elevation layer to OpenCV image to fill in holes
+  //Get the inpaint mask (nonzero pixels indicate where values need to be filled in)
+  mapOut.add("inpaintMask", 0.0);
 
-    ros::WallTime time1 = ros::WallTime::now();
-	//Get the inpaint mask (nonzero pixels indicate where values need to be filled in)
-	mapOut.add("inpaintMask",0.0);
+  mapOut.setBasicLayers(std::vector<std::string>());
+  for (grid_map::GridMapIterator iterator(mapOut); !iterator.isPastEnd(); ++iterator) {
+    if (!mapOut.isValid(*iterator, inputLayer_)) {
+      mapOut.at("inpaintMask", *iterator) = 1.0;
+    }
+  }
+  cv::Mat originalImage;
+  cv::Mat mask;
+  cv::Mat filledImage;
+  const float minValue = mapOut.get(inputLayer_).minCoeffOfFinites();
+  const float maxValue = mapOut.get(inputLayer_).maxCoeffOfFinites();
 
-	mapOut.setBasicLayers(std::vector<std::string>());
-	for (grid_map::GridMapIterator iterator(mapOut); !iterator.isPastEnd(); ++iterator) {
-	  if (!mapOut.isValid(*iterator, inputLayer_)){
-		  mapOut.at("inpaintMask",*iterator) = 1.0;
-	  }
-	}
-	cv::Mat originalImage;
-	cv::Mat mask;
-	cv::Mat filledImage;
-	const float minValue = mapOut.get(inputLayer_).minCoeffOfFinites();
-	const float maxValue = mapOut.get(inputLayer_).maxCoeffOfFinites();
+  grid_map::GridMapCvConverter::toImage<unsigned char, 3>(mapOut, inputLayer_, CV_8UC3, minValue, maxValue,
+                                                          originalImage);
+  grid_map::GridMapCvConverter::toImage<unsigned char, 1>(mapOut, "inpaintMask", CV_8UC1, mask);
 
-	grid_map::GridMapCvConverter::toImage<unsigned char, 3>(mapOut, inputLayer_, CV_8UC3, minValue, maxValue, originalImage);
-	grid_map::GridMapCvConverter::toImage<unsigned char, 1>(mapOut, "inpaintMask", CV_8UC1, mask);
+  cv::inpaint(originalImage, mask, filledImage, radius_, cv::INPAINT_NS);  //INPAINT_TELEA
 
-	cv::inpaint(originalImage,mask,filledImage,radius_,cv::INPAINT_NS);//INPAINT_TELEA
-
-	grid_map::GridMapCvConverter::addLayerFromImage<unsigned char, 3>(filledImage, type_, mapOut, minValue, maxValue);
-	//mapOut.erase("inpaintMask");
-
-	ros::WallTime time2 = ros::WallTime::now();
-	//std::cout<<"Max: "<<maxValue<<" Min: "<<minValue<<"\n";
-	//std::cout<<"Time for inpainting: "<<time2-time1<<"\n";
+  grid_map::GridMapCvConverter::addLayerFromImage<unsigned char, 3>(filledImage, type_, mapOut, minValue, maxValue);
+  //mapOut.erase("inpaintMask");
 
   return true;
 }
-
 
 }/* namespace */
 

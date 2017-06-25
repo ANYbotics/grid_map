@@ -6,8 +6,8 @@
  *   Institute: ETH Zurich, Robotic Systems Lab
  */
 
-#ifndef MININRADIUSFILTER_HPP
-#define MININRADIUSFILTER_HPP
+#ifndef MEANINRADIUSFILTER_HPP
+#define MEANINRADIUSFILTER_HPP
 
 #include <filters/filter_base.h>
 
@@ -20,8 +20,7 @@ namespace grid_map_filters {
  * Filter class to find the mean of the values inside a radius.
  */
 template<typename T>
-class MeanInRadiusFilter : public filters::FilterBase<T>
-{
+class MeanInRadiusFilter : public filters::FilterBase<T> {
 
  public:
   /*!
@@ -49,12 +48,12 @@ class MeanInRadiusFilter : public filters::FilterBase<T>
 
  private:
 
-  //! Maximum allowed step.
+  //! radius to take the mean in
   double radius_;
 
   //! input layer name
   std::string inputLayer_;
-  //! Step map type.
+  //! map type.
   std::string type_;
 };
 

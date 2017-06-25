@@ -19,42 +19,38 @@ namespace grid_map_filters {
 template<typename T>
 MeanInRadiusFilter<T>::MeanInRadiusFilter()
     : radius_(0.02),
-	  inputLayer_("elevation"),
-      type_("meanInRadius")
-{
+      inputLayer_("elevation"),
+      type_("meanInRadius") {
 
 }
 
 template<typename T>
-MeanInRadiusFilter<T>::~MeanInRadiusFilter()
-{
+MeanInRadiusFilter<T>::~MeanInRadiusFilter() {
 
 }
 
 template<typename T>
-bool MeanInRadiusFilter<T>::configure()
-{
-  if (!FilterBase<T>::getParam(std::string("radius"), radius_)) {
+bool MeanInRadiusFilter<T>::configure() {
+  if (!FilterBase < T > ::getParam(std::string("radius"), radius_)) {
     ROS_ERROR("MeanInRadius filter did not find param radius.");
     return false;
   }
 
   if (radius_ < 0.0) {
-    ROS_ERROR("Radius must be greater than zero.");
+    ROS_ERROR("MeanInRadius filter: Radius must be greater than zero.");
     return false;
   }
 
   ROS_DEBUG("Radius = %f.", radius_);
 
-
-  if (!FilterBase<T>::getParam(std::string("input_layer"), inputLayer_)) {
-      ROS_ERROR("MeanInRadius filter did not find param input_layer.");
-      return false;
-    }
+  if (!FilterBase < T > ::getParam(std::string("input_layer"), inputLayer_)) {
+    ROS_ERROR("MeanInRadius filter did not find param input_layer.");
+    return false;
+  }
 
   ROS_DEBUG("MeanInRadius input layer is = %s.", inputLayer_.c_str());
 
-  if (!FilterBase<T>::getParam(std::string("map_type"), type_)) {
+  if (!FilterBase < T > ::getParam(std::string("map_type"), type_)) {
     ROS_ERROR("MeanInRadius filter did not find param map_type.");
     return false;
   }
@@ -65,8 +61,7 @@ bool MeanInRadiusFilter<T>::configure()
 }
 
 template<typename T>
-bool MeanInRadiusFilter<T>::update(const T& mapIn, T& mapOut)
-{
+bool MeanInRadiusFilter<T>::update(const T& mapIn, T& mapOut) {
   // Add new layers to the elevation map.
   mapOut = mapIn;
   mapOut.add(type_);
@@ -83,17 +78,17 @@ bool MeanInRadiusFilter<T>::update(const T& mapIn, T& mapOut)
     mapOut.getPosition(*iterator, center);
 
     // Find the mean in a circle around the center
-    for (grid_map::CircleIterator submapIterator(mapOut, center, radius_);
-        !submapIterator.isPastEnd(); ++submapIterator) {
+    for (grid_map::CircleIterator submapIterator(mapOut, center, radius_); !submapIterator.isPastEnd();
+        ++submapIterator) {
       if (!mapOut.isValid(*submapIterator, inputLayer_))
         continue;
       value = mapOut.at(inputLayer_, *submapIterator);
-      valueSum+=value;
-      counter ++;
+      valueSum += value;
+      counter++;
     }
 
-    if (counter!=0)
-      mapOut.at(type_, *iterator) = valueSum/counter;
+    if (counter != 0)
+      mapOut.at(type_, *iterator) = valueSum / counter;
   }
 
   return true;
