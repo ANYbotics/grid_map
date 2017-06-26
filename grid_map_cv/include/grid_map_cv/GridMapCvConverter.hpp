@@ -25,16 +25,6 @@ class GridMapCvConverter
 {
  public:
   /*!
-   * Default constructor.
-   */
-  GridMapCvConverter();
-
-  /*!
-   * Destructor.
-   */
-  virtual ~GridMapCvConverter();
-
-  /*!
    * Initializes the geometry of a grid map from an image. This changes
    * the geometry of the map and deletes all contents of the layers!
    * @param[in] image the image.
