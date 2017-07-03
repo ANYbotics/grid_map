@@ -22,6 +22,10 @@ class Polygon
 {
  public:
 
+  enum class TriangulationMethods {
+    FAN // Fan triangulation (only for convex polygons).
+  };
+
   /*!
    * Default constructor.
    */
@@ -146,6 +150,12 @@ class Polygon
    * @return true if successful, false otherwise.
    */
   bool offsetInward(const double margin);
+
+  /*!
+   * Return a triangulated version of the polygon.
+   * @return a list of triangle polygons covering the same polygon.
+   */
+  std::vector<Polygon> triangulate(const TriangulationMethods& method = TriangulationMethods::FAN) const;
 
   /*!
    * Approximates a circle with a polygon.
