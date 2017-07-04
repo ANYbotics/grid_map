@@ -76,7 +76,6 @@ void PolygonRosConverter::toTriangleListMarker(const grid_map::Polygon& polygon,
 
   size_t nPoints = 3 * polygons.size();
   marker.points.resize(nPoints);
-  marker.colors.resize(nPoints, color);
 
   for (size_t i = 0; i < polygons.size(); ++i) {
     for (size_t j = 0; j < 3; ++j) {

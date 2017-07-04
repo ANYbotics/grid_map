@@ -192,10 +192,18 @@ std::vector<Polygon> Polygon::triangulate(const TriangulationMethods& method) co
   size_t nPolygons = vertices_.size() - 2;
   std::vector<Polygon> polygons;
   polygons.reserve(nPolygons);
-  for (size_t i = 0; i < nPolygons; ++i) {
-    Polygon polygon({vertices_[0], vertices_[i + 1], vertices_[i + 2]});
-    polygons.push_back((polygon));
+
+  if (nPolygons < 1) {
+    // Special case.
+    polygons.push_back(*this);
+  } else {
+    // General case.
+    for (size_t i = 0; i < nPolygons; ++i) {
+      Polygon polygon({vertices_[0], vertices_[i + 1], vertices_[i + 2]});
+      polygons.push_back((polygon));
+    }
   }
+
   return polygons;
 }
 
