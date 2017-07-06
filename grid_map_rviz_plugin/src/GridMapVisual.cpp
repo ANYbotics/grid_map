@@ -144,12 +144,10 @@ void GridMapVisual::computeVisualization(float alpha, bool showGridLines, bool f
           map_.getPosition(index, position);
           float height = heightData(index(0), index(1));
           vertices.push_back(Ogre::Vector3(position(0), position(1), flatTerrain ? 0.0 : height));
-          if (!flatColor)
-          {
+          if (!flatColor) {
             float color = colorData(index(0), index(1));
             Ogre::ColourValue colorValue;
-            if (mapLayerColor)
-            {
+            if (mapLayerColor) {
               Eigen::Vector3f colorVectorRGB;
               grid_map::colorValueToVector(color, colorVectorRGB);
               colorValue = Ogre::ColourValue(colorVectorRGB(0), colorVectorRGB(1), colorVectorRGB(2));
