@@ -30,9 +30,8 @@ void PolygonRosConverter::toMessage(const grid_map::Polygon& polygon, geometry_m
   }
 }
 
-void PolygonRosConverter::toMarker(const grid_map::Polygon& polygon,
-                                   const std_msgs::ColorRGBA& color, const double lineWidth,
-                                   visualization_msgs::Marker& marker)
+void PolygonRosConverter::toLineMarker(const grid_map::Polygon& polygon, const std_msgs::ColorRGBA& color, const double lineWidth,
+                                       const double zCoordinate, visualization_msgs::Marker& marker)
 {
     marker.header.stamp.fromNSec(polygon.getTimestamp());
     marker.header.frame_id = polygon.getFrameId();
@@ -52,11 +51,41 @@ void PolygonRosConverter::toMarker(const grid_map::Polygon& polygon,
     for( ; i < nTotalVertices - 1; i++) {
       marker.points[i].x = polygon[i].x();
       marker.points[i].y = polygon[i].y();
-      marker.points[i].z = 0.0; // TODO: Consider adding option for offset.
+      marker.points[i].z = zCoordinate;
     }
     marker.points[i].x = marker.points[startIndex].x;
     marker.points[i].y = marker.points[startIndex].y;
     marker.points[i].z = marker.points[startIndex].z;
+}
+
+void PolygonRosConverter::toTriangleListMarker(const grid_map::Polygon& polygon, const std_msgs::ColorRGBA& color,
+                                               const double zCoordinate, visualization_msgs::Marker& marker)
+{
+  marker.header.stamp.fromNSec(polygon.getTimestamp());
+  marker.header.frame_id = polygon.getFrameId();
+  marker.lifetime = ros::Duration(0.0);
+  marker.action = visualization_msgs::Marker::ADD;
+  marker.type = visualization_msgs::Marker::TRIANGLE_LIST;
+  marker.scale.x = 1.0;
+  marker.scale.y = 1.0;
+  marker.scale.z = 1.0;
+  marker.color = color;
+
+  std::vector<Polygon> polygons = polygon.triangulate();
+  if (polygons.size() < 1) return;
+
+  size_t nPoints = 3 * polygons.size();
+  marker.points.resize(nPoints);
+  marker.colors.resize(polygons.size(), color);
+
+  for (size_t i = 0; i < polygons.size(); ++i) {
+    for (size_t j = 0; j < 3; ++j) {
+      const size_t pointIndex = 3 * i + j;
+      marker.points[pointIndex].x = polygons[i].getVertex(j).x();
+      marker.points[pointIndex].y = polygons[i].getVertex(j).y();
+      marker.points[pointIndex].z = zCoordinate;
+    }
+  }
 }
 
 } /* namespace grid_map */

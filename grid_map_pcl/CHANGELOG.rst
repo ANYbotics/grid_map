@@ -4,6 +4,8 @@ Changelog for package grid_map_pcl
 
 Forthcoming
 -----------
+* Improved efficiency of mesh conversion.
+* Contributors: Alex Millane
 
 1.4.2 (2017-01-24)
 ------------------

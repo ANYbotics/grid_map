@@ -4,6 +4,10 @@ Changelog for package grid_map_demos
 
 Forthcoming
 -----------
+* Added demo for octomap to grid map conversion.
+* Updated installation for demos.
+* General performance improvements, cleanups, and reformatting.
+* Contributors: Jeff Delmerico, Peter Fankhauser
 
 1.4.2 (2017-01-24)
 ------------------

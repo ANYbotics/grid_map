@@ -4,6 +4,8 @@ Changelog for package grid_map_ros
 
 Forthcoming
 -----------
+* Move costmap_2d conversion into separate package.
+* Contributors: Peter Fankhauser
 
 1.4.2 (2017-01-24)
 ------------------

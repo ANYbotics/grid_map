@@ -160,3 +160,30 @@ TEST(offsetInward, triangle)
   EXPECT_NEAR(0.9, polygon.getVertex(2)(0), 1e-4);
   EXPECT_NEAR(-0.758579, polygon.getVertex(2)(1), 1e-4);
 }
+
+TEST(triangulation, triangle)
+{
+  grid_map::Polygon polygon({Position(1.0, 1.0), Position(0.0, 0.0), Position(1.0, -1.0)});
+  std::vector<grid_map::Polygon> polygons;
+  polygons = polygon.triangulate();
+  ASSERT_EQ(1, polygons.size());
+  EXPECT_EQ(polygon.getVertex(0).x(), polygons[0].getVertex(0).x());
+  EXPECT_EQ(polygon.getVertex(0).y(), polygons[0].getVertex(0).y());
+  EXPECT_EQ(polygon.getVertex(1).x(), polygons[0].getVertex(1).x());
+  EXPECT_EQ(polygon.getVertex(1).y(), polygons[0].getVertex(1).y());
+  EXPECT_EQ(polygon.getVertex(2).x(), polygons[0].getVertex(2).x());
+  EXPECT_EQ(polygon.getVertex(2).y(), polygons[0].getVertex(2).y());
+}
+
+TEST(triangulation, rectangle)
+{
+  grid_map::Polygon rectangle;
+  rectangle.addVertex(Vector2d(-2.0, -1.0));
+  rectangle.addVertex(Vector2d(-2.0, 2.0));
+  rectangle.addVertex(Vector2d(1.0, 2.0));
+  rectangle.addVertex(Vector2d(1.0, -1.0));
+  std::vector<grid_map::Polygon> polygons;
+  polygons = rectangle.triangulate();
+  ASSERT_EQ(2, polygons.size());
+  // TODO Extend.
+}
