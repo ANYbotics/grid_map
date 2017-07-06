@@ -185,6 +185,28 @@ bool Polygon::offsetInward(const double margin)
   return true;
 }
 
+std::vector<Polygon> Polygon::triangulate(const TriangulationMethods& method) const
+{
+  // TODO Add more triangulation methods.
+  // https://en.wikipedia.org/wiki/Polygon_triangulation
+  size_t nPolygons = vertices_.size() - 2;
+  std::vector<Polygon> polygons;
+  polygons.reserve(nPolygons);
+
+  if (nPolygons < 1) {
+    // Special case.
+    polygons.push_back(*this);
+  } else {
+    // General case.
+    for (size_t i = 0; i < nPolygons; ++i) {
+      Polygon polygon({vertices_[0], vertices_[i + 1], vertices_[i + 2]});
+      polygons.push_back((polygon));
+    }
+  }
+
+  return polygons;
+}
+
 Polygon Polygon::fromCircle(const Position center, const double radius,
                                   const int nVertices)
 {
@@ -234,7 +256,7 @@ Polygon Polygon::convexHull(Polygon& polygon1, Polygon& polygon2)
 
   std::vector<Position> hull(vertices.size()+1);
 
-  // Sort points lexicographically
+  // Sort points lexicographically.
   std::sort(vertices.begin(), vertices.end(), sortVertices);
 
   int k = 0;
@@ -247,7 +269,7 @@ Polygon Polygon::convexHull(Polygon& polygon1, Polygon& polygon2)
     hull.at(k++) = vertices.at(i);
   }
 
-  // Build upper hull
+  // Build upper hull.
   for (int i = vertices.size() - 2, t = k + 1; i >= 0; i--) {
     while (k >= t
         && computeCrossProduct2D(hull.at(k - 1) - hull.at(k - 2),

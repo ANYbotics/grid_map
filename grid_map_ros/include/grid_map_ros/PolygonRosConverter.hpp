@@ -44,12 +44,25 @@ class PolygonRosConverter
   static void toMessage(const grid_map::Polygon& polygon, geometry_msgs::PolygonStamped& message);
 
   /*!
-   * Converts a polygon object to a ROS Marker message.
+   * Converts a polygon object to a ROS line strip marker message.
    * @param[in] polygon the polygon object.
-   * @param[out] marker the ROS Marker message to be populated.
+   * @param[in] color the desired color of the marker.
+   * @param[in] lineWidth the with of the line marker.
+   * @param[in] zCoordinate z-coordinate of the planar polygon.
+   * @param[out] marker the ROS marker message to be populated.
    */
-  static void toMarker(const grid_map::Polygon& polygon, const std_msgs::ColorRGBA& color,
-                       const double lineWidth, visualization_msgs::Marker& marker);
+  static void toLineMarker(const grid_map::Polygon& polygon, const std_msgs::ColorRGBA& color, const double lineWidth,
+                           const double zCoordinate, visualization_msgs::Marker& marker);
+
+  /*!
+   * Converts a polygon object to a ROS triangle list marker message.
+   * @param[in] polygon the polygon object.
+   * @param[in] color the desired color of the marker.
+   * @param[in] zCoordinate z-coordinate of the planar polygon.
+   * @param[out] marker the ROS marker message to be populated.
+   */
+  static void toTriangleListMarker(const grid_map::Polygon& polygon, const std_msgs::ColorRGBA& color,
+                                   const double zCoordinate, visualization_msgs::Marker& marker);
 };
 
 } /* namespace grid_map */
