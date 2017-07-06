@@ -66,16 +66,17 @@ void PolygonRosConverter::toTriangleListMarker(const grid_map::Polygon& polygon,
   marker.lifetime = ros::Duration(0.0);
   marker.action = visualization_msgs::Marker::ADD;
   marker.type = visualization_msgs::Marker::TRIANGLE_LIST;
-  marker.color = color;
   marker.scale.x = 1.0;
   marker.scale.y = 1.0;
   marker.scale.z = 1.0;
+  marker.color = color;
 
   std::vector<Polygon> polygons = polygon.triangulate();
   if (polygons.size() < 1) return;
 
   size_t nPoints = 3 * polygons.size();
   marker.points.resize(nPoints);
+  marker.colors.resize(polygons.size(), color);
 
   for (size_t i = 0; i < polygons.size(); ++i) {
     for (size_t j = 0; j < 3; ++j) {
