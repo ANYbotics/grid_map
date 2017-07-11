@@ -226,6 +226,7 @@ Polygon Polygon::convexHullOfTwoCircles(const Position center1,
                                    const Position center2, const double radius,
                                    const int nVertices)
 {
+  if (center1 == center2) return fromCircle(center1, radius, nVertices);
   Eigen::Vector2d centerToVertex, centerToVertexTemp;
   centerToVertex = center2 - center1;
   centerToVertex.normalize();
