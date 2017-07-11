@@ -123,15 +123,20 @@ bool GridMapPclConverter::rayTriangleIntersect(
 
   if (r < 0) return false;
 
+  // Note(alexmillane): The addition of this comparison delta (not in the
+  // original algorithm) means that rays intersecting the edge of triangles are
+  // treated at hits.
+  constexpr float delta = 1e-5;
+
   const Eigen::Vector3f w = point + r * ray - a;
   const float denominator = u.dot(v) * u.dot(v) - u.dot(u) * v.dot(v);
   const float s_numerator = u.dot(v) * w.dot(v) - v.dot(v) * w.dot(u);
   const float s = s_numerator / denominator;
-  if (s < 0 || s > 1) return false;
+  if (s < (0 - delta) || s > (1 + delta)) return false;
 
   const float t_numerator = u.dot(v) * w.dot(u) - u.dot(u) * w.dot(v);
   const float t = t_numerator / denominator;
-  if (t < 0 || s + t > 1) return false;
+  if (t < (0 - delta) || s + t > (1 + delta)) return false;
 
   intersectionPoint = a + s * u + t * v;
 
