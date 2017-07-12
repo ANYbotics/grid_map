@@ -60,7 +60,7 @@ TEST(GridMap, Move)
   map.setGeometry(Length(8.1, 5.1), 1.0, Position(0.0, 0.0)); // bufferSize(8, 5)
   map.add("layer", 0.0);
   map.setBasicLayers(map.getLayers());
-  std::vector<BufferRegion> regions;
+  std::vector<BufferRegion, Eigen::aligned_allocator<BufferRegion> > regions;
   map.move(Position(-3.0, -2.0), regions);
   Index startIndex = map.getStartIndex();
 

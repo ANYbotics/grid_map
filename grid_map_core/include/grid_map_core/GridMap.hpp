@@ -349,7 +349,7 @@ class GridMap
    * @param newRegions the regions of the newly covered / previously uncovered regions of the buffer.
    * @return true if map has been moved, false otherwise.
    */
-  bool move(const Position& position, std::vector<BufferRegion>& newRegions);
+  bool move(const Position& position, std::vector<BufferRegion, Eigen::aligned_allocator<BufferRegion> >& newRegions);
 
   /*!
    * Move the grid map w.r.t. to the grid map frame. Use this to move the grid map
@@ -528,7 +528,7 @@ class GridMap
   Time timestamp_;
 
   //! Grid map data stored as layers of matrices.
-  std::unordered_map<std::string, Matrix> data_;
+  std::unordered_map<std::string, Matrix, std::hash<std::string>, std::equal_to<std::string>, Eigen::aligned_allocator<std::pair<const std::string, Matrix> > > data_;
 
   //! Names of the data layers.
   std::vector<std::string> layers_;

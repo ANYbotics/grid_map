@@ -71,7 +71,7 @@ void PolygonRosConverter::toTriangleListMarker(const grid_map::Polygon& polygon,
   marker.scale.z = 1.0;
   marker.color = color;
 
-  std::vector<Polygon> polygons = polygon.triangulate();
+  std::vector<Polygon, Eigen::aligned_allocator<Polygon> > polygons = polygon.triangulate();
   if (polygons.size() < 1) return;
 
   size_t nPoints = 3 * polygons.size();

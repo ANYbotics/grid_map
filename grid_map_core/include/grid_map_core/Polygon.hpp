@@ -35,7 +35,7 @@ class Polygon
    * Constructor with vertices.
    * @param vertices the points of the polygon.
    */
-  Polygon(std::vector<Position> vertices);
+  Polygon(std::vector<Position, Eigen::aligned_allocator<Position> > vertices);
 
   /*!
    * Destructor.
@@ -78,7 +78,7 @@ class Polygon
    * Returns the vertices of the polygon.
    * @return the vertices of the polygon.
    */
-  const std::vector<Position>& getVertices() const;
+  const std::vector<Position, Eigen::aligned_allocator<Position> >& getVertices() const;
 
   /*!
    * Returns the number of vertices.
@@ -170,7 +170,7 @@ class Polygon
    * Return a triangulated version of the polygon.
    * @return a list of triangle polygons covering the same polygon.
    */
-  std::vector<Polygon> triangulate(const TriangulationMethods& method = TriangulationMethods::FAN) const;
+  std::vector<Polygon, Eigen::aligned_allocator<Polygon> > triangulate(const TriangulationMethods& method = TriangulationMethods::FAN) const;
 
   /*!
    * Approximates a circle with a polygon.
@@ -179,7 +179,7 @@ class Polygon
    * @param[in] nVertices number of vertices of the approximation polygon. Default = 20.
    * @return circle as polygon.
    */
-  static Polygon fromCircle(const Position center, const double radius,
+  static Polygon fromCircle(const Position& center, const double radius,
                             const int nVertices = 20);
 
   /*!
@@ -190,8 +190,8 @@ class Polygon
    * @param[in] nVertices number of vertices of the approximation polygon. Default = 20.
    * @return convex hull of the two circles as polygon.
    */
-  static Polygon convexHullOfTwoCircles(const Position center1,
-                                        const Position center2,
+  static Polygon convexHullOfTwoCircles(const Position& center1,
+                                        const Position& center2,
                                         const double radius,
                                         const int nVertices = 20);
 
@@ -208,7 +208,7 @@ class Polygon
    * @param[in] points points to use to compute the convex hull used to create the polygon.
    * @return convex hull as polygon.
    */
-  static Polygon monotoneChainConvexHullOfPoints(const std::vector<Position>& points);
+  static Polygon monotoneChainConvexHullOfPoints(const std::vector<Position, Eigen::aligned_allocator<Position> >& points);
 
  protected:
 
@@ -245,7 +245,7 @@ class Polygon
   uint64_t timestamp_;
 
   //! Vertices of the polygon.
-  std::vector<Position> vertices_;
+  std::vector<Position, Eigen::aligned_allocator<Position> > vertices_;
 
  public:
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW

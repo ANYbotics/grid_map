@@ -692,7 +692,7 @@ TEST(getBufferRegionsForSubmap, Trivial)
   Size bufferSize(5, 4);
   Index submapIndex(0, 0);
   Size submapSize(0, 0);
-  std::vector<BufferRegion> regions;
+  std::vector<BufferRegion, Eigen::aligned_allocator<BufferRegion> > regions;
 
   EXPECT_TRUE(getBufferRegionsForSubmap(regions, submapIndex, submapSize, bufferSize));
   EXPECT_EQ(1, regions.size());
@@ -714,7 +714,7 @@ TEST(getBufferRegionsForSubmap, Simple)
   Size bufferSize(5, 4);
   Index submapIndex(1, 2);
   Size submapSize(3, 2);
-  std::vector<BufferRegion> regions;
+  std::vector<BufferRegion, Eigen::aligned_allocator<BufferRegion> > regions;
 
   EXPECT_TRUE(getBufferRegionsForSubmap(regions, submapIndex, submapSize, bufferSize));
   EXPECT_EQ(1, regions.size());
@@ -731,7 +731,7 @@ TEST(getBufferRegionsForSubmap, CircularBuffer)
   Index submapIndex;
   Size submapSize;
   Index bufferStartIndex(3, 1);
-  std::vector<BufferRegion> regions;
+  std::vector<BufferRegion, Eigen::aligned_allocator<BufferRegion> > regions;
 
   submapIndex << 3, 1;
   submapSize << 2, 3;

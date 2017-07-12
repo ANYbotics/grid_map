@@ -70,7 +70,7 @@ TEST(Polygon, getBoundingBox)
 TEST(Polygon, convexHullPoints)
 {
   // Test that points which already create a convex shape (square) can be used to create a convex polygon.
-  std::vector<Position> points1;
+  std::vector<Position, Eigen::aligned_allocator<Position> > points1;
   points1.push_back(Vector2d(0.0, 0.0));
   points1.push_back(Vector2d(1.0, 0.0));
   points1.push_back(Vector2d(1.0, 1.0));
@@ -81,7 +81,7 @@ TEST(Polygon, convexHullPoints)
   EXPECT_FALSE(polygon1.isInside(Vector2d(-0.01, 0.5)));
 
   // Test that a random set of points can be used to create a convex polygon.
-  std::vector<Position> points2;
+  std::vector<Position, Eigen::aligned_allocator<Position> > points2;
   points2.push_back(Vector2d(0.0, 0.0));
   points2.push_back(Vector2d(1.0, 0.0));
   points2.push_back(Vector2d(2.0, 1.0));
@@ -240,7 +240,7 @@ TEST(offsetInward, triangle)
 TEST(triangulation, triangle)
 {
   Polygon polygon({Position(1.0, 1.0), Position(0.0, 0.0), Position(1.0, -1.0)});
-  std::vector<Polygon> polygons;
+  std::vector<Polygon, Eigen::aligned_allocator<Polygon> > polygons;
   polygons = polygon.triangulate();
   ASSERT_EQ(1, polygons.size());
   EXPECT_EQ(polygon.getVertex(0).x(), polygons[0].getVertex(0).x());
@@ -258,7 +258,7 @@ TEST(triangulation, rectangle)
   rectangle.addVertex(Vector2d(-2.0, 2.0));
   rectangle.addVertex(Vector2d(1.0, 2.0));
   rectangle.addVertex(Vector2d(1.0, -1.0));
-  std::vector<Polygon> polygons;
+  std::vector<Polygon, Eigen::aligned_allocator<Polygon> > polygons;
   polygons = rectangle.triangulate();
   ASSERT_EQ(2, polygons.size());
   // TODO Extend.

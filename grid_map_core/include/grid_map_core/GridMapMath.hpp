@@ -211,7 +211,7 @@ Size getSubmapSizeFromCornerIndeces(const Index& topLeftIndex, const Index& bott
  * @param[in] bufferStartIndex the index of the starting point of the circular buffer (optional).
  * @return true if successful, false if requested submap is not fully contained in the map.
  */
-bool getBufferRegionsForSubmap(std::vector<BufferRegion>& submapBufferRegions,
+bool getBufferRegionsForSubmap(std::vector<BufferRegion, Eigen::aligned_allocator<BufferRegion> >& submapBufferRegions,
                                const Index& submapIndex,
                                const Size& submapBufferSize,
                                const Size& bufferSize,
@@ -296,7 +296,7 @@ Index getIndexFromLinearIndex(const size_t linearIndex, const Size& bufferSize, 
  * @param indices the list of indices of the region.
  */
 void getIndicesForRegion(const Index& regionIndex, const Size& regionSize,
-                         std::vector<Index> indices);
+                         std::vector<Index, Eigen::aligned_allocator<Index> > indices);
 
 /*!
  * Generates a list of indices for multiple regions in the map.
@@ -305,8 +305,8 @@ void getIndicesForRegion(const Index& regionIndex, const Size& regionSize,
  * @param regionSizes the regions' sizes.
  * @param indices the list of indices of the regions.
  */
-void getIndicesForRegions(const std::vector<Index>& regionIndeces, const Size& regionSizes,
-                          std::vector<Index> indices);
+void getIndicesForRegions(const std::vector<Index, Eigen::aligned_allocator<Index> >& regionIndeces, const Size& regionSizes,
+                          std::vector<Index, Eigen::aligned_allocator<Index> > indices);
 
 /*!
  * Transforms an int color value (concatenated RGB values) to an int color vector (RGB from 0-255).

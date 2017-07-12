@@ -314,7 +314,7 @@ Size getSubmapSizeFromCornerIndeces(const Index& topLeftIndex, const Index& bott
   return Size(unwrappedBottomRightIndex - unwrappedTopLeftIndex + Size::Ones());
 }
 
-bool getBufferRegionsForSubmap(std::vector<BufferRegion>& submapBufferRegions,
+bool getBufferRegionsForSubmap(std::vector<BufferRegion, Eigen::aligned_allocator<BufferRegion> >& submapBufferRegions,
                                const Index& submapIndex,
                                const Size& submapBufferSize,
                                const Size& bufferSize,
@@ -506,7 +506,7 @@ Index getIndexFromLinearIndex(const size_t linearIndex, const Size& bufferSize, 
 }
 
 void getIndicesForRegion(const Index& regionIndex, const Size& regionSize,
-                         std::vector<Index> indices)
+                         std::vector<Index, Eigen::aligned_allocator<Index> > indices)
 {
 //  for (int i = line.index_; col < line.endIndex(); col++) {
 //    for (int i = 0; i < getSize()(0); i++) {
@@ -515,8 +515,8 @@ void getIndicesForRegion(const Index& regionIndex, const Size& regionSize,
 //  }
 }
 
-void getIndicesForRegions(const std::vector<Index>& regionIndeces, const Size& regionSizes,
-                          std::vector<Index> indices)
+void getIndicesForRegions(const std::vector<Index, Eigen::aligned_allocator<Index> >& regionIndeces, const Size& regionSizes,
+                          std::vector<Index, Eigen::aligned_allocator<Index> > indices)
 {
 }
 

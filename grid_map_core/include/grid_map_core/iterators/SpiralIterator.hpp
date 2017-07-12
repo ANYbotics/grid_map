@@ -74,7 +74,7 @@ private:
    * Check if index is inside the circle.
    * @return true if inside, false otherwise.
    */
-  bool isInside(const Index index) const;
+  bool isInside(const Index& index) const;
 
   /*!
    * Uses the current distance to get the points of a ring
@@ -100,7 +100,7 @@ private:
   //! Number of rings into the circle is divided.
   unsigned int nRings_;
   unsigned int distance_;
-  std::vector<Index> pointsRing_;
+  std::vector<Index, Eigen::aligned_allocator<Index> > pointsRing_;
 
   //! Map information needed to get position from iterator.
   Length mapLength_;

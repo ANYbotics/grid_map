@@ -282,7 +282,7 @@ GridMap GridMap::getSubmap(const Position& position, const Length& length, Index
   submap.startIndex_.setZero();  // Because of the way we copy the data below.
 
   // Copy data.
-  std::vector<BufferRegion> bufferRegions;
+  std::vector<BufferRegion, Eigen::aligned_allocator<BufferRegion> > bufferRegions;
 
   if (!getBufferRegionsForSubmap(bufferRegions, submapInformation.getStartIndex(), submap.getSize(), size_, startIndex_)) {
     cout << "Cannot access submap of this size." << endl;
@@ -319,7 +319,7 @@ GridMap GridMap::getTransformedMap(const Eigen::Isometry3d& transform, const std
   }
 
   // Initialization.
-  std::vector<Position3> positionSamples;
+  std::vector<Position3, Eigen::aligned_allocator<Position3> > positionSamples;
   Position3 center;
   Index newIndex;
 
@@ -333,7 +333,7 @@ GridMap GridMap::getTransformedMap(const Eigen::Isometry3d& transform, const std
   const Position3 bottomLeftCorner(position_.x() - halfLengthX, position_.y() + halfLengthY, 0.0);
   const Position3 bottomRightCorner(position_.x() - halfLengthX, position_.y() - halfLengthY, 0.0);
 
-  std::vector<Position3> newEdges;
+  std::vector<Position3, Eigen::aligned_allocator<Position3> > newEdges;
   newEdges.reserve(4);
   newEdges.push_back(transform * topLeftCorner);
   newEdges.push_back(transform * topRightCorner);
@@ -421,7 +421,7 @@ void GridMap::setPosition(const Position& position) {
   position_ = position;
 }
 
-bool GridMap::move(const Position& position, std::vector<BufferRegion>& newRegions) {
+bool GridMap::move(const Position& position, std::vector<BufferRegion, Eigen::aligned_allocator<BufferRegion> >& newRegions){
   Index indexShift;
   Position positionShift = position - position_;
   getIndexShiftFromPositionShift(indexShift, positionShift, resolution_);
@@ -489,7 +489,7 @@ bool GridMap::move(const Position& position, std::vector<BufferRegion>& newRegio
 }
 
 bool GridMap::move(const Position& position) {
-  std::vector<BufferRegion> newRegions;
+  std::vector<BufferRegion, Eigen::aligned_allocator<BufferRegion> > newRegions;
   return move(position, newRegions);
 }
 
@@ -645,7 +645,7 @@ bool GridMap::isDefaultStartIndex() const {
 void GridMap::convertToDefaultStartIndex() {
   if (isDefaultStartIndex()) return;
 
-  std::vector<BufferRegion> bufferRegions;
+  std::vector<BufferRegion, Eigen::aligned_allocator<BufferRegion> > bufferRegions;
   if (!getBufferRegionsForSubmap(bufferRegions, startIndex_, size_, size_, startIndex_)) {
     throw std::out_of_range("Cannot access submap of this size.");
   }
