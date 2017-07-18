@@ -2,8 +2,8 @@
 Changelog for package grid_map_core
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.5.0 (2017-07-18)
+------------------
 * Added new function for polygon triangulation.
 * Added Eigen macro for bit-alignment (`#88 <https://github.com/ethz-asl/grid_map/issues/88>`_).
 * Added default copy constructor and assign operator methods after the rule of five.
