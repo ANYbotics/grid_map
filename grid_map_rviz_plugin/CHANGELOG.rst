@@ -4,9 +4,10 @@ Changelog for package grid_map_rviz_plugin
 
 Forthcoming
 -----------
+* Improved visualization to support triangles in all directions.
 * Fixes transparency issue for grid maps in RViz. (`#68 <https://github.com/ethz-asl/grid_map/issues/68>`_).
 * Fixed package XML tag.
-* Contributors: Perry Franklin, Peter Fankhauser
+* Contributors: Perry Franklin, Stefan Fabian, Peter Fankhauser 
 
 1.4.2 (2017-01-24)
 ------------------

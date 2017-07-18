@@ -4,6 +4,7 @@ Changelog for package grid_map_ros
 
 Forthcoming
 -----------
+* Added new ROS converter for polygon to triangle lists.
 * Move costmap_2d conversion into separate package.
 * Contributors: Peter Fankhauser
 

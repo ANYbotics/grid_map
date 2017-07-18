@@ -4,12 +4,14 @@ Changelog for package grid_map_core
 
 Forthcoming
 -----------
-* Fixing buffer handling bug for circular and ellipse iterators.
+* Added new function for polygon triangulation.
 * Added Eigen macro for bit-alignment (`#88 <https://github.com/ethz-asl/grid_map/issues/88>`_).
 * Added default copy constructor and assign operator methods after the rule of five.
-* Fixing build error on ROS Kinetic.
 * Fixing return value in `getQuadrant` member function.
-* Contributors: Peter Fankhauser, Sascha, Thomas Emter
+* Fixing buffer handling bug for circular and ellipse iterators.
+* Capture case when both circles are the same in `convexHullOfTwoCircles`.
+* Fixing build error on ROS Kinetic.
+* Contributors: Peter Fankhauser, Sascha, Thomas Emter, Martin Wermelinger
 
 1.4.2 (2017-01-24)
 ------------------
