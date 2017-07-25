@@ -2,6 +2,11 @@
 Changelog for package grid_map_rviz_plugin
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fixes error in grid_map_rviz_plugin when rendering lines.
+* Contributors: Peter Fankhauser
+
 1.5.1 (2017-07-25)
 ------------------
 
@@ -10,7 +15,7 @@ Changelog for package grid_map_rviz_plugin
 * Improved visualization to support triangles in all directions.
 * Fixes transparency issue for grid maps in RViz. (`#68 <https://github.com/ethz-asl/grid_map/issues/68>`_).
 * Fixed package XML tag.
-* Contributors: Perry Franklin, Stefan Fabian, Peter Fankhauser 
+* Contributors: Perry Franklin, Stefan Fabian, Peter Fankhauser
 
 1.4.2 (2017-01-24)
 ------------------
