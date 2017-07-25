@@ -21,4 +21,5 @@
   <depend>rosbag</depend>
   <depend>tf</depend>
   <depend>visualization_msgs</depend>
+  <depend>grid_map_costmap_2d</depend>
 </package>
