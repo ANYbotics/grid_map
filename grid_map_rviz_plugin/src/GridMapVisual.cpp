@@ -81,14 +81,14 @@ void GridMapVisual::computeVisualization(float alpha, bool showGridLines, bool f
   // Convert to simple format, makes things easier.
   map_.convertToDefaultStartIndex();
 
-  // basic grid map data
-  size_t rows = map_.getSize()(0);
-  size_t cols = map_.getSize()(1);
+  // Basic grid map data.
+  const size_t rows = map_.getSize()(0);
+  const size_t cols = map_.getSize()(1);
   if (rows < 2 || cols < 2) {
     ROS_DEBUG("GridMap has not enough cells.");
     return;
   }
-  double resolution = map_.getResolution();
+  const double resolution = map_.getResolution();
   const grid_map::Matrix& heightData = map_[flatTerrain ? layerNames[0] : heightLayer];
   const grid_map::Matrix& colorData = map_[flatColor ? layerNames[0] : colorLayer];
 
@@ -118,7 +118,8 @@ void GridMapVisual::computeVisualization(float alpha, bool showGridLines, bool f
     meshLines_->setColor(0.0, 0.0, 0.0, alpha);
     meshLines_->setLineWidth(resolution / 10.0);
     meshLines_->setMaxPointsPerLine(2);
-    size_t nLines = rows * (cols - 1) + cols * (rows - 1);
+    // In the algorithm below, we have to account for max. 4 lines per cell.
+    size_t nLines = 2 * (rows * (cols - 1) + cols * (rows - 1));
     meshLines_->setNumLines(nLines);
   }
 
@@ -162,13 +163,13 @@ void GridMapVisual::computeVisualization(float alpha, bool showGridLines, bool f
         }
       }
 
-      // Plot triangles if we have enough vertices
+      // Plot triangles if we have enough vertices.
       if (vertices.size() > 2) {
         Ogre::Vector3 normal = vertices.size() == 4
                                ? (vertices[3] - vertices[0]).crossProduct(vertices[2] -vertices[1])
                                : (vertices[2] - vertices[1]).crossProduct(vertices[1] - vertices[0]);
         normal.normalise();
-        // Create one or two triangles from the vertices depending on how many vertices we have
+        // Create one or two triangles from the vertices depending on how many vertices we have.
         for (size_t m = 1; m < vertices.size() - 1; m++) {
           manualObject_->position(vertices[m-1]);
           manualObject_->normal(normal);
