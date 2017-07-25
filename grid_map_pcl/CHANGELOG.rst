@@ -2,6 +2,9 @@
 Changelog for package grid_map_pcl
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.5.0 (2017-07-18)
 ------------------
 * Improved efficiency of mesh conversion.

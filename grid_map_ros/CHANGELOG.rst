@@ -2,6 +2,11 @@
 Changelog for package grid_map_ros
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Added backwards compatibility for costmap_2d conversion in grid_map_ros and marked it as deprecated.
+* Contributors: Peter Fankhauser
+
 1.5.0 (2017-07-18)
 ------------------
 * Added new ROS converter for polygon to triangle lists.

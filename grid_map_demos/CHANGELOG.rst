@@ -2,6 +2,9 @@
 Changelog for package grid_map_demos
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.5.0 (2017-07-18)
 ------------------
 * Added demo for octomap to grid map conversion.

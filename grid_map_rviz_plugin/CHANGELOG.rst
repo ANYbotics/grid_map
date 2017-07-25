@@ -2,6 +2,9 @@
 Changelog for package grid_map_rviz_plugin
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.5.0 (2017-07-18)
 ------------------
 * Improved visualization to support triangles in all directions.
