@@ -2,8 +2,8 @@
 Changelog for package grid_map_ros
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.5.1 (2017-07-25)
+------------------
 * Added backwards compatibility for costmap_2d conversion in grid_map_ros (`#111 <https://github.com/ethz-asl/grid_map/issues/111>`_).
 * Contributors: Peter Fankhauser
 
