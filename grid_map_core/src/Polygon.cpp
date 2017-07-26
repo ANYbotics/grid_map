@@ -8,9 +8,10 @@
 
 #include <grid_map_core/Polygon.hpp>
 
-// Eigen
 #include <Eigen/Core>
 #include <Eigen/Geometry>
+
+#include <limits>
 
 namespace grid_map {
 
@@ -123,6 +124,24 @@ Position Polygon::getCentroid() const
   area *= 0.5;
   centroid /= (6.0 * area);
   return centroid;
+}
+
+void Polygon::getBoundingBox(Position& center, Length& length) const
+{
+  double minX = std::numeric_limits<double>::infinity();
+  double maxX = -std::numeric_limits<double>::infinity();
+  double minY = std::numeric_limits<double>::infinity();
+  double maxY = -std::numeric_limits<double>::infinity();
+  for (const auto& vertex : vertices_) {
+    if (vertex.x() > maxX) maxX = vertex.x();
+    if (vertex.y() > maxY) maxY = vertex.y();
+    if (vertex.x() < minX) minX = vertex.x();
+    if (vertex.y() < minY) minY = vertex.y();
+  }
+  center.x() = (minX + maxX) / 2.0;
+  center.y() = (minY + maxY) / 2.0;
+  length.x() = (maxX - minX);
+  length.y() = (maxY - minY);
 }
 
 bool Polygon::convertToInequalityConstraints(Eigen::MatrixXd& A, Eigen::VectorXd& b) const
