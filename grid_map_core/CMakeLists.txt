@@ -114,7 +114,8 @@ catkin_add_gtest(${PROJECT_NAME}-test
   test/SubmapIteratorTest.cpp
   test/PolygonIteratorTest.cpp
   test/PolygonTest.cpp
-  test/EigenPluginsTest.cpp)
+  test/EigenPluginsTest.cpp
+  test/SpiralIteratorTest.cpp)
 endif()
 
 if(TARGET ${PROJECT_NAME}-test)

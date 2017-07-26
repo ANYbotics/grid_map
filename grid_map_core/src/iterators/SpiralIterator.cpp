@@ -28,8 +28,11 @@ SpiralIterator::SpiralIterator(const grid_map::GridMap& gridMap, const Eigen::Ve
   bufferSize_ = gridMap.getSize();
   gridMap.getIndex(center_, indexCenter_);
   nRings_ = std::ceil(radius_ / resolution_);
-  if (checkIfIndexWithinRange(indexCenter_, bufferSize_)) pointsRing_.push_back(indexCenter_);
-  else generateRing();
+  if (checkIfIndexWithinRange(indexCenter_, bufferSize_))
+    pointsRing_.push_back(indexCenter_);
+  else
+    while(pointsRing_.empty() && !isPastEnd())
+      generateRing();
 }
 
 SpiralIterator& SpiralIterator::operator =(const SpiralIterator& other)
