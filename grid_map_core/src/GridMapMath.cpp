@@ -135,11 +135,11 @@ bool getIndexFromPosition(Index& index,
                           const Size& bufferSize,
                           const Index& bufferStartIndex)
 {
-  if (!checkIfPositionWithinMap(position, mapLength, mapPosition)) return false;
   Vector offset;
   getVectorToOrigin(offset, mapLength);
   Vector indexVector = ((position - offset - mapPosition).array() / resolution).matrix();
   index = getIndexFromIndexVector(indexVector, bufferSize, bufferStartIndex);
+  if (!checkIfPositionWithinMap(position, mapLength, mapPosition)) return false;
   return true;
 }
 
