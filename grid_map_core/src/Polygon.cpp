@@ -208,8 +208,11 @@ std::vector<Polygon> Polygon::triangulate(const TriangulationMethods& method) co
 {
   // TODO Add more triangulation methods.
   // https://en.wikipedia.org/wiki/Polygon_triangulation
-  size_t nPolygons = vertices_.size() - 2;
   std::vector<Polygon> polygons;
+  if (vertices_.size() < 3)
+    return polygons;
+
+  size_t nPolygons = vertices_.size() - 2;
   polygons.reserve(nPolygons);
 
   if (nPolygons < 1) {
