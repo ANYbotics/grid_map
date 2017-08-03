@@ -3,10 +3,11 @@ project(grid_map_rviz_plugin)
 
 set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
 
-find_package(catkin REQUIRED COMPONENTS
-	rviz
-	grid_map_ros
-	grid_map_msgs
+find_package(catkin REQUIRED
+  COMPONENTS
+    rviz
+    grid_map_ros
+    grid_map_msgs
 )
 
 catkin_package(
@@ -15,15 +16,14 @@ catkin_package(
   LIBRARIES
     ${PROJECT_NAME}
   CATKIN_DEPENDS
-	rviz
-	grid_map_ros
-	grid_map_msgs
-  DEPENDS
+    rviz
+    grid_map_ros
+    grid_map_msgs
 )
 
 include_directories(
-	include
-	${catkin_INCLUDE_DIRS}
+  include
+  ${catkin_INCLUDE_DIRS}
 )
 
 link_directories(${catkin_LIBRARY_DIRS})
@@ -31,9 +31,11 @@ link_directories(${catkin_LIBRARY_DIRS})
 ## This setting causes Qt's "MOC" generation to happen automatically.
 set(CMAKE_AUTOMOC ON)
 
+set(INCLUDE_FILES_QT
+  include/grid_map_rviz_plugin/GridMapDisplay.hpp
+)
 set(INCLUDE_FILES
-	include/grid_map_rviz_plugin/GridMapDisplay.hpp
-	include/grid_map_rviz_plugin/GridMapVisual.hpp
+  include/grid_map_rviz_plugin/GridMapVisual.hpp
 )
 
 ## This plugin includes Qt widgets, so we must include Qt.
@@ -43,16 +45,16 @@ if(rviz_QT_VERSION VERSION_LESS "5")
   find_package(Qt4 ${rviz_QT_VERSION} EXACT REQUIRED QtCore QtGui)
   ## pull in all required include dirs, define QT_LIBRARIES, etc.
   include(${QT_USE_FILE})
-	qt4_wrap_cpp(MOC_FILES
-  	${INCLUDE_FILES}
+  qt4_wrap_cpp(MOC_FILES
+    ${INCLUDE_FILES_QT}
   )
 else()
   message(STATUS "Using Qt5 based on the rviz_QT_VERSION: ${rviz_QT_VERSION}")
   find_package(Qt5 ${rviz_QT_VERSION} EXACT REQUIRED Core Widgets)
   ## make target_link_libraries(${QT_LIBRARIES}) pull in all required dependencies
   set(QT_LIBRARIES Qt5::Widgets)
-	QT5_WRAP_CPP(MOC_FILES
-  	${INCLUDE_FILES}
+  QT5_WRAP_CPP(MOC_FILES
+    ${INCLUDE_FILES_QT}
   )
 endif()
 
