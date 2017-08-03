@@ -464,6 +464,37 @@ bool incrementIndexForSubmap(Index& submapIndex, Index& index, const Index& subm
   return true;
 }
 
+bool incrementIndexForSubmapSparse(Index& submapIndex, Index& index, const Index& submapTopLeftIndex, const int every,
+                             const Size& submapBufferSize, const Size& bufferSize,
+                             const Index& bufferStartIndex)
+{
+  // Copy the data first, only copy it back if everything is within range.
+  Array2i tempIndex = index;
+  Array2i tempSubmapIndex = submapIndex;
+
+  // Increment submap index.
+  if (tempSubmapIndex[1] + every < submapBufferSize[1]) {
+    // Same row.
+    tempSubmapIndex[1]+= every;
+  } else {
+    // Next row.
+    tempSubmapIndex[0]+= every;
+    tempSubmapIndex[1] = 0;
+  }
+
+  // End of iterations reached.
+  if (!checkIfIndexWithinRange(tempSubmapIndex, submapBufferSize)) return false;
+
+  // Get corresponding index in map.
+  Array2i unwrappedSubmapTopLeftIndex = getIndexFromBufferIndex(submapTopLeftIndex, bufferSize, bufferStartIndex);
+  tempIndex = getBufferIndexFromIndex(unwrappedSubmapTopLeftIndex + tempSubmapIndex, bufferSize, bufferStartIndex);
+
+  // Copy data back.
+  index = tempIndex;
+  submapIndex = tempSubmapIndex;
+  return true;
+}
+
 Index getIndexFromBufferIndex(const Index& bufferIndex, const Size& bufferSize,
                               const Index& bufferStartIndex)
 {

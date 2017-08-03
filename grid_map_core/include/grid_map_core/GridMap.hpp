@@ -439,6 +439,8 @@ class GridMap
    */
   const Size& getSize() const;
 
+  void getDataBoundingSubmap(const std::string& layer, Index& startIndex, Size& size);
+
   /*!
    * Set the start index of the circular buffer.
    * Use this method with caution!

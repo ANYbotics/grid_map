@@ -565,6 +565,61 @@ const Size& GridMap::getSize() const
   return size_;
 }
 
+
+void GridMap::getDataBoundingSubmap(const std::string& layer, Index& startIndex, Size& size)
+{
+  Index minIndex = Index(-1, -1);
+  Index maxIndex = Index(-1, -1);
+  for (int i = 0; i < size_(0); i++)
+  {
+    int it = (startIndex_(0) + i) % size_(0);
+    int ib = (size_(0) + startIndex_(0) - 1 - i) % size_(0);
+    for (int j = 0; j < size_(1); j++)
+    {
+      int jt = (startIndex_(1) + j) % size_(1);
+      int jb = (size_(1) + startIndex_(1) - 1 - j) % size_(1);
+      if (minIndex(0) == -1)
+      {
+        float data = data_.at(layer)(it, jt);
+        if (data == data) { minIndex(0) = it; }
+      }
+      if (maxIndex(0) == -1)
+      {
+        float data = data_.at(layer)(ib, jb);
+        if (data == data) { maxIndex(0) = ib; }
+      }
+      if (minIndex(0) != -1 && maxIndex(0) != -1 ) { break; }
+    }
+    if (minIndex(0) != -1 && maxIndex(0) != -1 ) { break; }
+  }
+
+  for (int j = 0; j < size_(1); j++)
+  {
+    int jt = (startIndex_(1) + j) % size_(1);
+    int jb = (size_(1) + startIndex_(1) - 1 - j) % size_(1);
+    for (int i = 0; i < size_(0); i++)
+    {
+      int it = (startIndex_(0) + i) % size_(0);
+      int ib = (size_(0) + startIndex_(0) - 1 - i) % size_(0);
+      if (minIndex(1) == -1)
+      {
+        float data = data_.at(layer)(it, jt);
+        if (data == data) { minIndex(1) = jt; }
+      }
+      if (maxIndex(1) == -1)
+      {
+        float data = data_.at(layer)(ib, jb);
+        if (data == data) { maxIndex(1) = jb; }
+      }
+      if (minIndex(1) != -1 && maxIndex(1) != -1) { break; }
+    }
+    if (minIndex(1) != -1 && maxIndex(1) != -1 ) { break; }
+  }
+  startIndex = minIndex;
+  size(0) = (size_(0) + maxIndex(0) - minIndex(0)) % size_(0) + 1;
+  size(1) = (size_(1) + maxIndex(1) - minIndex(1)) % size_(1) + 1;
+}
+
 void GridMap::setStartIndex(const Index& startIndex) {
   startIndex_ = startIndex;
 }

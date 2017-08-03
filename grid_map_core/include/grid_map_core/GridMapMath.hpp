@@ -231,6 +231,9 @@ bool incrementIndex(Index& index, const Size& bufferSize,
 bool incrementIndexForSubmap(Index& submapIndex, Index& index, const Index& submapTopLeftIndex,
                              const Size& submapBufferSize, const Size& bufferSize,
                              const Index& bufferStartIndex = Index::Zero());
+bool incrementIndexForSubmapSparse(Index& submapIndex, Index& index, const Index& submapTopLeftIndex, const int every,
+                             const Size& submapBufferSize, const Size& bufferSize,
+                             const Index& bufferStartIndex = Index::Zero());
 
 /*!
  * Retrieve the index as unwrapped index, i.e., as the corresponding index of a
