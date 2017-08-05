@@ -244,6 +244,15 @@ Index getIndexFromBufferIndex(const Index& bufferIndex, const Size& bufferSize,
                               const Index& bufferStartIndex);
 
 /*!
+ * Retrieve the index of the buffer from a unwrapped index (reverse from function above).
+ * @param index the unwrapped index.
+ * @param bufferSize the map buffer size.
+ * @param bufferStartIndex the map buffer start index.
+ * @return the buffer index.
+ */
+Index getBufferIndexFromIndex(const Index& index, const Size& bufferSize, const Index& bufferStartIndex);
+
+/*!
  * Returns the linear index (1-dim.) corresponding to the regular index (2-dim.) for either
  * row- or column-major format.
  * Note: Eigen is defaulting to column-major format.

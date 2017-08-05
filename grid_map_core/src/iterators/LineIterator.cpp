@@ -59,12 +59,14 @@ const Index& LineIterator::operator *() const
 
 LineIterator& LineIterator::operator ++()
 {
-  numerator_ += numeratorAdd_;  // Increase the numerator by the top of the fraction
+  numerator_ += numeratorAdd_;  // Increase the numerator by the top of the fraction.
   if (numerator_ >= denominator_) {
     numerator_ -= denominator_;
-    index_ += increment1_;
+    const Index unwrappedIndex = getIndexFromBufferIndex(index_, bufferSize_, bufferStartIndex_) + increment1_;
+    index_ = getBufferIndexFromIndex(unwrappedIndex, bufferSize_, bufferStartIndex_);
   }
-  index_ += increment2_;
+  const Index unwrappedIndex = getIndexFromBufferIndex(index_, bufferSize_, bufferStartIndex_) + increment2_;
+  index_ = getBufferIndexFromIndex(unwrappedIndex, bufferSize_, bufferStartIndex_);
   ++iCell_;
   return *this;
 }
@@ -83,8 +85,6 @@ bool LineIterator::initialize(const grid_map::GridMap& gridMap, const Index& sta
     resolution_ = gridMap.getResolution();
     bufferSize_ = gridMap.getSize();
     bufferStartIndex_ = gridMap.getStartIndex();
-    Index submapStartIndex;
-    Size submapBufferSize;
     initializeIterationParameters();
     return true;
 }
@@ -108,9 +108,11 @@ void LineIterator::initializeIterationParameters()
   iCell_ = 0;
   index_ = start_;
 
-  Size delta = (end_ - start_).abs();
+  const Index unwrappedStart = getIndexFromBufferIndex(start_, bufferSize_, bufferStartIndex_);
+  const Index unwrappedEnd = getIndexFromBufferIndex(end_, bufferSize_, bufferStartIndex_);
+  const Size delta = (unwrappedEnd - unwrappedStart).abs();
 
-  if (end_.x() >= start_.x()) {
+  if (unwrappedEnd.x() >= unwrappedStart.x()) {
     // x-values increasing.
     increment1_.x() = 1;
     increment2_.x() = 1;
@@ -120,7 +122,7 @@ void LineIterator::initializeIterationParameters()
     increment2_.x() = -1;
   }
 
-  if (end_.y() >= start_.y()) {
+  if (unwrappedEnd.y() >= unwrappedStart.y()) {
     // y-values increasing.
     increment1_.y() = 1;
     increment2_.y() = 1;
