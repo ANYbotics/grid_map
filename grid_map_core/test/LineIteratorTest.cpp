@@ -108,7 +108,7 @@ TEST(LineIterator, StartAndEndOutsideMapWithoutIntersectingMap)
   EXPECT_TRUE(iterator.isPastEnd());
 }
 
-TEST(LineIterator, StartAndEndInSideShiftedMap)
+TEST(LineIterator, MovedMap)
 {
   GridMap map( { "types" });
   map.setGeometry(Length(7.0, 5.0), 1.0, Position(0.0, 0.0));
@@ -138,13 +138,13 @@ TEST(LineIterator, StartAndEndInSideShiftedMap)
   EXPECT_TRUE(iterator.isPastEnd());
 }
 
-TEST(LineIterator, StartAndEndOutsideShiftedMap)
+TEST(LineIterator, StartAndEndOutsideMovedMap)
 {
   GridMap map( { "types" });
   map.setGeometry(Length(7.0, 5.0), 1.0, Position(0.0, 0.0));
   map.move(Position(2.0, 2.0));
 
-  LineIterator iterator(map, Position(0.0, 0.0), Position(4.0, 4.0));
+  LineIterator iterator(map, Position(0.0, 0.0), Position(8.0, 8.0));
   Position point;
 
   EXPECT_FALSE(iterator.isPastEnd());
