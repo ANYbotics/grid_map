@@ -67,19 +67,6 @@ inline bool checkIfStartIndexAtDefaultPosition(const Index& bufferStartIndex)
   return ((bufferStartIndex == 0).all());
 }
 
-inline Index getBufferIndexFromIndex(
-    const Index& index,
-    const Size& bufferSize,
-    const Index& bufferStartIndex)
-{
-  if (checkIfStartIndexAtDefaultPosition(bufferStartIndex))
-    return index;
-
-  Index bufferIndex = index + bufferStartIndex;
-  mapIndexWithinRange(bufferIndex, bufferSize);
-  return bufferIndex;
-}
-
 inline Vector getIndexVectorFromIndex(
     const Index& index,
     const Size& bufferSize,
@@ -135,11 +122,11 @@ bool getIndexFromPosition(Index& index,
                           const Size& bufferSize,
                           const Index& bufferStartIndex)
 {
-  if (!checkIfPositionWithinMap(position, mapLength, mapPosition)) return false;
   Vector offset;
   getVectorToOrigin(offset, mapLength);
   Vector indexVector = ((position - offset - mapPosition).array() / resolution).matrix();
   index = getIndexFromIndexVector(indexVector, bufferSize, bufferStartIndex);
+  if (!checkIfPositionWithinMap(position, mapLength, mapPosition)) return false;
   return true;
 }
 
@@ -464,15 +451,22 @@ bool incrementIndexForSubmap(Index& submapIndex, Index& index, const Index& subm
   return true;
 }
 
-Index getIndexFromBufferIndex(const Index& bufferIndex, const Size& bufferSize,
-                              const Index& bufferStartIndex)
+Index getIndexFromBufferIndex(const Index& bufferIndex, const Size& bufferSize, const Index& bufferStartIndex)
 {
-  if (checkIfStartIndexAtDefaultPosition(bufferStartIndex))
-    return bufferIndex;
+  if (checkIfStartIndexAtDefaultPosition(bufferStartIndex)) return bufferIndex;
 
   Index index = bufferIndex - bufferStartIndex;
   mapIndexWithinRange(index, bufferSize);
   return index;
+}
+
+Index getBufferIndexFromIndex(const Index& index, const Size& bufferSize, const Index& bufferStartIndex)
+{
+  if (checkIfStartIndexAtDefaultPosition(bufferStartIndex)) return index;
+
+  Index bufferIndex = index + bufferStartIndex;
+  mapIndexWithinRange(bufferIndex, bufferSize);
+  return bufferIndex;
 }
 
 size_t getLinearIndexFromIndex(const Index& index, const Size& bufferSize, const bool rowMajor)

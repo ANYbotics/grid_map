@@ -22,6 +22,10 @@ class Polygon
 {
  public:
 
+  enum class TriangulationMethods {
+    FAN // Fan triangulation (only for convex polygons).
+  };
+
   /*!
    * Default constructor.
    */
@@ -126,6 +130,13 @@ class Polygon
   Position getCentroid() const;
 
   /*!
+   * Gets the bounding box of the polygon.
+   * @param center the center of the bounding box.
+   * @param length the side lengths of the bounding box.
+   */
+  void getBoundingBox(Position& center, Length& length) const;
+
+  /*!
    * Convert polygon to inequality constraints which most tightly contain the points; i.e.,
    * create constraints to bound the convex hull of polygon. The inequality constraints are
    * represented as A and b, a set of constraints such that A*x <= b defining the region of
@@ -146,6 +157,12 @@ class Polygon
    * @return true if successful, false otherwise.
    */
   bool offsetInward(const double margin);
+
+  /*!
+   * Return a triangulated version of the polygon.
+   * @return a list of triangle polygons covering the same polygon.
+   */
+  std::vector<Polygon> triangulate(const TriangulationMethods& method = TriangulationMethods::FAN) const;
 
   /*!
    * Approximates a circle with a polygon.

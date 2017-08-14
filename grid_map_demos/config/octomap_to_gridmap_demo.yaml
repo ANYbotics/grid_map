@@ -1,0 +1,23 @@
+octomap_to_gridmap_demo:
+  octomap_service_topic: "/octomap_binary"
+  min_z: -2.0
+  max_z: 2.0
+
+grid_map_visualization:
+  grid_map_topic: /octomap_to_gridmap_demo/grid_map
+  grid_map_visualizations:
+    - name: elevation_points
+      type: point_cloud
+      params:
+        layer: elevation
+    - name: elevation_grid
+      type: occupancy_grid
+      params:
+        layer: elevation
+        data_min: -2.0
+        data_max: 2.0
+    - name: map_region
+      type: map_region
+      params:
+       color: 3289650
+       line_width: 0.1

@@ -25,16 +25,6 @@ class GridMapCvConverter
 {
  public:
   /*!
-   * Default constructor.
-   */
-  GridMapCvConverter();
-
-  /*!
-   * Destructor.
-   */
-  virtual ~GridMapCvConverter();
-
-  /*!
    * Initializes the geometry of a grid map from an image. This changes
    * the geometry of the map and deletes all contents of the layers!
    * @param[in] image the image.
@@ -225,7 +215,7 @@ class GridMapCvConverter
     // Clamp outliers.
     grid_map::GridMap map = gridMap;
     map.get(layer) = map.get(layer).unaryExpr(grid_map::Clamp<float>(lowerValue, upperValue));
-    const grid_map::Matrix& data = gridMap[layer];
+    const grid_map::Matrix& data = map[layer];
 
     // Convert to image.
     bool isColor = false;

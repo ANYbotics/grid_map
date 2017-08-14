@@ -10,7 +10,7 @@ Features:
 * **Efficient map re-positioning:** Data storage is implemented as two-dimensional circular buffer. This allows for non-destructive shifting of the map's position (e.g. to follow the robot) without copying data in memory.
 * **Based on Eigen:** Grid map data is stored as [Eigen] data types. Users can apply available Eigen algorithms directly to the map data for versatile and efficient data manipulation.
 * **Convenience functions:** Several helper methods allow for convenient and memory safe cell data access. For example, iterator functions for rectangular, circular, polygonal regions and lines are implemented.
-* **ROS interface:** Grid maps can be directly converted to and from ROS message types such as PointCloud2, OccupancyGrid, GridCells, and our custom GridMap message. This package also contains compatibility with [costmap_2d] and [PCL].
+* **ROS interface:** Grid maps can be directly converted to and from ROS message types such as PointCloud2, OccupancyGrid, GridCells, and our custom GridMap message. Conversion packages provide compatibility with [costmap_2d], [PCL], and [OctoMap] data types.
 * **OpenCV interface:** Grid maps can be seamlessly converted from and to [OpenCV] image types to make use of the tools provided by [OpenCV].
 * **Visualizations:** The *grid_map_rviz_plugin* renders grid maps as 3d surface plots (height maps) in [RViz]. Additionally, the *grid_map_visualization* package helps to visualize grid maps as point clouds, occupancy grids, grid cells etc.
 
@@ -20,7 +20,7 @@ The source code is released under a [BSD 3-Clause license](LICENSE).
 
 **Author: Péter Fankhauser<br />
 Maintainer: Péter Fankhauser, pfankhauser@ethz.ch<br />
-With contributions by: Martin Wermelinger, Philipp Krüsi, Remo Diethelm, Ralph Kaestner, Elena Stumm, Dominic Jud, Daniel Stonier, Christos Zalidis<br />
+With contributions by: Jeff Delmerico, Remo Diethelm, Perry Franklin, Dominic Jud, Ralph Kaestner, Philipp Krüsi, Alex Millane, Daniel Stonier, Elena Stumm, Martin Wermelinger, Christos Zalidis<br />
 Affiliation: Autonomous Systems Lab, ETH Zurich**
 
 ![Grid map example in RViz](grid_map_rviz_plugin/doc/grid_map_rviz_plugin_example.png)
@@ -57,6 +57,7 @@ The C++ API is documented here:
 * [grid_map_costmap_2d](http://docs.ros.org/kinetic/api/grid_map_costmap_2d/html/index.html)
 * [grid_map_cv](http://docs.ros.org/kinetic/api/grid_map_cv/html/index.html)
 * [grid_map_filters](http://docs.ros.org/kinetic/api/grid_map_filters/html/index.html)
+* [grid_map_octomap](http://docs.ros.org/kinetic/api/grid_map_octomap/html/index.html)
 * [grid_map_pcl](http://docs.ros.org/kinetic/api/grid_map_pcl/html/index.html)
 
 ## Installation
@@ -108,6 +109,7 @@ Additional conversion packages:
 
 * ***grid_map_costmap_2d*** provides conversions of grid maps from [costmap_2d] map types.
 * ***grid_map_cv*** provides conversions of grid maps from and to [OpenCV] image types.
+* ***grid_map_octomap*** provides conversions of grid maps from OctoMap ([OctoMap]) maps.
 * ***grid_map_pcl*** provides conversions of grid maps from Point Cloud Library ([PCL]) polygon meshes.
 
 ### Unit Tests
@@ -366,6 +368,7 @@ Please report bugs and request features using the [Issue Tracker](https://github
 [RViz]: http://wiki.ros.org/rviz
 [Eigen]: http://eigen.tuxfamily.org
 [OpenCV]: http://opencv.org/
+[OctoMap]: https://octomap.github.io/
 [PCL]: http://pointclouds.org/
 [costmap_2d]: http://wiki.ros.org/costmap_2d
 [grid_map_msgs/GridMapInfo]: http://docs.ros.org/api/grid_map_msgs/html/msg/GridMapInfo.html

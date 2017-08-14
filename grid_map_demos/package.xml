@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package format="2">
   <name>grid_map_demos</name>
-  <version>1.4.2</version>
+  <version>1.5.2</version>
   <description>Demo nodes to demonstrate the usage of the grid map library.</description>
   <maintainer email="pfankhauser@ethz.ch">Péter Fankhauser</maintainer>
   <license>BSD</license>
@@ -14,9 +14,11 @@
   <depend>grid_map_cv</depend>
   <depend>grid_map_loader</depend>
   <depend>grid_map_msgs</depend>
+  <depend>grid_map_octomap</depend>
   <depend>grid_map_rviz_plugin</depend>
   <depend>grid_map_visualization</depend>
   <depend>geometry_msgs</depend>
   <depend>sensor_msgs</depend>
   <depend>cv_bridge</depend>
+  <depend>octomap_msgs</depend>
 </package>

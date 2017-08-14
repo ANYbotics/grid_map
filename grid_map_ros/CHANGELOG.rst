@@ -2,8 +2,19 @@
 Changelog for package grid_map_ros
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.5.2 (2017-07-25)
+------------------
+
+1.5.1 (2017-07-25)
+------------------
+* Added backwards compatibility for costmap_2d conversion in grid_map_ros (`#111 <https://github.com/ethz-asl/grid_map/issues/111>`_).
+* Contributors: Peter Fankhauser
+
+1.5.0 (2017-07-18)
+------------------
+* Added new ROS converter for polygon to triangle lists.
+* Move costmap_2d conversion into separate package.
+* Contributors: Peter Fankhauser
 
 1.4.2 (2017-01-24)
 ------------------
