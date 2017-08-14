@@ -2,7 +2,7 @@
  * ThresholdFilter.hpp
  *
  *  Created on: Mar 16, 2015
- *      Author: Martin Wermelinger
+ *      Author: Martin Wermelinger, Peter Fankhauser
  *   Institute: ETH Zurich, Autonomous Systems Lab
  */
 
@@ -16,8 +16,8 @@
 namespace grid_map_filters {
 
 /*!
- * Threshold filter class sets values below a lower threshold to 0 and
- * values above an upper threshold to 1.
+ * Threshold filter class to set values below/above a threshold to a
+ * specified value.
  */
 template<typename T>
 class ThresholdFilter : public filters::FilterBase<T>

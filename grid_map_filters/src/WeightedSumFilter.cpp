@@ -2,7 +2,7 @@
  * WeightedSumFilter.cpp
  *
  *  Created on: Mar 11, 2015
- *      Author: Martin Wermelinger
+ *      Author: Martin Wermelinger, Peter Fankhauser
  *   Institute: ETH Zurich, Autonomous Systems Lab
  */
 

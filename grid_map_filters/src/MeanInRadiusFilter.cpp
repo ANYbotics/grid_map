@@ -2,7 +2,7 @@
  * MeanInRadiusFilter.cpp
  *
  *  Created on: May 3, 2017
- *      Author: Tanja Baumann
+ *      Author: Tanja Baumann, Peter Fankhauser
  *   Institute: ETH Zurich, Robotic Systems Lab
  */
 
@@ -18,9 +18,7 @@ namespace grid_map_filters {
 
 template<typename T>
 MeanInRadiusFilter<T>::MeanInRadiusFilter()
-    : radius_(0.02),
-      inputLayer_("elevation"),
-      type_("meanInRadius") {
+    : radius_(0.0) {
 
 }
 
@@ -32,7 +30,7 @@ MeanInRadiusFilter<T>::~MeanInRadiusFilter() {
 template<typename T>
 bool MeanInRadiusFilter<T>::configure() {
   if (!FilterBase < T > ::getParam(std::string("radius"), radius_)) {
-    ROS_ERROR("MeanInRadius filter did not find param radius.");
+    ROS_ERROR("MeanInRadius filter did not find parameter `radius`.");
     return false;
   }
 
@@ -44,19 +42,18 @@ bool MeanInRadiusFilter<T>::configure() {
   ROS_DEBUG("Radius = %f.", radius_);
 
   if (!FilterBase < T > ::getParam(std::string("input_layer"), inputLayer_)) {
-    ROS_ERROR("MeanInRadius filter did not find param input_layer.");
+    ROS_ERROR("MeanInRadius filter did not find parameter `input_layer`.");
     return false;
   }
 
   ROS_DEBUG("MeanInRadius input layer is = %s.", inputLayer_.c_str());
 
-  if (!FilterBase < T > ::getParam(std::string("map_type"), type_)) {
-    ROS_ERROR("MeanInRadius filter did not find param map_type.");
+  if (!FilterBase < T > ::getParam(std::string("output_layer"), outputLayer_)) {
+    ROS_ERROR("MeanInRadius filter did not find parameter `output_layer`.");
     return false;
   }
 
-  ROS_DEBUG("MeanInRadius map type = %s.", type_.c_str());
-
+  ROS_DEBUG("MeanInRadius output_layer = %s.", outputLayer_.c_str());
   return true;
 }
 
@@ -64,7 +61,7 @@ template<typename T>
 bool MeanInRadiusFilter<T>::update(const T& mapIn, T& mapOut) {
   // Add new layers to the elevation map.
   mapOut = mapIn;
-  mapOut.add(type_);
+  mapOut.add(outputLayer_);
 
   double value;
 
@@ -88,7 +85,7 @@ bool MeanInRadiusFilter<T>::update(const T& mapIn, T& mapOut) {
     }
 
     if (counter != 0)
-      mapOut.at(type_, *iterator) = valueSum / counter;
+      mapOut.at(outputLayer_, *iterator) = valueSum / counter;
   }
 
   return true;

@@ -2,37 +2,32 @@
   <library path="lib/libgrid_map_filters">
     <class name="gridMapFilters/WeightedSumFilter" type="grid_map_filters::WeightedSumFilter<grid_map::GridMap>" base_class_type="filters::FilterBase<grid_map::GridMap>" >
       <description>
-        This is a weighted sum filter for a grid map.
+        Compute a weighted sum of layers.
       </description>
     </class>
     <class name="gridMapFilters/MinFilter" type="grid_map_filters::MinFilter<grid_map::GridMap>" base_class_type="filters::FilterBase<grid_map::GridMap>" >
       <description>
-        This is a min filter for a grid map.
+        Pick the minimum for each cell out of different layers.
       </description>
     </class>
     <class name="gridMapFilters/ThresholdFilter" type="grid_map_filters::ThresholdFilter<grid_map::GridMap>" base_class_type="filters::FilterBase<grid_map::GridMap>" >
       <description>
-        This is a threshold filter for a grid map.
+        Set values below/above a threshold to a specified value.
       </description>
     </class>
     <class name="gridMapFilters/DeletionFilter" type="grid_map_filters::DeletionFilter<grid_map::GridMap>" base_class_type="filters::FilterBase<grid_map::GridMap>" >
       <description>
-        This is a deletion filter for a grid map.
+        Delete layers from a grid map.
       </description>
     </class>
     <class name="gridMapFilters/MinInRadiusFilter" type="grid_map_filters::MinInRadiusFilter<grid_map::GridMap>" base_class_type="filters::FilterBase<grid_map::GridMap>" >
       <description>
-        This is a filter which calculates for each point in the map the minimum value in a radius around it.
+        Compute for each cell of a layer the minimal value inside a radius.
       </description>
     </class>
     <class name="gridMapFilters/MeanInRadiusFilter" type="grid_map_filters::MeanInRadiusFilter<grid_map::GridMap>" base_class_type="filters::FilterBase<grid_map::GridMap>" >
       <description>
-        This is a filter which calculates for each point in the map the mean value in a radius around it.
-      </description>
-    </class>
-    <class name="gridMapFilters/BinaryFilter" type="grid_map_filters::BinaryFilter<grid_map::GridMap>" base_class_type="filters::FilterBase<grid_map::GridMap>" >
-      <description>
-        This is filter which sets the value in the new layer to one if the input layer is bigger than the threshold and to zero if its smaller.
+        Compute for each cell of a layer the mean value inside a radius.
       </description>
     </class>
     <class name="gridMapFilters/InpaintFilter" type="grid_map_filters::InpaintFilter<grid_map::GridMap>" base_class_type="filters::FilterBase<grid_map::GridMap>" >

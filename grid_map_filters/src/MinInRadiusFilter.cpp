@@ -2,7 +2,7 @@
  * MinInRadiusFilter.cpp
  *
  *  Created on: May 3, 2017
- *      Author: Tanja Baumann
+ *      Author: Tanja Baumann, Peter Fankhauser
  *   Institute: ETH Zurich, Robotic Systems Lab
  */
 
@@ -18,9 +18,7 @@ namespace grid_map_filters {
 
 template<typename T>
 MinInRadiusFilter<T>::MinInRadiusFilter()
-    : radius_(0.02),
-      inputLayer_("footscore"),
-      type_("minInRadius") {
+    : radius_(0.0) {
 
 }
 
@@ -32,7 +30,7 @@ MinInRadiusFilter<T>::~MinInRadiusFilter() {
 template<typename T>
 bool MinInRadiusFilter<T>::configure() {
   if (!FilterBase < T > ::getParam(std::string("radius"), radius_)) {
-    ROS_ERROR("MinInRadius filter did not find param radius.");
+    ROS_ERROR("MinInRadius filter did not find parameter `radius`.");
     return false;
   }
 
@@ -44,19 +42,18 @@ bool MinInRadiusFilter<T>::configure() {
   ROS_DEBUG("Radius = %f.", radius_);
 
   if (!FilterBase < T > ::getParam(std::string("input_layer"), inputLayer_)) {
-    ROS_ERROR("MinInRadius filter did not find param input_layer.");
+    ROS_ERROR("MinInRadius filter did not find parameter `input_layer`.");
     return false;
   }
 
   ROS_DEBUG("MinInRadius input layer is = %s.", inputLayer_.c_str());
 
-  if (!FilterBase < T > ::getParam(std::string("map_type"), type_)) {
-    ROS_ERROR("Step filter did not find param map_type.");
+  if (!FilterBase < T > ::getParam(std::string("output_layer"), outputLayer_)) {
+    ROS_ERROR("Step filter did not find parameter `output_layer`.");
     return false;
   }
 
-  ROS_DEBUG("MinInRadius map type = %s.", type_.c_str());
-
+  ROS_DEBUG("MinInRadius output_layer = %s.", outputLayer_.c_str());
   return true;
 }
 
@@ -64,7 +61,7 @@ template<typename T>
 bool MinInRadiusFilter<T>::update(const T& mapIn, T& mapOut) {
   // Add new layer to the elevation map.
   mapOut = mapIn;
-  mapOut.add(type_);
+  mapOut.add(outputLayer_);
 
   double value;
 
@@ -97,7 +94,7 @@ bool MinInRadiusFilter<T>::update(const T& mapIn, T& mapOut) {
     }
 
     if (init)
-      mapOut.at(type_, *iterator) = valueMin;
+      mapOut.at(outputLayer_, *iterator) = valueMin;
   }
 
   return true;

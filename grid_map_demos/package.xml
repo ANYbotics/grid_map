@@ -21,4 +21,5 @@
   <depend>sensor_msgs</depend>
   <depend>cv_bridge</depend>
   <depend>octomap_msgs</depend>
+  <depend>filters</depend>
 </package>

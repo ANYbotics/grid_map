@@ -1,0 +1,10 @@
+<launch>
+  
+  <!-- Launch the grid map filters demo -->
+  <node pkg="grid_map_demos" type="filters_demo" name="grid_map_filter_demo" output="screen">
+    <rosparam command="load" file="$(find grid_map_demos)/config/filters_demo.yaml" />
+  </node>
+  
+  <!-- Launch RViz with the demo configuration -->
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find grid_map_demos)/rviz/grid_map_demo.rviz" />
+</launch>

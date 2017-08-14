@@ -1,0 +1,43 @@
+grid_map_filters:
+  - name: thresholdFilter
+    type: gridMapFilters/ThresholdFilter
+    params:
+      lower_threshold: 0.0
+      set_to: .nan
+      layers: [elevation]
+
+#  - name: surfaceNormalsFilter
+#    type: traversabilityFilters/SurfaceNormalsFilter
+#    params:
+#      estimation_radius: 0.05
+#      surface_normal_positive_axis: "z"
+#  - name: slopeFilter
+#    type: traversabilityFilters/SlopeFilter
+#    params:
+#      map_type: traversability_slope
+#      critical_value: 1.0
+#  - name: stepFilter
+#    type: traversabilityFilters/StepFilter
+#    params:
+#      map_type: traversability_step
+#      critical_value: 0.12
+#      first_window_radius: 0.04
+#      second_window_radius: 0.04
+#      critical_cell_number: 4
+#  - name: roughnessFilter
+#    type: traversabilityFilters/RoughnessFilter
+#    params:
+#      map_type: traversability_roughness
+#      critical_value: 0.05
+#      estimation_radius: 0.05
+#  - name: weightedSumFilter
+#    type: gridMapFilters/WeightedSumFilter
+#    params:
+#      layers: [traversability_slope, traversability_step, traversability_roughness]
+#      weights: [1, 1, 1]
+#      layer_out: traversability
+#      normalize: 1
+#  - name: deletionFilter
+#    type: gridMapFilters/DeletionFilter
+#    params:
+#      layers: [surface_normal_x, surface_normal_y, surface_normal_z]

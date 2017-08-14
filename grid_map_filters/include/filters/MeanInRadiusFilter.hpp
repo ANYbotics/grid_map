@@ -2,12 +2,11 @@
  * MeanInRadiusFilter.hpp
  *
  *  Created on: May 3, 2017
- *      Author: Tanja Baumann
+ *      Author: Tanja Baumann, Peter Fankhauser
  *   Institute: ETH Zurich, Robotic Systems Lab
  */
 
-#ifndef MEANINRADIUSFILTER_HPP
-#define MEANINRADIUSFILTER_HPP
+#pragma once
 
 #include <filters/filter_base.h>
 
@@ -40,23 +39,21 @@ class MeanInRadiusFilter : public filters::FilterBase<T> {
 
   /*!
    * Computes for each value in the input layer the mean of all values in a radius around it
-   * Saves this mean in an additional output layer
+   * Saves this mean in an additional output layer.
    * @param mapIn grid map containing the input layer.
-   * @param mapOut grid map containing mapIn and smoothed input layer.
+   * @param mapOut grid map containing the layers of the input map and the new layer.
    */
   virtual bool update(const T& mapIn, T& mapOut);
 
  private:
-
-  //! radius to take the mean in
+  //! Radius to take the mean from.
   double radius_;
 
-  //! input layer name
+  //! Input layer name.
   std::string inputLayer_;
-  //! map type.
-  std::string type_;
+
+  //! Output layer name.
+  std::string outputLayer_;
 };
 
 } /* namespace */
-
-#endif
