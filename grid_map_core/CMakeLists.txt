@@ -66,6 +66,7 @@ add_library(${PROJECT_NAME}
    src/iterators/SpiralIterator.cpp
    src/iterators/PolygonIterator.cpp
    src/iterators/LineIterator.cpp
+   src/iterators/ThickenedLineIterator.cpp
 )
 
 target_link_libraries(${PROJECT_NAME}
@@ -110,6 +111,7 @@ catkin_add_gtest(${PROJECT_NAME}-test
   test/GridMapTest.cpp
   test/GridMapIteratorTest.cpp
   test/LineIteratorTest.cpp
+  test/ThickenedLineIteratorTest.cpp
   test/EllipseIteratorTest.cpp
   test/SubmapIteratorTest.cpp
   test/PolygonIteratorTest.cpp

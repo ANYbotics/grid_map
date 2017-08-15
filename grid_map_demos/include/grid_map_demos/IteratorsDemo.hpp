@@ -43,6 +43,7 @@ class IteratorsDemo
   void demoEllipseIterator();
   void demoSpiralIterator();
   void demoLineIterator();
+  void demoThickenedLineIterator();
   void demoPolygonIterator();
 
   /*!

@@ -39,6 +39,7 @@ IteratorsDemo::IteratorsDemo(ros::NodeHandle& nodeHandle)
   demoEllipseIterator();
   demoSpiralIterator();
   demoLineIterator();
+  demoThickenedLineIterator();
   demoPolygonIterator();
 }
 
@@ -164,6 +165,29 @@ void IteratorsDemo::demoLineIterator()
     map_.at("type", *iterator) = 1.0;
     publish();
     ros::Duration duration(0.02);
+    duration.sleep();
+  }
+
+  ros::Duration duration(1.0);
+  duration.sleep();
+}
+
+void IteratorsDemo::demoThickenedLineIterator()
+{
+  ROS_INFO("Running thick line iterator demo.");
+  map_.clearAll();
+  publish();
+
+  Position start(0.2, 0.4);
+  Position end(-0.3, -0.5);
+
+  double thickness = 0.2;
+
+  for (grid_map::ThickenedLineIterator iterator(map_, start, end, thickness);
+      !iterator.isPastEnd(); ++iterator) {
+    map_.at("type", *iterator) = 1.0;
+    publish();
+    ros::Duration duration(0.01);
     duration.sleep();
   }
 
