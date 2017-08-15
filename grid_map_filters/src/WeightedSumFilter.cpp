@@ -13,12 +13,11 @@
 
 using namespace filters;
 
-namespace grid_map_filters {
+namespace grid_map {
 
 template<typename T>
 WeightedSumFilter<T>::WeightedSumFilter()
-      : layerOut_("traversability"),
-        normalize_(true)
+    : normalize_(true)
 {
 }
 
@@ -127,4 +126,5 @@ bool WeightedSumFilter<T>::update(const T& mapIn, T& mapOut)
 
 } /* namespace */
 
-PLUGINLIB_REGISTER_CLASS(WeightedSumFilter, grid_map_filters::WeightedSumFilter<grid_map::GridMap>, filters::FilterBase<grid_map::GridMap>)
+PLUGINLIB_REGISTER_CLASS(WeightedSumFilter, grid_map::WeightedSumFilter<grid_map::GridMap>,
+                         filters::FilterBase<grid_map::GridMap>)

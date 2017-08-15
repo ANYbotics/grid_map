@@ -14,21 +14,24 @@
 
 using namespace filters;
 
-namespace grid_map_filters {
+namespace grid_map {
 
 template<typename T>
 MeanInRadiusFilter<T>::MeanInRadiusFilter()
-    : radius_(0.0) {
+    : radius_(0.0)
+{
 
 }
 
 template<typename T>
-MeanInRadiusFilter<T>::~MeanInRadiusFilter() {
+MeanInRadiusFilter<T>::~MeanInRadiusFilter()
+{
 
 }
 
 template<typename T>
-bool MeanInRadiusFilter<T>::configure() {
+bool MeanInRadiusFilter<T>::configure()
+{
   if (!FilterBase < T > ::getParam(std::string("radius"), radius_)) {
     ROS_ERROR("MeanInRadius filter did not find parameter `radius`.");
     return false;
@@ -58,7 +61,8 @@ bool MeanInRadiusFilter<T>::configure() {
 }
 
 template<typename T>
-bool MeanInRadiusFilter<T>::update(const T& mapIn, T& mapOut) {
+bool MeanInRadiusFilter<T>::update(const T& mapIn, T& mapOut)
+{
   // Add new layers to the elevation map.
   mapOut = mapIn;
   mapOut.add(outputLayer_);
@@ -93,4 +97,5 @@ bool MeanInRadiusFilter<T>::update(const T& mapIn, T& mapOut) {
 
 } /* namespace */
 
-PLUGINLIB_REGISTER_CLASS(MeanInRadiusFilter, grid_map_filters::MeanInRadiusFilter<grid_map::GridMap>, filters::FilterBase<grid_map::GridMap>)
+PLUGINLIB_REGISTER_CLASS(MeanInRadiusFilter, grid_map::MeanInRadiusFilter<grid_map::GridMap>,
+                         filters::FilterBase<grid_map::GridMap>)

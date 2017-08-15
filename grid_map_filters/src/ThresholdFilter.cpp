@@ -15,7 +15,7 @@
 
 using namespace filters;
 
-namespace grid_map_filters {
+namespace grid_map {
 
 template<typename T>
 ThresholdFilter<T>::ThresholdFilter()
@@ -25,13 +25,11 @@ ThresholdFilter<T>::ThresholdFilter()
       upperThreshold_(1.0),
       setTo_(0.5)
 {
-
 }
 
 template<typename T>
 ThresholdFilter<T>::~ThresholdFilter()
 {
-
 }
 
 template<typename T>
@@ -41,13 +39,13 @@ bool ThresholdFilter<T>::configure()
   if (FilterBase<T>::getParam(std::string("lower_threshold"),
                               lowerThreshold_)) {
     useLowerThreshold_ = true;
-    ROS_INFO("lower threshold = %f", lowerThreshold_);
+    ROS_DEBUG("lower threshold = %f", lowerThreshold_);
   }
 
   if (FilterBase<T>::getParam(std::string("upper_threshold"),
                               upperThreshold_)) {
     useUpperThreshold_ = true;
-    ROS_INFO("upper threshold = %f", upperThreshold_);
+    ROS_DEBUG("upper threshold = %f", upperThreshold_);
   }
 
   if (!useLowerThreshold_ && !useUpperThreshold_) {
@@ -115,6 +113,5 @@ bool ThresholdFilter<T>::update(const T& mapIn, T& mapOut)
 
 } /* namespace */
 
-PLUGINLIB_REGISTER_CLASS(ThresholdFilter,
-                         grid_map_filters::ThresholdFilter<grid_map::GridMap>,
+PLUGINLIB_REGISTER_CLASS(ThresholdFilter, grid_map::ThresholdFilter<grid_map::GridMap>,
                          filters::FilterBase<grid_map::GridMap>)

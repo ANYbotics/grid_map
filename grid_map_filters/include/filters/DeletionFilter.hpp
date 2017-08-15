@@ -13,7 +13,7 @@
 #include <vector>
 #include <string>
 
-namespace grid_map_filters {
+namespace grid_map {
 
 /*!
  * Deletion filter class deletes layers of a grid map.

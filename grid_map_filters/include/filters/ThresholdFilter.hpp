@@ -13,7 +13,7 @@
 #include <vector>
 #include <string>
 
-namespace grid_map_filters {
+namespace grid_map {
 
 /*!
  * Threshold filter class to set values below/above a threshold to a

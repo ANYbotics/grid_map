@@ -13,7 +13,7 @@
 #include <vector>
 #include <string>
 
-namespace grid_map_filters {
+namespace grid_map {
 
 /*!
  * Filter class to compute the minimal value inside a radius.

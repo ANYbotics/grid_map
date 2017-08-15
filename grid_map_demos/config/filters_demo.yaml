@@ -1,10 +1,22 @@
 grid_map_filters:
-  - name: thresholdFilter
+  - name: threshold
     type: gridMapFilters/ThresholdFilter
     params:
       lower_threshold: 0.0
       set_to: .nan
       layers: [elevation]
+  - name: inpaint
+    type: gridMapCv/InpaintFilter
+    params:
+      radius: 0.05
+      input_layer: elevation
+      output_layer: inpainted
+  - name: mean_in_radius
+    type: gridMapFilters/MeanInRadiusFilter
+    params:
+      radius: 0.05
+      input_layer: inpainted
+      output_layer: averaged
 
 #  - name: surfaceNormalsFilter
 #    type: traversabilityFilters/SurfaceNormalsFilter

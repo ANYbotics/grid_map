@@ -2,12 +2,11 @@
  * InpaintFilter.hpp
  *
  *  Created on: May 6, 2017
- *      Author: Tanja Baumann
+ *      Author: Tanja Baumann, Peter Fankhauser
  *   Institute: ETH Zurich, Robotic Systems Lab
  */
 
-#ifndef INPAINTFILTER_HPP
-#define INPAINTFILTER_HPP
+#pragma once
 
 #include <filters/filter_base.h>
 
@@ -18,10 +17,10 @@
 #include <vector>
 #include <string>
 
-namespace grid_map_filters {
+namespace grid_map {
 
 /*!
- * Inpaint Filter class to use to OpenCV function inpaint to fill in holes in the input layer
+ * Uses OpenCV function to inpaint/fill holes in the input layer.
  */
 template<typename T>
 class InpaintFilter : public filters::FilterBase<T> {
@@ -43,9 +42,9 @@ class InpaintFilter : public filters::FilterBase<T> {
   virtual bool configure();
 
   /*!
-   * Adds a new output layer to the map
-   * Uses the OpenCV function inpaint to fill in holes in the input layer
-   * Saves to filled map in the outputlayer
+   * Adds a new output layer to the map.
+   * Uses the OpenCV function inpaint holes in the input layer.
+   * Saves to filled map in the outputlayer.
    * @param mapIn grid map containing input layer
    * @param mapOut grid map containing mapIn and inpainted input layer.
    */
@@ -53,14 +52,14 @@ class InpaintFilter : public filters::FilterBase<T> {
 
  private:
 
-  //! inpainting radius
+  //! Inpainting radius.
   double radius_;
-  //! input layer name
+
+  //! Input layer name.
   std::string inputLayer_;
-  //! map type
-  std::string type_;
+
+  //! Output layer name.
+  std::string outputLayer_;
 };
 
 } /* namespace */
-
-#endif

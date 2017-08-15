@@ -13,7 +13,7 @@
 
 using namespace filters;
 
-namespace grid_map_filters {
+namespace grid_map {
 
 template<typename T>
 DeletionFilter<T>::DeletionFilter()
@@ -62,6 +62,5 @@ bool DeletionFilter<T>::update(const T& mapIn, T& mapOut)
 
 } /* namespace */
 
-PLUGINLIB_REGISTER_CLASS(DeletionFilter,
-                         grid_map_filters::DeletionFilter<grid_map::GridMap>,
+PLUGINLIB_REGISTER_CLASS(DeletionFilter, grid_map::DeletionFilter<grid_map::GridMap>,
                          filters::FilterBase<grid_map::GridMap>)

@@ -6,12 +6,11 @@
  *   Institute: ETH Zurich, Robotic Systems Lab
  */
 
-#include <ros/ros.h>
+#include <filters/filter_chain.h>
 #include <grid_map_core/grid_map_core.hpp>
 #include <grid_map_ros/grid_map_ros.hpp>
 #include <grid_map_msgs/GridMap.h>
-//#include <grid_map_filters/grid_map_ros.hpp>
-#include <filters/filter_chain.h>
+#include <ros/ros.h>
 
 using namespace grid_map;
 
@@ -38,7 +37,10 @@ int main(int argc, char** argv)
     inputMap.getSize()(0), inputMap.getSize()(1),
     inputMap.getPosition().x(), inputMap.getPosition().y(), inputMap.getFrameId().c_str());
   inputMap["elevation"].setRandom();
-  inputMap["elevation"] *= 0.1;
+  inputMap["elevation"] *= 0.01;
+  for (grid_map::CircleIterator iterator(inputMap, Position(0.0, 0.0), 0.15); !iterator.isPastEnd(); ++iterator) {
+    inputMap.at("elevation", *iterator) = 0.1;
+  }
 
   while (nodeHandle.ok()) {
 
@@ -61,38 +63,6 @@ int main(int argc, char** argv)
     GridMapRosConverter::toMessage(outputMap, message);
     publisher.publish(message);
     ros::Duration(1.0).sleep();
-
-//    // Work with temporary inputMap in a loop.
-//    GridMap tempMap(map);
-//    Rate rate(10.0);
-//    ros::Time startTime = ros::Time::now();
-//    ros::Duration duration(0.0);
-//
-//    while (duration <= ros::Duration(10.0)) {
-//      ros::Time time = ros::Time::now();
-//      duration = time - startTime;
-//
-//      // Change position of the map with either the `move` or `setPosition` method.
-//      const double t = duration.toSec();
-//      Position newPosition = 0.03 * t * Position(cos(t), sin(t));
-//
-//      if (useMoveMethod) {
-//        tempMap.move(newPosition);
-//      } else {
-//        tempMap.setPosition(newPosition);
-//      }
-//
-//      // Publish grid map.
-//      tempMap.setTimestamp(time.toNSec());
-//      grid_map_msgs::GridMap message;
-//      GridMapRosConverter::toMessage(tempMap, message);
-//      publisher.publish(message);
-//      ROS_DEBUG("Grid map (duration %f) published with new position [%f, %f].",
-//                duration.toSec(), tempMap.getPosition().x(), tempMap.getPosition().y());
-//      rate.sleep();
-//    }
-//
-//    useMoveMethod = !useMoveMethod;
   }
 
   return 0;

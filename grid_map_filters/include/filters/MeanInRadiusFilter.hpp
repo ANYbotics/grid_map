@@ -13,7 +13,7 @@
 #include <vector>
 #include <string>
 
-namespace grid_map_filters {
+namespace grid_map {
 
 /*!
  * Filter class to find the mean of the values inside a radius.

@@ -14,21 +14,24 @@
 
 using namespace filters;
 
-namespace grid_map_filters {
+namespace grid_map {
 
 template<typename T>
 MinInRadiusFilter<T>::MinInRadiusFilter()
-    : radius_(0.0) {
+    : radius_(0.0)
+{
 
 }
 
 template<typename T>
-MinInRadiusFilter<T>::~MinInRadiusFilter() {
+MinInRadiusFilter<T>::~MinInRadiusFilter()
+{
 
 }
 
 template<typename T>
-bool MinInRadiusFilter<T>::configure() {
+bool MinInRadiusFilter<T>::configure()
+{
   if (!FilterBase < T > ::getParam(std::string("radius"), radius_)) {
     ROS_ERROR("MinInRadius filter did not find parameter `radius`.");
     return false;
@@ -58,7 +61,8 @@ bool MinInRadiusFilter<T>::configure() {
 }
 
 template<typename T>
-bool MinInRadiusFilter<T>::update(const T& mapIn, T& mapOut) {
+bool MinInRadiusFilter<T>::update(const T& mapIn, T& mapOut)
+{
   // Add new layer to the elevation map.
   mapOut = mapIn;
   mapOut.add(outputLayer_);
@@ -102,4 +106,4 @@ bool MinInRadiusFilter<T>::update(const T& mapIn, T& mapOut) {
 
 } /* namespace */
 
-PLUGINLIB_REGISTER_CLASS(MinInRadiusFilter, grid_map_filters::MinInRadiusFilter<grid_map::GridMap>, filters::FilterBase<grid_map::GridMap>)
+PLUGINLIB_REGISTER_CLASS(MinInRadiusFilter, grid_map::MinInRadiusFilter<grid_map::GridMap>, filters::FilterBase<grid_map::GridMap>)

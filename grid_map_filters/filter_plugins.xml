@@ -1,38 +1,33 @@
 <class_libraries>
   <library path="lib/libgrid_map_filters">
-    <class name="gridMapFilters/WeightedSumFilter" type="grid_map_filters::WeightedSumFilter<grid_map::GridMap>" base_class_type="filters::FilterBase<grid_map::GridMap>" >
+    <class name="gridMapFilters/WeightedSumFilter" type="grid_map::WeightedSumFilter<grid_map::GridMap>" base_class_type="filters::FilterBase<grid_map::GridMap>" >
       <description>
         Compute a weighted sum of layers.
       </description>
     </class>
-    <class name="gridMapFilters/MinFilter" type="grid_map_filters::MinFilter<grid_map::GridMap>" base_class_type="filters::FilterBase<grid_map::GridMap>" >
+    <class name="gridMapFilters/MinFilter" type="grid_map::MinFilter<grid_map::GridMap>" base_class_type="filters::FilterBase<grid_map::GridMap>" >
       <description>
         Pick the minimum for each cell out of different layers.
       </description>
     </class>
-    <class name="gridMapFilters/ThresholdFilter" type="grid_map_filters::ThresholdFilter<grid_map::GridMap>" base_class_type="filters::FilterBase<grid_map::GridMap>" >
+    <class name="gridMapFilters/ThresholdFilter" type="grid_map::ThresholdFilter<grid_map::GridMap>" base_class_type="filters::FilterBase<grid_map::GridMap>" >
       <description>
         Set values below/above a threshold to a specified value.
       </description>
     </class>
-    <class name="gridMapFilters/DeletionFilter" type="grid_map_filters::DeletionFilter<grid_map::GridMap>" base_class_type="filters::FilterBase<grid_map::GridMap>" >
+    <class name="gridMapFilters/DeletionFilter" type="grid_map::DeletionFilter<grid_map::GridMap>" base_class_type="filters::FilterBase<grid_map::GridMap>" >
       <description>
         Delete layers from a grid map.
       </description>
     </class>
-    <class name="gridMapFilters/MinInRadiusFilter" type="grid_map_filters::MinInRadiusFilter<grid_map::GridMap>" base_class_type="filters::FilterBase<grid_map::GridMap>" >
+    <class name="gridMapFilters/MinInRadiusFilter" type="grid_map::MinInRadiusFilter<grid_map::GridMap>" base_class_type="filters::FilterBase<grid_map::GridMap>" >
       <description>
         Compute for each cell of a layer the minimal value inside a radius.
       </description>
     </class>
-    <class name="gridMapFilters/MeanInRadiusFilter" type="grid_map_filters::MeanInRadiusFilter<grid_map::GridMap>" base_class_type="filters::FilterBase<grid_map::GridMap>" >
+    <class name="gridMapFilters/MeanInRadiusFilter" type="grid_map::MeanInRadiusFilter<grid_map::GridMap>" base_class_type="filters::FilterBase<grid_map::GridMap>" >
       <description>
         Compute for each cell of a layer the mean value inside a radius.
-      </description>
-    </class>
-    <class name="gridMapFilters/InpaintFilter" type="grid_map_filters::InpaintFilter<grid_map::GridMap>" base_class_type="filters::FilterBase<grid_map::GridMap>" >
-      <description>
-        This is filter which uses to OpenCV function inpaint to fill the holes in the input layer.
       </description>
     </class>
   </library>

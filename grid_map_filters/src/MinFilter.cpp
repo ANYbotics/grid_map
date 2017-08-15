@@ -13,19 +13,16 @@
 
 using namespace filters;
 
-namespace grid_map_filters {
+namespace grid_map {
 
 template<typename T>
 MinFilter<T>::MinFilter()
-    : layerOut_("traversability")
 {
-
 }
 
 template<typename T>
 MinFilter<T>::~MinFilter()
 {
-
 }
 
 template<typename T>
@@ -76,5 +73,5 @@ bool MinFilter<T>::update(const T& mapIn, T& mapOut)
 } /* namespace */
 
 PLUGINLIB_REGISTER_CLASS(MinFilter,
-                         grid_map_filters::MinFilter<grid_map::GridMap>,
+                         grid_map::MinFilter<grid_map::GridMap>,
                          filters::FilterBase<grid_map::GridMap>)
