@@ -753,9 +753,9 @@ namespace EigenLab
 			}
 		} else if (name == "cwiseMin") {
 			if (arg1.matrix().size() == 1) {
-				typename Derived::RealScalar arg1scalar = std::real(arg1.matrix()(0, 0));
-				//result.local() = arg0.matrix().cwiseMin(arg1scalar);
-				//result.mapLocal();
+				typename Derived::Scalar arg1scalar = arg1.matrix()(0, 0);
+				result.local() = arg0.matrix().cwiseMin(arg1scalar);
+				result.mapLocal();
 				return true;
 			} else if (arg0.matrix().cols() == arg1.matrix().cols() && arg0.matrix().rows() == arg1.matrix().rows()) {
 				result.local() = arg0.matrix().cwiseMin(arg1.matrix());
@@ -766,9 +766,9 @@ namespace EigenLab
 			}
 		} else if (name == "cwiseMax") {
 			if (arg1.matrix().size() == 1) {
-				typename Derived::RealScalar arg1scalar = std::real(arg1.matrix()(0, 0));
-				//result.local() = arg0.matrix().cwiseMax(arg1scalar);
-				//result.mapLocal();
+				typename Derived::Scalar arg1scalar = arg1.matrix()(0, 0);
+				result.local() = arg0.matrix().cwiseMax(arg1scalar);
+				result.mapLocal();
 				return true;
 			} else if (arg0.matrix().cols() == arg1.matrix().cols() && arg0.matrix().rows() == arg1.matrix().rows()) {
 				result.local() = arg0.matrix().cwiseMax(arg1.matrix());
