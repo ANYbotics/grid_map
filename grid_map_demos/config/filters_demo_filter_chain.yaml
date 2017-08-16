@@ -1,0 +1,47 @@
+grid_map_filters:
+
+  # Delete all layers expect for the noisy elevation map (`elevation_noisy`).
+  - name: delete_original_layers
+    type: gridMapFilters/DeletionFilter
+    params:
+      layers: [elevation, normal_x, normal_y, normal_z, noise, elevation_filtered, error]
+      
+  # Fill holes in the map with inpainting.
+  - name: inpaint
+    type: gridMapCv/InpaintFilter
+    params:
+      input_layer: elevation_noisy
+      output_layer: elevation_inpainted
+      radius: 0.05
+  
+  # Reduce noise with a radial blurring filter.
+  - name: mean_in_radius
+    type: gridMapFilters/MeanInRadiusFilter
+    params:
+      input_layer: elevation_inpainted
+      output_layer: elevation_averaged
+      radius: 0.1
+  
+  # Compute surface normals.
+  - name: surface_normals
+    type: gridMapFilters/NormalVectorsFilter
+    params:
+      input_layer: elevation_averaged
+      output_layers_prefix: normal_vectors_
+      radius: 0.05
+      normal_vector_positive_axis: z
+
+  # Compute traversability (between 0 and 1) based on the slope.
+  - name: traversability
+    type: gridMapFilters/MathExpressionFilter
+    params:
+      expression: cwiseMax(1.0 - (acos(normal_vectors_z) / 0.4), 0.0)
+      output_layer: traversability
+  
+  # Invalidate cells with a traversability lower then 0.3.
+  - name: threshold
+    type: gridMapFilters/ThresholdFilter
+    params:
+      layers: [traversability]
+      lower_threshold: 0.3
+      set_to: .nan

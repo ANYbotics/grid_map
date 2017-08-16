@@ -101,6 +101,7 @@ add_executable(
 add_executable(
   filters_demo
   src/filters_demo_node.cpp
+  src/FiltersDemo.cpp
 )
 
 ## Specify libraries to link a library or executable target against

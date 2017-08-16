@@ -50,17 +50,13 @@ include_directories(
 
 ## Declare a cpp library
 add_library(${PROJECT_NAME}
-  src/WeightedSumFilter.cpp
-  src/MinFilter.cpp
   src/ThresholdFilter.cpp
   src/DeletionFilter.cpp
   src/MinInRadiusFilter.cpp
   src/MeanInRadiusFilter.cpp
   src/NormalVectorsFilter.cpp
   src/MathExpressionFilter.cpp
-  src/SlopeFilter.cpp
-  src/StepFilter.cpp
-  src/RoughnessFilter.cpp
+  src/SetBasicLayersFilter.cpp
 )
 
 target_link_libraries(${PROJECT_NAME}

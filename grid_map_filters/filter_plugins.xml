@@ -1,15 +1,5 @@
 <class_libraries>
   <library path="lib/libgrid_map_filters">
-    <class name="gridMapFilters/WeightedSumFilter" type="grid_map::WeightedSumFilter<grid_map::GridMap>" base_class_type="filters::FilterBase<grid_map::GridMap>" >
-      <description>
-        Compute a weighted sum of layers.
-      </description>
-    </class>
-    <class name="gridMapFilters/MinFilter" type="grid_map::MinFilter<grid_map::GridMap>" base_class_type="filters::FilterBase<grid_map::GridMap>" >
-      <description>
-        Pick the minimum for each cell out of different layers.
-      </description>
-    </class>
     <class name="gridMapFilters/ThresholdFilter" type="grid_map::ThresholdFilter<grid_map::GridMap>" base_class_type="filters::FilterBase<grid_map::GridMap>" >
       <description>
         Set values below/above a threshold to a specified value.
@@ -40,14 +30,9 @@
         Parse and evaluate a mathematical matrix expression with layers of a grid map.
       </description>
     </class>
-    <class name="gridMapFilters/SlopeFilter" type="grid_map::SlopeFilter<grid_map::GridMap>" base_class_type="filters::FilterBase<grid_map::GridMap>" >
+    <class name="gridMapFilters/SetBasicLayersFilter" type="grid_map::SetBasicLayersFilter<grid_map::GridMap>" base_class_type="filters::FilterBase<grid_map::GridMap>" >
       <description>
-        This is a slope filter for an elevation map.
-      </description>
-    </class>
-    <class name="gridMapFilters/StepFilter" type="grid_map::StepFilter<grid_map::GridMap>" base_class_type="filters::FilterBase<grid_map::GridMap>" >
-      <description>
-        This is a step filter for an elevation map.
+        Set specified layers of a grid map as basic layers.
       </description>
     </class>
     <class name="gridMapFilters/RoughnessFilter" type="grid_map::RoughnessFilter<grid_map::GridMap>" base_class_type="filters::FilterBase<grid_map::GridMap>" >

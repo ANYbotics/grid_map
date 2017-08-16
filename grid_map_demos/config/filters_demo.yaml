@@ -1,67 +1,24 @@
-grid_map_filters:
-  - name: threshold
-    type: gridMapFilters/ThresholdFilter
-    params:
-      layers: [elevation]
-      lower_threshold: 0.0
-      set_to: .nan
-  - name: inpaint
-    type: gridMapCv/InpaintFilter
-    params:
-      input_layer: elevation
-      output_layer: inpainted
-      radius: 0.05
-  - name: mean_in_radius
-    type: gridMapFilters/MeanInRadiusFilter
-    params:
-      input_layer: inpainted
-      output_layer: averaged
-      radius: 0.05
-  - name: normal_vectors
-    type: gridMapFilters/NormalVectorsFilter
-    params:
-      input_layer: inpainted
-      output_layers_prefix: normal_vectors_
-      radius: 0.04
-      normal_vector_positive_axis: z
-  - name: traversability_slope
-    type: gridMapFilters/MathExpressionFilter
-    params:
-      expression: cwiseMax(1.0 - (acos(normal_vectors_z) / 0.78), 0.0)
-      output_layer: traversability
+grid_map_topic: /grid_map_filter_demo/filtered_map
 
-#  - name: surfaceNormalsFilter
-#    type: traversabilityFilters/SurfaceNormalsFilter
-#    params:
-#      estimation_radius: 0.05
-#      surface_normal_positive_axis: "z"
-#  - name: slopeFilter
-#    type: traversabilityFilters/SlopeFilter
-#    params:
-#      map_type: traversability_slope
-#      critical_value: 1.0
-#  - name: stepFilter
-#    type: traversabilityFilters/StepFilter
-#    params:
-#      map_type: traversability_step
-#      critical_value: 0.12
-#      first_window_radius: 0.04
-#      second_window_radius: 0.04
-#      critical_cell_number: 4
-#  - name: roughnessFilter
-#    type: traversabilityFilters/RoughnessFilter
-#    params:
-#      map_type: traversability_roughness
-#      critical_value: 0.05
-#      estimation_radius: 0.05
-#  - name: weightedSumFilter
-#    type: gridMapFilters/WeightedSumFilter
-#    params:
-#      layers: [traversability_slope, traversability_step, traversability_roughness]
-#      weights: [1, 1, 1]
-#      layer_out: traversability
-#      normalize: 1
-#  - name: deletionFilter
-#    type: gridMapFilters/DeletionFilter
-#    params:
-#      layers: [surface_normal_x, surface_normal_y, surface_normal_z]
+grid_map_visualizations:
+
+  - name: elevation_points
+    type: point_cloud
+    params:
+     layer: elevation_averaged
+     
+  - name: surface_normals
+    type: vectors
+    params:
+     layer_prefix: normal_vectors_
+     position_layer: elevation_averaged
+     scale: 0.06
+     line_width: 0.005
+     color: 15600153 # red
+
+  - name: elevation_grid
+    type: occupancy_grid
+    params:
+     layer: traversability
+     data_min: 0.0
+     data_max: 1.0
