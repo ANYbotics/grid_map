@@ -758,8 +758,8 @@ namespace EigenLab
 				//result.mapLocal();
 				return true;
 			} else if (arg0.matrix().cols() == arg1.matrix().cols() && arg0.matrix().rows() == arg1.matrix().rows()) {
-				//result.local() = arg0.matrix().cwiseMin(arg1.matrix());
-				//result.mapLocal();
+				result.local() = arg0.matrix().cwiseMin(arg1.matrix());
+				result.mapLocal();
 				return true;
 			} else {
 				throw std::runtime_error("Invalid dimension argument for function '" + name + "(...)'.");
@@ -771,8 +771,8 @@ namespace EigenLab
 				//result.mapLocal();
 				return true;
 			} else if (arg0.matrix().cols() == arg1.matrix().cols() && arg0.matrix().rows() == arg1.matrix().rows()) {
-				//result.local() = arg0.matrix().cwiseMax(arg1.matrix());
-				//result.mapLocal();
+				result.local() = arg0.matrix().cwiseMax(arg1.matrix());
+				result.mapLocal();
 				return true;
 			} else {
 				throw std::runtime_error("Invalid dimension argument for function '" + name + "(...)'.");
