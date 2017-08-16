@@ -1,7 +1,7 @@
 /*
- * WeightedSumFilter.hpp
+ * MinFilter.hpp
  *
- *  Created on: Mar 16, 2015
+ *  Created on: Mar 18, 2015
  *      Author: Martin Wermelinger, Peter Fankhauser
  *   Institute: ETH Zurich, Autonomous Systems Lab
  */
@@ -16,23 +16,22 @@
 namespace grid_map {
 
 /*!
- * Weighted sum filter class to compute the weighted sum of different
- * layers of a grid map.
+ * Minimum filter class takes the minimum out of different layers of a grid map.
  */
 template<typename T>
-class WeightedSumFilter : public filters::FilterBase<T>
+class MinFilter : public filters::FilterBase<T>
 {
 
  public:
   /*!
    * Constructor
    */
-  WeightedSumFilter();
+  MinFilter();
 
   /*!
    * Destructor.
    */
-  virtual ~WeightedSumFilter();
+  virtual ~MinFilter();
 
   /*!
    * Configures the filter from parameters on the parameter server.
@@ -40,8 +39,8 @@ class WeightedSumFilter : public filters::FilterBase<T>
   virtual bool configure();
 
   /*!
-   * Computes the weighted sum of different layers of a grid map.
-   * @param mapIn gridMap with the different layers to sum.
+   * Takes the minimum out of different layers of a grid map.
+   * @param mapIn gridMap with the different layers to take the min.
    * @param mapOut gridMap with an additional layer containing the sum.
    */
   virtual bool update(const T& mapIn, T& mapOut);
@@ -51,14 +50,9 @@ class WeightedSumFilter : public filters::FilterBase<T>
   //! List of layers that are added together.
   std::vector<std::string> layers_;
 
-  //! List of weights of the types that are added together
-  std::vector<double> weights_;
+  //! Layer type for summation.
+  std::string outputLayer_;
 
-  //! Map layer for output of the summation.
-  std::string layerOut_;
-
-  //! If true normalize weights.
-  bool normalize_;
 };
 
 } /* namespace */

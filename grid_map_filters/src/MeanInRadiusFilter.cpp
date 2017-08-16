@@ -6,11 +6,10 @@
  *   Institute: ETH Zurich, Robotic Systems Lab
  */
 
-#include "filters/MeanInRadiusFilter.hpp"
-#include <pluginlib/class_list_macros.h>
+#include "grid_map_filters/MeanInRadiusFilter.hpp"
 
-// Grid Map
 #include <grid_map_core/grid_map_core.hpp>
+#include <pluginlib/class_list_macros.h>
 
 using namespace filters;
 
@@ -20,13 +19,11 @@ template<typename T>
 MeanInRadiusFilter<T>::MeanInRadiusFilter()
     : radius_(0.0)
 {
-
 }
 
 template<typename T>
 MeanInRadiusFilter<T>::~MeanInRadiusFilter()
 {
-
 }
 
 template<typename T>

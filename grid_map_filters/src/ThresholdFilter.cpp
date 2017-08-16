@@ -6,12 +6,10 @@
  *   Institute: ETH Zurich, Autonomous Systems Lab
  */
 
-#include "filters/ThresholdFilter.hpp"
+#include "grid_map_filters/ThresholdFilter.hpp"
 
-#include <grid_map_core/GridMap.hpp>
-#include <grid_map_core/iterators/GridMapIterator.hpp>
+#include <grid_map_core/grid_map_core.hpp>
 #include <pluginlib/class_list_macros.h>
-#include <ros/ros.h>
 
 using namespace filters;
 

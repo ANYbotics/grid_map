@@ -30,5 +30,25 @@
         Compute for each cell of a layer the mean value inside a radius.
       </description>
     </class>
+    <class name="gridMapFilters/NormalVectorsFilter" type="grid_map::NormalVectorsFilter<grid_map::GridMap>" base_class_type="filters::FilterBase<grid_map::GridMap>" >
+      <description>
+        Compute the normal vectors of a layer in a map.
+      </description>
+    </class>
+    <class name="gridMapFilters/SlopeFilter" type="grid_map::SlopeFilter<grid_map::GridMap>" base_class_type="filters::FilterBase<grid_map::GridMap>" >
+      <description>
+        This is a slope filter for an elevation map.
+      </description>
+    </class>
+    <class name="gridMapFilters/StepFilter" type="grid_map::StepFilter<grid_map::GridMap>" base_class_type="filters::FilterBase<grid_map::GridMap>" >
+      <description>
+        This is a step filter for an elevation map.
+      </description>
+    </class>
+    <class name="gridMapFilters/RoughnessFilter" type="grid_map::RoughnessFilter<grid_map::GridMap>" base_class_type="filters::FilterBase<grid_map::GridMap>" >
+      <description>
+        This is a roughness filter for an elevation map.
+      </description>
+    </class>
   </library>
 </class_libraries>

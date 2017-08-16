@@ -6,7 +6,7 @@
  *   Institute: ETH Zurich, Autonomous Systems Lab
  */
 
-#include "filters/WeightedSumFilter.hpp"
+#include "grid_map_filters/WeightedSumFilter.hpp"
 
 #include <grid_map_core/GridMap.hpp>
 #include <pluginlib/class_list_macros.h>
@@ -30,8 +30,8 @@ template<typename T>
 bool WeightedSumFilter<T>::configure()
 {
   // Load Parameters
-  if (!FilterBase<T>::getParam(std::string("layer_out"), layerOut_)) {
-    ROS_ERROR("WeightedSumFilter did not find parameter 'layer_out'.");
+  if (!FilterBase<T>::getParam(std::string("output_layer"), outputLayer_)) {
+    ROS_ERROR("WeightedSumFilter did not find parameter 'output_layer'.");
     return false;
   }
 
@@ -80,7 +80,7 @@ template<typename T>
 bool WeightedSumFilter<T>::update(const T& mapIn, T& mapOut)
 {
   mapOut = mapIn;
-  mapOut.add(layerOut_);
+  mapOut.add(outputLayer_);
   bool hasSum = false;
 
   grid_map::Matrix sum, newSummand;
@@ -99,7 +99,7 @@ bool WeightedSumFilter<T>::update(const T& mapIn, T& mapOut)
     }
     else {
       newSummand = weights_.at(i) * mapOut.get(layer);
-      if (layerOut_ != "traversability") {
+      if (outputLayer_ != "traversability") {
         sum += newSummand;
       } else {
         // Mark the addition of a non-traversable cell as non-traversable (set to zero)
@@ -119,7 +119,7 @@ bool WeightedSumFilter<T>::update(const T& mapIn, T& mapOut)
     }
     ++i;
   }
-  mapOut.add(layerOut_, sum);
+  mapOut.add(outputLayer_, sum);
 
   return true;
 }

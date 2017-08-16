@@ -6,9 +6,9 @@
  *   Institute: ETH Zurich, Autonomous Systems Lab
  */
 
-#include "filters/MinFilter.hpp"
+#include "grid_map_filters/MinFilter.hpp"
 
-#include <grid_map_core/GridMap.hpp>
+#include <grid_map_core/grid_map_core.hpp>
 #include <pluginlib/class_list_macros.h>
 
 using namespace filters;
@@ -29,8 +29,8 @@ template<typename T>
 bool MinFilter<T>::configure()
 {
   // Load Parameters
-  if (!FilterBase<T>::getParam(std::string("layer_out"), layerOut_)) {
-    ROS_ERROR("MinFilter did not find parameter 'layer_out'.");
+  if (!FilterBase<T>::getParam(std::string("output_layer"), outputLayer_)) {
+    ROS_ERROR("MinFilter did not find parameter 'output_layer'.");
     return false;
   }
 
@@ -46,7 +46,7 @@ template<typename T>
 bool MinFilter<T>::update(const T& mapIn, T& mapOut)
 {
   mapOut = mapIn;
-  mapOut.add(layerOut_);
+  mapOut.add(outputLayer_);
   bool hasMin = false;
 
   grid_map::Matrix minMatrix;
@@ -65,7 +65,7 @@ bool MinFilter<T>::update(const T& mapIn, T& mapOut)
       minMatrix = minMatrix.cwiseMin(mapOut.get(layer));
     }
   }
-  mapOut.add(layerOut_, minMatrix);
+  mapOut.add(outputLayer_, minMatrix);
 
   return true;
 }

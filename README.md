@@ -20,8 +20,8 @@ The source code is released under a [BSD 3-Clause license](LICENSE).
 
 **Author: Péter Fankhauser<br />
 Maintainer: Péter Fankhauser, pfankhauser@ethz.ch<br />
-With contributions by: Jeff Delmerico, Remo Diethelm, Perry Franklin, Dominic Jud, Ralph Kaestner, Philipp Krüsi, Alex Millane, Daniel Stonier, Elena Stumm, Martin Wermelinger, Christos Zalidis<br />
-Affiliation: Autonomous Systems Lab, ETH Zurich**
+With contributions by: Tanja Baumann, Jeff Delmerico, Remo Diethelm, Perry Franklin, Dominic Jud, Ralph Kaestner, Philipp Krüsi, Alex Millane, Daniel Stonier, Elena Stumm, Martin Wermelinger, Christos Zalidis<br />
+Affiliation: Robotic Systems Lab, ETH Zurich**
 
 ![Grid map example in RViz](grid_map_rviz_plugin/doc/grid_map_rviz_plugin_example.png)
 

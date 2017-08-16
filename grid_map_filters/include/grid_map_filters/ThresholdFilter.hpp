@@ -10,8 +10,8 @@
 
 #include <filters/filter_base.h>
 
-#include <vector>
 #include <string>
+#include <vector>
 
 namespace grid_map {
 

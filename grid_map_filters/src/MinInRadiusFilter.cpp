@@ -6,11 +6,10 @@
  *   Institute: ETH Zurich, Robotic Systems Lab
  */
 
-#include "filters/MinInRadiusFilter.hpp"
-#include <pluginlib/class_list_macros.h>
+#include "grid_map_filters/MinInRadiusFilter.hpp"
 
-// Grid Map
 #include <grid_map_core/grid_map_core.hpp>
+#include <pluginlib/class_list_macros.h>
 
 using namespace filters;
 
@@ -20,13 +19,11 @@ template<typename T>
 MinInRadiusFilter<T>::MinInRadiusFilter()
     : radius_(0.0)
 {
-
 }
 
 template<typename T>
 MinInRadiusFilter<T>::~MinInRadiusFilter()
 {
-
 }
 
 template<typename T>
@@ -41,7 +38,6 @@ bool MinInRadiusFilter<T>::configure()
     ROS_ERROR("MinInRadius filter: Radius must be greater than zero.");
     return false;
   }
-
   ROS_DEBUG("Radius = %f.", radius_);
 
   if (!FilterBase < T > ::getParam(std::string("input_layer"), inputLayer_)) {

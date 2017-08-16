@@ -6,7 +6,7 @@
  *   Institute: ETH Zurich, Autonomous Systems Lab
  */
 
-#include "filters/DeletionFilter.hpp"
+#include "grid_map_filters/DeletionFilter.hpp"
 
 #include <grid_map_core/GridMap.hpp>
 #include <pluginlib/class_list_macros.h>
@@ -18,13 +18,11 @@ namespace grid_map {
 template<typename T>
 DeletionFilter<T>::DeletionFilter()
 {
-
 }
 
 template<typename T>
 DeletionFilter<T>::~DeletionFilter()
 {
-
 }
 
 template<typename T>
