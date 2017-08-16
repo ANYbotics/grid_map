@@ -72,6 +72,4 @@ bool MinFilter<T>::update(const T& mapIn, T& mapOut)
 
 } /* namespace */
 
-PLUGINLIB_REGISTER_CLASS(MinFilter,
-                         grid_map::MinFilter<grid_map::GridMap>,
-                         filters::FilterBase<grid_map::GridMap>)
+PLUGINLIB_REGISTER_CLASS(MinFilter, grid_map::MinFilter<grid_map::GridMap>, filters::FilterBase<grid_map::GridMap>)

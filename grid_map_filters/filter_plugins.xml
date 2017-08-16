@@ -35,6 +35,11 @@
         Compute the normal vectors of a layer in a map.
       </description>
     </class>
+    <class name="gridMapFilters/MathExpressionFilter" type="grid_map::MathExpressionFilter<grid_map::GridMap>" base_class_type="filters::FilterBase<grid_map::GridMap>" >
+      <description>
+        Parse and evaluate a mathematical matrix expression with layers of a grid map.
+      </description>
+    </class>
     <class name="gridMapFilters/SlopeFilter" type="grid_map::SlopeFilter<grid_map::GridMap>" base_class_type="filters::FilterBase<grid_map::GridMap>" >
       <description>
         This is a slope filter for an elevation map.

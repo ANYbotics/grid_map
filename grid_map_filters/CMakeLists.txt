@@ -56,6 +56,11 @@ add_library(${PROJECT_NAME}
   src/DeletionFilter.cpp
   src/MinInRadiusFilter.cpp
   src/MeanInRadiusFilter.cpp
+  src/NormalVectorsFilter.cpp
+  src/MathExpressionFilter.cpp
+  src/SlopeFilter.cpp
+  src/StepFilter.cpp
+  src/RoughnessFilter.cpp
 )
 
 target_link_libraries(${PROJECT_NAME}

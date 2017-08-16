@@ -22,8 +22,13 @@ grid_map_filters:
     params:
       input_layer: inpainted
       output_layers_prefix: normal_vectors_
-      radius: 0.05
+      radius: 0.04
       normal_vector_positive_axis: z
+  - name: traversability_slope
+    type: gridMapFilters/MathExpressionFilter
+    params:
+      expression: cwiseMax(1.0 - (acos(normal_vectors_z) / 0.78), 0.0)
+      output_layer: traversability
 
 #  - name: surfaceNormalsFilter
 #    type: traversabilityFilters/SurfaceNormalsFilter
