@@ -8,6 +8,7 @@ find_package(catkin REQUIRED COMPONENTS
   grid_map_core
   grid_map_ros
   grid_map_msgs
+  grid_map_costmap_2d
 )
 
 ## System dependencies are found with CMake's conventions
@@ -31,6 +32,7 @@ catkin_package(
     grid_map_ros
     grid_map_core
     grid_map_msgs
+    grid_map_costmap_2d
   DEPENDS
     #Eigen3
 )

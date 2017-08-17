@@ -12,7 +12,5 @@
   <depend>grid_map_core</depend>
   <depend>grid_map_ros</depend>
   <depend>grid_map_msgs</depend>
-  <!-- <export>                                            -->
-  <!--   <filters plugin="${prefix}/filter_plugins.xml" /> -->
-  <!-- </export>                                           -->
+  <depend>grid_map_costmap_2d</depend>
 </package>
