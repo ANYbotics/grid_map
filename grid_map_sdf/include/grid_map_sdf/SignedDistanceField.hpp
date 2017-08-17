@@ -51,7 +51,7 @@ class SignedDistanceField
   Size size_;
   Position mapPosition_;
   std::vector<Matrix> data_;
-  double zIndexStart_;
+  double zIndexStartHeight_;
   double maxDistance_;
   Eigen::MatrixXf get2dSDF(Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic>& mat);
 
