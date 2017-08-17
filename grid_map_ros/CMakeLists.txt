@@ -17,7 +17,6 @@ find_package(catkin REQUIRED COMPONENTS
   rosbag
   tf
   visualization_msgs
-  grid_map_costmap_2d
 )
 
 ## System dependencies are found with CMake's conventions
@@ -50,7 +49,6 @@ catkin_package(
     rosbag
     tf
     visualization_msgs
-    grid_map_costmap_2d
   DEPENDS
 )
 
