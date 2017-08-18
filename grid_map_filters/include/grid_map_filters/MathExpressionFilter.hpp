@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include "EigenLab/EigenLab.h"
+
 #include <filters/filter_base.h>
 
 #include <string>
@@ -45,6 +47,8 @@ class MathExpressionFilter : public filters::FilterBase<T>
   virtual bool update(const T& mapIn, T& mapOut);
 
  private:
+  //! EigenLab parser.
+  EigenLab::Parser<Eigen::MatrixXf> parser_;
 
   //! Expression to parse.
   std::string expression_;

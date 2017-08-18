@@ -5,11 +5,6 @@
         Set values below/above a threshold to a specified value.
       </description>
     </class>
-    <class name="gridMapFilters/DeletionFilter" type="grid_map::DeletionFilter<grid_map::GridMap>" base_class_type="filters::FilterBase<grid_map::GridMap>" >
-      <description>
-        Delete layers from a grid map.
-      </description>
-    </class>
     <class name="gridMapFilters/MinInRadiusFilter" type="grid_map::MinInRadiusFilter<grid_map::GridMap>" base_class_type="filters::FilterBase<grid_map::GridMap>" >
       <description>
         Compute for each cell of a layer the minimal value inside a radius.
@@ -30,14 +25,24 @@
         Parse and evaluate a mathematical matrix expression with layers of a grid map.
       </description>
     </class>
+    <class name="gridMapFilters/SlidingWindowMathExpressionFilter" type="grid_map::SlidingWindowMathExpressionFilter<grid_map::GridMap>" base_class_type="filters::FilterBase<grid_map::GridMap>" >
+      <description>
+        Parse and evaluate a mathematical matrix expression within a sliding window on a layer of a grid map.
+      </description>
+    </class>
+    <class name="gridMapFilters/DuplicationFilter" type="grid_map::DuplicationFilter<grid_map::GridMap>" base_class_type="filters::FilterBase<grid_map::GridMap>" >
+      <description>
+        Duplicate a layer of a grid map.
+      </description>
+    </class>
+    <class name="gridMapFilters/DeletionFilter" type="grid_map::DeletionFilter<grid_map::GridMap>" base_class_type="filters::FilterBase<grid_map::GridMap>" >
+      <description>
+        Delete layers from a grid map.
+      </description>
+    </class>
     <class name="gridMapFilters/SetBasicLayersFilter" type="grid_map::SetBasicLayersFilter<grid_map::GridMap>" base_class_type="filters::FilterBase<grid_map::GridMap>" >
       <description>
         Set specified layers of a grid map as basic layers.
-      </description>
-    </class>
-    <class name="gridMapFilters/RoughnessFilter" type="grid_map::RoughnessFilter<grid_map::GridMap>" base_class_type="filters::FilterBase<grid_map::GridMap>" >
-      <description>
-        This is a roughness filter for an elevation map.
       </description>
     </class>
   </library>

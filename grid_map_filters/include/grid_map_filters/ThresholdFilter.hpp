@@ -49,8 +49,8 @@ class ThresholdFilter : public filters::FilterBase<T>
 
  private:
 
-  //! List of layers the threshold should be applied
-  std::vector<std::string> layers_;
+  //! Layer the threshold should be applied to.
+  std::string layer_;
 
   //! Lower Threshold
   double lowerThreshold_;

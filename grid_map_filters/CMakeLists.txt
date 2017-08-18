@@ -51,11 +51,13 @@ include_directories(
 ## Declare a cpp library
 add_library(${PROJECT_NAME}
   src/ThresholdFilter.cpp
-  src/DeletionFilter.cpp
   src/MinInRadiusFilter.cpp
   src/MeanInRadiusFilter.cpp
   src/NormalVectorsFilter.cpp
   src/MathExpressionFilter.cpp
+  src/SlidingWindowMathExpressionFilter.cpp
+  src/DuplicationFilter.cpp
+  src/DeletionFilter.cpp
   src/SetBasicLayersFilter.cpp
 )
 

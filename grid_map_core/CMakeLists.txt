@@ -66,6 +66,7 @@ add_library(${PROJECT_NAME}
    src/iterators/SpiralIterator.cpp
    src/iterators/PolygonIterator.cpp
    src/iterators/LineIterator.cpp
+   src/iterators/SlidingWindowIterator.cpp
 )
 
 target_link_libraries(${PROJECT_NAME}
@@ -115,7 +116,9 @@ catkin_add_gtest(${PROJECT_NAME}-test
   test/PolygonIteratorTest.cpp
   test/PolygonTest.cpp
   test/EigenPluginsTest.cpp
-  test/SpiralIteratorTest.cpp)
+  test/SpiralIteratorTest.cpp
+  test/SlidingWindowIteratorTest.cpp
+  )
 endif()
 
 if(TARGET ${PROJECT_NAME}-test)

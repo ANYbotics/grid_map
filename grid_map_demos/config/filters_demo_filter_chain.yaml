@@ -5,7 +5,23 @@ grid_map_filters:
     type: gridMapFilters/DeletionFilter
     params:
       layers: [elevation, normal_x, normal_y, normal_z, noise, elevation_filtered, error]
-      
+
+  # # Duplicate layer to perform average smoothing and hole filling on it.
+  # - name: duplicate_elevation_layer
+  #   type: gridMapFilters/DuplicationFilter
+  #   params:
+  #     input_layer: elevation_noisy
+  #     output_layer: elevation_averaged_smoothened
+  #
+  # # Perform averages smoothing with sliding window filter.
+  # - name: sliding_window
+  #   type: gridMapFilters/SlidingWindowMathExpressionFilter
+  #   params:
+  #     layer: elevation_averaged_smoothened
+  #     expression: minOfFinites(elevation_averaged_smoothened)
+  #     compute_empty_cells: true
+  #     window_size: 5
+
   # Fill holes in the map with inpainting.
   - name: inpaint
     type: gridMapCv/InpaintFilter
@@ -13,7 +29,7 @@ grid_map_filters:
       input_layer: elevation_noisy
       output_layer: elevation_inpainted
       radius: 0.05
-  
+
   # Reduce noise with a radial blurring filter.
   - name: mean_in_radius
     type: gridMapFilters/MeanInRadiusFilter
@@ -21,7 +37,7 @@ grid_map_filters:
       input_layer: elevation_inpainted
       output_layer: elevation_averaged
       radius: 0.1
-  
+
   # Compute surface normals.
   - name: surface_normals
     type: gridMapFilters/NormalVectorsFilter
@@ -37,11 +53,11 @@ grid_map_filters:
     params:
       expression: cwiseMax(1.0 - (acos(normal_vectors_z) / 0.4), 0.0)
       output_layer: traversability
-  
+
   # Invalidate cells with a traversability lower then 0.3.
   - name: threshold
     type: gridMapFilters/ThresholdFilter
     params:
-      layers: [traversability]
+      layer: traversability
       lower_threshold: 0.3
       set_to: .nan

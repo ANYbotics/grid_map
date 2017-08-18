@@ -86,7 +86,7 @@ public:
    */
   bool isPastEnd() const;
 
-private:
+protected:
 
   //! Size of the buffer.
   Size size_;

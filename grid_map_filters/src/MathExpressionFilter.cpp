@@ -7,7 +7,6 @@
  */
 
 #include "grid_map_filters/MathExpressionFilter.hpp"
-#include "EigenLab/EigenLab.h"
 
 #include <grid_map_core/grid_map_core.hpp>
 #include <pluginlib/class_list_macros.h>
@@ -39,6 +38,7 @@ bool MathExpressionFilter<T>::configure()
     return false;
   }
 
+  parser_.setCacheExpressions(false); // TODO Why doesn't this work with true?
   return true;
 }
 
@@ -46,14 +46,10 @@ template<typename T>
 bool MathExpressionFilter<T>::update(const T& mapIn, T& mapOut)
 {
   mapOut = mapIn;
-  EigenLab::Parser<Eigen::MatrixXf> parser;
-
   for (const auto& layer : mapOut.getLayers()) {
-    parser.var(layer).setLocal(mapOut[layer]);
+    parser_.var(layer).setLocal(mapOut[layer]);
   }
-
-  EigenLab::Value<Eigen::MatrixXf> result;
-  result = parser.eval(expression_);
+  EigenLab::Value<Eigen::MatrixXf> result(parser_.eval(expression_));
   mapOut.add(outputLayer_, result.matrix());
   return true;
 }

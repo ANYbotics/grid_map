@@ -253,13 +253,17 @@ namespace EigenLab
 		mFunctions.push_back("size");
 		if (has_operator_lt<typename Derived::Scalar>::value) {
 			mFunctions.push_back("min");
+			mFunctions.push_back("minOfFinites");
 			mFunctions.push_back("max");
+			mFunctions.push_back("maxOfFinites");
 			mFunctions.push_back("absmax");
 			mFunctions.push_back("cwiseMin");
 			mFunctions.push_back("cwiseMax");
 		}
 		mFunctions.push_back("mean");
+		mFunctions.push_back("meanOfFinites");
 		mFunctions.push_back("sum");
+		mFunctions.push_back("sumOfFinites");
 		mFunctions.push_back("prod");
 
 		// Matrix operations.
@@ -675,8 +679,14 @@ namespace EigenLab
 		if(name == "min") {
 			result.setLocal(arg.matrix().minCoeff());
 			return true;
+    } else if(name == "minOfFinites") {
+      result.setLocal(arg.matrix().minCoeffOfFinites());
+      return true;
 		} else if(name == "max") {
 			result.setLocal(arg.matrix().maxCoeff());
+			return true;
+		} else if(name == "maxOfFinites") {
+			result.setLocal(arg.matrix().maxCoeffOfFinites());
 			return true;
 		} else if(name == "absmax") {
 			typename Derived::Scalar minimum = arg.matrix().minCoeff();
@@ -846,8 +856,14 @@ namespace EigenLab
 			} else if(name == "mean") {
 				result.setLocal(arg.matrix().mean());
 				return;
+      } else if(name == "meanOfFinites") {
+        result.setLocal(arg.matrix().meanOfFinites());
+        return;
 			} else if(name == "sum") {
 				result.setLocal(arg.matrix().sum());
+				return;
+			} else if(name == "sumOfFinites") {
+				result.setLocal(arg.matrix().sumOfFinites());
 				return;
 			} else if(name == "prod") {
 				result.setLocal(arg.matrix().prod());
