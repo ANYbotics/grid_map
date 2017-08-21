@@ -64,7 +64,7 @@ const Matrix SlidingWindowIterator::getData() const
 
   switch (edgeHandling_) {
     case EdgeHandling::INSIDE:
-    case EdgeHandling::CUTOFF:
+    case EdgeHandling::CROP:
       return data_.block(topLeftIndex(0), topLeftIndex(1), adjustedWindowSize(0), adjustedWindowSize(1));
     case EdgeHandling::EMPTY:
     case EdgeHandling::MEAN:
@@ -77,6 +77,7 @@ const Matrix SlidingWindowIterator::getData() const
           data_.block(topLeftIndex(0), topLeftIndex(1), adjustedWindowSize(0), adjustedWindowSize(1));
       return returnData;
   }
+  return Matrix::Zero(0, 0);
 }
 
 void SlidingWindowIterator::setup(const GridMap& gridMap)

@@ -45,5 +45,10 @@
         Set specified layers of a grid map as basic layers.
       </description>
     </class>
+    <class name="gridMapFilters/BufferNormalizerFilter" type="grid_map::BufferNormalizerFilter<grid_map::GridMap>" base_class_type="filters::FilterBase<grid_map::GridMap>" >
+      <description>
+        Normalizes the buffer of a map such that it has default (zero) start index.
+      </description>
+    </class>
   </library>
 </class_libraries>

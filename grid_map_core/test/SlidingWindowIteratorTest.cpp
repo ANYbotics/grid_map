@@ -24,7 +24,7 @@ TEST(SlidingWindowIterator, WindowSize3Cutoff)
   map.add("layer");
   map["layer"].setRandom();
 
-  SlidingWindowIterator iterator(map, "layer", SlidingWindowIterator::EdgeHandling::CUTOFF, 3);
+  SlidingWindowIterator iterator(map, "layer", SlidingWindowIterator::EdgeHandling::CROP, 3);
   EXPECT_EQ(iterator.getData().rows(), 2);
   EXPECT_EQ(iterator.getData().cols(), 2);
   EXPECT_TRUE(iterator.getData().isApprox(map["layer"].block(0, 0, 2, 2)));
@@ -68,7 +68,7 @@ TEST(SlidingWindowIterator, WindowSize5)
   map.add("layer");
   map["layer"].setRandom();
 
-  SlidingWindowIterator iterator(map, "layer", SlidingWindowIterator::EdgeHandling::CUTOFF, 5);
+  SlidingWindowIterator iterator(map, "layer", SlidingWindowIterator::EdgeHandling::CROP, 5);
   EXPECT_EQ(iterator.getData().rows(), 3);
   EXPECT_EQ(iterator.getData().cols(), 3);
   EXPECT_TRUE(iterator.getData().isApprox(map["layer"].block(0, 0, 3, 3)));

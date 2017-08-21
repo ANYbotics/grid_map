@@ -27,8 +27,8 @@ public:
 
   enum class EdgeHandling {
     INSIDE, // Only visit indices that are surrounded by a full window.
-    CUTOFF, // Cutoff data matrix with missing cells at edges.
-    EMPTY, // Fill in missing edges with NAN-value.
+    CROP, // Crop data matrix with missing cells at edges.
+    EMPTY, // Fill in missing edges with empty cells (NAN-value).
     MEAN // Fill in missing edges with MEAN of valid values.
   };
 
@@ -40,7 +40,7 @@ public:
    * @param windowSize the size of the moving window in number of cells (has to be an odd number!).
    */
   SlidingWindowIterator(const GridMap& gridMap, const std::string& layer,
-                        const EdgeHandling& edgeHandling = EdgeHandling::CUTOFF,
+                        const EdgeHandling& edgeHandling = EdgeHandling::CROP,
                         const size_t windowSize = 3);
 
   /*!

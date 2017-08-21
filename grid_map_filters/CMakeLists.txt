@@ -59,6 +59,7 @@ add_library(${PROJECT_NAME}
   src/DuplicationFilter.cpp
   src/DeletionFilter.cpp
   src/SetBasicLayersFilter.cpp
+  src/BufferNormalizerFilter.cpp
 )
 
 target_link_libraries(${PROJECT_NAME}

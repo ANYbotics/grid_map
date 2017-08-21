@@ -10,8 +10,11 @@
 
 #include "EigenLab/EigenLab.h"
 
+#include <grid_map_core/grid_map_core.hpp>
+
 #include <filters/filter_base.h>
 
+#include <Eigen/Core>
 #include <string>
 
 namespace grid_map {
@@ -64,6 +67,9 @@ class SlidingWindowMathExpressionFilter : public filters::FilterBase<T>
 
   //! If empty cells should be computed as well.
   bool isComputeEmptyCells_;
+
+  //! Edge handling method.
+  SlidingWindowIterator::EdgeHandling edgeHandling_;
 
   //! Layer name.
   std::string layer_;

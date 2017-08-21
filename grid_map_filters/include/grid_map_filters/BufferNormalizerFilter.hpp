@@ -1,5 +1,5 @@
 /*
- * DuplicationFilter.hpp
+ * BufferNormalizerFilter.hpp
  *
  *  Created on: Aug 18, 2017
  *      Author: Peter Fankhauser
@@ -15,22 +15,22 @@
 namespace grid_map {
 
 /*!
- * Duplication filter class duplicates a layer of a grid map.
+ * Normalizes the buffer of a map such that it has default (zero) start index.
  */
 template<typename T>
-class DuplicationFilter : public filters::FilterBase<T>
+class BufferNormalizerFilter : public filters::FilterBase<T>
 {
 
  public:
   /*!
    * Constructor
    */
-  DuplicationFilter();
+  BufferNormalizerFilter();
 
   /*!
    * Destructor.
    */
-  virtual ~DuplicationFilter();
+  virtual ~BufferNormalizerFilter();
 
   /*!
    * Configures the filter from parameters on the parameter server.
@@ -38,18 +38,11 @@ class DuplicationFilter : public filters::FilterBase<T>
   virtual bool configure();
 
   /*!
-   * Duplicates the specified layers of a grid map.
-   * @param mapIn with the layer to duplicate.
-   * @param mapOut with the layer duplicated.
+   * Normalizes the buffer of a map.
+   * @param mapIn the input map before normalization.
+   * @param mapOut the normalized map.
    */
   virtual bool update(const T& mapIn, T& mapOut);
-
- private:
-  //! Name of the layer that is duplicated.
-  std::string inputLayer_;
-
-  //! Name of the new layer.
-  std::string outputLayer_;
 };
 
 } /* namespace */

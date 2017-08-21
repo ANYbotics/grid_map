@@ -38,7 +38,8 @@ bool MathExpressionFilter<T>::configure()
     return false;
   }
 
-  parser_.setCacheExpressions(false); // TODO Why doesn't this work with true?
+  // TODO Can we make caching work with changing shared variable?
+//  parser_.setCacheExpressions(true);
   return true;
 }
 
@@ -47,7 +48,7 @@ bool MathExpressionFilter<T>::update(const T& mapIn, T& mapOut)
 {
   mapOut = mapIn;
   for (const auto& layer : mapOut.getLayers()) {
-    parser_.var(layer).setLocal(mapOut[layer]);
+    parser_.var(layer).setShared(mapOut[layer]);
   }
   EigenLab::Value<Eigen::MatrixXf> result(parser_.eval(expression_));
   mapOut.add(outputLayer_, result.matrix());
