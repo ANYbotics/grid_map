@@ -219,7 +219,7 @@ void IteratorsDemo::demoSlidingWindowIterator()
   demoPolygonIterator(true);
   publish();
   const size_t windowSize = 3;
-  const grid_map::SlidingWindowIterator::EdgeHandling edgeHandling = grid_map::SlidingWindowIterator::EdgeHandling::CUTOFF;
+  const grid_map::SlidingWindowIterator::EdgeHandling edgeHandling = grid_map::SlidingWindowIterator::EdgeHandling::CROP;
   map_.add("copy", map_["type"]);
 
   for (grid_map::SlidingWindowIterator iterator(map_, "copy", edgeHandling, windowSize);
