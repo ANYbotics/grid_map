@@ -44,9 +44,7 @@ SlidingWindowIterator& SlidingWindowIterator::operator ++()
   if (edgeHandling_ == EdgeHandling::INSIDE) {
     while (!isPastEnd()) {
       GridMapIterator::operator++();
-      if (dataInsideMap()) {
-        break;
-      }
+      if (dataInsideMap()) break;
     }
   } else {
     GridMapIterator::operator++();
@@ -57,12 +55,28 @@ SlidingWindowIterator& SlidingWindowIterator::operator ++()
 const Matrix SlidingWindowIterator::getData() const
 {
   const Index centerIndex(*(*this));
-  Index topLeftIndex(centerIndex - Index(windowMargin_));
+  const Index originalTopLeftIndex(centerIndex - Index(windowMargin_));
+  Index topLeftIndex(originalTopLeftIndex);
   boundIndexToRange(topLeftIndex, size_);
   Index bottomRightIndex(centerIndex + Index(windowMargin_));
   boundIndexToRange(bottomRightIndex, size_);
   Size adjustedWindowSize(bottomRightIndex - topLeftIndex + Size::Ones());
-  return data_.block(topLeftIndex(0), topLeftIndex(1), adjustedWindowSize(0), adjustedWindowSize(1));
+
+  switch (edgeHandling_) {
+    case EdgeHandling::INSIDE:
+    case EdgeHandling::CUTOFF:
+      return data_.block(topLeftIndex(0), topLeftIndex(1), adjustedWindowSize(0), adjustedWindowSize(1));
+    case EdgeHandling::EMPTY:
+    case EdgeHandling::MEAN:
+      const Matrix data = data_.block(topLeftIndex(0), topLeftIndex(1), adjustedWindowSize(0), adjustedWindowSize(1));
+      Matrix returnData(windowSize_, windowSize_);
+      if (edgeHandling_ == EdgeHandling::EMPTY) returnData.setConstant(NAN);
+      else if (edgeHandling_ == EdgeHandling::MEAN) returnData.setConstant(data.meanOfFinites());
+      const Index topLeftIndexShift(topLeftIndex - originalTopLeftIndex);
+      returnData.block(topLeftIndexShift(0), topLeftIndexShift(1), adjustedWindowSize(0), adjustedWindowSize(1)) =
+          data_.block(topLeftIndex(0), topLeftIndex(1), adjustedWindowSize(0), adjustedWindowSize(1));
+      return returnData;
+  }
 }
 
 void SlidingWindowIterator::setup(const GridMap& gridMap)

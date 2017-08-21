@@ -28,7 +28,7 @@ public:
   enum class EdgeHandling {
     INSIDE, // Only visit indices that are surrounded by a full window.
     CUTOFF, // Cutoff data matrix with missing cells at edges.
-    INVALID, // Fill in missing edges with NAN-value.
+    EMPTY, // Fill in missing edges with NAN-value.
     MEAN // Fill in missing edges with MEAN of valid values.
   };
 

@@ -227,7 +227,6 @@ void IteratorsDemo::demoSlidingWindowIterator()
     map_.at("type", *iterator) = iterator.getData().meanOfFinites(); // Blurring.
     publish();
 
-
     // Visualize sliding window as polygon.
     grid_map::Polygon polygon;
     Position center;
