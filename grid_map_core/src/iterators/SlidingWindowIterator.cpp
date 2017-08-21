@@ -14,8 +14,9 @@
 namespace grid_map {
 
 SlidingWindowIterator::SlidingWindowIterator(const GridMap& gridMap, const std::string& layer,
-                                             const size_t windowSize)
+                                             const EdgeHandling& edgeHandling, const size_t windowSize)
     : GridMapIterator(gridMap),
+      edgeHandling_(edgeHandling),
       data_(gridMap[layer])
 {
   windowSize_ = windowSize;
@@ -24,6 +25,7 @@ SlidingWindowIterator::SlidingWindowIterator(const GridMap& gridMap, const std::
 
 SlidingWindowIterator::SlidingWindowIterator(const SlidingWindowIterator* other)
     : GridMapIterator(other),
+      edgeHandling_(other->edgeHandling_),
       data_(other->data_)
 {
   windowSize_ = other->windowSize_;
@@ -35,6 +37,21 @@ void SlidingWindowIterator::setWindowLength(const GridMap& gridMap, const double
   windowSize_ = std::round(windowLength / gridMap.getResolution());
   if (windowSize_ % 2 != 1) ++windowSize_;
   setup(gridMap);
+}
+
+SlidingWindowIterator& SlidingWindowIterator::operator ++()
+{
+  if (edgeHandling_ == EdgeHandling::INSIDE) {
+    while (!isPastEnd()) {
+      GridMapIterator::operator++();
+      if (dataInsideMap()) {
+        break;
+      }
+    }
+  } else {
+    GridMapIterator::operator++();
+  }
+  return *this;
 }
 
 const Matrix SlidingWindowIterator::getData() const
@@ -55,6 +72,20 @@ void SlidingWindowIterator::setup(const GridMap& gridMap)
   if (windowSize_ % 2 == 0) throw std::runtime_error(
       "SlidingWindowIterator has a wrong window size!");
   windowMargin_ = (windowSize_ - 1) / 2;
+
+  if (edgeHandling_ == EdgeHandling::INSIDE) {
+    if (!dataInsideMap()) {
+      operator++();
+    }
+  }
+}
+
+bool SlidingWindowIterator::dataInsideMap() const
+{
+  const Index centerIndex(*(*this));
+  const Index topLeftIndex(centerIndex - Index(windowMargin_));
+  const Index bottomRightIndex(centerIndex + Index(windowMargin_));
+  return checkIfIndexInRange(topLeftIndex, size_) && checkIfIndexInRange(bottomRightIndex, size_);
 }
 
 } /* namespace grid_map */

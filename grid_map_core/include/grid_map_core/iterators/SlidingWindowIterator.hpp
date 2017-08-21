@@ -25,13 +25,23 @@ class SlidingWindowIterator : public GridMapIterator
 {
 public:
 
+  enum class EdgeHandling {
+    INSIDE, // Only visit indices that are surrounded by a full window.
+    CUTOFF, // Cutoff data matrix with missing cells at edges.
+    INVALID, // Fill in missing edges with NAN-value.
+    MEAN // Fill in missing edges with MEAN of valid values.
+  };
+
   /*!
    * Constructor.
    * @param gridMap the grid map to iterate on.
    * @param layer the layer on which the data is accessed.
+   * @param edgeHandling the method to handle edges of the map.
    * @param windowSize the size of the moving window in number of cells (has to be an odd number!).
    */
-  SlidingWindowIterator(const GridMap& gridMap, const std::string& layer, const size_t windowSize = 3);
+  SlidingWindowIterator(const GridMap& gridMap, const std::string& layer,
+                        const EdgeHandling& edgeHandling = EdgeHandling::CUTOFF,
+                        const size_t windowSize = 3);
 
   /*!
    * Copy constructor.
@@ -47,6 +57,12 @@ public:
   void setWindowLength(const GridMap& gridMap, const double windowLength);
 
   /*!
+   * Increase the iterator to the next element.
+   * @return a reference to the updated iterator.
+   */
+  SlidingWindowIterator& operator ++();
+
+  /*!
    * Return the data of the sliding window.
    * @return the data of the sliding window.
    */
@@ -55,6 +71,12 @@ public:
 private:
   //! Setup members.
   void setup(const GridMap& gridMap);
+
+  //! Check if data for current index is fully inside map.
+  bool dataInsideMap() const;
+
+  //! Edge handling method.
+  const EdgeHandling edgeHandling_;
 
   //! Data.
   const Matrix& data_;

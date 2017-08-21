@@ -219,12 +219,14 @@ void IteratorsDemo::demoSlidingWindowIterator()
   demoPolygonIterator(true);
   publish();
   const size_t windowSize = 3;
+  const grid_map::SlidingWindowIterator::EdgeHandling edgeHandling = grid_map::SlidingWindowIterator::EdgeHandling::CUTOFF;
   map_.add("copy", map_["type"]);
 
-  for (grid_map::SlidingWindowIterator iterator(map_, "copy", windowSize);
+  for (grid_map::SlidingWindowIterator iterator(map_, "copy", edgeHandling, windowSize);
       !iterator.isPastEnd(); ++iterator) {
     map_.at("type", *iterator) = iterator.getData().meanOfFinites(); // Blurring.
     publish();
+
 
     // Visualize sliding window as polygon.
     grid_map::Polygon polygon;

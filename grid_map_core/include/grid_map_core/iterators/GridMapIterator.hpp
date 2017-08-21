@@ -72,7 +72,7 @@ public:
    * Increase the iterator to the next element.
    * @return a reference to the updated iterator.
    */
-  GridMapIterator& operator ++();
+  virtual GridMapIterator& operator ++();
 
   /*!
    * Return the end iterator
