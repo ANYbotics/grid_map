@@ -100,7 +100,7 @@ This repository consists of following packages:
 * ***grid_map_core*** implements the algorithms of the grid map library. It provides the `GridMap` class and several helper classes such as the iterators. This package is implemented without [ROS] dependencies.
 * ***grid_map_ros*** is the main package for [ROS] dependent projects using the grid map library. It provides the interfaces to convert grid maps from and to several [ROS] message types.
 * ***grid_map_demos*** contains several nodes for demonstration purposes.
-* ***grid_map_filters*** builds on the ROS [filters](http://wiki.ros.org/filters) package to process grid maps as a sequence of filters.
+* ***grid_map_filters*** builds on the [ROS Filters] package to process grid maps as a sequence of filters.
 * ***grid_map_msgs*** holds the [ROS] message and service definitions around the [grid_map_msg/GridMap] message type.
 * ***grid_map_rviz_plugin*** is an [RViz] plugin to visualize grid maps as 3d surface plots (height maps).
 * ***grid_map_visualization*** contains a node written to convert GridMap messages to other [ROS] message types for example for  visualization in [RViz].
@@ -158,6 +158,11 @@ The *grid_map_demos* package contains several demonstration nodes. Use this code
 
         roslaunch grid_map_demos resolution_change_demo.launch
 
+* *[filters_demo](grid_map_demos/src/FiltersDemo.cpp)* uses a chain of [ROS Filters] to process a grid map. Launch it with
+
+        roslaunch grid_map_demos filters_demo.launch
+
+    ![Filters demo results](grid_map_demos/doc/filters_demo_preview.gif)
 
 ### Conventions & Definitions
 
@@ -335,6 +340,7 @@ The published topics are configured with the [YAML parameter file](grid_map_demo
 
 *Note: Color values are in RGB form as concatenated integers (for each channel value 0-255). The values can be generated like [this](http://www.wolframalpha.com/input/?i=BitOr%5BBitShiftLeft%5Br%2C16%5D%2C+BitShiftLeft%5Bg%2C8%5D%2C+b%5D+where+%7Br%3D0%2C+g%3D255%2C+b%3D0%7D) as an example for the color green (red: 0, green: 255, blue: 0).*
 
+### grid_map_filters
 
 ## Build Status
 
@@ -379,3 +385,4 @@ Please report bugs and request features using the [Issue Tracker](https://github
 [geometry_msgs/PolygonStamped]: http://docs.ros.org/api/geometry_msgs/html/msg/PolygonStamped.html
 [nav_msgs/OccupancyGrid]: http://docs.ros.org/api/nav_msgs/html/msg/OccupancyGrid.html
 [nav_msgs/GridCells]: http://docs.ros.org/api/nav_msgs/html/msg/GridCells.html
+[ROS Filters]: http://wiki.ros.org/filters
