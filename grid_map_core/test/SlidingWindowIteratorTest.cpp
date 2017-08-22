@@ -114,27 +114,27 @@ TEST(SlidingWindowIterator, WindowSize3Inside)
 
   SlidingWindowIterator iterator(map, "layer", SlidingWindowIterator::EdgeHandling::INSIDE, 3);
   EXPECT_EQ(iterator.getData().rows(), 3);
-//  EXPECT_EQ(iterator.getData().cols(), 3);
-//  EXPECT_TRUE(iterator.getData().isApprox(map["layer"].block(0, 0, 3, 3)));
+  EXPECT_EQ(iterator.getData().cols(), 3);
+  EXPECT_TRUE(iterator.getData().isApprox(map["layer"].block(0, 0, 3, 3)));
 
-//  for (; !iterator.isPastEnd(); ++iterator) {
-//    EXPECT_FALSE(iterator.isPastEnd());
-//    if ((*iterator == Index(3, 2)).all()) break;
-//  }
-//
-//  EXPECT_EQ(iterator.getData().rows(), 3);
-//  EXPECT_EQ(iterator.getData().cols(), 3);
-//  EXPECT_TRUE(iterator.getData().isApprox(map["layer"].block(2, 1, 3, 3)));
-//
-//  for (; !iterator.isPastEnd(); ++iterator) {
-//    EXPECT_FALSE(iterator.isPastEnd());
-//    if ((*iterator == Index(6, 3)).all()) break;
-//  }
-//
-//  EXPECT_EQ(iterator.getData().rows(), 3);
-//  EXPECT_EQ(iterator.getData().cols(), 3);
-//  EXPECT_TRUE(iterator.getData().isApprox(map["layer"].block(5, 2, 3, 3)));
-//
-//  ++iterator;
-//  EXPECT_TRUE(iterator.isPastEnd());
+  for (; !iterator.isPastEnd(); ++iterator) {
+    EXPECT_FALSE(iterator.isPastEnd());
+    if ((*iterator == Index(3, 2)).all()) break;
+  }
+
+  EXPECT_EQ(iterator.getData().rows(), 3);
+  EXPECT_EQ(iterator.getData().cols(), 3);
+  EXPECT_TRUE(iterator.getData().isApprox(map["layer"].block(2, 1, 3, 3)));
+
+  for (; !iterator.isPastEnd(); ++iterator) {
+    EXPECT_FALSE(iterator.isPastEnd());
+    if ((*iterator == Index(6, 3)).all()) break;
+  }
+
+  EXPECT_EQ(iterator.getData().rows(), 3);
+  EXPECT_EQ(iterator.getData().cols(), 3);
+  EXPECT_TRUE(iterator.getData().isApprox(map["layer"].block(5, 2, 3, 3)));
+
+  ++iterator;
+  EXPECT_TRUE(iterator.isPastEnd());
 }
