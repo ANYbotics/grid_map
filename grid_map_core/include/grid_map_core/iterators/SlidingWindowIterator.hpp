@@ -82,10 +82,10 @@ private:
   const Matrix& data_;
 
   //! Size of the sliding window.
-  int windowSize_;
+  size_t windowSize_;
 
   //! Size of the border of the window around the center cell.
-  int windowMargin_;
+  size_t windowMargin_;
 
  public:
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
