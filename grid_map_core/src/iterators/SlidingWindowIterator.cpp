@@ -110,10 +110,12 @@ void SlidingWindowIterator::setup(const GridMap& gridMap)
 bool SlidingWindowIterator::dataInsideMap() const
 {
   const Index centerIndex(*(*this));
+  std::cerr << "SlidingWindowIterator::dataInsideMap() 0" << std::endl;
+  const Index windowMargin(windowMargin_);
   std::cerr << "SlidingWindowIterator::dataInsideMap() 1" << std::endl;
-  const Index topLeftIndex(centerIndex - Index(windowMargin_));
+  const Index topLeftIndex(centerIndex - windowMargin);
   std::cerr << "SlidingWindowIterator::dataInsideMap() 2" << std::endl;
-  const Index bottomRightIndex(centerIndex + Index(windowMargin_));
+  const Index bottomRightIndex(centerIndex + windowMargin);
   std::cerr << "SlidingWindowIterator::dataInsideMap() 3" << std::endl;
   return checkIfIndexInRange(topLeftIndex, size_) && checkIfIndexInRange(bottomRightIndex, size_);
 }

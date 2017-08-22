@@ -82,12 +82,14 @@ bool ThresholdFilter<T>::update(const T& mapIn, T& mapOut)
     return false;
   }
 
+  // For each cell in map.
+  auto& data = mapOut[layer_];
   for (grid_map::GridMapIterator iterator(mapOut); !iterator.isPastEnd(); ++iterator) {
     if (!mapOut.isValid(*iterator, layer_)) continue;
-    double value = mapOut.at(layer_, *iterator);
+    const size_t i = iterator.getLinearIndex();
+    float& value = data(i);
     if (useLowerThreshold_) if (value < lowerThreshold_) value = setTo_;
     if (useUpperThreshold_) if (value > upperThreshold_) value = setTo_;
-    mapOut.at(layer_, *iterator) = value;
   }
 
   return true;

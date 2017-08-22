@@ -13,6 +13,7 @@ Features:
 * **ROS interface:** Grid maps can be directly converted to and from ROS message types such as PointCloud2, OccupancyGrid, GridCells, and our custom GridMap message. Conversion packages provide compatibility with [costmap_2d], [PCL], and [OctoMap] data types.
 * **OpenCV interface:** Grid maps can be seamlessly converted from and to [OpenCV] image types to make use of the tools provided by [OpenCV].
 * **Visualizations:** The *grid_map_rviz_plugin* renders grid maps as 3d surface plots (height maps) in [RViz]. Additionally, the *grid_map_visualization* package helps to visualize grid maps as point clouds, occupancy grids, grid cells etc.
+* **Filters:** The *grid_map_filters* provides are range of filters to process grid maps as a sequence of filters. Parsing of mathematical expressions allows to flexibly setup powerful computations such as thresholding, normal vectors, smoothening, variance, inpainting, and matrix kernel convolutions.
 
 The grid map package has been tested with [ROS] Indigo, Jade (under Ubuntu 14.04) and Kinetic (under Ubuntu 16.04). This is research code, expect that it changes often and any fitness for a particular purpose is disclaimed.
 
@@ -344,9 +345,9 @@ The published topics are configured with the [YAML parameter file](grid_map_demo
 
 ### grid_map_filters
 
-The `grid_map_filters` package containts several filters which can be applied a grid map to perform computations on the data in the layers. The grid map filters are based on [ROS Filters], which means that a chain of filters can be configured as a YAML file. Furthermore, additional filters can be written and made available through the ROS plugin mechanism, such as the [`InpaintFilter`](grid_map_cv/include/grid_map_cv/InpaintFilter.hpp) from the `grid_map_cv` package.
+The *grid_map_filters* package containts several filters which can be applied a grid map to perform computations on the data in the layers. The grid map filters are based on [ROS Filters], which means that a chain of filters can be configured as a YAML file. Furthermore, additional filters can be written and made available through the ROS plugin mechanism, such as the [`InpaintFilter`](grid_map_cv/include/grid_map_cv/InpaintFilter.hpp) from the `grid_map_cv` package.
 
-Several basic filters are provided in the `grid_map_filters` package:
+Several basic filters are provided in the *grid_map_filters* package:
 
 * **`gridMapFilters/ThresholdFilter`**
 
@@ -421,7 +422,38 @@ Several basic filters are provided in the `grid_map_filters` package:
           window_size: 5 # in number of cells (optional, default: 3), make sure to make this compatible with the kernel matrix
           # window_length: 0.05 # instead of window_size, in m
 
-Additionally, the `MathExpressionFilter` and `SlidingWindowMathExpressionFilter` allow for custom calculations with multiple layers or in a sliding window on one layer.
+* **`gridMapFilters/DuplicationFilter`**
+
+    Duplicate a layer of a grid map.
+
+        name: duplicate
+        type: gridMapFilters/DuplicationFilter
+        params:
+          input_layer: input
+          output_layer: output
+
+* **`gridMapFilters/DeletionFilter`**
+
+    Delete layers from a grid map.
+
+        name: delete
+        type: gridMapFilters/DeletionFilter
+        params:
+          layers: [color, score] # List of layers.
+
+Additionally, the `grid_map_cv` package provides the following filters:
+
+* **`gridMapCv/InpaintFilter`**
+
+    Use OpenCV to inpaint/fill holes in a layer.
+
+        name: inpaint
+        type: gridMapCv/InpaintFilter
+        params:
+          input_layer: input
+          output_layer: output
+          radius: 0.05 # in m
+
 
 ## Build Status
 
