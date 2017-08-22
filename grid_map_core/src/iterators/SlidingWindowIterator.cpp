@@ -54,21 +54,28 @@ SlidingWindowIterator& SlidingWindowIterator::operator ++()
 
 const Matrix SlidingWindowIterator::getData() const
 {
-  const Index centerIndex = *(*this);
-  const Index originalTopLeftIndex(centerIndex - Index(windowMargin_));
+  std::cerr << "SlidingWindowIterator::getData() 1" << std::endl;
+  const Index centerIndex(*(*this));
+  const Index originalTopLeftIndex(centerIndex - Index((int)windowMargin_));
+  std::cerr << "SlidingWindowIterator::getData() 2" << std::endl;
   Index topLeftIndex(originalTopLeftIndex);
   boundIndexToRange(topLeftIndex, size_);
-  Index bottomRightIndex(centerIndex + Index(windowMargin_));
+  std::cerr << "SlidingWindowIterator::getData() 3" << std::endl;
+  Index bottomRightIndex(centerIndex + Index((int)windowMargin_));
   boundIndexToRange(bottomRightIndex, size_);
+  std::cerr << "SlidingWindowIterator::getData() 4" << std::endl;
   Size adjustedWindowSize(bottomRightIndex - topLeftIndex + Size::Ones());
 
+  std::cerr << "SlidingWindowIterator::getData() 5" << std::endl;
   switch (edgeHandling_) {
     case EdgeHandling::INSIDE:
     case EdgeHandling::CROP:
+      std::cerr << "SlidingWindowIterator::getData() 6" << std::endl;
       return data_.block(topLeftIndex(0), topLeftIndex(1), adjustedWindowSize(0), adjustedWindowSize(1));
     case EdgeHandling::EMPTY:
     case EdgeHandling::MEAN:
       const Matrix data = data_.block(topLeftIndex(0), topLeftIndex(1), adjustedWindowSize(0), adjustedWindowSize(1));
+      std::cerr << "SlidingWindowIterator::getData() 7" << std::endl;
       Matrix returnData(windowSize_, windowSize_);
       if (edgeHandling_ == EdgeHandling::EMPTY) returnData.setConstant(NAN);
       else if (edgeHandling_ == EdgeHandling::MEAN) returnData.setConstant(data.meanOfFinites());
@@ -98,8 +105,8 @@ void SlidingWindowIterator::setup(const GridMap& gridMap)
 bool SlidingWindowIterator::dataInsideMap() const
 {
   const Index centerIndex(*(*this));
-  const Index topLeftIndex(centerIndex - Index(windowMargin_));
-  const Index bottomRightIndex(centerIndex + Index(windowMargin_));
+  const Index topLeftIndex(centerIndex - Index((int)windowMargin_));
+  const Index bottomRightIndex(centerIndex + Index((int)windowMargin_));
   return checkIfIndexInRange(topLeftIndex, size_) && checkIfIndexInRange(bottomRightIndex, size_);
 }
 

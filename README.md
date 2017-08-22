@@ -158,11 +158,13 @@ The *grid_map_demos* package contains several demonstration nodes. Use this code
 
         roslaunch grid_map_demos resolution_change_demo.launch
 
-* *[filters_demo](grid_map_demos/src/FiltersDemo.cpp)* uses a chain of [ROS Filters] to process a grid map. Starting from the elevation of a terrain map, the demo uses several filters to show how to compute surface normals, use inpainting to fill holes, smoothen/blur the map, and use math expressions to detect edges, compute roughness and traversability. Launch the demo with
+* *[filters_demo](grid_map_demos/src/FiltersDemo.cpp)* uses a chain of [ROS Filters] to process a grid map. Starting from the elevation of a terrain map, the demo uses several filters to show how to compute surface normals, use inpainting to fill holes, smoothen/blur the map, and use math expressions to detect edges, compute roughness and traversability. The filter chain setup is configured in the [`filters_demo_filter_chain.yaml`](grid_map_demos/config/filters_demo_filter_chain.yaml) file. Launch the demo with
 
         roslaunch grid_map_demos filters_demo.launch
 
-    ![Filters demo results](grid_map_demos/doc/filters_demo_preview.gif)
+    [![Filters demo results](grid_map_demos/doc/filters_demo_preview.gif)](grid_map_demos/doc/filters_demo.gif)
+
+For more information about grid map filters, see [grid_map_filters](#grid_map_filters).
 
 ### Conventions & Definitions
 
@@ -341,6 +343,18 @@ The published topics are configured with the [YAML parameter file](grid_map_demo
 *Note: Color values are in RGB form as concatenated integers (for each channel value 0-255). The values can be generated like [this](http://www.wolframalpha.com/input/?i=BitOr%5BBitShiftLeft%5Br%2C16%5D%2C+BitShiftLeft%5Bg%2C8%5D%2C+b%5D+where+%7Br%3D0%2C+g%3D255%2C+b%3D0%7D) as an example for the color green (red: 0, green: 255, blue: 0).*
 
 ### grid_map_filters
+
+The `grid_map_filters` package containts several filters which can be applied a grid map to perform computations on the data in the layers. The grid map filters are based on [ROS Filters], which means that a chain of filters can be configured as a YAML file. Furthermore, additional filters can be written and made available through the ROS plugin mechanism, such as the [`InpaintFilter`](grid_map_cv/InpaintFilter.hpp) from the `grid_map_cv` package.
+
+Several basic filters are provided in the `grid_map_filters` package, such as the layer `DuplicationFilter` and `DeletionFilter`, `MeanInRadiusFilter`, `NormalVectorsFilter`, `ThresholdFilter`, and more. Additionally,  `MathExpressionFilter` and `SlidingWindowMathExpressionFilter` allow for custom calculations with multiple layers or in a sliding window on one layer.
+
+* *[filters_demo](grid_map_demos/src/FiltersDemo.cpp)* uses a chain of [ROS Filters] to process a grid map. Starting from the elevation of a terrain map, the demo uses several filters to show how to compute surface normals, use inpainting to fill holes, smoothen/blur the map, and use math expressions to detect edges, compute roughness and traversability. The filter chain setup is configured in the [`filters_demo_filter_chain.yaml`](grid_map_demos/config/filters_demo_filter_chain.yaml) file. Launch the demo with
+
+        roslaunch grid_map_demos filters_demo.launch
+
+    [![Filters demo results](grid_map_demos/doc/filters_demo_preview.gif)](grid_map_demos/doc/filters_demo.gif)
+
+For more information about grid map filters, see [grid_map_filters](#grid_map_filters).
 
 ## Build Status
 
