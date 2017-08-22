@@ -58,12 +58,12 @@ const Matrix SlidingWindowIterator::getData() const
 {
   std::cerr << "SlidingWindowIterator::getData() 1" << std::endl;
   const Index centerIndex(*(*this));
-  const Index originalTopLeftIndex(centerIndex - Index((int)windowMargin_));
+  const Index originalTopLeftIndex(centerIndex - Index(windowMargin_));
   std::cerr << "SlidingWindowIterator::getData() 2" << std::endl;
   Index topLeftIndex(originalTopLeftIndex);
   boundIndexToRange(topLeftIndex, size_);
   std::cerr << "SlidingWindowIterator::getData() 3" << std::endl;
-  Index bottomRightIndex(centerIndex + Index((int)windowMargin_));
+  Index bottomRightIndex(centerIndex + Index(windowMargin_));
   boundIndexToRange(bottomRightIndex, size_);
   std::cerr << "SlidingWindowIterator::getData() 4" << std::endl;
   Size adjustedWindowSize(bottomRightIndex - topLeftIndex + Size::Ones());
@@ -111,9 +111,9 @@ bool SlidingWindowIterator::dataInsideMap() const
 {
   const Index centerIndex(*(*this));
   std::cerr << "SlidingWindowIterator::dataInsideMap() 1" << std::endl;
-  const Index topLeftIndex(centerIndex - Index((int)windowMargin_));
+  const Index topLeftIndex(centerIndex - Index(windowMargin_));
   std::cerr << "SlidingWindowIterator::dataInsideMap() 2" << std::endl;
-  const Index bottomRightIndex(centerIndex + Index((int)windowMargin_));
+  const Index bottomRightIndex(centerIndex + Index(windowMargin_));
   std::cerr << "SlidingWindowIterator::dataInsideMap() 3" << std::endl;
   return checkIfIndexInRange(topLeftIndex, size_) && checkIfIndexInRange(bottomRightIndex, size_);
 }

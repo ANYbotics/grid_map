@@ -101,7 +101,6 @@ grid_map_filters:
     type: gridMapFilters/MathExpressionFilter
     params:
       output_layer: traversability
-      # expression: cwiseMax(1.0 - (slope / 0.6), 0.0)
       expression: 0.5 * (1.0 - (slope / 0.6)) + 0.5 * (1.0 - (roughness / 0.1))
 
   # Set lower threshold on traversability.

@@ -359,7 +359,6 @@ Several basic filters are provided in the `grid_map_filters` package:
           lower_threshold: 0.0 # alternative: upper_threshold
           set_to: 0.0 # # Other uses: .nan, .inf
 
-
 * **`gridMapFilters/MeanInRadiusFilter`**
 
     Compute for each cell of a layer the mean value inside a radius.
@@ -370,6 +369,57 @@ Several basic filters are provided in the `grid_map_filters` package:
           input_layer: input
           output_layer: output
           radius: 0.06 # in m.
+
+* **`gridMapFilters/NormalVectorsFilter`**
+
+    Compute the normal vectors of a layer in a map.
+
+        name: surface_normals
+        type: gridMapFilters/NormalVectorsFilter
+        params:
+          input_layer: input
+          output_layers_prefix: normal_vectors_
+          radius: 0.05
+          normal_vector_positive_axis: z
+
+* **`gridMapFilters/NormalColorMapFilter`**
+
+    Compute a new color layer based on normal vectors layers.
+
+        name: surface_normals
+        type: gridMapFilters/NormalColorMapFilter
+        params:
+          input_layers_prefix: normal_vectors_
+          output_layer: normal_color
+
+* **`gridMapFilters/MathExpressionFilter`**
+
+    Parse and evaluate a mathematical matrix expression with layers of a grid map. See [EigenLab] for the documentation of the expressions.
+
+        name: math_expression
+        type: gridMapFilters/MathExpressionFilter
+        params:
+          output_layer: output
+          expression: acos(normal_vectors_z) # Slope.
+          # expression: abs(elevation - elevation_smooth) # Surface roughness.
+          # expression: 0.5 * (1.0 - (slope / 0.6)) + 0.5 * (1.0 - (roughness / 0.1)) # Weighted and normalized sum.
+
+* **`gridMapFilters/SlidingWindowMathExpressionFilter`**
+
+    Parse and evaluate a mathematical matrix expression within a sliding window on a layer of a grid map. See [EigenLab] for the documentation of the expressions.
+
+        name: math_expression
+        type: gridMapFilters/SlidingWindowMathExpressionFilter
+        params:
+          input_layer: input
+          output_layer: output
+          expression: meanOfFinites(input) # Box blur
+          # expression: sqrt(sumOfFinites(square(input - meanOfFinites(input))) ./ numberOfFinites(input)) # Standard deviation
+          # expression: 'sumOfFinites([0,-1,0;-1,5,-1;0,-1,0].*elevation_inpainted)' # Sharpen with kernel matrix sharpen
+          compute_empty_cells: true
+          edge_handling: crop # options: inside, crop, empty, mean
+          window_size: 5 # in number of cells (optional, default: 3), make sure to make this compatible with the kernel matrix
+          # window_length: 0.05 # instead of window_size, in m
 
 Additionally, the `MathExpressionFilter` and `SlidingWindowMathExpressionFilter` allow for custom calculations with multiple layers or in a sliding window on one layer.
 
@@ -417,3 +467,4 @@ Please report bugs and request features using the [Issue Tracker](https://github
 [nav_msgs/OccupancyGrid]: http://docs.ros.org/api/nav_msgs/html/msg/OccupancyGrid.html
 [nav_msgs/GridCells]: http://docs.ros.org/api/nav_msgs/html/msg/GridCells.html
 [ROS Filters]: http://wiki.ros.org/filters
+[EigenLab]: https://github.com/leggedrobotics/EigenLab
