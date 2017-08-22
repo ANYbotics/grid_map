@@ -50,6 +50,12 @@ class SlidingWindowMathExpressionFilter : public filters::FilterBase<T>
   virtual bool update(const T& mapIn, T& mapOut);
 
  private:
+  //! Input layer name.
+  std::string inputLayer_;
+
+  //! Output layer name.
+  std::string outputLayer_;
+
   //! EigenLab parser.
   EigenLab::Parser<Eigen::MatrixXf> parser_;
 
@@ -70,9 +76,6 @@ class SlidingWindowMathExpressionFilter : public filters::FilterBase<T>
 
   //! Edge handling method.
   SlidingWindowIterator::EdgeHandling edgeHandling_;
-
-  //! Layer name.
-  std::string layer_;
 };
 
 } /* namespace */

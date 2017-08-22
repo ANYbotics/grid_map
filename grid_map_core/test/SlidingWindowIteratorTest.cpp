@@ -17,7 +17,7 @@
 using namespace std;
 using namespace grid_map;
 
-TEST(SlidingWindowIterator, WindowSize3Cutoff)
+TEST(SlidingWindowIterator, DISABLED_WindowSize3Cutoff)
 {
   GridMap map;
   map.setGeometry(Length(8.1, 5.1), 1.0, Position(0.0, 0.0)); // bufferSize(8, 5)
@@ -61,7 +61,7 @@ TEST(SlidingWindowIterator, WindowSize3Cutoff)
   EXPECT_TRUE(iterator.isPastEnd());
 }
 
-TEST(SlidingWindowIterator, WindowSize5)
+TEST(SlidingWindowIterator, DISABLED_WindowSize5)
 {
   GridMap map;
   map.setGeometry(Length(8.1, 5.1), 1.0, Position(0.0, 0.0)); // bufferSize(8, 5)
@@ -105,7 +105,7 @@ TEST(SlidingWindowIterator, WindowSize5)
   EXPECT_TRUE(iterator.isPastEnd());
 }
 
-TEST(SlidingWindowIterator, WindowSize3Inside)
+TEST(SlidingWindowIterator, DISABLED_WindowSize3Inside)
 {
   GridMap map;
   map.setGeometry(Length(8.1, 5.1), 1.0, Position(0.0, 0.0)); // bufferSize(8, 5)

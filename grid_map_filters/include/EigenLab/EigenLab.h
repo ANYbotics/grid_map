@@ -238,6 +238,7 @@ namespace EigenLab
 		// Coefficient-wise operations.
 		mFunctions.push_back("abs");
 		mFunctions.push_back("sqrt");
+		mFunctions.push_back("square");
 		mFunctions.push_back("exp");
 		mFunctions.push_back("log");
 		mFunctions.push_back("log10");
@@ -265,6 +266,7 @@ namespace EigenLab
 		mFunctions.push_back("sum");
 		mFunctions.push_back("sumOfFinites");
 		mFunctions.push_back("prod");
+		mFunctions.push_back("numberOfFinites");
 
 		// Matrix operations.
 		mFunctions.push_back("transpose");
@@ -812,6 +814,10 @@ namespace EigenLab
 				result.local() = arg.matrix().array().sqrt();
 				result.mapLocal();
 				return;
+			} else if(name == "square") {
+				result.local() = arg.matrix().array().square();
+				result.mapLocal();
+				return;
 			} else if(name == "exp") {
 				result.local() = arg.matrix().array().exp();
 				result.mapLocal();
@@ -867,6 +873,9 @@ namespace EigenLab
 				return;
 			} else if(name == "prod") {
 				result.setLocal(arg.matrix().prod());
+				return;
+			} else if(name == "numberOfFinites") {
+				result.setLocal(arg.matrix().numberOfFinites());
 				return;
 			} else if(name == "transpose") {
 				result.local() = arg.matrix().transpose();

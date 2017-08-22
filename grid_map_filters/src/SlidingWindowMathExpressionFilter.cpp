@@ -32,8 +32,13 @@ SlidingWindowMathExpressionFilter<T>::~SlidingWindowMathExpressionFilter()
 template<typename T>
 bool SlidingWindowMathExpressionFilter<T>::configure()
 {
-  if (!FilterBase<T>::getParam(std::string("layer"), layer_)) {
-    ROS_ERROR("SlidingWindowMathExpressionFilter did not find parameter 'layer'.");
+  if (!FilterBase<T>::getParam(std::string("input_layer"), inputLayer_)) {
+    ROS_ERROR("SlidingWindowMathExpressionFilter did not find parameter 'input_layer'.");
+    return false;
+  }
+
+  if (!FilterBase<T>::getParam(std::string("output_layer"), outputLayer_)) {
+    ROS_ERROR("SlidingWindowMathExpressionFilter did not find parameter 'output_layer'.");
     return false;
   }
 
@@ -76,9 +81,12 @@ template<typename T>
 bool SlidingWindowMathExpressionFilter<T>::update(const T& mapIn, T& mapOut)
 {
   mapOut = mapIn;
-  Matrix& outputData = mapOut[layer_];
-  for (grid_map::SlidingWindowIterator iterator(mapIn, layer_, edgeHandling_, windowSize_); !iterator.isPastEnd(); ++iterator) {
-    parser_.var(layer_).setLocal(iterator.getData());
+  mapOut.add(outputLayer_);
+  Matrix& outputData = mapOut[outputLayer_];
+  grid_map::SlidingWindowIterator iterator(mapIn, inputLayer_, edgeHandling_, windowSize_);
+  if (useWindowLength_) iterator.setWindowLength(mapIn, windowLength_);
+  for (; !iterator.isPastEnd(); ++iterator) {
+    parser_.var(inputLayer_).setLocal(iterator.getData());
     EigenLab::Value<Eigen::MatrixXf> result(parser_.eval(expression_));
     if (result.matrix().cols() == 1 && result.matrix().rows() == 1) {
       outputData(iterator.getLinearIndex()) = result.matrix()(0);
