@@ -6,20 +6,14 @@ import time
 import cv2
 import sensor_msgs.msg
 
-#change this to fit the expected topic name.
-IMAGE_MESSAGE_TOPIC = 'image'
-
-#define here the image path and name.
-IMAGE_NAME = 'example_image.png'
-
 def callback(self):
     """ Convert a image to a ROS compatible message
         (sensor_msgs.Image).
     """
     global publisher, imagePath
-    
-    img = cv2.imread(imagePath + IMAGE_NAME, cv2.IMREAD_UNCHANGED)
-    
+
+    img = cv2.imread(imagePath, cv2.IMREAD_UNCHANGED)
+
 #    print img.shape
 #    print img.size
 #    print img.dtype.itemsize
@@ -42,7 +36,7 @@ def callback(self):
        else:
            rosimage.encoding = 'mono8'
 #    print "Encoding: ", rosimage.encoding
-    
+
     rosimage.width = img.shape[1]
     rosimage.height = img.shape[0]
     rosimage.step = img.strides[0]
@@ -57,9 +51,10 @@ def callback(self):
 def main_program():
     global publisher, imagePath
     rospack = rospkg.RosPack()
-    imagePath = rospack.get_path('grid_map_demos') + '/scripts/'
     rospy.init_node('image_publisher')
-    publisher = rospy.Publisher(IMAGE_MESSAGE_TOPIC, sensor_msgs.msg.Image, queue_size=10)
+    imagePath = rospy.get_param('~image_path')
+    topicName = rospy.get_param('~topic')
+    publisher = rospy.Publisher(topicName, sensor_msgs.msg.Image, queue_size=10)
     rospy.Timer(rospy.Duration(2), callback)
     rospy.spin()
 

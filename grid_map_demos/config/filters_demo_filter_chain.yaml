@@ -10,11 +10,11 @@ grid_map_filters:
   #     input_layer: ...
   #     output_layer: ...
 
-  # # Delete all layers expect for the noisy elevation map (`elevation_noisy`).
-  # - name: delete_original_layers
-  #   type: gridMapFilters/DeletionFilter
-  #   params:
-  #     layers: [elevation, normal_x, normal_y, normal_z, noise, elevation_filtered, error]
+  # Delete color layer.
+  - name: delete_original_layers
+    type: gridMapFilters/DeletionFilter
+    params:
+      layers: [color] # List of layers.
 
   # Fill holes in the map with inpainting.
   - name: inpaint
@@ -52,6 +52,7 @@ grid_map_filters:
       radius: 0.05
       normal_vector_positive_axis: z
 
+  # Add a color layer for visualization based on the surface normal.
   - name: normal_color_map
     type: gridMapFilters/NormalColorMapFilter
     params:
