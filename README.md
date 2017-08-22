@@ -158,7 +158,7 @@ The *grid_map_demos* package contains several demonstration nodes. Use this code
 
         roslaunch grid_map_demos resolution_change_demo.launch
 
-* *[filters_demo](grid_map_demos/src/FiltersDemo.cpp)* uses a chain of [ROS Filters] to process a grid map. Launch it with
+* *[filters_demo](grid_map_demos/src/FiltersDemo.cpp)* uses a chain of [ROS Filters] to process a grid map. Starting from the elevation of a terrain map, the demo uses several filters to show how to compute surface normals, use inpainting to fill holes, smoothen/blur the map, and use math expressions to detect edges, compute roughness and traversability. Launch the demo with
 
         roslaunch grid_map_demos filters_demo.launch
 
