@@ -105,7 +105,7 @@ TEST(SlidingWindowIterator, DISABLED_WindowSize5)
   EXPECT_TRUE(iterator.isPastEnd());
 }
 
-TEST(SlidingWindowIterator, DISABLED_WindowSize3Inside)
+TEST(SlidingWindowIterator, WindowSize3Inside)
 {
   GridMap map;
   map.setGeometry(Length(8.1, 5.1), 1.0, Position(0.0, 0.0)); // bufferSize(8, 5)
