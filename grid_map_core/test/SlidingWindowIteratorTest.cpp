@@ -17,7 +17,7 @@
 using namespace std;
 using namespace grid_map;
 
-TEST(SlidingWindowIterator, DISABLED_WindowSize3Cutoff)
+TEST(SlidingWindowIterator, WindowSize3Cutoff)
 {
   GridMap map;
   map.setGeometry(Length(8.1, 5.1), 1.0, Position(0.0, 0.0)); // bufferSize(8, 5)
@@ -61,7 +61,7 @@ TEST(SlidingWindowIterator, DISABLED_WindowSize3Cutoff)
   EXPECT_TRUE(iterator.isPastEnd());
 }
 
-TEST(SlidingWindowIterator, DISABLED_WindowSize5)
+TEST(SlidingWindowIterator, WindowSize5)
 {
   GridMap map;
   map.setGeometry(Length(8.1, 5.1), 1.0, Position(0.0, 0.0)); // bufferSize(8, 5)
@@ -112,11 +112,8 @@ TEST(SlidingWindowIterator, WindowSize3Inside)
   map.add("layer");
   map["layer"].setRandom();
 
-  std::cerr << "WindowSize3Inside 1" << std::endl;
   SlidingWindowIterator iterator(map, "layer", SlidingWindowIterator::EdgeHandling::INSIDE, 3);
-  std::cerr << "WindowSize3Inside 2" << std::endl;
   EXPECT_EQ(iterator.getData().rows(), 3);
-  std::cerr << "WindowSize3Inside 3" << std::endl;
   EXPECT_EQ(iterator.getData().cols(), 3);
   EXPECT_TRUE(iterator.getData().isApprox(map["layer"].block(0, 0, 3, 3)));
 

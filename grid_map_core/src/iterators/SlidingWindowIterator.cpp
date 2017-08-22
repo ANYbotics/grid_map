@@ -19,10 +19,8 @@ SlidingWindowIterator::SlidingWindowIterator(const GridMap& gridMap, const std::
       edgeHandling_(edgeHandling),
       data_(gridMap[layer])
 {
-  std::cerr << "SlidingWindowIterator::SlidingWindowIterator() 1" << std::endl;
   windowSize_ = windowSize;
   setup(gridMap);
-  std::cerr << "SlidingWindowIterator::SlidingWindowIterator() 2" << std::endl;
 }
 
 SlidingWindowIterator::SlidingWindowIterator(const SlidingWindowIterator* other)
@@ -57,10 +55,11 @@ SlidingWindowIterator& SlidingWindowIterator::operator ++()
 const Matrix SlidingWindowIterator::getData() const
 {
   const Index centerIndex(*(*this));
-  const Index originalTopLeftIndex(centerIndex - Index(windowMargin_));
+  const Index windowMargin(Index::Constant(windowMargin_, windowMargin_));
+  const Index originalTopLeftIndex(centerIndex - windowMargin);
   Index topLeftIndex(originalTopLeftIndex);
   boundIndexToRange(topLeftIndex, size_);
-  Index bottomRightIndex(centerIndex + Index(windowMargin_));
+  Index bottomRightIndex(centerIndex + windowMargin);
   boundIndexToRange(bottomRightIndex, size_);
   Size adjustedWindowSize(bottomRightIndex - topLeftIndex + Size::Ones());
 
@@ -95,19 +94,14 @@ void SlidingWindowIterator::setup(const GridMap& gridMap)
       operator++();
     }
   }
-  std::cerr << "SlidingWindowIterator::setup() 3" << std::endl;
 }
 
 bool SlidingWindowIterator::dataInsideMap() const
 {
   const Index centerIndex(*(*this));
-  std::cerr << "SlidingWindowIterator::dataInsideMap() 0" << std::endl;
-  const Index windowMargin(windowMargin_, windowMargin_);
-  std::cerr << "SlidingWindowIterator::dataInsideMap() 1" << std::endl;
+  const Index windowMargin(Index::Constant(windowMargin_, windowMargin_));
   const Index topLeftIndex(centerIndex - windowMargin);
-  std::cerr << "SlidingWindowIterator::dataInsideMap() 2" << std::endl;
   const Index bottomRightIndex(centerIndex + windowMargin);
-  std::cerr << "SlidingWindowIterator::dataInsideMap() 3" << std::endl;
   return checkIfIndexInRange(topLeftIndex, size_) && checkIfIndexInRange(bottomRightIndex, size_);
 }
 
