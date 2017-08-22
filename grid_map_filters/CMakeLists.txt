@@ -54,6 +54,7 @@ add_library(${PROJECT_NAME}
   src/MinInRadiusFilter.cpp
   src/MeanInRadiusFilter.cpp
   src/NormalVectorsFilter.cpp
+  src/NormalColorMapFilter.cpp
   src/MathExpressionFilter.cpp
   src/SlidingWindowMathExpressionFilter.cpp
   src/DuplicationFilter.cpp

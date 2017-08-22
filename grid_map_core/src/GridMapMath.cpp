@@ -543,5 +543,11 @@ void colorVectorToValue(const Eigen::Vector3i& colorVector, float& colorValue)
   colorValue = *reinterpret_cast<float*>(&color);
 }
 
+void colorVectorToValue(const Eigen::Vector3f& colorVector, float& colorValue)
+{
+  Eigen::Vector3i tempColorVector = (colorVector * 255.0).cast<int>();
+  colorVectorToValue(tempColorVector, colorValue);
+}
+
 }  // namespace
 

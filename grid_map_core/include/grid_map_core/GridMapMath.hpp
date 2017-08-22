@@ -347,4 +347,11 @@ bool colorVectorToValue(const Eigen::Vector3i& colorVector, unsigned long& color
  */
 void colorVectorToValue(const Eigen::Vector3i& colorVector, float& colorValue);
 
+/*!
+ * Transforms a color vector (RGB from 0.0-1.0) to a concatenated 3 single-byte float value.
+ * @param [in] colorVector the color vector in RGB from 0.0-1.0.
+ * @param [out] colorValue the concatenated RGB color value.
+ */
+void colorVectorToValue(const Eigen::Vector3f& colorVector, float& colorValue);
+
 } // namespace

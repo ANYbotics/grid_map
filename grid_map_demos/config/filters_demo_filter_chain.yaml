@@ -52,6 +52,12 @@ grid_map_filters:
       radius: 0.05
       normal_vector_positive_axis: z
 
+  - name: normal_color_map
+    type: gridMapFilters/NormalColorMapFilter
+    params:
+      input_layers_prefix: normal_vectors_
+      output_layer: normal_color
+
   # Compute slope from surface normal.
   - name: slope
     type: gridMapFilters/MathExpressionFilter
