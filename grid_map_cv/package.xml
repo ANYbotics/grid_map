@@ -11,4 +11,8 @@
   <buildtool_depend>catkin</buildtool_depend>
   <depend>grid_map_core</depend>
   <depend>cv_bridge</depend>
+  <depend>filters</depend>
+  <export>
+    <filters plugin="${prefix}/filter_plugins.xml" />
+  </export>
 </package>
