@@ -19,8 +19,10 @@ SlidingWindowIterator::SlidingWindowIterator(const GridMap& gridMap, const std::
       edgeHandling_(edgeHandling),
       data_(gridMap[layer])
 {
+  std::cerr << "SlidingWindowIterator::SlidingWindowIterator() 1" << std::endl;
   windowSize_ = windowSize;
   setup(gridMap);
+  std::cerr << "SlidingWindowIterator::SlidingWindowIterator() 2" << std::endl;
 }
 
 SlidingWindowIterator::SlidingWindowIterator(const SlidingWindowIterator* other)
@@ -93,20 +95,26 @@ void SlidingWindowIterator::setup(const GridMap& gridMap)
       "SlidingWindowIterator cannot be used with grid maps that don't have a default buffer start index.");
   if (windowSize_ % 2 == 0) throw std::runtime_error(
       "SlidingWindowIterator has a wrong window size!");
+  std::cerr << "SlidingWindowIterator::setup() 1" << std::endl;
   windowMargin_ = (windowSize_ - 1) / 2;
+  std::cerr << "SlidingWindowIterator::setup() 2" << std::endl;
 
   if (edgeHandling_ == EdgeHandling::INSIDE) {
     if (!dataInsideMap()) {
       operator++();
     }
   }
+  std::cerr << "SlidingWindowIterator::setup() 3" << std::endl;
 }
 
 bool SlidingWindowIterator::dataInsideMap() const
 {
   const Index centerIndex(*(*this));
+  std::cerr << "SlidingWindowIterator::dataInsideMap() 1" << std::endl;
   const Index topLeftIndex(centerIndex - Index((int)windowMargin_));
+  std::cerr << "SlidingWindowIterator::dataInsideMap() 2" << std::endl;
   const Index bottomRightIndex(centerIndex + Index((int)windowMargin_));
+  std::cerr << "SlidingWindowIterator::dataInsideMap() 3" << std::endl;
   return checkIfIndexInRange(topLeftIndex, size_) && checkIfIndexInRange(bottomRightIndex, size_);
 }
 

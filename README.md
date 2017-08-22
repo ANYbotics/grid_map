@@ -344,17 +344,34 @@ The published topics are configured with the [YAML parameter file](grid_map_demo
 
 ### grid_map_filters
 
-The `grid_map_filters` package containts several filters which can be applied a grid map to perform computations on the data in the layers. The grid map filters are based on [ROS Filters], which means that a chain of filters can be configured as a YAML file. Furthermore, additional filters can be written and made available through the ROS plugin mechanism, such as the [`InpaintFilter`](grid_map_cv/InpaintFilter.hpp) from the `grid_map_cv` package.
+The `grid_map_filters` package containts several filters which can be applied a grid map to perform computations on the data in the layers. The grid map filters are based on [ROS Filters], which means that a chain of filters can be configured as a YAML file. Furthermore, additional filters can be written and made available through the ROS plugin mechanism, such as the [`InpaintFilter`](grid_map_cv/include/grid_map_cv/InpaintFilter.hpp) from the `grid_map_cv` package.
 
-Several basic filters are provided in the `grid_map_filters` package, such as the layer `DuplicationFilter` and `DeletionFilter`, `MeanInRadiusFilter`, `NormalVectorsFilter`, `ThresholdFilter`, and more. Additionally,  `MathExpressionFilter` and `SlidingWindowMathExpressionFilter` allow for custom calculations with multiple layers or in a sliding window on one layer.
+Several basic filters are provided in the `grid_map_filters` package:
 
-* *[filters_demo](grid_map_demos/src/FiltersDemo.cpp)* uses a chain of [ROS Filters] to process a grid map. Starting from the elevation of a terrain map, the demo uses several filters to show how to compute surface normals, use inpainting to fill holes, smoothen/blur the map, and use math expressions to detect edges, compute roughness and traversability. The filter chain setup is configured in the [`filters_demo_filter_chain.yaml`](grid_map_demos/config/filters_demo_filter_chain.yaml) file. Launch the demo with
+* **`gridMapFilters/ThresholdFilter`**
 
-        roslaunch grid_map_demos filters_demo.launch
+    Set values below/above a threshold to a specified value.
 
-    [![Filters demo results](grid_map_demos/doc/filters_demo_preview.gif)](grid_map_demos/doc/filters_demo.gif)
+        name: lower_threshold
+        type: gridMapFilters/ThresholdFilter
+        params:
+          layer: layer_name
+          lower_threshold: 0.0 # alternative: upper_threshold
+          set_to: 0.0 # # Other uses: .nan, .inf
 
-For more information about grid map filters, see [grid_map_filters](#grid_map_filters).
+
+* **`gridMapFilters/MeanInRadiusFilter`**
+
+    Compute for each cell of a layer the mean value inside a radius.
+
+        name: mean_in_radius
+        type: gridMapFilters/MeanInRadiusFilter
+        params:
+          input_layer: input
+          output_layer: output
+          radius: 0.06 # in m.
+
+Additionally, the `MathExpressionFilter` and `SlidingWindowMathExpressionFilter` allow for custom calculations with multiple layers or in a sliding window on one layer.
 
 ## Build Status
 
