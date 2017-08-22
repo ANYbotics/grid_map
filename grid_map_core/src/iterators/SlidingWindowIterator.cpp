@@ -56,28 +56,21 @@ SlidingWindowIterator& SlidingWindowIterator::operator ++()
 
 const Matrix SlidingWindowIterator::getData() const
 {
-  std::cerr << "SlidingWindowIterator::getData() 1" << std::endl;
   const Index centerIndex(*(*this));
   const Index originalTopLeftIndex(centerIndex - Index(windowMargin_));
-  std::cerr << "SlidingWindowIterator::getData() 2" << std::endl;
   Index topLeftIndex(originalTopLeftIndex);
   boundIndexToRange(topLeftIndex, size_);
-  std::cerr << "SlidingWindowIterator::getData() 3" << std::endl;
   Index bottomRightIndex(centerIndex + Index(windowMargin_));
   boundIndexToRange(bottomRightIndex, size_);
-  std::cerr << "SlidingWindowIterator::getData() 4" << std::endl;
   Size adjustedWindowSize(bottomRightIndex - topLeftIndex + Size::Ones());
 
-  std::cerr << "SlidingWindowIterator::getData() 5" << std::endl;
   switch (edgeHandling_) {
     case EdgeHandling::INSIDE:
     case EdgeHandling::CROP:
-      std::cerr << "SlidingWindowIterator::getData() 6" << std::endl;
       return data_.block(topLeftIndex(0), topLeftIndex(1), adjustedWindowSize(0), adjustedWindowSize(1));
     case EdgeHandling::EMPTY:
     case EdgeHandling::MEAN:
       const Matrix data = data_.block(topLeftIndex(0), topLeftIndex(1), adjustedWindowSize(0), adjustedWindowSize(1));
-      std::cerr << "SlidingWindowIterator::getData() 7" << std::endl;
       Matrix returnData(windowSize_, windowSize_);
       if (edgeHandling_ == EdgeHandling::EMPTY) returnData.setConstant(NAN);
       else if (edgeHandling_ == EdgeHandling::MEAN) returnData.setConstant(data.meanOfFinites());
@@ -95,9 +88,7 @@ void SlidingWindowIterator::setup(const GridMap& gridMap)
       "SlidingWindowIterator cannot be used with grid maps that don't have a default buffer start index.");
   if (windowSize_ % 2 == 0) throw std::runtime_error(
       "SlidingWindowIterator has a wrong window size!");
-  std::cerr << "SlidingWindowIterator::setup() 1" << std::endl;
   windowMargin_ = (windowSize_ - 1) / 2;
-  std::cerr << "SlidingWindowIterator::setup() 2" << std::endl;
 
   if (edgeHandling_ == EdgeHandling::INSIDE) {
     if (!dataInsideMap()) {
@@ -111,7 +102,7 @@ bool SlidingWindowIterator::dataInsideMap() const
 {
   const Index centerIndex(*(*this));
   std::cerr << "SlidingWindowIterator::dataInsideMap() 0" << std::endl;
-  const Index windowMargin(windowMargin_);
+  const Index windowMargin(windowMargin_, windowMargin_);
   std::cerr << "SlidingWindowIterator::dataInsideMap() 1" << std::endl;
   const Index topLeftIndex(centerIndex - windowMargin);
   std::cerr << "SlidingWindowIterator::dataInsideMap() 2" << std::endl;

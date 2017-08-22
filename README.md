@@ -416,7 +416,7 @@ Several basic filters are provided in the *grid_map_filters* package:
           output_layer: output
           expression: meanOfFinites(input) # Box blur
           # expression: sqrt(sumOfFinites(square(input - meanOfFinites(input))) ./ numberOfFinites(input)) # Standard deviation
-          # expression: 'sumOfFinites([0,-1,0;-1,5,-1;0,-1,0].*elevation_inpainted)' # Sharpen with kernel matrix sharpen
+          # expression: 'sumOfFinites([0,-1,0;-1,5,-1;0,-1,0].*elevation_inpainted)' # Sharpen with kernel matrix
           compute_empty_cells: true
           edge_handling: crop # options: inside, crop, empty, mean
           window_size: 5 # in number of cells (optional, default: 3), make sure to make this compatible with the kernel matrix
@@ -441,7 +441,7 @@ Several basic filters are provided in the *grid_map_filters* package:
         params:
           layers: [color, score] # List of layers.
 
-Additionally, the `grid_map_cv` package provides the following filters:
+Additionally, the *grid_map_cv* package provides the following filters:
 
 * **`gridMapCv/InpaintFilter`**
 
