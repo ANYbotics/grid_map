@@ -57,6 +57,9 @@ void OctomapToGridmapDemo::convertAndPublishMap()
   octomap::AbstractOcTree* tree = octomap_msgs::msgToMap(srv.response.map);
   if (tree) {
     octomap = dynamic_cast<octomap::OcTree*>(tree);
+  } else {
+    ROS_ERROR("Failed to call convert Octomap.");
+    return;
   }
 
   grid_map::Position3 min_bound;
@@ -76,6 +79,10 @@ void OctomapToGridmapDemo::convertAndPublishMap()
   if(!std::isnan(maxZ_))
     max_bound(2) = maxZ_;
   bool res = grid_map::GridMapOctomapConverter::fromOctomap(*octomap, "elevation", map_, &min_bound, &max_bound);
+  if (!res) {
+    ROS_ERROR("Failed to call convert Octomap.");
+    return;
+  }
   map_.setFrameId(srv.response.map.header.frame_id);
 
   // Publish as grid map.
