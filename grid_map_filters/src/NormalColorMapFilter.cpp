@@ -72,5 +72,4 @@ bool NormalColorMapFilter<T>::update(const T& mapIn, T& mapOut)
 
 } /* namespace */
 
-PLUGINLIB_REGISTER_CLASS(NormalColorMapFilter, grid_map::NormalColorMapFilter<grid_map::GridMap>,
-                         filters::FilterBase<grid_map::GridMap>)
+PLUGINLIB_EXPORT_CLASS(grid_map::NormalColorMapFilter<grid_map::GridMap>, filters::FilterBase<grid_map::GridMap>)

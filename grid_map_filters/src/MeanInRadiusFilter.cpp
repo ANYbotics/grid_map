@@ -94,5 +94,4 @@ bool MeanInRadiusFilter<T>::update(const T& mapIn, T& mapOut)
 
 } /* namespace */
 
-PLUGINLIB_REGISTER_CLASS(MeanInRadiusFilter, grid_map::MeanInRadiusFilter<grid_map::GridMap>,
-                         filters::FilterBase<grid_map::GridMap>)
+PLUGINLIB_EXPORT_CLASS(grid_map::MeanInRadiusFilter<grid_map::GridMap>, filters::FilterBase<grid_map::GridMap>)
