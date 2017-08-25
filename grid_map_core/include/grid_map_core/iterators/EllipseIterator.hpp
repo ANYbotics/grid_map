@@ -11,10 +11,8 @@
 #include "grid_map_core/GridMap.hpp"
 #include "grid_map_core/iterators/SubmapIterator.hpp"
 
-// Eigen
 #include <Eigen/Core>
 
-// unique_ptr
 #include <memory>
 
 namespace grid_map {

@@ -2,29 +2,27 @@
  * DeletionFilter.cpp
  *
  *  Created on: Mar 19, 2015
- *      Author: Martin Wermelinger
+ *      Author: Martin Wermelinger, Peter Fankhauser
  *   Institute: ETH Zurich, Autonomous Systems Lab
  */
 
-#include "filters/DeletionFilter.hpp"
+#include "grid_map_filters/DeletionFilter.hpp"
 
 #include <grid_map_core/GridMap.hpp>
 #include <pluginlib/class_list_macros.h>
 
 using namespace filters;
 
-namespace grid_map_filters {
+namespace grid_map {
 
 template<typename T>
 DeletionFilter<T>::DeletionFilter()
 {
-
 }
 
 template<typename T>
 DeletionFilter<T>::~DeletionFilter()
 {
-
 }
 
 template<typename T>
@@ -62,6 +60,4 @@ bool DeletionFilter<T>::update(const T& mapIn, T& mapOut)
 
 } /* namespace */
 
-PLUGINLIB_REGISTER_CLASS(DeletionFilter,
-                         grid_map_filters::DeletionFilter<grid_map::GridMap>,
-                         filters::FilterBase<grid_map::GridMap>)
+PLUGINLIB_EXPORT_CLASS(grid_map::DeletionFilter<grid_map::GridMap>, filters::FilterBase<grid_map::GridMap>)

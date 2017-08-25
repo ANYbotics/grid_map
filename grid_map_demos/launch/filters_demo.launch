@@ -1,0 +1,28 @@
+<launch>
+
+  <!-- Launch the grid map filters demo node. -->
+  <node pkg="grid_map_demos" type="filters_demo" name="grid_map_filter_demo" output="screen">
+    <!-- Input topic -->
+  	<param name="input_topic" value="/image_to_gridmap_demo/grid_map" />
+  	<!-- Output topic -->
+  	<param name="output_topic" value="filtered_map" />
+  	<!-- Load grid map filter chain configuration -->
+    <rosparam command="load" file="$(find grid_map_demos)/config/filters_demo_filter_chain.yaml" />
+  </node>
+
+  <!-- Load the general parameters (except for filter chain) for this demo. -->
+  <rosparam command="load" file="$(find grid_map_demos)/config/filters_demo.yaml" />
+
+  <!-- Launch the image to grid map demo node (this provides the input for the filter demo). -->
+  <node pkg="grid_map_demos" type="image_publisher.py" name="image_publisher" output="screen">
+    <param name="image_path" value="$(find grid_map_demos)/data/terrain.png" />
+    <param name="topic" value="~image" />
+  </node>
+  <node pkg="grid_map_demos" type="image_to_gridmap_demo" name="image_to_gridmap_demo" output="screen" />
+
+  <!-- Launch the grid map visualizer. -->
+  <node pkg="grid_map_visualization" type="grid_map_visualization" name="grid_map_visualization" output="screen" />
+
+  <!-- Launch RViz with the demo configuration. -->
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find grid_map_demos)/rviz/filters_demo.rviz" />
+</launch>

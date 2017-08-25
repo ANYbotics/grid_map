@@ -2,7 +2,7 @@
  * ThresholdFilter.hpp
  *
  *  Created on: Mar 16, 2015
- *      Author: Martin Wermelinger
+ *      Author: Martin Wermelinger, Peter Fankhauser
  *   Institute: ETH Zurich, Autonomous Systems Lab
  */
 
@@ -10,14 +10,14 @@
 
 #include <filters/filter_base.h>
 
-#include <vector>
 #include <string>
+#include <vector>
 
-namespace grid_map_filters {
+namespace grid_map {
 
 /*!
- * Threshold filter class sets values below a lower threshold to 0 and
- * values above an upper threshold to 1.
+ * Threshold filter class to set values below/above a threshold to a
+ * specified value.
  */
 template<typename T>
 class ThresholdFilter : public filters::FilterBase<T>
@@ -49,8 +49,8 @@ class ThresholdFilter : public filters::FilterBase<T>
 
  private:
 
-  //! List of layers the threshold should be applied
-  std::vector<std::string> layers_;
+  //! Layer the threshold should be applied to.
+  std::string layer_;
 
   //! Lower Threshold
   double lowerThreshold_;

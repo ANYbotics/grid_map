@@ -10,8 +10,10 @@
   <author email="pfankhauser@ethz.ch">Péter Fankhauser</author>
   <buildtool_depend>catkin</buildtool_depend>
   <depend>roscpp</depend>
+  <depend>grid_map_core</depend>
   <depend>grid_map_ros</depend>
   <depend>grid_map_cv</depend>
+  <depend>grid_map_filters</depend>
   <depend>grid_map_loader</depend>
   <depend>grid_map_msgs</depend>
   <depend>grid_map_octomap</depend>

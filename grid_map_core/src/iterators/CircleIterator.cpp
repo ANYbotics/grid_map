@@ -84,8 +84,8 @@ void CircleIterator::findSubmapParameters(const Position& center, const double r
 {
   Position topLeft = center.array() + radius;
   Position bottomRight = center.array() - radius;
-  limitPositionToRange(topLeft, mapLength_, mapPosition_);
-  limitPositionToRange(bottomRight, mapLength_, mapPosition_);
+  boundPositionToRange(topLeft, mapLength_, mapPosition_);
+  boundPositionToRange(bottomRight, mapLength_, mapPosition_);
   getIndexFromPosition(startIndex, topLeft, mapLength_, mapPosition_, resolution_, bufferSize_, bufferStartIndex_);
   Index endIndex;
   getIndexFromPosition(endIndex, bottomRight, mapLength_, mapPosition_, resolution_, bufferSize_, bufferStartIndex_);

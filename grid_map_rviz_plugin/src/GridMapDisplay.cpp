@@ -147,11 +147,11 @@ void GridMapDisplay::updateColorMode()
   invertRainbowProperty_->setHidden(!intensityColor);
   autocomputeIntensityBoundsProperty_->setHidden(!intensityColor);
   bool useRainbow = useRainbowProperty_->getBool();
-  minColorProperty_->setHidden(!intensityColor || (intensityColor && useRainbow));
-  maxColorProperty_->setHidden(!intensityColor || (intensityColor && useRainbow));
+  minColorProperty_->setHidden(!intensityColor || useRainbow);
+  maxColorProperty_->setHidden(!intensityColor || useRainbow);
   bool autocomputeIntensity = autocomputeIntensityBoundsProperty_->getBool();
-  minIntensityProperty_->setHidden(!intensityColor || (intensityColor && autocomputeIntensity));
-  minIntensityProperty_->setHidden(!intensityColor || (intensityColor && autocomputeIntensity));
+  minIntensityProperty_->setHidden(!intensityColor || autocomputeIntensity);
+  minIntensityProperty_->setHidden(!intensityColor || autocomputeIntensity);
 }
 
 void GridMapDisplay::updateUseRainbow()

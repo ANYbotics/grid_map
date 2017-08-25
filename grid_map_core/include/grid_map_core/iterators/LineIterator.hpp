@@ -11,7 +11,6 @@
 #include "grid_map_core/GridMap.hpp"
 #include "grid_map_core/iterators/SubmapIterator.hpp"
 
-// Eigen
 #include <Eigen/Core>
 
 namespace grid_map {

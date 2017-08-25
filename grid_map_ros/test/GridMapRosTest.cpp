@@ -43,7 +43,7 @@ TEST(RosMessageConversion, roundTrip)
   GridMap mapOut;
   GridMapRosConverter::fromMessage(message, mapOut);
 
-  for (unsigned int i; i < mapIn.getLayers().size(); ++i) {
+  for (size_t i = 0; i < mapIn.getLayers().size(); ++i) {
     EXPECT_EQ(mapIn.getLayers().at(i), mapOut.getLayers().at(i));
     const std::string layer = mapIn.getLayers().at(i);
     EXPECT_TRUE((mapIn[layer].array() == mapOut[layer].array()).all());

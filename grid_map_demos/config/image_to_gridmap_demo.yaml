@@ -1,5 +1,5 @@
 image_to_gridmap_demo:
-  image_topic: "/image"
+  image_topic: "/image_publisher/image"
   resolution: 0.03
   map_frame_id: "map"
   min_height: -0.1
