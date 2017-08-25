@@ -236,60 +236,94 @@ TEST(getPositionShiftFromIndexShift, All)
   EXPECT_DOUBLE_EQ(-0.3, positionShift.y());
 }
 
-TEST(checkIfIndexWithinRange, All)
+TEST(checkIfIndexInRange, All)
 {
   Size bufferSize(10, 15);
-  EXPECT_TRUE(checkIfIndexWithinRange(Index(0, 0), bufferSize));
-  EXPECT_TRUE(checkIfIndexWithinRange(Index(9, 14), bufferSize));
-  EXPECT_FALSE(checkIfIndexWithinRange(Index(10, 5), bufferSize));
-  EXPECT_FALSE(checkIfIndexWithinRange(Index(5, 300), bufferSize));
-  EXPECT_FALSE(checkIfIndexWithinRange(Index(-1, 0), bufferSize));
-  EXPECT_FALSE(checkIfIndexWithinRange(Index(0, -300), bufferSize));
+  EXPECT_TRUE(checkIfIndexInRange(Index(0, 0), bufferSize));
+  EXPECT_TRUE(checkIfIndexInRange(Index(9, 14), bufferSize));
+  EXPECT_FALSE(checkIfIndexInRange(Index(10, 5), bufferSize));
+  EXPECT_FALSE(checkIfIndexInRange(Index(5, 300), bufferSize));
+  EXPECT_FALSE(checkIfIndexInRange(Index(-1, 0), bufferSize));
+  EXPECT_FALSE(checkIfIndexInRange(Index(0, -300), bufferSize));
 }
 
-TEST(mapIndexWithinRange, All)
+TEST(boundIndexToRange, All)
 {
   int index;
   int bufferSize = 10;
 
   index = 0;
-  mapIndexWithinRange(index, bufferSize);
+  boundIndexToRange(index, bufferSize);
   EXPECT_EQ(0, index);
 
   index = 1;
-  mapIndexWithinRange(index, bufferSize);
+  boundIndexToRange(index, bufferSize);
   EXPECT_EQ(1, index);
 
   index = -1;
-  mapIndexWithinRange(index, bufferSize);
-  EXPECT_EQ(9, index);
+  boundIndexToRange(index, bufferSize);
+  EXPECT_EQ(0, index);
 
   index = 9;
-  mapIndexWithinRange(index, bufferSize);
+  boundIndexToRange(index, bufferSize);
   EXPECT_EQ(9, index);
 
   index = 10;
-  mapIndexWithinRange(index, bufferSize);
+  boundIndexToRange(index, bufferSize);
+  EXPECT_EQ(9, index);
+
+  index = 35;
+  boundIndexToRange(index, bufferSize);
+  EXPECT_EQ(9, index);
+
+  index = -19;
+  boundIndexToRange(index, bufferSize);
+  EXPECT_EQ(0, index);
+}
+
+TEST(wrapIndexToRange, All)
+{
+  int index;
+  int bufferSize = 10;
+
+  index = 0;
+  wrapIndexToRange(index, bufferSize);
+  EXPECT_EQ(0, index);
+
+  index = 1;
+  wrapIndexToRange(index, bufferSize);
+  EXPECT_EQ(1, index);
+
+  index = -1;
+  wrapIndexToRange(index, bufferSize);
+  EXPECT_EQ(9, index);
+
+  index = 9;
+  wrapIndexToRange(index, bufferSize);
+  EXPECT_EQ(9, index);
+
+  index = 10;
+  wrapIndexToRange(index, bufferSize);
   EXPECT_EQ(0, index);
 
   index = 11;
-  mapIndexWithinRange(index, bufferSize);
+  wrapIndexToRange(index, bufferSize);
   EXPECT_EQ(1, index);
 
   index = 35;
-  mapIndexWithinRange(index, bufferSize);
+  wrapIndexToRange(index, bufferSize);
   EXPECT_EQ(5, index);
 
   index = -9;
-  mapIndexWithinRange(index, bufferSize);
+  wrapIndexToRange(index, bufferSize);
   EXPECT_EQ(1, index);
 
   index = -19;
-  mapIndexWithinRange(index, bufferSize);
+  wrapIndexToRange(index, bufferSize);
   EXPECT_EQ(1, index);
 }
 
-TEST(limitPositionToRange, Simple)
+TEST(boundPositionToRange, Simple)
 {
   double epsilon = 11.0 * numeric_limits<double>::epsilon();
 
@@ -298,54 +332,54 @@ TEST(limitPositionToRange, Simple)
   Position position;
 
   position << 0.0, 0.0;
-  limitPositionToRange(position, mapLength, mapPosition);
+  boundPositionToRange(position, mapLength, mapPosition);
   EXPECT_DOUBLE_EQ(0.0, position.x());
   EXPECT_DOUBLE_EQ(0.0, position.y());
 
   position << 15.0, 5.0;
-  limitPositionToRange(position, mapLength, mapPosition);
+  boundPositionToRange(position, mapLength, mapPosition);
   EXPECT_NEAR(15.0, position.x(), 15.0 * epsilon);
   EXPECT_GE(15.0, position.x());
   EXPECT_NEAR(5.0, position.y(), 5.0 * epsilon);
   EXPECT_GE(5.0, position.y());
 
   position << -15.0, -5.0;
-  limitPositionToRange(position, mapLength, mapPosition);
+  boundPositionToRange(position, mapLength, mapPosition);
   EXPECT_NEAR(-15.0, position.x(), 15.0 * epsilon);
   EXPECT_LE(-15.0, position.x());
   EXPECT_NEAR(-5.0, position.y(), 5.0 * epsilon);
   EXPECT_LE(-5.0, position.y());
 
   position << 16.0, 6.0;
-  limitPositionToRange(position, mapLength, mapPosition);
+  boundPositionToRange(position, mapLength, mapPosition);
   EXPECT_NEAR(15.0, position.x(), 16.0 * epsilon);
   EXPECT_GE(15.0, position.x());
   EXPECT_NEAR(5.0, position.y(), 6.0 * epsilon);
   EXPECT_GE(5.0, position.y());
 
   position << -16.0, -6.0;
-  limitPositionToRange(position, mapLength, mapPosition);
+  boundPositionToRange(position, mapLength, mapPosition);
   EXPECT_NEAR(-15.0, position.x(), 16.0 * epsilon);
   EXPECT_LE(-15.0, position.x());
   EXPECT_NEAR(-5.0, position.y(), 6.0 * epsilon);
   EXPECT_LE(-5.0, position.y());
 
   position << 1e6, 1e6;
-  limitPositionToRange(position, mapLength, mapPosition);
+  boundPositionToRange(position, mapLength, mapPosition);
   EXPECT_NEAR(15.0, position.x(), 1e6 * epsilon);
   EXPECT_GE(15.0, position.x());
   EXPECT_NEAR(5.0, position.y(), 1e6 * epsilon);
   EXPECT_GE(5.0, position.y());
 
   position << -1e6, -1e6;
-  limitPositionToRange(position, mapLength, mapPosition);
+  boundPositionToRange(position, mapLength, mapPosition);
   EXPECT_NEAR(-15.0, position.x(), 1e6 * epsilon);
   EXPECT_LE(-15.0, position.x());
   EXPECT_NEAR(-5.0, position.y(), 1e6 * epsilon);
   EXPECT_LE(-5.0, position.y());
 }
 
-TEST(limitPositionToRange, Position)
+TEST(boundPositionToRange, Position)
 {
   double epsilon = 11.0 * numeric_limits<double>::epsilon();
 
@@ -354,47 +388,47 @@ TEST(limitPositionToRange, Position)
   Position position;
 
   position << 0.0, 0.0;
-  limitPositionToRange(position, mapLength, mapPosition);
+  boundPositionToRange(position, mapLength, mapPosition);
   EXPECT_DOUBLE_EQ(0.0, position.x());
   EXPECT_DOUBLE_EQ(0.0, position.y());
 
   position << 16.0, 7.0;
-  limitPositionToRange(position, mapLength, mapPosition);
+  boundPositionToRange(position, mapLength, mapPosition);
   EXPECT_NEAR(16.0, position.x(), 16.0 * epsilon);
   EXPECT_GE(16.0, position.x());
   EXPECT_NEAR(7.0, position.y(), 7.0 * epsilon);
   EXPECT_GE(7.0, position.y());
 
   position << -14.0, -3.0;
-  limitPositionToRange(position, mapLength, mapPosition);
+  boundPositionToRange(position, mapLength, mapPosition);
   EXPECT_NEAR(-14.0, position.x(), 14.0 * epsilon);
   EXPECT_LE(-14.0, position.x());
   EXPECT_NEAR(-3.0, position.y(), 3.0 * epsilon);
   EXPECT_LE(-3.0, position.y());
 
   position << 17.0, 8.0;
-  limitPositionToRange(position, mapLength, mapPosition);
+  boundPositionToRange(position, mapLength, mapPosition);
   EXPECT_NEAR(16.0, position.x(), 17.0 * epsilon);
   EXPECT_GE(16.0, position.x());
   EXPECT_NEAR(7.0, position.y(), 8.0 * epsilon);
   EXPECT_GE(7.0, position.y());
 
   position << -15.0, -4.0;
-  limitPositionToRange(position, mapLength, mapPosition);
+  boundPositionToRange(position, mapLength, mapPosition);
   EXPECT_NEAR(-14.0, position.x(), 15.0 * epsilon);
   EXPECT_LE(-14.0, position.x());
   EXPECT_NEAR(-3.0, position.y(), 4.0 * epsilon);
   EXPECT_LE(-3.0, position.y());
 
   position << 1e6, 1e6;
-  limitPositionToRange(position, mapLength, mapPosition);
+  boundPositionToRange(position, mapLength, mapPosition);
   EXPECT_NEAR(16.0, position.x(), 1e6 * epsilon);
   EXPECT_GE(16.0, position.x());
   EXPECT_NEAR(7.0, position.y(), 1e6 * epsilon);
   EXPECT_GE(7.0, position.y());
 
   position << -1e6, -1e6;
-  limitPositionToRange(position, mapLength, mapPosition);
+  boundPositionToRange(position, mapLength, mapPosition);
   EXPECT_NEAR(-14.0, position.x(), 1e6 * epsilon);
   EXPECT_LE(-14.0, position.x());
   EXPECT_NEAR(-3.0, position.y(), 1e6 * epsilon);

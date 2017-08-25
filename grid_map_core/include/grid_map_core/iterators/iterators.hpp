@@ -15,3 +15,4 @@
 #include "grid_map_core/iterators/SpiralIterator.hpp"
 #include "grid_map_core/iterators/LineIterator.hpp"
 #include "grid_map_core/iterators/PolygonIterator.hpp"
+#include "grid_map_core/iterators/SlidingWindowIterator.hpp"

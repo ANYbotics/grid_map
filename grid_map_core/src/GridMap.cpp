@@ -365,7 +365,7 @@ bool GridMap::move(const Position& position, std::vector<BufferRegion>& newRegio
         int endIndex = startIndex - sign + indexShift(i);
         int nCells = abs(indexShift(i));
         int index = (sign > 0 ? startIndex : endIndex);
-        mapIndexWithinRange(index, getSize()(i));
+        wrapIndexToRange(index, getSize()(i));
 
         if (index + nCells <= getSize()(i)) {
           // One region to drop.
@@ -404,7 +404,7 @@ bool GridMap::move(const Position& position, std::vector<BufferRegion>& newRegio
 
   // Update information.
   startIndex_ += indexShift;
-  mapIndexWithinRange(startIndex_, getSize());
+  wrapIndexToRange(startIndex_, getSize());
   position_ += alignedPositionShift;
 
   // Check if map has been moved at all.
@@ -574,9 +574,14 @@ const Index& GridMap::getStartIndex() const
   return startIndex_;
 }
 
+bool GridMap::isDefaultStartIndex() const
+{
+  return (startIndex_ == 0).all();
+}
+
 void GridMap::convertToDefaultStartIndex()
 {
-  if ((startIndex_ == 0).all()) return;
+  if (isDefaultStartIndex()) return;
 
   std::vector<BufferRegion> bufferRegions;
   if (!getBufferRegionsForSubmap(bufferRegions, startIndex_, size_, size_, startIndex_)) {

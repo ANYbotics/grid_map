@@ -55,7 +55,7 @@ int main(int argc, char** argv)
     // Filter values for submap (iterators).
     map.add("elevation_filtered", map.get("elevation_noisy"));
     Position topLeftCorner(1.0, 0.4);
-    limitPositionToRange(topLeftCorner, map.getLength(), map.getPosition());
+    boundPositionToRange(topLeftCorner, map.getLength(), map.getPosition());
     Index startIndex;
     map.getIndex(topLeftCorner, startIndex);
     ROS_INFO_ONCE("Top left corner was limited from (1.0, 0.2) to (%f, %f) and corresponds to index (%i, %i).",
@@ -90,6 +90,7 @@ int main(int argc, char** argv)
     // Show absolute difference and compute mean squared error.
     map.add("error", (map.get("elevation_filtered") - map.get("elevation")).cwiseAbs());
     unsigned int nCells = map.getSize().prod();
+    // cppcheck-suppress unreadVariable
     double rootMeanSquaredError = sqrt((map["error"].array().pow(2).sum()) / nCells);
 
     // Publish grid map.
