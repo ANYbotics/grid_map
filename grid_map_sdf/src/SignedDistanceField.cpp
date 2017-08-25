@@ -1,129 +1,108 @@
 /*
- * Signeddistancefield.hpp
+ * SignedDistanceField.hpp
  *
  *  Created on: Aug 16, 2017
- *      Author: Takahiro Miki
- *   Institute: ETH Zurich, Autonomous Systems Lab
+ *     Authors: Takahiro Miki, Peter Fankhauser
+ *   Institute: ETH Zurich, Robotic Systems Lab
  */
 
 #include <grid_map_sdf/SignedDistanceField.hpp>
 #include <grid_map_core/GridMap.hpp>
 
 // signed distance field
-#include "dt.h"
+#include "grid_map_sdf/signed_distance_field/dt.h"
 
-
-using namespace grid_map;
 using namespace Eigen;
 
-namespace grid_map_sdf{
+namespace grid_map {
 
-SignedDistanceField::SignedDistanceField():maxDistance_(100)
+SignedDistanceField::SignedDistanceField()
+    : maxDistance_(100),
+      zIndexStartHeight_(0.0),
+      resolution_(0.0)
 {
-
 }
 
 SignedDistanceField::~SignedDistanceField()
 {
-
 }
 
-void SignedDistanceField::calculateSignedDistanceField(GridMap &map, std::string layer, double heightClearance){
-  resolution_ = map.getResolution();
-  mapPosition_ = map.getPosition();
-  size_ = map.getSize();
-  MatrixXf mat = map.get(layer); 
+void SignedDistanceField::calculateSignedDistanceField(const GridMap& gridMap, const std::string& layer,
+                                                       const double heightClearance)
+{
+  data_.clear();
+  resolution_ = gridMap.getResolution();
+  position_ = gridMap.getPosition();
+  size_ = gridMap.getSize();
+  Matrix map = gridMap.get(layer);
 
-  // Get min and max height and fill the max height in the nan area.
-  double minHeight = 10000;
-  double maxHeight = -10000;
-  std::vector<Eigen::Array2i> nanIndices;
-  for (int y = 0; y < mat.rows(); y++) {
-    for (int x = 0; x < mat.cols(); x++) {
-      if(!std::isnan(mat(x, y))){
-        if(mat(x, y) > maxHeight)
-          maxHeight = mat(x, y);
-        if(mat(x, y) < minHeight)
-          minHeight = mat(x, y);
-      }
-      else{
-        nanIndices.push_back(Eigen::Array2i(x, y));
-      }
-    }
+  // Get min and max height and fill the max height in the NAN area.
+  const float minHeight = map.minCoeffOfFinites();
+  float maxHeight = map.maxCoeffOfFinites();
+
+  for (size_t i = 0; i < map.size(); ++i) {
+    if (std::isnan(map(i))) map(i) = maxHeight;
   }
-  for(Eigen::Array2i index: nanIndices){
-    mat(index.x(), index.y()) = maxHeight;
-  }
-  // Height range of the signed distance field is higher than the max height
+
+  // Height range of the signed distance field is higher than the max height.
   maxHeight += heightClearance;
 
-  MatrixXf sdfElevationAbove = MatrixXf::Ones(mat.rows(), mat.cols()) * maxDistance_; 
-  MatrixXf sdfElevationBelow = MatrixXf::Ones(mat.rows(), mat.cols()) * maxDistance_; 
-  MatrixXf sdfLayer(mat.rows(), mat.cols()); 
-  std::vector<MatrixXf> sdf;
+  Matrix sdfElevationAbove = Matrix::Ones(map.rows(), map.cols()) * maxDistance_;
+  Matrix sdfElevationBelow = Matrix::Ones(map.rows(), map.cols()) * maxDistance_;
+  Matrix sdfLayer(map.rows(), map.cols());
 
   // Calculate signed distance field in downwards direction.
   std::vector<MatrixXf> sdfElevationBelowList;
-  for(float j = maxHeight; j > minHeight; j-=resolution_){
-    for (int y = 0; y < sdfElevationBelow.rows(); y++) {
-      for (int x = 0; x < sdfElevationBelow.cols(); x++) {
-        if(sdfElevationBelow(x, y) == maxDistance_ && mat(x, y) > j)
-          sdfElevationBelow(x, y) = j - mat(x, y);
-        else if(sdfElevationBelow(x, y) != maxDistance_)
-          sdfElevationBelow(x, y) -= resolution_;
-      }
+  for (float h = maxHeight; h > minHeight; h -= resolution_) {
+    for (size_t i = 0; i < sdfElevationBelow.size(); ++i) {
+      if (sdfElevationBelow(i) == maxDistance_ && map(i) > h) sdfElevationBelow(i) = h - map(i);
+      else if (sdfElevationBelow(i) != maxDistance_) sdfElevationBelow(i) -= resolution_;
     }
     sdfElevationBelowList.push_back(sdfElevationBelow);
   }
   zIndexStartHeight_ = minHeight;
 
   // Calculate signed distance field from bottom.
-  for(float i = minHeight; i < maxHeight; i+=resolution_){
-    Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic>  obstacleFreeField = mat.array() < i;
-    Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic>  obstacleField = obstacleFreeField.array() < 1;
-    MatrixXf sdfObstacle = get2dSDF(obstacleField);
-    MatrixXf sdfObstacleFree = get2dSDF(obstacleFreeField);
+  for (float h = minHeight; h < maxHeight; h += resolution_) {
+    Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic> obstacleFreeField = map.array() < h;
+    Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic> obstacleField = obstacleFreeField.array() < 1;
+    MatrixXf sdfObstacle = getPlanarSignedDistanceField(obstacleField);
+    MatrixXf sdfObstacleFree = getPlanarSignedDistanceField(obstacleFreeField);
     MatrixXf sdf2d;
     // If 2d sdfObstacleFree calculation failed, neglect this sdf
     // to avoid extreme small distances(-INF).
-    if ((sdfObstacleFree.array() > 100000).any())
-      sdf2d = sdfObstacle;
-    else
-      sdf2d = sdfObstacle - sdfObstacleFree;
+    if ((sdfObstacleFree.array() > 100000).any()) sdf2d = sdfObstacle;
+    else sdf2d = sdfObstacle - sdfObstacleFree;
     sdf2d *= resolution_;
     MatrixXf sdfElevationBelow = sdfElevationBelowList.back();
     sdfElevationBelowList.pop_back();
-    for (int y = 0; y < sdfElevationAbove.rows(); y++) {
-      for (int x = 0; x < sdfElevationAbove.cols(); x++) {
-        // Update sdfElevation from the layer below.
-        if(sdfElevationAbove(x, y) == maxDistance_ && mat(x, y) < i)
-          sdfElevationAbove(x, y) = i - mat(x, y);
-        else if(sdfElevationAbove(x, y) != maxDistance_ && mat(x, y) < i)
-          sdfElevationAbove(x, y) = sdfLayer(x, y) + resolution_;
-        // SDF is the minimum distance between 2d, elevationAbove and elevationBelow
-        sdfLayer(x, y) = std::min({sdf2d(x, y), sdfElevationAbove(x, y), sdfElevationBelow(x, y)});
-      }
+    for (size_t i = 0; i < sdfElevationAbove.size(); ++i) {
+      // Update sdfElevation from the layer below.
+      if (sdfElevationAbove(i) == maxDistance_ && map(i) < h) sdfElevationAbove(i) = h - map(i);
+      else if (sdfElevationAbove(i) != maxDistance_ && map(i) < h) sdfElevationAbove(i) = sdfLayer(i) + resolution_;
+      // SDF is the minimum distance between 2d, elevationAbove and elevationBelow.
+      sdfLayer(i) = std::min({sdf2d(i), sdfElevationAbove(i), sdfElevationBelow(i)});
     }
-    sdf.push_back(sdfLayer);
+    data_.push_back(sdfLayer);
   }
-  data_ = sdf;
 }
 
-Eigen::MatrixXf SignedDistanceField::get2dSDF(Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic>& mat){
-
-  image<uchar> *input = new image<uchar>(mat.cols(), mat.rows(), true);
+Matrix SignedDistanceField::getPlanarSignedDistanceField(Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic>& data)
+{
+  image<uchar> *input = new image<uchar>(data.cols(), data.rows(), true);
 
   for (int y = 0; y < input->height(); y++) {
     for (int x = 0; x < input->width(); x++) {
-      imRef(input, x, y) = mat(x, y);
+      imRef(input, x, y) = data(x, y);
     }
   }
-  // compute dt
+
+  // Compute dt.
   image<float> *out = dt(input);
 
-  Eigen::MatrixXf result(mat.rows(), mat.cols());
+  Eigen::MatrixXf result(data.rows(), data.cols());
 
-  // take square roots
+  // Take square roots.
   for (int y = 0; y < out->height(); y++) {
     for (int x = 0; x < out->width(); x++) {
       result(x, y) = sqrt(imRef(out, x, y));
@@ -132,11 +111,12 @@ Eigen::MatrixXf SignedDistanceField::get2dSDF(Eigen::Matrix<bool, Eigen::Dynamic
   return result;
 }
 
-double SignedDistanceField::getDistanceAt(Eigen::Vector3f position){
+double SignedDistanceField::getDistanceAt(const Position3& position)
+{
   double xCenter = size_.x() / 2;
   double yCenter = size_.y() / 2;
-  int i = std::round(size_.x() - xCenter - (position.x() - mapPosition_.x()) / resolution_);
-  int j = std::round(size_.y() - yCenter - (position.y() - mapPosition_.y()) / resolution_);
+  int i = std::round(size_.x() - xCenter - (position.x() - position_.x()) / resolution_);
+  int j = std::round(size_.y() - yCenter - (position.y() - position_.y()) / resolution_);
   int k = std::round((position.z() - zIndexStartHeight_) / resolution_);
   i = std::max(i, 0);
   i = std::min(i, size_.x() - 1);
@@ -147,22 +127,23 @@ double SignedDistanceField::getDistanceAt(Eigen::Vector3f position){
   return data_[k](i, j);
 }
 
-
-Eigen::Vector3f SignedDistanceField::getDistanceGradientAt(Eigen::Vector3f position){
-  double dx = (getDistanceAt(position + Vector3f(resolution_, 0, 0)) - getDistanceAt(position - Vector3f(resolution_, 0, 0))) / (2 * resolution_);
-  double dy = (getDistanceAt(position + Vector3f(0, resolution_, 0)) - getDistanceAt(position - Vector3f(0, resolution_, 0))) / (2 * resolution_);
-  double dz = (getDistanceAt(position + Vector3f(0, 0, resolution_)) - getDistanceAt(position - Vector3f(0, 0, resolution_))) / (2 * resolution_);
-  return Vector3f(dx, dy, dz);
+Vector3 SignedDistanceField::getDistanceGradientAt(const Position3& position)
+{
+  double dx = (getDistanceAt(position + Vector3(resolution_, 0, 0)) - getDistanceAt(position - Vector3(resolution_, 0, 0))) / (2 * resolution_);
+  double dy = (getDistanceAt(position + Vector3(0, resolution_, 0)) - getDistanceAt(position - Vector3(0, resolution_, 0))) / (2 * resolution_);
+  double dz = (getDistanceAt(position + Vector3(0, 0, resolution_)) - getDistanceAt(position - Vector3(0, 0, resolution_))) / (2 * resolution_);
+  return Vector3(dx, dy, dz);
 }
 
-void SignedDistanceField::convertToPointCloud(pcl::PointCloud<pcl::PointXYZI>& points){
+void SignedDistanceField::convertToPointCloud(pcl::PointCloud<pcl::PointXYZI>& points)
+{
   double xCenter = size_.x() / 2;
   double yCenter = size_.y() / 2;
   for (int z = 0; z < data_.size(); z++){
     for (int y = 0; y < size_.y(); y++) {
       for (int x = 0; x < size_.x(); x++) {
-        double xp = mapPosition_.x() + ((size_.x() - x) - xCenter) * resolution_;
-        double yp = mapPosition_.y() + ((size_.y() - y) - yCenter) * resolution_;
+        double xp = position_.x() + ((size_.x() - x) - xCenter) * resolution_;
+        double yp = position_.y() + ((size_.y() - y) - yCenter) * resolution_;
         double zp = zIndexStartHeight_ + z * resolution_;
         pcl::PointXYZI p;
         p.x = xp;
@@ -175,6 +156,5 @@ void SignedDistanceField::convertToPointCloud(pcl::PointCloud<pcl::PointXYZI>& p
   }
   return;
 }
-
 
 } /* namespace */
