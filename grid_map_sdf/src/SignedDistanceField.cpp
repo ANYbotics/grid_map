@@ -28,6 +28,18 @@ SignedDistanceField::~SignedDistanceField()
 
 }
 
+Size SignedDistanceField::getMapSize(){
+  return size_;
+}
+
+double SignedDistanceField::getMapResolution(){
+  return resolution_;
+}
+
+Position SignedDistanceField::getMapPosition(){
+  return mapPosition_;
+}
+
 void SignedDistanceField::calculateSignedDistanceField(GridMap &map, std::string layer, double heightClearance){
   resolution_ = map.getResolution();
   mapPosition_ = map.getPosition();

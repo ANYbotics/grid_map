@@ -42,6 +42,9 @@ class SignedDistanceField
   Eigen::Vector3f getDistanceGradientAt(Eigen::Vector3f position);
   void calculateSignedDistanceField(GridMap &map, std::string layer, double heightClearance);
   void convertToPointCloud(pcl::PointCloud<pcl::PointXYZI>& points);
+  Size getMapSize();
+  double getMapResolution();
+  Position getMapPosition();
 
  private:
 
