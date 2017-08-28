@@ -1,5 +1,5 @@
 /*
- * test_grid_map.cpp
+ * test_grid_map_sdf.cpp
  *
  *  Created on: Aug 28, 2017
  *      Author: Péter Fankhauser
