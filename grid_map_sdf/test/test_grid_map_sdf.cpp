@@ -1,9 +1,9 @@
 /*
  * test_grid_map.cpp
  *
- *  Created on: Feb 10, 2014
+ *  Created on: Aug 28, 2017
  *      Author: Péter Fankhauser
- *	 Institute: ETH Zurich, Autonomous Systems Lab
+ *	 Institute: ETH Zurich, Robotic Systems Lab
  */
 
 // gtest

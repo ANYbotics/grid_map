@@ -3,7 +3,7 @@
  *
  *  Created on: Aug 25, 2017
  *      Author: Takahiro Miki
- *	 Institute: ETH Zurich, Autonomous Systems Lab
+ *	 Institute: ETH Zurich, Robotic Systems Lab
  */
 
 #include "grid_map_core/GridMap.hpp"
