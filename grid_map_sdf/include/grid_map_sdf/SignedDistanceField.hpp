@@ -1,62 +1,49 @@
 /*
- * Signeddistancefield.hpp
+ * SignedDistanceField.hpp
  *
  *  Created on: Aug 16, 2017
- *      Author: Takahiro Miki
- *   Institute: ETH Zurich, Autonomous Systems Lab
+ *     Authors: Takahiro Miki, Peter Fankhauser
+ *   Institute: ETH Zurich, Robotic Systems Lab
  */
 
 #pragma once
 
-#include <vector>
-#include <string>
-
 #include <grid_map_core/GridMap.hpp>
 
-//pcl
 #include <pcl/point_types.h>
 #include <pcl/conversions.h>
 
+#include <string>
+#include <vector>
+
 using namespace grid_map;
 
-namespace grid_map_sdf {
+namespace grid_map {
 
-/*!
- * Deletion filter class deletes layers of a grid map.
- */
-// template<typename T>
 class SignedDistanceField
 {
  public:
-  /*!
-   * Constructor
-   */
   SignedDistanceField();
-
-  /*!
-   * Destructor.
-   */
   virtual ~SignedDistanceField();
 
-  double getDistanceAt(Eigen::Vector3f position);
-  double getInterpolatedDistanceAt(Eigen::Vector3f position);
-  Eigen::Vector3f getDistanceGradientAt(Eigen::Vector3f position);
-  void calculateSignedDistanceField(GridMap &map, std::string layer, double heightClearance);
+  void calculateSignedDistanceField(const GridMap& gridMap, const std::string& layer, const double heightClearance);
+  double getDistanceAt(const Position3& position);
+  Vector3 getDistanceGradientAt(const Position3& position);
+  double getInterpolatedDistanceAt(const Position3& position);
   void convertToPointCloud(pcl::PointCloud<pcl::PointXYZI>& points);
   Size getMapSize();
   double getMapResolution();
   Position getMapPosition();
 
  private:
+  Matrix getPlanarSignedDistanceField(Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic>& data);
 
   double resolution_;
   Size size_;
-  Position mapPosition_;
+  Position position_;
   std::vector<Matrix> data_;
   double zIndexStartHeight_;
   double maxDistance_;
-  Eigen::MatrixXf get2dSDF(Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic>& mat);
-
 };
 
 } /* namespace */

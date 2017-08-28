@@ -6,13 +6,8 @@ set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
 ## Find catkin macros and libraries
 find_package(catkin REQUIRED COMPONENTS
   grid_map_core
-  grid_map_ros
-  grid_map_msgs
-  grid_map_costmap_2d
+  pcl_ros
 )
-
-## System dependencies are found with CMake's conventions
-#find_package(Eigen3 REQUIRED)
 
 ###################################
 ## catkin specific configuration ##
@@ -29,12 +24,9 @@ catkin_package(
   LIBRARIES
     ${PROJECT_NAME}
   CATKIN_DEPENDS
-    grid_map_ros
     grid_map_core
-    grid_map_msgs
-    grid_map_costmap_2d
+    pcl_ros
   DEPENDS
-    #Eigen3
 )
 
 ###########
@@ -46,7 +38,6 @@ include_directories(
   include
   ${catkin_INCLUDE_DIRS}
   ${EIGEN3_INCLUDE_DIR}
-  include/grid_map_sdf/signed_distance_field
 )
 
 ## Declare a cpp library
@@ -78,22 +69,33 @@ endif()
 #############
 
 # Mark executables and/or libraries for installation
-# install(
-#   TARGETS ${PROJECT_NAME}
-#   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-#   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-#   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-# )
+install(
+  TARGETS ${PROJECT_NAME}
+  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
 
-# # Mark cpp header files for installation
-# install(
-#   DIRECTORY include/${PROJECT_NAME}/
-#   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
-#   FILES_MATCHING PATTERN "*.hpp"
-# )
+# Mark cpp header files for installation
+install(
+  DIRECTORY include/${PROJECT_NAME}/
+  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+  FILES_MATCHING PATTERN "*.hpp"
+)
+
+#############
+## Testing ##
+#############
 #
-# # Mark other files for installation
-# install(
-#   FILES filter_plugins.xml
-#   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
-# )
+#if(CATKIN_ENABLE_TESTING)
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
+### Add gtest based cpp test target and link libraries
+#catkin_add_gtest(${PROJECT_NAME}-test
+#  test/test_grid_map_ros.cpp
+#  test/GridMapRosTest.cpp
+#)
+#endif()
+#
+#if(TARGET ${PROJECT_NAME}-test)
+#  target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
+#endif()
