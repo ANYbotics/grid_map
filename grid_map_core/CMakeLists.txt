@@ -2,11 +2,12 @@ cmake_minimum_required(VERSION 2.8.3)
 project(grid_map_core)
 
 set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
+set(CMAKE_CXX_FLAGS "-O3 ${CMAKE_CXX_FLAGS}")
 
 ## Find catkin macros and libraries
 find_package(catkin REQUIRED COMPONENTS)
 
-## Define Eigen addons. 
+## Define Eigen addons.
 include(cmake/${PROJECT_NAME}-extras.cmake)
 
 ## System dependencies are found with CMake's conventions
