@@ -16,8 +16,6 @@
 #include <string>
 #include <vector>
 
-using namespace grid_map;
-
 namespace grid_map {
 
 class SignedDistanceField
@@ -31,9 +29,6 @@ class SignedDistanceField
   Vector3 getDistanceGradientAt(const Position3& position);
   double getInterpolatedDistanceAt(const Position3& position);
   void convertToPointCloud(pcl::PointCloud<pcl::PointXYZI>& points);
-  Size getMapSize();
-  double getMapResolution();
-  Position getMapPosition();
 
  private:
   Matrix getPlanarSignedDistanceField(Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic>& data);
@@ -42,8 +37,8 @@ class SignedDistanceField
   Size size_;
   Position position_;
   std::vector<Matrix> data_;
-  double zIndexStartHeight_;
-  double maxDistance_;
+  float zIndexStartHeight_;
+  float maxDistance_;
 };
 
 } /* namespace */

@@ -9,10 +9,7 @@
 #include "grid_map_core/GridMap.hpp"
 #include "grid_map_sdf/SignedDistanceField.hpp"
 
-// gtest
 #include <gtest/gtest.h>
-
-// Math
 #include <math.h>
 
 using namespace std;
@@ -128,7 +125,8 @@ TEST(SignedDistanceField, GetDistance)
   EXPECT_NEAR(sdf.getDistanceAt(Vector3(pos.x(), pos.y(), 10.0)), 1.7, 0.0001);
 }
 
-TEST(SignedDistanceField, GetInterpolatedDistance){
+TEST(SignedDistanceField, GetInterpolatedDistance)
+{
   GridMap map({"layer"});
   map.setGeometry(Length(1.0, 2.0), 0.1, Position(0.15, 0.25));
   map["layer"].setConstant(1.0);

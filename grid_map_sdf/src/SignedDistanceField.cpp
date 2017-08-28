@@ -7,17 +7,16 @@
  */
 
 #include <grid_map_sdf/SignedDistanceField.hpp>
+#include <grid_map_sdf/distance_transform/dt.h>
+
 #include <grid_map_core/GridMap.hpp>
 
-// signed distance field
-#include "grid_map_sdf/signed_distance_field/dt.h"
-
-using namespace Eigen;
+#include <limits>
 
 namespace grid_map {
 
 SignedDistanceField::SignedDistanceField()
-    : maxDistance_(100),
+    : maxDistance_(std::numeric_limits<float>::max()),
       zIndexStartHeight_(0.0),
       resolution_(0.0)
 {
@@ -47,21 +46,21 @@ void SignedDistanceField::calculateSignedDistanceField(const GridMap& gridMap, c
   // Height range of the signed distance field is higher than the max height.
   maxHeight += heightClearance;
 
-  MatrixXf sdfElevationAbove = MatrixXf::Ones(map.rows(), map.cols()) * maxDistance_; 
-  MatrixXf sdfLayer = MatrixXf::Zero(map.rows(), map.cols()); 
-  std::vector<MatrixXf> sdf;
+  Matrix sdfElevationAbove = Matrix::Ones(map.rows(), map.cols()) * maxDistance_;
+  Matrix sdfLayer = Matrix::Zero(map.rows(), map.cols());
+  std::vector<Matrix> sdf;
   zIndexStartHeight_ = minHeight;
 
   // Calculate signed distance field from bottom.
   for (float h = minHeight; h < maxHeight; h += resolution_) {
     Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic> obstacleFreeField = map.array() < h;
     Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic> obstacleField = obstacleFreeField.array() < 1;
-    MatrixXf sdfObstacle = getPlanarSignedDistanceField(obstacleField);
-    MatrixXf sdfObstacleFree = getPlanarSignedDistanceField(obstacleFreeField);
-    MatrixXf sdf2d;
+    Matrix sdfObstacle = getPlanarSignedDistanceField(obstacleField);
+    Matrix sdfObstacleFree = getPlanarSignedDistanceField(obstacleFreeField);
+    Matrix sdf2d;
     // If 2d sdfObstacleFree calculation failed, neglect this sdf
-    // to avoid extreme small distances(-INF).
-    if ((sdfObstacleFree.array() > 100000).any()) sdf2d = sdfObstacle;
+    // to avoid extreme small distances (-INF).
+    if ((sdfObstacleFree.array() >= INF).any()) sdf2d = sdfObstacle;
     else sdf2d = sdfObstacle - sdfObstacleFree;
     sdf2d *= resolution_;
     for (size_t i = 0; i < sdfElevationAbove.size(); ++i) {
@@ -88,7 +87,7 @@ grid_map::Matrix SignedDistanceField::getPlanarSignedDistanceField(Eigen::Matrix
   // Compute dt.
   image<float> *out = dt(input);
 
-  Eigen::MatrixXf result(data.rows(), data.cols());
+  Matrix result(data.rows(), data.cols());
 
   // Take square roots.
   for (int y = 0; y < out->height(); y++) {

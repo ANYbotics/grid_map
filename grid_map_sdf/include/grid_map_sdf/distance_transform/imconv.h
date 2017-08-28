@@ -22,6 +22,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 #define CONV_H
 
 #include <climits>
+
 #include "image.h"
 #include "imutil.h"
 #include "misc.h"
