@@ -70,25 +70,8 @@ void SignedDistanceField::calculateSignedDistanceField(GridMap &map, std::string
   maxHeight += heightClearance;
 
   MatrixXf sdfElevationAbove = MatrixXf::Ones(mat.rows(), mat.cols()) * maxDistance_; 
-  MatrixXf sdfElevationBelow = MatrixXf::Ones(mat.rows(), mat.cols()) * maxDistance_; 
   MatrixXf sdfLayer = MatrixXf::Zero(mat.rows(), mat.cols()); 
-  // MatrixXf sdfLayer(mat.rows(), mat.cols()); 
   std::vector<MatrixXf> sdf;
-  // std::vector<MatrixXf> sdfResult;
-
-  // Calculate signed distance field in downwards direction.
-  // std::vector<MatrixXf> sdfElevationBelowList;
-  // for(float j = maxHeight; j > minHeight; j-=resolution_){
-  //   for (int y = 0; y < sdfElevationBelow.cols(); y++) {
-  //     for (int x = 0; x < sdfElevationBelow.rows(); x++) {
-  //       if(sdfElevationBelow(x, y) == maxDistance_ && mat(x, y) > j)
-  //         sdfElevationBelow(x, y) = j - mat(x, y);
-  //       else if(sdfElevationBelow(x, y) != maxDistance_)
-  //         sdfElevationBelow(x, y) -= resolution_;
-  //     }
-  //   }
-  //   sdfElevationBelowList.push_back(sdfElevationBelow);
-  // }
   zIndexStartHeight_ = minHeight;
 
   // Calculate signed distance field from bottom.
@@ -105,62 +88,25 @@ void SignedDistanceField::calculateSignedDistanceField(GridMap &map, std::string
     else
       sdf2d = sdfObstacle - sdfObstacleFree;
     sdf2d *= resolution_;
-    // MatrixXf sdfElevationBelow = sdfElevationBelowList.back();
-    // sdfElevationBelowList.pop_back();
     for (int y = 0; y < sdfElevationAbove.cols(); y++) {
       for (int x = 0; x < sdfElevationAbove.rows(); x++) {
-        // Update sdfElevation from the layer below.
         if(sdfElevationAbove(x, y) == maxDistance_ && mat(x, y) < i)
           sdfElevationAbove(x, y) = i - mat(x, y);
         else if(sdfElevationAbove(x, y) != maxDistance_ && mat(x, y) < i)
           sdfElevationAbove(x, y) = sdfLayer(x, y) + resolution_;
-        // SDF is the minimum distance between 2d, elevationAbove and elevationBelow
-        // std::cout << "col, row " << sdfElevationAbove.cols() << ", " << sdfElevationAbove.rows() << std::endl;
-        // std::cout << x << ", " << y << ", " << i << std::endl;
-        // std::cout << "[" << sdfLayer(x, y) << ", " << mat(x, y) << ", " << sdf2d(x, y) << ", " << sdfElevationAbove(x, y) << ", " << sdfElevationBelow(x, y) << "]" << std::endl;
         if (sdf2d(x, y) == 0){
-          float negativeMinDistance = i - mat(x, y);
-          sdfLayer(x, y) = negativeMinDistance;
+          sdfLayer(x, y) = i - mat(x, y);
         }
         else if (sdf2d(x, y) < 0){
-          // double negativeMinDistance = -std::min(fabs(sdf2d(x, y)), fabs(sdfElevationBelow(x, y)));
-          // std::cout << "sdf elevation below, -" << sdfElevationBelow(x, y) << ", " << mat(x, y) - i << std::endl;
-          float negativeMinDistance = -std::min(fabs(sdf2d(x, y)), fabs(mat(x, y) - i));
-          sdfLayer(x, y) = negativeMinDistance;
+          sdfLayer(x, y) = -std::min(fabs(sdf2d(x, y)), fabs(mat(x, y) - i));
         }
         else{
           sdfLayer(x, y) = std::min(sdf2d(x, y), sdfElevationAbove(x, y));
         }
-        // std::cout << resolution_ << std::endl;
-        // std::cout << x << ", " << y << ", " << i << std::endl;
-        // if (i == 1.3)
-        //   std::cout << sdfLayer(x, y) << ", " << mat(x, y) << ", " << sdf2d(x, y) << ", " << sdfElevationAbove(x, y) << std::endl;
-        // std::cout << std::min_element({sdf2d(x, y), sdfElevationAbove(x, y), sdfElevationBelow(x, y)}) << std::endl;
-        // sdfLayer(x, y) = std::min({sdf2d(x, y), sdfElevationAbove(x, y), sdfElevationBelow(x, y)});
       }
     }
     sdf.push_back(sdfLayer);
   }
-  // // Calculate signed distance field in downwards direction.
-  // MatrixXf sdfLayerPrev = sdf.back();
-  // for(float j = maxHeight; j > minHeight; j-=resolution_){
-  //   MatrixXf sdfLayerj = sdf.back();
-  //   sdf.pop_back();
-  //   for (int y = 0; y < sdfElevationBelow.cols(); y++) {
-  //     for (int x = 0; x < sdfElevationBelow.rows(); x++) {
-  //       if(sdfElevationBelow(x, y) == maxDistance_ && mat(x, y) > j)
-  //         sdfElevationBelow(x, y) = j - mat(x, y);
-  //       else if(sdfElevationBelow(x, y) != maxDistance_)
-  //         sdfElevationBelow(x, y) = sdfLayerj(x, y) - resolution_;
-  //       if(sdfLayerj(x, y) < 0)
-  //         sdfLayerj(x, y) = -std::min(fabs(sdfLayerj(x, y)), fabs(sdfElevationBelow(x, y)));
-  //     }
-  //   }
-  //   sdfResult.push_back(sdfLayerj);
-  //   sdfLayerPrev = sdfLayerj;
-  // }
-  // std::reverse(sdfResult.begin(), sdfResult.end());
-  // data_ = sdfResult;
   data_ = sdf;
 }
 
@@ -193,24 +139,12 @@ double SignedDistanceField::getDistanceAt(Eigen::Vector3f position){
   int i = std::round(xCenter - (position.x() - mapPosition_.x()) / resolution_);
   int j = std::round(yCenter - (position.y() - mapPosition_.y()) / resolution_);
   int k = std::round((position.z() - zIndexStartHeight_) / resolution_);
-  // std::cout << "xCenter, yCenter = " << xCenter << ", " << yCenter << std::endl;
-  // std::cout << "position.x, mapPosition x= " << position.x() << ", " << mapPosition_.x() << std::endl;
-  // std::cout << "position.y, mapPosition y = " << position.y() << ", " << mapPosition_.y() << std::endl;
-  // std::cout << "i, j, k = " << i << ", " << j << ", " << k << std::endl;
   i = std::max(i, 0);
   i = std::min(i, size_.x() - 1);
   j = std::max(j, 0);
   j = std::min(j, size_.y() - 1);
   k = std::max(k, 0);
   k = std::min(k, (int)data_.size() - 1);
-  // Eigen::Vector3f gradient = getDistanceGradientAt(position);
-  // std::cout << "gradient = " << gradient << std::endl;
-  // double xp = mapPosition_.x() + ((size_.x() - i) - xCenter) * resolution_;
-  // double yp = mapPosition_.y() + ((size_.y() - j) - yCenter) * resolution_;
-  // double zp = zIndexStartHeight_ + k * resolution_;
-  // Eigen::Vector3f error = position - Eigen::Vector3f(xp, yp, zp);
-  // std::cout << "error = " << position << " - " << "(" << xp << ", " << yp << ", " << zp << " = " << error << std::endl;
-  // std::cout << "error d " << gradient.dot(error) << std::endl;
   return data_[k](i, j);
 }
 
@@ -220,10 +154,6 @@ double SignedDistanceField::getInterpolatedDistanceAt(Eigen::Vector3f position){
   int i = std::round(xCenter - (position.x() - mapPosition_.x()) / resolution_);
   int j = std::round(yCenter - (position.y() - mapPosition_.y()) / resolution_);
   int k = std::round((position.z() - zIndexStartHeight_) / resolution_);
-  // std::cout << "xCenter, yCenter = " << xCenter << ", " << yCenter << std::endl;
-  // std::cout << "position.x, mapPosition x= " << position.x() << ", " << mapPosition_.x() << std::endl;
-  // std::cout << "position.y, mapPosition y = " << position.y() << ", " << mapPosition_.y() << std::endl;
-  // std::cout << "i, j, k = " << i << ", " << j << ", " << k << std::endl;
   i = std::max(i, 0);
   i = std::min(i, size_.x() - 1);
   j = std::max(j, 0);
@@ -231,13 +161,10 @@ double SignedDistanceField::getInterpolatedDistanceAt(Eigen::Vector3f position){
   k = std::max(k, 0);
   k = std::min(k, (int)data_.size() - 1);
   Eigen::Vector3f gradient = getDistanceGradientAt(position);
-  // std::cout << "gradient = " << gradient << std::endl;
   double xp = mapPosition_.x() + ((size_.x() - i) - xCenter) * resolution_;
   double yp = mapPosition_.y() + ((size_.y() - j) - yCenter) * resolution_;
   double zp = zIndexStartHeight_ + k * resolution_;
   Eigen::Vector3f error = position - Eigen::Vector3f(xp, yp, zp);
-  // std::cout << "error = " << position << " - " << "(" << xp << ", " << yp << ", " << zp << " = " << error << std::endl;
-  // std::cout << "error d " << gradient.dot(error) << std::endl;
   return data_[k](i, j) + gradient.dot(error);
 }
 
