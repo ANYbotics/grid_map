@@ -13,6 +13,8 @@
 
 #include <limits>
 
+using namespace distance_transform;
+
 namespace grid_map {
 
 SignedDistanceField::SignedDistanceField()
