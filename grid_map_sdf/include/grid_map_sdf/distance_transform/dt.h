@@ -27,7 +27,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 
 namespace distance_transform
 {
-  #define INF 1E20
+  const double INF  = 1E20;
 
   /* dt of 1d function using squared distance */
   static float *dt(float *f, int n) {

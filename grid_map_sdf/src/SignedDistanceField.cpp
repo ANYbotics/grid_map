@@ -139,9 +139,20 @@ double SignedDistanceField::getInterpolatedDistanceAt(const Position3& position)
 
 Vector3 SignedDistanceField::getDistanceGradientAt(const Position3& position)
 {
-  double dx = (getDistanceAt(position + Vector3(resolution_, 0, 0)) - getDistanceAt(position - Vector3(resolution_, 0, 0))) / (2 * resolution_);
-  double dy = (getDistanceAt(position + Vector3(0, resolution_, 0)) - getDistanceAt(position - Vector3(0, resolution_, 0))) / (2 * resolution_);
-  double dz = (getDistanceAt(position + Vector3(0, 0, resolution_)) - getDistanceAt(position - Vector3(0, 0, resolution_))) / (2 * resolution_);
+  double xCenter = size_.x() / 2.0;
+  double yCenter = size_.y() / 2.0;
+  int i = std::round(xCenter - (position.x() - position_.x()) / resolution_);
+  int j = std::round(yCenter - (position.y() - position_.y()) / resolution_);
+  int k = std::round((position.z() - zIndexStartHeight_) / resolution_);
+  i = std::max(i, 1);
+  i = std::min(i, size_.x() - 2);
+  j = std::max(j, 1);
+  j = std::min(j, size_.y() - 2);
+  k = std::max(k, 1);
+  k = std::min(k, (int)data_.size() - 2);
+  double dx = (data_[k](i - 1, j) - data_[k](i + 1, j)) / (2 * resolution_);
+  double dy = (data_[k](i, j - 1) - data_[k](i, j + 1)) / (2 * resolution_);
+  double dz = (data_[k + 1](i, j) - data_[k - 1](i, j)) / (2 * resolution_);
   return Vector3(dx, dy, dz);
 }
 

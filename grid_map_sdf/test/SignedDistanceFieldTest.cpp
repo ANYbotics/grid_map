@@ -125,6 +125,74 @@ TEST(SignedDistanceField, GetDistance)
   EXPECT_NEAR(sdf.getDistanceAt(Vector3(pos.x(), pos.y(), 10.0)), 1.7, 0.0001);
 }
 
+TEST(SignedDistanceField, GetDistanceGradient)
+{
+  GridMap map({"layer"});
+  map.setGeometry(Length(1.0, 2.0), 0.1, Position(0.15, 0.25));
+  map["layer"].setConstant(1.0);
+
+  map.at("layer", Index(3,4)) = 2.0;
+  map.at("layer", Index(3,5)) = 2.0;
+  map.at("layer", Index(3,6)) = 2.0;
+  map.at("layer", Index(4,4)) = 2.0;
+  map.at("layer", Index(4,5)) = 2.0;
+  map.at("layer", Index(4,6)) = 2.0;
+  map.at("layer", Index(5,4)) = 2.0;
+  map.at("layer", Index(5,5)) = 2.0;
+  map.at("layer", Index(5,6)) = 2.0;
+  map.at("layer", Index(6,4)) = 2.0;
+  map.at("layer", Index(6,5)) = 2.0;
+  map.at("layer", Index(6,6)) = 2.0;
+  map.at("layer", Index(7,4)) = 2.0;
+  map.at("layer", Index(7,5)) = 2.0;
+  map.at("layer", Index(7,6)) = 2.0;
+
+  SignedDistanceField sdf;
+  sdf.calculateSignedDistanceField(map, "layer", 1.5);
+  Position pos;
+  Vector3 gradient;
+
+  map.getPosition(Index(5, 6), pos);
+  gradient = sdf.getDistanceGradientAt(Vector3(pos.x(), pos.y(), 0.0));
+  EXPECT_NEAR(gradient.x(), 0.0, 0.0001);
+  EXPECT_NEAR(gradient.y(), -1, 0.0001);
+  EXPECT_NEAR(gradient.z(), 0.5, 0.0001);
+  gradient = sdf.getDistanceGradientAt(Vector3(pos.x(), pos.y(), 1.0));
+  EXPECT_NEAR(gradient.x(), 0.0, 0.0001);
+  EXPECT_NEAR(gradient.y(), -1, 0.0001);
+  EXPECT_NEAR(gradient.z(), 0.5, 0.0001);
+  gradient = sdf.getDistanceGradientAt(Vector3(pos.x(), pos.y(), 2.0));
+  EXPECT_NEAR(gradient.x(), 0.0, 0.0001);
+  EXPECT_NEAR(gradient.y(), -1.5, 0.0001);
+  EXPECT_NEAR(gradient.z(), 1, 0.0001);
+  gradient = sdf.getDistanceGradientAt(Vector3(pos.x(), pos.y(), 2.2));
+  EXPECT_NEAR(gradient.x(), 0.0, 0.0001);
+  EXPECT_NEAR(gradient.y(), -1.5, 0.0001);
+  EXPECT_NEAR(gradient.z(), 1.0, 0.0001);
+  gradient = sdf.getDistanceGradientAt(Vector3(pos.x(), pos.y(), 10.0));
+  EXPECT_NEAR(gradient.x(), 0.0, 0.0001);
+  EXPECT_NEAR(gradient.y(), -1.5, 0.0001);
+  EXPECT_NEAR(gradient.z(), 1.0, 0.0001);
+  map.getPosition(Index(2, 2), pos);
+  gradient = sdf.getDistanceGradientAt(Vector3(pos.x(), pos.y(), 1.0));
+  EXPECT_NEAR(gradient.x(), 0.0, 0.0001);
+  EXPECT_NEAR(gradient.y(), 1, 0.0001);
+  EXPECT_NEAR(gradient.z(), 0.5, 0.0001);
+  gradient = sdf.getDistanceGradientAt(Vector3(pos.x(), pos.y(), 2.0));
+  EXPECT_NEAR(gradient.x(), 0.207107, 0.0001);
+  EXPECT_NEAR(gradient.y(), 1.5, 0.0001);
+  EXPECT_NEAR(gradient.z(), 1, 0.0001);
+  gradient = sdf.getDistanceGradientAt(Vector3(pos.x(), pos.y(), 2.2));
+  EXPECT_NEAR(gradient.x(), 0.207107, 0.0001);
+  EXPECT_NEAR(gradient.y(), 1.5, 0.0001);
+  EXPECT_NEAR(gradient.z(), 1, 0.0001);
+  map.getPosition(Index(12, 22), pos);
+  gradient = sdf.getDistanceGradientAt(Vector3(pos.x(), pos.y(), 1.0));
+  EXPECT_NEAR(gradient.x(), 0.0, 0.0001);
+  EXPECT_NEAR(gradient.y(), 1.0, 0.0001);
+  EXPECT_NEAR(gradient.z(), 0.5, 0.0001);
+}
+
 TEST(SignedDistanceField, GetInterpolatedDistance)
 {
   GridMap map({"layer"});
@@ -162,9 +230,9 @@ TEST(SignedDistanceField, GetInterpolatedDistance)
   Position pos;
 
   map.getPosition(Index(5, 5), pos);
-  EXPECT_NEAR(sdf.getInterpolatedDistanceAt(Vector3(pos.x(), pos.y(), 0.0)), -1.0, 0.0001);
-  EXPECT_NEAR(sdf.getInterpolatedDistanceAt(Vector3(pos.x(), pos.y(), 0.5)), -1.0, 0.0001);
-  EXPECT_NEAR(sdf.getInterpolatedDistanceAt(Vector3(pos.x(), pos.y(), 1.0)), -1.0, 0.0001);
+  EXPECT_NEAR(sdf.getInterpolatedDistanceAt(Vector3(pos.x(), pos.y(), 0.0)), -5.05, 0.0001);
+  EXPECT_NEAR(sdf.getInterpolatedDistanceAt(Vector3(pos.x(), pos.y(), 0.5)), -3.05, 0.0001);
+  EXPECT_NEAR(sdf.getInterpolatedDistanceAt(Vector3(pos.x(), pos.y(), 1.0)), -1.05, 0.0001);
   EXPECT_NEAR(sdf.getInterpolatedDistanceAt(Vector3(pos.x(), pos.y(), 1.1)), -0.25, 0.0001);
   EXPECT_NEAR(sdf.getInterpolatedDistanceAt(Vector3(pos.x(), pos.y(), 1.2)), -0.25, 0.0001);
   EXPECT_NEAR(sdf.getInterpolatedDistanceAt(Vector3(pos.x(), pos.y(), 1.3)), -0.25, 0.0001);
@@ -180,11 +248,11 @@ TEST(SignedDistanceField, GetInterpolatedDistance)
   EXPECT_NEAR(sdf.getInterpolatedDistanceAt(Vector3(pos.x(), pos.y(), 2.3)), 0.3, 0.0001);
   EXPECT_NEAR(sdf.getInterpolatedDistanceAt(Vector3(pos.x(), pos.y(), 2.4)), 0.4, 0.0001);
   EXPECT_NEAR(sdf.getInterpolatedDistanceAt(Vector3(pos.x(), pos.y(), 2.5)), 0.5, 0.0001);
-  EXPECT_NEAR(sdf.getInterpolatedDistanceAt(Vector3(pos.x(), pos.y(), 10.0)), 1.5, 0.0001);
+  EXPECT_NEAR(sdf.getInterpolatedDistanceAt(Vector3(pos.x(), pos.y(), 10.0)), 8, 0.0001);
 
   map.getPosition(Index(5, 10), pos);
-  EXPECT_NEAR(sdf.getInterpolatedDistanceAt(Vector3(pos.x(), pos.y(), 0.0)), 0.0, 0.0001);
-  EXPECT_NEAR(sdf.getInterpolatedDistanceAt(Vector3(pos.x(), pos.y(), 0.5)), 0.0, 0.0001);
+  EXPECT_NEAR(sdf.getInterpolatedDistanceAt(Vector3(pos.x(), pos.y(), 0.0)), -1.0, 0.0001);
+  EXPECT_NEAR(sdf.getInterpolatedDistanceAt(Vector3(pos.x(), pos.y(), 0.5)), -0.5, 0.0001);
   EXPECT_NEAR(sdf.getInterpolatedDistanceAt(Vector3(pos.x(), pos.y(), 1.0)), 0.0, 0.0001);
   EXPECT_NEAR(sdf.getInterpolatedDistanceAt(Vector3(pos.x(), pos.y(), 1.1)), 0.1, 0.0001);
   EXPECT_NEAR(sdf.getInterpolatedDistanceAt(Vector3(pos.x(), pos.y(), 1.2)), 0.2, 0.0001);
@@ -198,7 +266,7 @@ TEST(SignedDistanceField, GetInterpolatedDistance)
   EXPECT_NEAR(sdf.getInterpolatedDistanceAt(Vector3(pos.x(), pos.y(), 2.3)), 0.75, 0.0001);
   EXPECT_NEAR(sdf.getInterpolatedDistanceAt(Vector3(pos.x(), pos.y(), 2.4)), 0.85, 0.0001);
   EXPECT_NEAR(sdf.getInterpolatedDistanceAt(Vector3(pos.x(), pos.y(), 2.5)), 0.95, 0.0001);
-  EXPECT_NEAR(sdf.getInterpolatedDistanceAt(Vector3(pos.x(), pos.y(), 10.0)), 1.95, 0.0001);
+  EXPECT_NEAR(sdf.getInterpolatedDistanceAt(Vector3(pos.x(), pos.y(), 10.0)), 8.45, 0.0001);
 
   map.getPosition(Index(5, 0), pos);
   EXPECT_NEAR(sdf.getInterpolatedDistanceAt(Vector3(pos.x(), pos.y(), 1.8)), 0.25, 0.0001);
