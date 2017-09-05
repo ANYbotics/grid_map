@@ -159,6 +159,14 @@ class Polygon
   bool offsetInward(const double margin);
 
   /*!
+   * If only two verices are given, this methods generates a
+   * `thickened` line polygon with four vertices.
+   * @param thickness the desired thickness of the line.
+   * @return true if successful, false otherwise.
+   */
+  bool thickenLine(const double thickness);
+
+  /*!
    * Return a triangulated version of the polygon.
    * @return a list of triangle polygons covering the same polygon.
    */

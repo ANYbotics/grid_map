@@ -180,6 +180,21 @@ bool Polygon::convertToInequalityConstraints(Eigen::MatrixXd& A, Eigen::VectorXd
   return true;
 }
 
+bool Polygon::thickenLine(const double thickness)
+{
+  if (vertices_.size() != 2) return false;
+  const Vector connection(vertices_[1] - vertices_[0]);
+  const Vector orthogonal = thickness * Vector(connection.y(), -connection.x()).normalized();
+  std::vector<Position> newVertices;
+  newVertices.reserve(4);
+  newVertices.push_back(vertices_[0] + orthogonal);
+  newVertices.push_back(vertices_[0] - orthogonal);
+  newVertices.push_back(vertices_[1] - orthogonal);
+  newVertices.push_back(vertices_[1] + orthogonal);
+  vertices_ = newVertices;
+  return true;
+}
+
 bool Polygon::offsetInward(const double margin)
 {
   // Create a list of indices of the neighbours of each vertex.
