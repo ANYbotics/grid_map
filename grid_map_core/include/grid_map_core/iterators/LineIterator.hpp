@@ -109,10 +109,10 @@ private:
   Index end_;
 
   //! Current cell number.
-  unsigned int iCell_;
+  unsigned int iCell_ = 0;
 
   //! Number of cells in the line.
-  unsigned int nCells_;
+  unsigned int nCells_ = 0;
 
   //! Helper variables for Bresenham Line Drawing algorithm.
   Size increment1_, increment2_;
