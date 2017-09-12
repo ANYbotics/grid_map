@@ -41,8 +41,10 @@ void SignedDistanceField::calculateSignedDistanceField(const GridMap& gridMap, c
   const float minHeight = map.minCoeffOfFinites();
   float maxHeight = map.maxCoeffOfFinites();
 
+  // TODO Make this an option.
   for (size_t i = 0; i < map.size(); ++i) {
-    if (std::isnan(map(i))) map(i) = maxHeight;
+//    if (std::isnan(map(i))) map(i) = maxHeight;
+    if (std::isnan(map(i))) map(i) = std::numeric_limits<double>::lowest();
   }
 
   // Height range of the signed distance field is higher than the max height.
@@ -76,7 +78,7 @@ void SignedDistanceField::calculateSignedDistanceField(const GridMap& gridMap, c
   }
 }
 
-grid_map::Matrix SignedDistanceField::getPlanarSignedDistanceField(Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic>& data)
+grid_map::Matrix SignedDistanceField::getPlanarSignedDistanceField(Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic>& data) const
 {
   image<uchar> *input = new image<uchar>(data.rows(), data.cols(), true);
 
@@ -100,7 +102,7 @@ grid_map::Matrix SignedDistanceField::getPlanarSignedDistanceField(Eigen::Matrix
   return result;
 }
 
-double SignedDistanceField::getDistanceAt(const Position3& position)
+double SignedDistanceField::getDistanceAt(const Position3& position) const
 {
   double xCenter = size_.x() / 2.0;
   double yCenter = size_.y() / 2.0;
@@ -116,7 +118,7 @@ double SignedDistanceField::getDistanceAt(const Position3& position)
   return data_[k](i, j);
 }
 
-double SignedDistanceField::getInterpolatedDistanceAt(const Position3& position)
+double SignedDistanceField::getInterpolatedDistanceAt(const Position3& position) const
 {
   double xCenter = size_.x() / 2.0;
   double yCenter = size_.y() / 2.0;
@@ -137,7 +139,7 @@ double SignedDistanceField::getInterpolatedDistanceAt(const Position3& position)
   return data_[k](i, j) + gradient.dot(error);
 }
 
-Vector3 SignedDistanceField::getDistanceGradientAt(const Position3& position)
+Vector3 SignedDistanceField::getDistanceGradientAt(const Position3& position) const
 {
   double xCenter = size_.x() / 2.0;
   double yCenter = size_.y() / 2.0;
@@ -156,7 +158,7 @@ Vector3 SignedDistanceField::getDistanceGradientAt(const Position3& position)
   return Vector3(dx, dy, dz);
 }
 
-void SignedDistanceField::convertToPointCloud(pcl::PointCloud<pcl::PointXYZI>& points)
+void SignedDistanceField::convertToPointCloud(pcl::PointCloud<pcl::PointXYZI>& points) const
 {
   double xCenter = size_.x() / 2.0;
   double yCenter = size_.y() / 2.0;
