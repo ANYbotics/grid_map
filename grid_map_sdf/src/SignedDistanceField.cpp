@@ -44,7 +44,8 @@ void SignedDistanceField::calculateSignedDistanceField(const GridMap& gridMap, c
   // TODO Make this an option.
   for (size_t i = 0; i < map.size(); ++i) {
 //    if (std::isnan(map(i))) map(i) = maxHeight;
-    if (std::isnan(map(i))) map(i) = std::numeric_limits<double>::lowest();
+//    if (std::isnan(map(i))) map(i) = std::numeric_limits<double>::lowest();
+    if (std::isnan(map(i))) map(i) = minHeight;
   }
 
   // Height range of the signed distance field is higher than the max height.
