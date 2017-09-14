@@ -540,7 +540,7 @@ bool colorVectorToValue(const Eigen::Vector3i& colorVector, unsigned long& color
 
 void colorVectorToValue(const Eigen::Vector3i& colorVector, float& colorValue)
 {
-  int color = (colorVector(0) << 16) + (colorVector(1) << 8) + colorVector(2);
+  unsigned long color = (colorVector(0) << 16) + (colorVector(1) << 8) + colorVector(2);
   // cppcheck-suppress invalidPointerCast
   colorValue = *reinterpret_cast<float*>(&color);
 }

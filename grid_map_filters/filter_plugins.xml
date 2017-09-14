@@ -45,6 +45,16 @@
         Delete layers from a grid map.
       </description>
     </class>
+    <class name="gridMapFilters/ColorFillFilter" type="grid_map::ColorFillFilter<grid_map::GridMap>" base_class_type="filters::FilterBase<grid_map::GridMap>" >
+      <description>
+        Creates a new color layer.
+      </description>
+    </class>
+    <class name="gridMapFilters/ColorBlendingFilter" type="grid_map::ColorBlendingFilter<grid_map::GridMap>" base_class_type="filters::FilterBase<grid_map::GridMap>" >
+      <description>
+        Blend two color layers.
+      </description>
+    </class>
     <class name="gridMapFilters/SetBasicLayersFilter" type="grid_map::SetBasicLayersFilter<grid_map::GridMap>" base_class_type="filters::FilterBase<grid_map::GridMap>" >
       <description>
         Set specified layers of a grid map as basic layers.

@@ -59,6 +59,8 @@ add_library(${PROJECT_NAME}
   src/SlidingWindowMathExpressionFilter.cpp
   src/DuplicationFilter.cpp
   src/DeletionFilter.cpp
+  src/ColorFillFilter.cpp
+  src/ColorBlendingFilter.cpp
   src/SetBasicLayersFilter.cpp
   src/BufferNormalizerFilter.cpp
 )
