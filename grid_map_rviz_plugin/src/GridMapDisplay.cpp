@@ -55,6 +55,7 @@ GridMapDisplay::GridMapDisplay()
   colorModeProperty_->addOption("IntensityLayer", 0);
   colorModeProperty_->addOption("ColorLayer", 1);
   colorModeProperty_->addOption("FlatColor", 2);
+  colorModeProperty_->addOption("None", 3);
 
   colorTransformerProperty_ = new rviz::EditableEnumProperty(
       "Color Layer", "elevation", "Select the grid map layer to compute the color.", this,
@@ -141,8 +142,9 @@ void GridMapDisplay::updateColorMode()
   
   bool intensityColor = colorModeProperty_->getOptionInt() == 0;
   bool flatColor = colorModeProperty_->getOptionInt() == 2;
+  bool none = colorModeProperty_->getOptionInt() == 3;
   colorProperty_->setHidden(!flatColor);
-  colorTransformerProperty_->setHidden(flatColor);
+  colorTransformerProperty_->setHidden(flatColor || none);
   useRainbowProperty_->setHidden(!intensityColor);
   invertRainbowProperty_->setHidden(!intensityColor);
   autocomputeIntensityBoundsProperty_->setHidden(!intensityColor);
@@ -178,6 +180,7 @@ void GridMapDisplay::updateVisualization()
   std::string heightLayer = heightTransformerProperty_->getStdString();
   bool mapLayerColor = colorModeProperty_->getOptionInt() == 1;
   bool flatColor = colorModeProperty_->getOptionInt() == 2;
+  bool noColor = colorModeProperty_->getOptionInt() == 3;
   Ogre::ColourValue meshColor = colorProperty_->getOgreColor();
   std::string colorLayer = colorTransformerProperty_->getStdString();
   bool useRainbow = useRainbowProperty_->getBool();
@@ -189,9 +192,9 @@ void GridMapDisplay::updateVisualization()
   float maxIntensity = maxIntensityProperty_->getFloat();
 
   for (size_t i = 0; i < visuals_.size(); i++) {
-    visuals_[i]->computeVisualization(alpha, showGridLines, flatTerrain, heightLayer, flatColor,
-                                      meshColor, mapLayerColor, colorLayer, useRainbow, invertRainbow, 
-				      minColor, maxColor, autocomputeIntensity, minIntensity, maxIntensity);
+    visuals_[i]->computeVisualization(alpha, showGridLines, flatTerrain, heightLayer, flatColor, noColor, meshColor,
+                                      mapLayerColor, colorLayer, useRainbow, invertRainbow, minColor, maxColor,
+                                      autocomputeIntensity, minIntensity, maxIntensity);
   }
 }
 
@@ -219,19 +222,13 @@ void GridMapDisplay::processMessage(const grid_map_msgs::GridMap::ConstPtr& msg)
   visual->setFrameOrientation(orientation);
 
   visual->computeVisualization(alphaProperty_->getFloat(), showGridLinesProperty_->getBool(),
-                               heightModeProperty_->getOptionInt() == 1,
-                               heightTransformerProperty_->getStdString(),
-                               colorModeProperty_->getOptionInt() == 2,
-                               colorProperty_->getOgreColor(),
-			       colorModeProperty_->getOptionInt() == 1,
-                               colorTransformerProperty_->getStdString(),
-                               useRainbowProperty_->getBool(), 
-			       invertRainbowProperty_->getBool(),
-                               minColorProperty_->getOgreColor(),
-                               maxColorProperty_->getOgreColor(),
-                               autocomputeIntensityBoundsProperty_->getBool(),
-                               minIntensityProperty_->getFloat(),
-                               maxIntensityProperty_->getFloat());
+                               heightModeProperty_->getOptionInt() == 1, heightTransformerProperty_->getStdString(),
+                               colorModeProperty_->getOptionInt() == 2, colorModeProperty_->getOptionInt() == 3,
+                               colorProperty_->getOgreColor(), colorModeProperty_->getOptionInt() == 1,
+                               colorTransformerProperty_->getStdString(), useRainbowProperty_->getBool(),
+                               invertRainbowProperty_->getBool(), minColorProperty_->getOgreColor(),
+                               maxColorProperty_->getOgreColor(), autocomputeIntensityBoundsProperty_->getBool(),
+                               minIntensityProperty_->getFloat(), maxIntensityProperty_->getFloat());
 
   std::vector<std::string> layer_names = visual->getLayerNames();
   heightTransformerProperty_->clearOptions();
