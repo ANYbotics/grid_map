@@ -21,7 +21,6 @@ namespace grid_map {
 template<typename T>
 class ColorBlendingFilter : public filters::FilterBase<T>
 {
-
  public:
   /*!
    * Constructor
@@ -46,11 +45,17 @@ class ColorBlendingFilter : public filters::FilterBase<T>
   virtual bool update(const T& mapIn, T& mapOut);
 
  private:
+
+  enum class BlendModes {
+    Normal,
+    SoftLight
+  };
+
   //! Input layers.
   std::string backgroundLayer_, foregroundLayer_;
 
-  //! Blending mode.
-  std::string mode_;
+  //! Blend mode.
+  BlendModes blendMode_;
 
   //! Opacity of foreground layer.
   double opacity_;

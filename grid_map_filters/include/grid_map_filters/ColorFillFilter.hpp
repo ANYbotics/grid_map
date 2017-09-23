@@ -49,6 +49,9 @@ class ColorFillFilter : public filters::FilterBase<T>
   //! Color.
   double r_, g_, b_;
 
+  //! Mask layer name.
+  std::string maskLayer_;
+
   //! Output layer name.
   std::string outputLayer_;
 };

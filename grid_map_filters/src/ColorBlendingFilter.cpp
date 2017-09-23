@@ -44,10 +44,17 @@ bool ColorBlendingFilter<T>::configure()
   }
   ROS_DEBUG("Color blending filter foreground layer is = %s.", foregroundLayer_.c_str());
 
-  if (!FilterBase < T > ::getParam(std::string("blending_mode"), mode_)) {
-    mode_ = "normal";
+  std::string blendMode;
+  if (!FilterBase < T > ::getParam(std::string("blend_mode"), blendMode)) {
+    blendMode = "normal";
   }
-  ROS_DEBUG("Color blending filter blending mode is = %s.", mode_.c_str());
+  ROS_DEBUG("Color blending filter blend mode is = %s.", blendMode.c_str());
+  if (blendMode == "normal") blendMode_ = BlendModes::Normal;
+  else if (blendMode == "soft_light") blendMode_ = BlendModes::SoftLight;
+  else {
+    ROS_ERROR("Color blending filter blend mode `%s` does not exist.", blendMode.c_str());
+    return false;
+  }
 
   if (!FilterBase < T > ::getParam(std::string("opacity"), opacity_)) {
     ROS_ERROR("Color blending filter did not find parameter `opacity`.");
@@ -80,11 +87,24 @@ bool ColorBlendingFilter<T>::update(const T& mapIn, T& mapOut)
     } else if (std::isnan(foreground(i))) {
       output(i) = background(i);
     } else {
-      Eigen::Vector3f backgroundColor, foregroundColor;
-      colorValueToVector(background(i), backgroundColor);
-      colorValueToVector(foreground(i), foregroundColor);
-      const Eigen::Vector3f outputColor = (1 - opacity_) * backgroundColor + opacity_ * foregroundColor;
-      colorVectorToValue(outputColor, output(i));
+      Eigen::Array3f backgroundColor, foregroundColor, outputColor;
+      Eigen::Vector3f color;
+      colorValueToVector(background(i), color);
+      backgroundColor = color.array();
+      colorValueToVector(foreground(i), color);
+      foregroundColor = color.array();
+
+      switch (blendMode_) {
+        case BlendModes::Normal:
+          outputColor = (1.0 - opacity_) * backgroundColor + opacity_ * foregroundColor;
+          break;
+        case BlendModes::SoftLight:
+          outputColor = (1.0 - opacity_) * backgroundColor
+              + opacity_ * ((1.0 - 2.0 * backgroundColor) * foregroundColor.square() + 2.0 * foregroundColor * backgroundColor);
+          break;
+      }
+
+      colorVectorToValue(Eigen::Vector3f(outputColor), output(i));
     }
   }
 

@@ -51,6 +51,9 @@ bool ColorFillFilter<T>::configure()
   }
   ROS_DEBUG("Color fill filter blue is = %f.", b_);
 
+  if (!FilterBase < T > ::getParam(std::string("mask_layer"), maskLayer_));
+  ROS_DEBUG("Color fill filter mask_layer = %s.", maskLayer_.c_str());
+
   if (!FilterBase < T > ::getParam(std::string("output_layer"), outputLayer_)) {
     ROS_ERROR("Color fill filter did not find parameter `output_layer`.");
     return false;
@@ -66,7 +69,20 @@ bool ColorFillFilter<T>::update(const T& mapIn, T& mapOut)
   const Eigen::Vector3f colorVector(r_, g_, b_);
   float colorValue;
   colorVectorToValue(colorVector, colorValue);
-  mapOut.add(outputLayer_, colorValue);
+
+  if (maskLayer_.empty()) {
+    mapOut.add(outputLayer_, colorValue);
+
+  } else {
+    mapOut.add(outputLayer_);
+    auto& output = mapOut[outputLayer_];
+    auto& mask = mapOut[maskLayer_];
+
+    // For each cell in map.
+    for (size_t i = 0; i < output.size(); ++i) {
+      output(i) = std::isfinite(mask(i)) ? colorValue : NAN;
+    }
+  }
   return true;
 }
 
