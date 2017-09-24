@@ -9,6 +9,7 @@
 #pragma once
 
 #include <filters/filter_base.h>
+#include <grid_map_core/grid_map_core.hpp>
 
 #include <Eigen/Core>
 #include <string>
@@ -47,6 +48,16 @@ class NormalVectorsFilter : public filters::FilterBase<T>
   virtual bool update(const T& mapIn, T& mapOut);
 
  private:
+
+  void computeWithArea(GridMap& map, const std::string& inputLayer, const std::string& outputLayersPrefix);
+  void computeWithRaster(GridMap& map, const std::string& inputLayer, const std::string& outputLayersPrefix);
+
+  enum class Method {
+    Area,
+    Raster
+  };
+
+  Method method_;
 
   //! Radius of submap for normal vector estimation.
   double estimationRadius_;

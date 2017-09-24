@@ -20,7 +20,8 @@ namespace grid_map {
 
 template<typename T>
 ColorBlendingFilter<T>::ColorBlendingFilter()
-    : opacity_(0.0)
+    : opacity_(1.0),
+      blendMode_(BlendModes::Normal)
 {
 }
 
@@ -50,6 +51,7 @@ bool ColorBlendingFilter<T>::configure()
   }
   ROS_DEBUG("Color blending filter blend mode is = %s.", blendMode.c_str());
   if (blendMode == "normal") blendMode_ = BlendModes::Normal;
+  else if (blendMode == "hard_light") blendMode_ = BlendModes::HardLight;
   else if (blendMode == "soft_light") blendMode_ = BlendModes::SoftLight;
   else {
     ROS_ERROR("Color blending filter blend mode `%s` does not exist.", blendMode.c_str());
@@ -98,10 +100,41 @@ bool ColorBlendingFilter<T>::update(const T& mapIn, T& mapOut)
         case BlendModes::Normal:
           outputColor = (1.0 - opacity_) * backgroundColor + opacity_ * foregroundColor;
           break;
-        case BlendModes::SoftLight:
-          outputColor = (1.0 - opacity_) * backgroundColor
-              + opacity_ * ((1.0 - 2.0 * backgroundColor) * foregroundColor.square() + 2.0 * foregroundColor * backgroundColor);
+        case BlendModes::HardLight:
+        {
+          Eigen::Array3f blendedColor;
+          if (foregroundColor.mean() < 0.5) {
+            blendedColor = 2.0 * backgroundColor * foregroundColor;
+          } else {
+            blendedColor = 1.0 - 2.0 * (1.0 - backgroundColor) * (1.0 - foregroundColor);
+          }
+          if (opacity_ == 1.0) {
+            outputColor = blendedColor;
+          } else {
+            outputColor = (1.0 - opacity_) * backgroundColor + opacity_ * blendedColor;
+          }
+
           break;
+        }
+        case BlendModes::SoftLight:
+        {
+          Eigen::Array3f blendedColor;
+          // Photoshop.
+//          if (foregroundColor.mean() < 0.5) {
+//            blendedColor = 2.0 * backgroundColor * foregroundColor + backgroundColor.square() * (1.0 - 2.0 * foregroundColor);
+//          } else {
+//            blendedColor = 2.0 * backgroundColor * (1.0 - foregroundColor) + backgroundColor.sqrt() * (2.0 * foregroundColor - 1.0);
+//          }
+          // Pegtop.
+          blendedColor = ((1.0 - 2.0 * foregroundColor) * backgroundColor.square() + 2.0 * backgroundColor * foregroundColor);
+          if (opacity_ == 1.0) {
+            outputColor = blendedColor;
+          } else {
+            outputColor = (1.0 - opacity_) * backgroundColor + opacity_ * blendedColor;
+          }
+
+          break;
+        }
       }
 
       colorVectorToValue(Eigen::Vector3f(outputColor), output(i));

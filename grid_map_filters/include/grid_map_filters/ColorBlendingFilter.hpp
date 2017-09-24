@@ -48,6 +48,7 @@ class ColorBlendingFilter : public filters::FilterBase<T>
 
   enum class BlendModes {
     Normal,
+    HardLight,
     SoftLight
   };
 

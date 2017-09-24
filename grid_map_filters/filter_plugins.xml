@@ -20,6 +20,11 @@
         Compute the normal vectors of a layer in a map.
       </description>
     </class>
+    <class name="gridMapFilters/CurvatureFilter" type="grid_map::CurvatureFilter<grid_map::GridMap>" base_class_type="filters::FilterBase<grid_map::GridMap>" >
+      <description>
+        Compute the curvature (second derivative) of a layer in the map.
+      </description>
+    </class>
     <class name="gridMapFilters/NormalColorMapFilter" type="grid_map::NormalColorMapFilter<grid_map::GridMap>" base_class_type="filters::FilterBase<grid_map::GridMap>" >
       <description>
         Compute a new color layer based on normal vectors layers.
@@ -53,6 +58,11 @@
     <class name="gridMapFilters/ColorFillFilter" type="grid_map::ColorFillFilter<grid_map::GridMap>" base_class_type="filters::FilterBase<grid_map::GridMap>" >
       <description>
         Creates a new color layer.
+      </description>
+    </class>
+    <class name="gridMapFilters/ColorMapFilter" type="grid_map::ColorMapFilter<grid_map::GridMap>" base_class_type="filters::FilterBase<grid_map::GridMap>" >
+      <description>
+        Creates a new color layer with the color mapped between min. and max. value.
       </description>
     </class>
     <class name="gridMapFilters/ColorBlendingFilter" type="grid_map::ColorBlendingFilter<grid_map::GridMap>" base_class_type="filters::FilterBase<grid_map::GridMap>" >
