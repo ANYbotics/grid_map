@@ -20,7 +20,8 @@ namespace grid_map {
 SignedDistanceField::SignedDistanceField()
     : maxDistance_(std::numeric_limits<float>::max()),
       zIndexStartHeight_(0.0),
-      resolution_(0.0)
+      resolution_(0.0),
+      lowestHeight_(-1e5) // We need some precision.
 {
 }
 
@@ -35,17 +36,17 @@ void SignedDistanceField::calculateSignedDistanceField(const GridMap& gridMap, c
   resolution_ = gridMap.getResolution();
   position_ = gridMap.getPosition();
   size_ = gridMap.getSize();
-  Matrix map = gridMap.get(layer);
+  Matrix map = gridMap.get(layer); // Copy!
 
   // Get min and max height and fill the max height in the NAN area.
-  const float minHeight = map.minCoeffOfFinites();
+  float minHeight = map.minCoeffOfFinites();
+  if (!std::isfinite(minHeight)) minHeight = lowestHeight_;
   float maxHeight = map.maxCoeffOfFinites();
+  if (!std::isfinite(maxHeight)) maxHeight = lowestHeight_;
 
-  // TODO Make this an option.
+  const float valueForEmptyCells = lowestHeight_; // maxHeight, minHeight (TODO Make this an option).
   for (size_t i = 0; i < map.size(); ++i) {
-//    if (std::isnan(map(i))) map(i) = maxHeight;
-    if (std::isnan(map(i))) map(i) = std::numeric_limits<double>::lowest();
-//    if (std::isnan(map(i))) map(i) = minHeight;
+    if (std::isnan(map(i))) map(i) = valueForEmptyCells;
   }
 
   // Height range of the signed distance field is higher than the max height.
