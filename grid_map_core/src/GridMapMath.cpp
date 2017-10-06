@@ -122,11 +122,11 @@ bool getIndexFromPosition(Index& index,
                           const Size& bufferSize,
                           const Index& bufferStartIndex)
 {
+  if (!checkIfPositionWithinMap(position, mapLength, mapPosition)) return false;
   Vector offset;
   getVectorToOrigin(offset, mapLength);
-  Vector indexVector = ((position - offset - mapPosition).array() / resolution).matrix();
+  const Vector indexVector = ((position - offset - mapPosition).array() / resolution).matrix();
   index = getIndexFromIndexVector(indexVector, bufferSize, bufferStartIndex);
-  if (!checkIfPositionWithinMap(position, mapLength, mapPosition)) return false;
   return true;
 }
 
@@ -136,7 +136,7 @@ bool checkIfPositionWithinMap(const Position& position,
 {
   Vector offset;
   getVectorToOrigin(offset, mapLength);
-  Position positionTransformed = getMapFrameToBufferOrderTransformation().cast<double>() * (position - mapPosition - offset);
+  const Position positionTransformed = getMapFrameToBufferOrderTransformation().cast<double>() * (position - mapPosition - offset);
 
   if (positionTransformed.x() >= 0.0 && positionTransformed.y() >= 0.0
       && positionTransformed.x() < mapLength(0) && positionTransformed.y() < mapLength(1)) {
