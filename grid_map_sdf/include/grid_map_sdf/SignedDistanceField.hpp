@@ -39,6 +39,7 @@ class SignedDistanceField
   std::vector<Matrix> data_;
   float zIndexStartHeight_;
   float maxDistance_;
+  const float lowestHeight_;
 };
 
 } /* namespace */

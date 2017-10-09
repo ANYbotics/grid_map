@@ -2,7 +2,7 @@
  * SignedDistanceFieldTest.cpp
  *
  *  Created on: Aug 25, 2017
- *      Author: Takahiro Miki
+ *      Author: Takahiro Miki, Peter Fankhauser
  *	 Institute: ETH Zurich, Robotic Systems Lab
  */
 
@@ -14,6 +14,20 @@
 
 using namespace std;
 using namespace grid_map;
+
+TEST(SignedDistanceField, EmptyMap)
+{
+  GridMap map({"layer"});
+  map.setGeometry(Length(1.0, 2.0), 0.1, Position(0.0, 0.0));
+
+  SignedDistanceField sdf;
+  sdf.calculateSignedDistanceField(map, "layer", 1.0);
+  Position3 position(0.0, 0.0, 0.0);
+
+  EXPECT_NO_THROW(sdf.getDistanceAt(position));
+  EXPECT_NO_THROW(sdf.getInterpolatedDistanceAt(position));
+  EXPECT_NO_THROW(sdf.getDistanceGradientAt(position));
+}
 
 TEST(SignedDistanceField, GetDistanceFlat)
 {
