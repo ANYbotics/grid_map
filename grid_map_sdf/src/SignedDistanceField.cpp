@@ -38,7 +38,6 @@ void SignedDistanceField::calculateSignedDistanceField(const GridMap& gridMap, c
   size_ = gridMap.getSize();
   Matrix map = gridMap.get(layer); // Copy!
 
-  // Get min and max height and fill the max height in the NAN area.
   float minHeight = map.minCoeffOfFinites();
   if (!std::isfinite(minHeight)) minHeight = lowestHeight_;
   float maxHeight = map.maxCoeffOfFinites();
@@ -64,7 +63,7 @@ void SignedDistanceField::calculateSignedDistanceField(const GridMap& gridMap, c
     Matrix sdfObstacle = getPlanarSignedDistanceField(obstacleField);
     Matrix sdfObstacleFree = getPlanarSignedDistanceField(obstacleFreeField);
     Matrix sdf2d;
-    // If 2d sdfObstacleFree calculation failed, neglect this sdf
+    // If 2d sdfObstacleFree calculation failed, neglect this SDF
     // to avoid extreme small distances (-INF).
     if ((sdfObstacleFree.array() >= INF).any()) sdf2d = sdfObstacle;
     else sdf2d = sdfObstacle - sdfObstacleFree;
