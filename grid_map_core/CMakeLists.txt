@@ -59,6 +59,8 @@ add_library(${PROJECT_NAME}
    src/SubmapGeometry.cpp
    src/BufferRegion.cpp
    src/Polygon.cpp
+   src/IndexCheckerNonZero.cpp
+   src/IndexCheckerZero.cpp
    src/iterators/GridMapIterator.cpp
    src/iterators/SubmapIterator.cpp
    src/iterators/CircleIterator.cpp
@@ -66,6 +68,7 @@ add_library(${PROJECT_NAME}
    src/iterators/SpiralIterator.cpp
    src/iterators/PolygonIterator.cpp
    src/iterators/LineIterator.cpp
+   src/iterators/FillIterator.cpp
 )
 
 target_link_libraries(${PROJECT_NAME}
@@ -115,7 +118,8 @@ catkin_add_gtest(${PROJECT_NAME}-test
   test/PolygonIteratorTest.cpp
   test/PolygonTest.cpp
   test/EigenPluginsTest.cpp
-  test/SpiralIteratorTest.cpp)
+  test/SpiralIteratorTest.cpp
+  test/FillIteratorTest.cpp)
 endif()
 
 if(TARGET ${PROJECT_NAME}-test)
