@@ -8,6 +8,8 @@
 
 #include "grid_map_demos/IteratorsDemo.hpp"
 
+#include <grid_map_core/IndexCheckerZero.hpp>
+
 // ROS
 #include <geometry_msgs/PolygonStamped.h>
 
@@ -40,6 +42,7 @@ IteratorsDemo::IteratorsDemo(ros::NodeHandle& nodeHandle)
   demoSpiralIterator();
   demoLineIterator();
   demoPolygonIterator();
+  demoFillIterator();
 }
 
 IteratorsDemo::~IteratorsDemo() {}
@@ -198,6 +201,47 @@ void IteratorsDemo::demoPolygonIterator()
   for (grid_map::PolygonIterator iterator(map_, polygon);
       !iterator.isPastEnd(); ++iterator) {
     map_.at("type", *iterator) = 1.0;
+    publish();
+    ros::Duration duration(0.02);
+    duration.sleep();
+  }
+
+  ros::Duration duration(1.0);
+  duration.sleep();
+}
+
+void IteratorsDemo::demoFillIterator()
+{
+  ROS_INFO("Running fill iterator demo.");
+  map_.clearAll();
+
+  // Sets all the values in layer "type" to 0.0, instead of NaN.
+  map_.add("type", 0.0);
+
+  // This just draws some shapes to fill around
+  for (grid_map::LineIterator iterator(map_, Index(19,2), Index(5,19));
+      !iterator.isPastEnd(); ++iterator) {
+    map_.at("type", *iterator) = 1.0;
+  }
+  for (grid_map::LineIterator iterator(map_, Index(5,5), Index(7,15));
+      !iterator.isPastEnd(); ++iterator) {
+    map_.at("type", *iterator) = 1.0;
+  }
+  for (grid_map::LineIterator iterator(map_, Index(5,5), Index(16,6));
+      !iterator.isPastEnd(); ++iterator) {
+    map_.at("type", *iterator) = 1.0;
+  }
+
+  publish();
+
+  Index fill_start(4, 4);
+
+  shared_ptr<IndexCheckerZero> checker = make_shared<IndexCheckerZero>(map_, "type");
+
+
+  for (grid_map::FillIterator iterator(map_, fill_start, checker );
+      !iterator.isPastEnd(); ++iterator) {
+    map_.at("type", *iterator) = 0.8;
     publish();
     ros::Duration duration(0.02);
     duration.sleep();
