@@ -8,7 +8,7 @@
 
 #include "grid_map_demos/IteratorsDemo.hpp"
 
-#include <grid_map_core/IndexCheckerZero.hpp>
+#include <grid_map_core/IndexCheckerNan.hpp>
 
 // ROS
 #include <geometry_msgs/PolygonStamped.h>
@@ -222,9 +222,6 @@ void IteratorsDemo::demoFillIterator()
   ROS_INFO("Running fill iterator demo.");
   map_.clearAll();
 
-  // Sets all the values in layer "type" to 0.0, instead of NaN.
-  map_.add("type", 0.0);
-
   // This just draws some shapes to fill around
   for (grid_map::LineIterator iterator(map_, Index(19,2), Index(5,19));
       !iterator.isPastEnd(); ++iterator) {
@@ -243,7 +240,7 @@ void IteratorsDemo::demoFillIterator()
 
   Index fill_start(4, 4);
 
-  shared_ptr<IndexCheckerZero> checker = make_shared<IndexCheckerZero>(map_, "type");
+  shared_ptr<IndexCheckerNan> checker = make_shared<IndexCheckerNan>(map_, "type");
 
 
   for (grid_map::FillIterator iterator(map_, fill_start, checker );
