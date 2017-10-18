@@ -11,12 +11,25 @@
 
 namespace grid_map {
 
+/*!
+ * The IndexCheckerNan class implements the IndexChecker.
+ * It checks if indices in a layer of a GridMap are NaN.
+ */
 class IndexCheckerNan : public IndexChecker {
 
 public:
 
+  /*!
+   * Constructor.
+   * @param gridMap the GridMap to query.
+   * @param layer the layer of the GridMap to check.
+   */
   IndexCheckerNan(const GridMap& map, const std::string& layer);
 
+  /*!
+   * Checks if GridMap at index is NaN.
+   * @param index the index to check.
+   */
   bool check(const Index& index) const override;
 
 private:

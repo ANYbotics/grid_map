@@ -27,12 +27,6 @@ public:
   IndexChecker(const GridMap& grid_map):map_(grid_map){}
 
   /*!
-   * Copy Constructor.
-   * @param other the IndexChecker to copy
-   */
-  IndexChecker(const IndexChecker& other):map_(other.map_){}
-
-  /*!
    * Destructor.
    */
   virtual ~IndexChecker(){}

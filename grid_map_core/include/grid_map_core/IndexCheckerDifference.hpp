@@ -23,8 +23,17 @@ class IndexCheckerDifference: public IndexChecker{
 
 public:
 
+  /*!
+   * Constructor.
+   * @param gridMap the GridMap to query.
+   * @param initial_index the index of the map to compare against.
+   */
   IndexCheckerDifference(const GridMap& map, Index initial_index);
 
+  /*!
+   * Checks if GridMap at index is different from the GridMap at initial_index.
+   * @param index the index to check.
+   */
   bool check(Index index) const override;
 
 private:
