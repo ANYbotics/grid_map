@@ -27,7 +27,7 @@ using namespace Eigen;
 using namespace grid_map;
 
 
-bool indexSetContains(const std::vector<grid_map::Index>& index_set, const grid_map::Index& grid_index){
+static bool indexSetContains(const std::vector<grid_map::Index>& index_set, const grid_map::Index& grid_index){
 
   for (const grid_map::Index& current_index: index_set){
     if (grid_index.isApprox(current_index)){

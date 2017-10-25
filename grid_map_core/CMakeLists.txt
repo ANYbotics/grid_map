@@ -70,6 +70,7 @@ add_library(${PROJECT_NAME}
    src/iterators/PolygonIterator.cpp
    src/iterators/LineIterator.cpp
    src/iterators/FillIterator.cpp
+   src/iterators/SpiralGridIterator.cpp
 )
 
 target_link_libraries(${PROJECT_NAME}
@@ -120,7 +121,8 @@ catkin_add_gtest(${PROJECT_NAME}-test
   test/PolygonTest.cpp
   test/EigenPluginsTest.cpp
   test/SpiralIteratorTest.cpp
-  test/FillIteratorTest.cpp)
+  test/FillIteratorTest.cpp
+  test/SpiralGridIteratorTest.cpp)
 endif()
 
 if(TARGET ${PROJECT_NAME}-test)
