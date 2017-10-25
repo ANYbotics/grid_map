@@ -43,6 +43,7 @@ IteratorsDemo::IteratorsDemo(ros::NodeHandle& nodeHandle)
   demoLineIterator();
   demoPolygonIterator();
   demoFillIterator();
+  demoSpiralGridIterator();
 }
 
 IteratorsDemo::~IteratorsDemo() {}
@@ -254,6 +255,27 @@ void IteratorsDemo::demoFillIterator()
   ros::Duration duration(1.0);
   duration.sleep();
 }
+
+
+void IteratorsDemo::demoSpiralGridIterator()
+{
+  ROS_INFO("Running spiral grid iterator demo.");
+  map_.clearAll();
+
+  Index spiral_start(6, 14);
+
+  for (grid_map::SpiralGridIterator iterator(map_, spiral_start, 8 );
+      !iterator.isPastEnd(); ++iterator) {
+    map_.at("type", *iterator) = 1.0;
+    publish();
+    ros::Duration duration(0.02);
+    duration.sleep();
+  }
+
+  ros::Duration duration(1.0);
+  duration.sleep();
+}
+
 
 void IteratorsDemo::publish()
 {
