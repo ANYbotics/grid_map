@@ -9,6 +9,7 @@
 #include "grid_map_demos/IteratorsDemo.hpp"
 
 #include <grid_map_core/IndexCheckerNan.hpp>
+#include <grid_map_core/IndexCheckerZero.hpp>
 
 // ROS
 #include <geometry_msgs/PolygonStamped.h>
@@ -44,6 +45,7 @@ IteratorsDemo::IteratorsDemo(ros::NodeHandle& nodeHandle)
   demoPolygonIterator();
   demoFillIterator();
   demoSpiralGridIterator();
+  demoNearestValidIterator();
 }
 
 IteratorsDemo::~IteratorsDemo() {}
@@ -265,6 +267,39 @@ void IteratorsDemo::demoSpiralGridIterator()
   Index spiral_start(6, 14);
 
   for (grid_map::SpiralGridIterator iterator(map_, spiral_start, 8 );
+      !iterator.isPastEnd(); ++iterator) {
+    map_.at("type", *iterator) = 1.0;
+    publish();
+    ros::Duration duration(0.02);
+    duration.sleep();
+  }
+
+  ros::Duration duration(1.0);
+  duration.sleep();
+}
+
+void IteratorsDemo::demoNearestValidIterator()
+{
+  ROS_INFO("Running fill iterator demo.");
+  map_.clearAll();
+
+  // Randomly fill the grid with some "valid" cells to iterate over.
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::bernoulli_distribution d(0.33);
+
+  for (grid_map::GridMapIterator iterator(map_); !iterator.isPastEnd(); ++iterator){
+      if (d(gen)){
+        map_.at("type", *iterator) = 0.0;
+      }
+  }
+
+
+  publish();
+
+  unique_ptr<IndexChecker> checker(new IndexCheckerZero(map_, "type"));
+
+  for (grid_map::NearestValidIterator iterator(map_, Position(0.2,0.2), checker );
       !iterator.isPastEnd(); ++iterator) {
     map_.at("type", *iterator) = 1.0;
     publish();

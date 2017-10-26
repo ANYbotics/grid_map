@@ -71,6 +71,7 @@ add_library(${PROJECT_NAME}
    src/iterators/LineIterator.cpp
    src/iterators/FillIterator.cpp
    src/iterators/SpiralGridIterator.cpp
+   src/iterators/NearestValidIterator.cpp
 )
 
 target_link_libraries(${PROJECT_NAME}

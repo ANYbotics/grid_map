@@ -17,3 +17,4 @@
 #include "grid_map_core/iterators/PolygonIterator.hpp"
 #include "grid_map_core/iterators/FillIterator.hpp"
 #include "grid_map_core/iterators/SpiralGridIterator.hpp"
+#include "grid_map_core/iterators/NearestValidIterator.hpp"
