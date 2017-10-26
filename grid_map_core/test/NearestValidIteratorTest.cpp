@@ -23,7 +23,7 @@ using namespace std;
 using namespace Eigen;
 using namespace grid_map;
 
-
+// Helper function to check if a vector of Indices contains a particular index.
 static bool indexSetContains(const std::vector<grid_map::Index>& index_set, const grid_map::Index& grid_index){
 
   for (const grid_map::Index& current_index: index_set){
@@ -35,7 +35,8 @@ static bool indexSetContains(const std::vector<grid_map::Index>& index_set, cons
   return false;
 }
 
-TEST(NearestValidIteratorTest, FirstQuadrant)
+// Fills the entire map, starting in the first quadrant (position is positive x, positive y)
+TEST(NearestValidIterator, FirstQuadrant)
 {
   GridMap map;
   map.setGeometry(Length(2.0, 2.0), 1.0, Position(0.0, 0.0));
@@ -75,6 +76,8 @@ TEST(NearestValidIteratorTest, FirstQuadrant)
   EXPECT_TRUE( indexSetContains(traveled_set, grid_map::Index(1,0) ) );
   EXPECT_TRUE( indexSetContains(traveled_set, grid_map::Index(1,1) ) );
 }
+
+// Fills the entire map, starting in the third quadrant (position is negative x, negative y)
 
 TEST(NearestValidIteratorTest, ThirdQuadrant)
 {
@@ -117,7 +120,7 @@ TEST(NearestValidIteratorTest, ThirdQuadrant)
   EXPECT_TRUE( indexSetContains(traveled_set, grid_map::Index(1,1) ) );
 }
 
-TEST(NearestValidIteratorTest, OffCenter)
+TEST(NearestValidIterator, OffCenter)
 {
   GridMap map;
   map.setGeometry(Length(2.0, 2.0), 1.0, Position(0.0, 0.0));
@@ -158,7 +161,8 @@ TEST(NearestValidIteratorTest, OffCenter)
   EXPECT_TRUE( indexSetContains(traveled_set, grid_map::Index(1,1) ) );
 }
 
-TEST(NearestValidIteratorTest, OnlyValid)
+// Checks that NearestValidIterator only iterates over valid cells.
+TEST(NearestValidIterator, OnlyValid)
 {
   GridMap map;
   map.setGeometry(Length(2.0, 2.0), 1.0, Position(0.0, 0.0));

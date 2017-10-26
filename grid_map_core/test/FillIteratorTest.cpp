@@ -26,7 +26,7 @@ using namespace std;
 using namespace Eigen;
 using namespace grid_map;
 
-
+// Helper function to check if a vector of Indices contains a particular index.
 static bool indexSetContains(const std::vector<grid_map::Index>& index_set, const grid_map::Index& grid_index){
 
   for (const grid_map::Index& current_index: index_set){
@@ -38,6 +38,7 @@ static bool indexSetContains(const std::vector<grid_map::Index>& index_set, cons
   return false;
 }
 
+// Uses the fill iterator to fill the entire map.
 TEST(FillIterator, FillEntireMap)
 {
   GridMap map;
@@ -68,6 +69,7 @@ TEST(FillIterator, FillEntireMap)
   EXPECT_TRUE( indexSetContains(traveled_set, grid_map::Index(1,1) ) );
 }
 
+// Uses the FillIterator to fill half of a grid_map (divided by a line in the middle)
 TEST(FillIterator, HalfSpace)
 {
   // Creates a 3x3 grid with a diagonal line splitting the grid.
@@ -103,6 +105,7 @@ TEST(FillIterator, HalfSpace)
 
 }
 
+// Uses the Fill iterator to fill the opposite side of the map in the previous test
 TEST(FillIterator, OppositeHalfSpace)
 {
   // Creates a 3x3 grid with a diagonal line splitting the grid.
