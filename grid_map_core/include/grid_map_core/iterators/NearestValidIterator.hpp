@@ -27,8 +27,8 @@ public:
    * @param start the starting position we wish to find a nearest neighbor for.
    * @param checker an Indexchecker than indicates if a cell is valid (and we should iterate over it)
    */
-  NearestValidIterator(const grid_map::GridMap& gridMap, const Position& start, std::unique_ptr<IndexChecker>&  checker);
-  NearestValidIterator(const grid_map::GridMap& gridMap, const Index& start, std::unique_ptr<IndexChecker>&  checker);
+  NearestValidIterator(const grid_map::GridMap& gridMap, const Position& start, const IndexChecker&  checker);
+  NearestValidIterator(const grid_map::GridMap& gridMap, const Index& start, const IndexChecker&  checker);
 
   ~NearestValidIterator();
 
@@ -82,7 +82,7 @@ private:
 
   std::unique_ptr<SpiralGridIterator> spiral_grid_iterator_;
 
-  std::unique_ptr<IndexChecker> index_checker_;
+  const IndexChecker* index_checker_;
 
   const grid_map::GridMap& grid_map_;
 

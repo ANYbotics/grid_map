@@ -32,6 +32,8 @@ public:
    */
   bool check(const Index& index) const override;
 
+  IndexChecker* clone() const override;
+
 private:
 
   const std::string layer_;

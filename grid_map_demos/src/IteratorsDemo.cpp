@@ -243,7 +243,7 @@ void IteratorsDemo::demoFillIterator()
 
   Index fill_start(4, 4);
 
-  shared_ptr<IndexCheckerNan> checker = make_shared<IndexCheckerNan>(map_, "type");
+  IndexCheckerNan checker(map_, "type");
 
 
   for (grid_map::FillIterator iterator(map_, fill_start, checker );
@@ -297,7 +297,7 @@ void IteratorsDemo::demoNearestValidIterator()
 
   publish();
 
-  unique_ptr<IndexChecker> checker(new IndexCheckerZero(map_, "type"));
+  IndexCheckerZero checker(map_, "type");
 
   for (grid_map::NearestValidIterator iterator(map_, Position(0.2,0.2), checker );
       !iterator.isPastEnd(); ++iterator) {

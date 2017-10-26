@@ -13,8 +13,8 @@ using namespace std;
 
 namespace grid_map {
 
-FillIterator::FillIterator(const GridMap& grid_map, const Position& start_location, const std::shared_ptr<const IndexChecker>& index_checker ):
-    index_checker_(index_checker),
+FillIterator::FillIterator(const GridMap& grid_map, const Position& start_location, const IndexChecker& index_checker ):
+    index_checker_(index_checker.clone()),
     queue_exhausted_(false),
     grid_map_(grid_map),
     traveled_grid_(grid_map_.getSize())
@@ -36,8 +36,8 @@ FillIterator::FillIterator(const GridMap& grid_map, const Position& start_locati
 
 }
 
-FillIterator::FillIterator(const GridMap& grid_map, const Index& start_index, const std::shared_ptr<const IndexChecker>& index_checker ):
-    index_checker_(index_checker),
+FillIterator::FillIterator(const GridMap& grid_map, const Index& start_index, const IndexChecker& index_checker ):
+    index_checker_(index_checker.clone()),
     queue_exhausted_(false),
     grid_map_(grid_map),
     traveled_grid_(grid_map_.getSize()),
@@ -55,6 +55,10 @@ FillIterator::FillIterator(const GridMap& grid_map, const Index& start_index, co
     operator++();
   }
 
+}
+
+FillIterator::~FillIterator(){
+  delete index_checker_;
 }
 
 FillIterator& FillIterator::operator =(const FillIterator& other)

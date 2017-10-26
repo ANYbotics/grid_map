@@ -9,12 +9,11 @@
 
 namespace grid_map {
 
-NearestValidIterator::NearestValidIterator(const grid_map::GridMap& gridMap, const Position& start, std::unique_ptr<IndexChecker>&  checker):
+NearestValidIterator::NearestValidIterator(const grid_map::GridMap& gridMap, const Position& start, const IndexChecker&  checker):
  grid_map_(gridMap),
- starting_position_(start)
+ starting_position_(start),
+ index_checker_(checker.clone())
  {
-  index_checker_.swap(checker);
-
   Index starting_index;
 
   gridMap.getIndex(start, starting_index);
@@ -25,7 +24,7 @@ NearestValidIterator::NearestValidIterator(const grid_map::GridMap& gridMap, con
 }
 
 NearestValidIterator::~NearestValidIterator(){
-
+  delete index_checker_;
 }
 
 const Index& NearestValidIterator::operator*() const{

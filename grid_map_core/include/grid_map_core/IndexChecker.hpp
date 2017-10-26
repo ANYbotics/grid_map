@@ -37,6 +37,13 @@ public:
    */
   virtual bool check(const Index& index) const = 0;
 
+  /*!
+   * Constructs a new copy of the derived IndexChecker.
+   * Note that the new IndexChecker is allocated on the heap,
+   * and so will need to be deleted.
+   */
+  virtual IndexChecker* clone() const = 0;
+
 protected:
 
   const GridMap& map_;

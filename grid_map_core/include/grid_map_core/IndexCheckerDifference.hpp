@@ -36,9 +36,17 @@ public:
    */
   bool check(Index index) const override;
 
+  IndexChecker* clone() const override;
+
 private:
 
-  std::vector<DataType> values;
+  /*!
+   * Clone constructor.
+   * Used for directly passing the values used in the check.
+   */
+  IndexCheckerDifference(const GridMap& map, std::vector<DataType> values);
+
+  std::vector<DataType> values_;
 
 };
 

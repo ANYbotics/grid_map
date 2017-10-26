@@ -38,7 +38,7 @@ public:
    * @param start_location the position to start filling from.
    * @param IndexChecker an IndexChecker that returns true if an index is valid (ie we should iterate over it) and false if not (ie we should not iterate over it).
    */
-  FillIterator(const GridMap& grid_map, const Position& start_location, const std::shared_ptr<const IndexChecker>& index_checker);
+  FillIterator(const GridMap& grid_map, const Position& start_location, const IndexChecker& index_checker);
 
 
   /*!
@@ -47,7 +47,9 @@ public:
    * @param start_index the index to start filling from.
    * @param boundry_function a function that returns true if an index is valid (ie we should iterate over it) and false if not (ie we should not iterate over it).
    */
-  FillIterator(const GridMap& grid_map, const Index& start_index, const std::shared_ptr<const IndexChecker>& index_checker);
+  FillIterator(const GridMap& grid_map, const Index& start_index, const IndexChecker& index_checker);
+
+  ~FillIterator();
 
   /*!
    * Assignment operator.
@@ -107,7 +109,7 @@ private:
 
   Index current_index_;
 
-  const std::shared_ptr<const IndexChecker> index_checker_;
+  const IndexChecker* index_checker_;
 
   bool defaultBoundaryFunction(const grid_map::GridMap&, const grid_map::Index&);
   std::vector<DataType> starting_values_;

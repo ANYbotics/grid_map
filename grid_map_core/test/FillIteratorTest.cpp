@@ -44,7 +44,7 @@ TEST(FillIterator, FillEntireMap)
   map.setGeometry(Length(2.0, 2.0), 1.0, Position(0.0, 0.0));
   map.add("data", 0.0);
 
-  std::shared_ptr<IndexCheckerZero> checker = make_shared<IndexCheckerZero>(map, "data");
+  IndexCheckerZero checker(map, "data");
 
   std::vector<grid_map::Index> traveled_set;
 
@@ -78,7 +78,7 @@ TEST(FillIterator, HalfSpace)
   map.atPosition("data", grid_map::Position(0.0,0.0)) = 2.0;
   map.atPosition("data", grid_map::Position(1.0,1.0)) = 2.0;
 
-  std::shared_ptr<IndexCheckerZero> checker = make_shared<IndexCheckerZero>(map, "data");
+  IndexCheckerZero checker(map, "data");
 
   std::vector<grid_map::Index> traveled_set;
 
@@ -113,7 +113,7 @@ TEST(FillIterator, OppositeHalfSpace)
   map.atPosition("data", grid_map::Position(0.0,0.0)) = 2.0;
   map.atPosition("data", grid_map::Position(1.0,1.0)) = 2.0;
 
-  std::shared_ptr<IndexCheckerZero> checker = make_shared<IndexCheckerZero>(map, "data");
+  IndexCheckerZero checker(map, "data");
 
   std::vector<grid_map::Index> traveled_set;
 
