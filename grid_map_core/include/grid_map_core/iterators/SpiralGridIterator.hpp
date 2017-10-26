@@ -11,13 +11,25 @@
 
 namespace grid_map {
 
+/*!
+ * Iterator class that spirals outwards from the start, following
+ * the grid axes (as opposed to the regular SpiralIterator, which
+ * follows a circular spiral). In practice, this looks like the
+ * iterator follows square rings, progressing to larger and larger
+ * rings.
+ */
 class SpiralGridIterator {
 
 public:
 
+  /*!
+   * Constructor.
+   * @param gridMap the grid map to iterate on.
+   * @param start the start (center) of the spiral.
+   * @param radius the maximum "radius" along (along x) to iterate to, measured in cells (as opposed to true distance).
+   */
   SpiralGridIterator(const grid_map::GridMap& gridMap, const Index& start, const int radius = std::numeric_limits<int>::max());
 
-  ~SpiralGridIterator();
 
   /*!
    * Assignment operator.
@@ -50,6 +62,10 @@ public:
    */
   bool isPastEnd() const;
 
+  /*!
+   * Gets the radius (along x) of the current ring.
+   * @return the radius of the current ring.
+   */
   int getCurrentRadius() const;
 
 private:

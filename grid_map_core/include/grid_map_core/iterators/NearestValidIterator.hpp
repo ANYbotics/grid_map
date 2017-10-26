@@ -17,6 +17,10 @@
 
 namespace grid_map {
 
+/*!
+ * Iterator class that visits "valid" cells (defined by an IndexChecker)
+ * in the order of nearest to farthest (in relations to the start point)
+ */
 class NearestValidIterator {
 
 public:
@@ -24,12 +28,22 @@ public:
   /*!
    * Constructor.
    * @param gridMap the grid map to iterate on.
-   * @param start the starting position we wish to find a nearest neighbor for.
+   * @param start the starting position we wish to find nearest neighbors for.
    * @param checker an Indexchecker than indicates if a cell is valid (and we should iterate over it)
    */
   NearestValidIterator(const grid_map::GridMap& gridMap, const Position& start, const IndexChecker&  checker);
+
+  /*!
+   * Constructor.
+   * @param gridMap the grid map to iterate on.
+   * @param start the starting index we wish to find nearest neighbors for.
+   * @param checker an Indexchecker than indicates if a cell is valid (and we should iterate over it)
+   */
   NearestValidIterator(const grid_map::GridMap& gridMap, const Index& start, const IndexChecker&  checker);
 
+  /*!
+   * Destructor
+   */
   ~NearestValidIterator();
 
   /*!
@@ -66,7 +80,6 @@ public:
 
 private:
 
-
   struct DistanceIndexPair {
 
     double distance;
@@ -75,7 +88,6 @@ private:
     bool operator>(const DistanceIndexPair& other) const{
       return distance > other.distance;
     }
-
   };
 
   std::priority_queue< DistanceIndexPair, std::vector<DistanceIndexPair>, std::greater<DistanceIndexPair> > valid_index_queue_;

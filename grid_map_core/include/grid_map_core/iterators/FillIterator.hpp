@@ -49,6 +49,9 @@ public:
    */
   FillIterator(const GridMap& grid_map, const Index& start_index, const IndexChecker& index_checker);
 
+  /*!
+   * Destructor
+   */
   ~FillIterator();
 
   /*!

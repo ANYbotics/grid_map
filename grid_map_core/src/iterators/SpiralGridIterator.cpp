@@ -35,11 +35,6 @@ SpiralGridIterator::SpiralGridIterator(const grid_map::GridMap& gridMap, const I
 
 }
 
-
-SpiralGridIterator::~SpiralGridIterator(){
-
-}
-
 SpiralGridIterator& SpiralGridIterator::operator =(const SpiralGridIterator& other){
 
   maximum_radius_ = other.maximum_radius_;
