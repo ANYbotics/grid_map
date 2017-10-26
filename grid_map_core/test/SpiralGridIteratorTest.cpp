@@ -38,6 +38,34 @@ static bool indexSetContains(const std::vector<grid_map::Index>& index_set, cons
   return false;
 }
 
+TEST(SpiralGridIterator, FillEntireMapOppositeCorner)
+{
+  GridMap map;
+  map.setGeometry(Length(2.0, 2.0), 1.0, Position(0.0, 0.0));
+  map.add("data", 0.0);
+
+  std::vector<grid_map::Index> traveled_set;
+
+  SpiralGridIterator iterator(map, grid_map::Index(1, 1));
+
+  size_t iteration_count = 0;
+  for ( ; !iterator.isPastEnd(); ++iterator){
+    iteration_count++;
+    EXPECT_FALSE(iteration_count > 4) << "SpiralGridIterator is trying to iterate through more spaces than on the GridMap!";
+
+    EXPECT_FALSE( indexSetContains(traveled_set, *iterator) ) << "SpiralGridIterator revisited a space!";
+
+    traveled_set.push_back(*iterator);
+  }
+
+  EXPECT_EQ( iteration_count, 4 );
+
+  EXPECT_TRUE( indexSetContains(traveled_set, grid_map::Index(0,0) ) );
+  EXPECT_TRUE( indexSetContains(traveled_set, grid_map::Index(0,1) ) );
+  EXPECT_TRUE( indexSetContains(traveled_set, grid_map::Index(1,0) ) );
+  EXPECT_TRUE( indexSetContains(traveled_set, grid_map::Index(1,1) ) );
+}
+
 TEST(SpiralGridIterator, FillEntireMap)
 {
   GridMap map;

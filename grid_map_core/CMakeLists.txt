@@ -123,7 +123,8 @@ catkin_add_gtest(${PROJECT_NAME}-test
   test/EigenPluginsTest.cpp
   test/SpiralIteratorTest.cpp
   test/FillIteratorTest.cpp
-  test/SpiralGridIteratorTest.cpp)
+  test/SpiralGridIteratorTest.cpp
+  test/NearestValidIteratorTest.cpp)
 endif()
 
 if(TARGET ${PROJECT_NAME}-test)
