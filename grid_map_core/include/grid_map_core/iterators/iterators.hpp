@@ -19,3 +19,4 @@
 #include "grid_map_core/iterators/SpiralGridIterator.hpp"
 #include "grid_map_core/iterators/NearestValidIterator.hpp"
 #include "grid_map_core/iterators/LineIteratorAlt.hpp"
+#include "grid_map_core/iterators/LineThickIterator.hpp"
