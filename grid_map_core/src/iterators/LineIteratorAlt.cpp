@@ -66,7 +66,6 @@ LineIteratorAlt& LineIteratorAlt::operator ++()
       error_ += map_.getResolution();
       index_ += increment1_;
     }
-    std::cout<<"error = "<< error_<<"; error_add_ = "<<error_add_<<std::endl;
     index_ += increment2_;
     ++iCell_;
 
