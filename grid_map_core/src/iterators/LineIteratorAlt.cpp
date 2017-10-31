@@ -18,19 +18,9 @@ LineIteratorAlt::LineIteratorAlt(const grid_map::GridMap& gridMap, const Positio
                                map_(gridMap),
                                only_true_line_(only_true_line)
 {
-  Index startIndex, endIndex;
-  if (getIndexLimitedToMapRange(gridMap, start, end, startIndex)
-      && getIndexLimitedToMapRange(gridMap, end, start, endIndex))
-    initialize(gridMap, start, end);
-
-  // If we only want cells in the "infinite" line, then if the error_ starts as too much
-  // then we need to skip this first cell.
-  // In other words, sometimes the start point of the line is in a cell that is not actually
-  // part of the drawn line.
-  if (only_true_line_){
-    if (error_ > gridMap.getResolution()/2 || error_ < -gridMap.getResolution()/2 ){
-      operator++();
-    }
+  if (!initialize(gridMap, start, end)){
+    cout << "Warning: initialization of LineIteratorAlt failed."<< endl;
+    iCell_ = nCells_;
   }
 }
 
@@ -65,29 +55,34 @@ const Index& LineIteratorAlt::operator *() const
 
 LineIteratorAlt& LineIteratorAlt::operator ++()
 {
-  error_ += error_add_;  // Increase the numerator by the top of the fraction
-  if (error_ >= map_.getResolution()/2) {
-    error_ -= map_.getResolution();
-    index_ += increment1_;
-  }
-  else if (error_ <= -map_.getResolution()/2) {
-    error_ += map_.getResolution();
-    index_ += increment1_;
-  }
-  std::cout<<"error = "<< error_<<"; error_add_ = "<<error_add_<<std::endl;
-  index_ += increment2_;
-  ++iCell_;
+  if (!isPastEnd()){
 
-  if (!only_true_line_){
-    // If we are on the last cell...
-    if (iCell_ == nCells_-1){
-      index_ = end_index_;
+    error_ += error_add_;  // Increase the numerator by the top of the fraction
+    if (error_ >= map_.getResolution()/2) {
+      error_ -= map_.getResolution();
+      index_ += increment1_;
     }
-  }
+    else if (error_ <= -map_.getResolution()/2) {
+      error_ += map_.getResolution();
+      index_ += increment1_;
+    }
+    std::cout<<"error = "<< error_<<"; error_add_ = "<<error_add_<<std::endl;
+    index_ += increment2_;
+    ++iCell_;
 
+    if (!only_true_line_){
+      // If we are on the last cell, make sure we end in the index with the end position.
+      if (iCell_ == nCells_-1){
+        index_ = end_index_;
+      }
+    }
+
+  }
 
   return *this;
 }
+
+
 
 bool LineIteratorAlt::isPastEnd() const
 {
@@ -99,8 +94,10 @@ bool LineIteratorAlt::initialize(const grid_map::GridMap& gridMap, const Positio
     start_ = start;
     end_ = end;
 
-    gridMap.getIndex(start_, start_index_);
-    gridMap.getIndex(end_, end_index_);
+    if (!gridMap.getIndex(start_, start_index_) ||
+        !gridMap.getIndex(end_, end_index_)){
+      return false;
+    }
 
     resolution_ = gridMap.getResolution();
     bufferSize_ = gridMap.getSize();
@@ -176,21 +173,18 @@ bool LineIteratorAlt::initialize(const grid_map::GridMap& gridMap, const Positio
       nCells_ = delta.y() + 1; // There are more y-values than x-values.
     }
 
+    // If we only want cells in the "infinite" line, then if the error_ starts as too much
+    // then we need move to a valid cell.
+    if (only_true_line_){
+      if (error_ > gridMap.getResolution()/2 ){
+        index_ -= increment1_;
+        error_-= map_.getResolution();
+      } else if (error_ < -gridMap.getResolution()/2 ){
+        index_ -= increment1_;
+        error_+= map_.getResolution();
+      }
+    }
     return true;
-}
-
-bool LineIteratorAlt::getIndexLimitedToMapRange(const grid_map::GridMap& gridMap,
-                                             const Position& start, const Position& end,
-                                             Index& index)
-{
-  Position newStart = start;
-  Vector direction = (end - start).normalized();
-  while (!gridMap.getIndex(newStart, index)) {
-    newStart += (gridMap.getResolution() - std::numeric_limits<double>::epsilon()) * direction;
-    if ((end - newStart).norm() < gridMap.getResolution() - std::numeric_limits<double>::epsilon())
-      return false;
-  }
-  return true;
 }
 
 } /* namespace grid_map */

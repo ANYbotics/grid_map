@@ -18,7 +18,9 @@ namespace grid_map {
 
 /*!
  * Iterator class to iterate over a line in the map.
- * Based on Bresenham Line Drawing algorithm.
+ * Based on Bresenham Line Drawing algorithm, but modified to use doubles instead
+ * of just indices. This has the advantage of being more accurate for lines drawn
+ * base on Position start and end points rather than Index start and end points.
  */
 class LineIteratorAlt
 {
@@ -29,16 +31,12 @@ public:
    * @param gridMap the grid map to iterate on.
    * @param start the starting point of the line.
    * @param end the ending point of the line.
+   * @param only_true_line only include points that are on the "infinite" line, ie the line extended past the start and end.
+   * only_true_line is important when the start/end Position is in a cell not included in the "infinite" line,
+   * since the line can pass through cells that are not included in the drawn line. For most uses, one might
+   * expect that the line would include the start and end positions. This is the behavior if only_true_line is set to false.
    */
   LineIteratorAlt(const grid_map::GridMap& gridMap, const Position& start, const Position& end, bool only_true_line = false);
-
-  /*!
-   * Constructor.
-   * @param gridMap the grid map to iterate on.
-   * @param start the starting index of the line.
-   * @param end the ending index of the line.
-   */
-  LineIteratorAlt(const grid_map::GridMap& gridMap, const Index& start, const Index& end);
 
   /*!
    * Assignment operator.
@@ -82,22 +80,6 @@ private:
    * @return true if successful, false otherwise.
    */
   bool initialize(const grid_map::GridMap& gridMap, const Position& start, const Position& end);
-
-  /*!
-   * Computes the parameters requires for the line drawing algorithm.
-   */
-  void initializeIterationParameters();
-
-  /*!
-   * Finds the index of a position on a line within the limits of the map.
-   * @param[in] gridMap the grid map that defines the map boundaries.
-   * @param[in] start the position that will be limited to the map range.
-   * @param[in] end the ending position of the line.
-   * @param[out] index the index of the moved start position.
-   * @return true if successful, false otherwise.
-   */
-  bool getIndexLimitedToMapRange(const grid_map::GridMap& gridMap, const Position& start,
-                                 const Position& end, Index& index);
 
   const grid_map::GridMap& map_;
 
