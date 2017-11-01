@@ -59,6 +59,7 @@ add_library(${PROJECT_NAME}
    src/SubmapGeometry.cpp
    src/BufferRegion.cpp
    src/Polygon.cpp
+   src/IndexCheckerAnd.cpp
    src/IndexCheckerNan.cpp
    src/IndexCheckerNonZero.cpp
    src/IndexCheckerZero.cpp
