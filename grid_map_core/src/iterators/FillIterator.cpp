@@ -13,11 +13,12 @@ using namespace std;
 
 namespace grid_map {
 
-FillIterator::FillIterator(const GridMap& grid_map, const Position& start_location, const IndexChecker& index_checker ):
+FillIterator::FillIterator(const GridMap& grid_map, const Position& start_location, const IndexChecker& index_checker , bool eight_connected ):
     index_checker_(index_checker.clone()),
     queue_exhausted_(false),
     grid_map_(grid_map),
-    traveled_grid_(grid_map_.getSize())
+    traveled_grid_(grid_map_.getSize()),
+    eight_connected_(eight_connected)
 {
 
   grid_map_.getIndex(start_location, starting_index_);
@@ -36,12 +37,13 @@ FillIterator::FillIterator(const GridMap& grid_map, const Position& start_locati
 
 }
 
-FillIterator::FillIterator(const GridMap& grid_map, const Index& start_index, const IndexChecker& index_checker ):
+FillIterator::FillIterator(const GridMap& grid_map, const Index& start_index, const IndexChecker& index_checker, bool eight_connected ):
     index_checker_(index_checker.clone()),
     queue_exhausted_(false),
     grid_map_(grid_map),
     traveled_grid_(grid_map_.getSize()),
-    starting_index_(start_index)
+    starting_index_(start_index),
+    eight_connected_(eight_connected)
 {
   current_index_ = starting_index_;
 
@@ -118,6 +120,20 @@ FillIterator& FillIterator::operator ++()
 
         const Index south_index = current_index_ + Index(0,-1);
         tryToAddToQueue(south_index);
+
+        if (eight_connected_){
+          const Index nwest_index = current_index_ + Index(1,1);
+          tryToAddToQueue(nwest_index);
+
+          const Index neast_index = current_index_ + Index(-1,1);
+          tryToAddToQueue(neast_index);
+
+          const Index swest_index = current_index_ + Index(1,-1);
+          tryToAddToQueue(swest_index);
+
+          const Index seast_index = current_index_ + Index(-1,-1);
+          tryToAddToQueue(seast_index);
+        }
 
         break;
       }
