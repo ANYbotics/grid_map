@@ -76,6 +76,7 @@ add_library(${PROJECT_NAME}
    src/iterators/NearestValidIterator.cpp
    src/iterators/LineIteratorAlt.cpp
    src/iterators/LineThickIterator.cpp
+   src/iterators/LineThickIteratorAlt.cpp
 )
 
 target_link_libraries(${PROJECT_NAME}
