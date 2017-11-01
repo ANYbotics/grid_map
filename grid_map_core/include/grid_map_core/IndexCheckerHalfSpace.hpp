@@ -52,12 +52,6 @@ public:
 
 private:
 
-  /*!
-   * Copy Constructor
-   * @param other the other IndexCheckerHalfSpace to copy.
-   */
-  IndexCheckerHalfSpace(const IndexCheckerHalfSpace& other);
-
   Vector normal_;
   double offset_;
   Position cell_corner_offset_;

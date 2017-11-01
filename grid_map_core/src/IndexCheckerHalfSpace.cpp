@@ -18,21 +18,21 @@ IndexCheckerHalfSpace::IndexCheckerHalfSpace(const GridMap& map, const Vector& n
   // Specifically, the opposite corner from
   if (normal.x() >= 0){
     if (normal.y() >= 0){
-      cell_corner_offset_ = map_.getResolution()*Position(-1.0,-1.0);
+      cell_corner_offset_ = (map_.getResolution()/2.0)*Position(-1.0,-1.0);
     }
     else
     {
-      cell_corner_offset_ = map_.getResolution()*Position(-1.0,1.0);
+      cell_corner_offset_ = (map_.getResolution()/2.0)*Position(-1.0,1.0);
     }
   }
   else
   {
     if (normal.y() >= 0){
-      cell_corner_offset_ = map_.getResolution()*Position(1.0,-1.0);
+      cell_corner_offset_ = (map_.getResolution()/2.0)*Position(1.0,-1.0);
     }
     else
     {
-      cell_corner_offset_ = map_.getResolution()*Position(1.0,1.0);
+      cell_corner_offset_ = (map_.getResolution()/2.0)*Position(1.0,1.0);
     }
   }
 }
@@ -64,15 +64,6 @@ IndexCheckerHalfSpace::IndexCheckerHalfSpace(const GridMap& map, const Vector& n
   }
 }
 
-IndexCheckerHalfSpace::IndexCheckerHalfSpace(const IndexCheckerHalfSpace& other):
-  IndexChecker(map_),
-  normal_(other.normal_),
-  offset_(other.offset_),
-  cell_corner_offset_(other.cell_corner_offset_){
-
-}
-
-
 bool IndexCheckerHalfSpace::check(const Index& index) const{
   Position center_of_index;
   if (!map_.getPosition(index, center_of_index)){
@@ -83,7 +74,7 @@ bool IndexCheckerHalfSpace::check(const Index& index) const{
 }
 
 IndexChecker* IndexCheckerHalfSpace::clone() const{
-  return (new IndexCheckerHalfSpace(*this));
+  return (new IndexCheckerHalfSpace(map_, normal_, offset_));
 }
 
 }  // namespace grid_map
