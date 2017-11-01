@@ -60,6 +60,7 @@ add_library(${PROJECT_NAME}
    src/BufferRegion.cpp
    src/Polygon.cpp
    src/IndexCheckerAnd.cpp
+   src/IndexCheckerHalfSpace.cpp
    src/IndexCheckerNan.cpp
    src/IndexCheckerNonZero.cpp
    src/IndexCheckerZero.cpp
