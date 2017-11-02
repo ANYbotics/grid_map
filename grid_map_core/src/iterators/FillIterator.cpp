@@ -164,15 +164,6 @@ void FillIterator::tryToAddToQueue(const Index& index){
 
 }
 
-std::vector<DataType> FillIterator::getAllValues(Index index){
-  std::vector<DataType> values;
-  const std::vector<string> & layers = grid_map_.getLayers();
-  for (const std::string& layer: layers){
-    values.push_back(grid_map_.at(layer, index));
-  }
-  return values;
-}
-
 FillIterator::MarkerGrid::MarkerGrid(const Size& grid_dimensions):
   grid_dimensions_(grid_dimensions),
   mark_record_(grid_dimensions.x()*grid_dimensions.y(), false){

@@ -26,26 +26,20 @@ public:
 
   /*!
    * Constructor.
-   * @param gridMap the grid map to iterate on.
-   * @param start_location the position to start filling from.
-   * @note This constructor assumes the boundary function is simply current_square != starting_square.
-   */
-  FillIterator(const GridMap& grid_map, const Index& start_index);
-
-  /*!
-   * Constructor.
-   * @param gridMap the grid map to iterate on.
+   * @param grid_map the grid map to iterate on.
    * @param start_location the position to start filling from.
    * @param IndexChecker an IndexChecker that returns true if an index is valid (ie we should iterate over it) and false if not (ie we should not iterate over it).
+   * @param eight_connected whether to treat the grid as 8-connected (diagonals are adjacent). Defaults to false
    */
   FillIterator(const GridMap& grid_map, const Position& start_location, const IndexChecker& index_checker, bool eight_connected = false);
 
 
   /*!
    * Constructor.
-   * @param gridMap the grid map to iterate on.
+   * @param grid_map the grid map to iterate on.
    * @param start_index the index to start filling from.
    * @param boundry_function a function that returns true if an index is valid (ie we should iterate over it) and false if not (ie we should not iterate over it).
+   * @param eight_connected whether to treat the grid as 8-connected (diagonals are adjacent). Defaults to false
    */
   FillIterator(const GridMap& grid_map, const Index& start_index, const IndexChecker& index_checker, bool eight_connected = false);
 
@@ -87,6 +81,8 @@ public:
 
 private:
 
+  // MarkerGrid is a helper class, which consists of a Grid of bools.
+  // This is used to mark grid cells that have already been visited.
   class MarkerGrid {
 
   public:
@@ -113,10 +109,6 @@ private:
   Index current_index_;
 
   const IndexChecker* index_checker_;
-
-  bool defaultBoundaryFunction(const grid_map::GridMap&, const grid_map::Index&);
-  std::vector<DataType> starting_values_;
-  std::vector<DataType> getAllValues(Index index);
 
   void tryToAddToQueue(const Index& index);
 
