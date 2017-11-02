@@ -30,7 +30,7 @@ public:
    * Constructor.
    * @param gridMap the GridMap to query.
    * @param normal the normal of the splitting plane (points away from the valid spaces)
-   * @param a point on the splitting plane
+   * @param the offset of the plane from the origin
    */
   IndexCheckerHalfSpace(const GridMap& map, const Vector& normal, double offset);
 
@@ -48,12 +48,20 @@ public:
    */
   bool check(const Index& index) const override;
 
+  /*!
+   * Constructs a new copy of the IndexCheckerHalfSpace.
+   * Note that the new IndexChecker is allocated on the heap,
+   * and so will need to be deleted.
+   */
   IndexChecker* clone() const override;
 
 private:
 
   Vector normal_;
   double offset_;
+
+  // The offset from the center of a cell to its corner.
+  // The corner is in the opposite direction from the normal.
   Position cell_corner_offset_;
 
 };

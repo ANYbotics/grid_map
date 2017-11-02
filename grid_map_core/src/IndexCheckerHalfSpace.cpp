@@ -11,11 +11,11 @@ namespace grid_map {
 
 IndexCheckerHalfSpace::IndexCheckerHalfSpace(const GridMap& map, const Vector& normal, double offset):
     IndexChecker(map),
-    normal_(normal.normalized()),
+    normal_(normal),
     offset_(offset){
 
   // We only need to check one corner of the cell to see if any of the cell lies in the halfspace.
-  // Specifically, the opposite corner from
+  // Specifically, the opposite corner from the normal direction.
   if (normal.x() >= 0){
     if (normal.y() >= 0){
       cell_corner_offset_ = (map_.getResolution()/2.0)*Position(-1.0,-1.0);
@@ -43,6 +43,8 @@ IndexCheckerHalfSpace::IndexCheckerHalfSpace(const GridMap& map, const Vector& n
 
   offset_ = normal_.dot(plane_point);
 
+  // We only need to check one corner of the cell to see if any of the cell lies in the halfspace.
+  // Specifically, the opposite corner from the normal direction.
   if (normal.x() >= 0){
     if (normal.y() >= 0){
       cell_corner_offset_ = map_.getResolution()*Position(-1.0,-1.0);
