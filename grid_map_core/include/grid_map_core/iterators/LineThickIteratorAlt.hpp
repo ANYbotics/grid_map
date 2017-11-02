@@ -14,12 +14,28 @@
 
 namespace grid_map {
 
+/*!
+ * Iterator class to iterate over a thickened line in the map.
+ * Uses a FillIterator to iterate through cells within the thickness
+ * of the line. Any cell that intersects the thickened line (even if
+ * its just a small corner) is iterated over.
+ */
 class LineThickIteratorAlt {
 
 public:
 
+  /*!
+   * Constructor.
+   * @param gridMap the grid map to iterate on.
+   * @param start the starting point of the line.
+   * @param end the ending point of the line.
+   * @param thickness the thickness of the line.
+   */
   LineThickIteratorAlt(const GridMap& grid_map, const Position& start, const Position& end, double thickness);
 
+  /*!
+   * Destructor.
+   */
   ~LineThickIteratorAlt();
 
   /*!
@@ -59,10 +75,17 @@ private:
 
   std::unique_ptr<FillIterator> fill_iterator_;
 
-
+  /*!
+   * Finds an index along the line within the GridMap, if it exists.
+   * @param gridMap the map to constrain the line to
+   * @param start starting position of the line
+   * @param end ending position of the line
+   * @param index the return value (the first valid index on the line)
+   * @return true if succeeded, false if the line does not cross the GridMap
+   */
   bool getIndexLimitedToMapRange(const grid_map::GridMap& gridMap,
-                                               const Position& start, const Position& end,
-                                               Index& index);
+                                 const Position& start, const Position& end,
+                                 Index& index);
 
 
 };

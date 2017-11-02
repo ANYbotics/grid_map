@@ -25,9 +25,11 @@ LineThickIteratorAlt::LineThickIteratorAlt(const grid_map::GridMap& gridMap, con
 map_(gridMap)
 {
 
-  // Construct the index checker
-
+  // Construct the index checkers.
   Vector perp;
+  // The vector of the line is (end - start), the normal of that line is
+  //    [ 0  -1 ]
+  //    [ 1   0 ] * (end - start)
   perp.x() = -( end - start ).y();
   perp.y() = ( end - start ).x();
 
@@ -91,6 +93,9 @@ LineThickIteratorAlt::~LineThickIteratorAlt(){
 
 LineThickIteratorAlt& LineThickIteratorAlt::operator =(const LineThickIteratorAlt& other)
 {
+
+  std::cout<<"WARNING: The assignment operator is not implemented for LineThickIteratorAlt"<<std::endl;
+
   return *this;
 }
 
@@ -106,13 +111,9 @@ const Index& LineThickIteratorAlt::operator *() const
 
 LineThickIteratorAlt& LineThickIteratorAlt::operator ++()
 {
-
   fill_iterator_->operator ++();
-
   return *this;
 }
-
-
 
 bool LineThickIteratorAlt::isPastEnd() const
 {
