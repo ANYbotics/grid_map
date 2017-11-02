@@ -69,6 +69,9 @@ FillIterator& FillIterator::operator =(const FillIterator& other)
   traveled_grid_ = other.traveled_grid_;
   queue_ = other.queue_;
   queue_exhausted_ = other.queue_exhausted_;
+
+  std::cout<<"WARNING: The assignment operator is not fully implemented for FillIterator"<<std::endl;
+
   return *this;
 }
 
