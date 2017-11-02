@@ -46,6 +46,7 @@ IteratorsDemo::IteratorsDemo(ros::NodeHandle& nodeHandle)
   demoFillIterator();
   demoSpiralGridIterator();
   demoNearestValidIterator();
+  demoLineThickIterator();
 }
 
 IteratorsDemo::~IteratorsDemo() {}
@@ -311,6 +312,26 @@ void IteratorsDemo::demoNearestValidIterator()
   duration.sleep();
 }
 
+void IteratorsDemo::demoLineThickIterator()
+{
+  ROS_INFO("Running thick line iterator (LineThickIterator) demo.");
+  map_.clearAll();
+  publish();
+
+  Position start(-0.43, -0.2);
+  Position end(0.42, 0.32);
+
+  for (grid_map::LineThickIterator iterator(map_, start, end, 0.1);
+      !iterator.isPastEnd(); ++iterator) {
+    map_.at("type", *iterator) = 1.0;
+    publish();
+    ros::Duration duration(0.02);
+    duration.sleep();
+  }
+
+  ros::Duration duration(1.0);
+  duration.sleep();
+}
 
 void IteratorsDemo::publish()
 {

@@ -47,6 +47,7 @@ class IteratorsDemo
   void demoFillIterator();
   void demoSpiralGridIterator();
   void demoNearestValidIterator();
+  void demoLineThickIterator();
 
   /*!
    * Publish the grid map to ROS.
