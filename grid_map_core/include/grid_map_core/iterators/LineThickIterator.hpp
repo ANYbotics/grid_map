@@ -1,5 +1,5 @@
 /*
- * LineThickIteratorAlt.hpp
+ * LineThickIterator.hpp
  *
  *  Created on: Nov 1, 2017
  *      Author: Perry Franklin
@@ -20,7 +20,7 @@ namespace grid_map {
  * of the line. Any cell that intersects the thickened line (even if
  * its just a small corner) is iterated over.
  */
-class LineThickIteratorAlt {
+class LineThickIterator {
 
 public:
 
@@ -31,25 +31,25 @@ public:
    * @param end the ending point of the line.
    * @param thickness the thickness of the line.
    */
-  LineThickIteratorAlt(const GridMap& grid_map, const Position& start, const Position& end, double thickness);
+  LineThickIterator(const GridMap& grid_map, const Position& start, const Position& end, double thickness);
 
   /*!
    * Destructor.
    */
-  ~LineThickIteratorAlt();
+  ~LineThickIterator();
 
   /*!
    * Assignment operator.
    * @param iterator the iterator to copy data from.
    * @return a reference to *this.
    */
-  LineThickIteratorAlt& operator =(const LineThickIteratorAlt& other);
+  LineThickIterator& operator =(const LineThickIterator& other);
 
    /*!
    * Compare to another iterator.
    * @return whether the current iterator points to a different address than the other one.
    */
-  bool operator !=(const LineThickIteratorAlt& other) const;
+  bool operator !=(const LineThickIterator& other) const;
 
   /*!
    * Dereference the iterator with const.
@@ -61,7 +61,7 @@ public:
    * Increase the iterator to the next element.
    * @return a reference to the updated iterator.
    */
-  LineThickIteratorAlt& operator ++();
+  LineThickIterator& operator ++();
 
   /*!
    * Indicates if iterator is past end.

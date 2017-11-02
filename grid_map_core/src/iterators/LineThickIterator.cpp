@@ -1,12 +1,12 @@
 /*
- * LineThickIteratorAlt.cpp
+ * LineThickIterator.cpp
  *
  *  Created on: Nov 1, 2017
  *      Author: Perry Franklin
  */
 
 
-#include "grid_map_core/iterators/LineThickIteratorAlt.hpp"
+#include "grid_map_core/iterators/LineThickIterator.hpp"
 
 #include "grid_map_core/iterators/SubmapIterator.hpp"
 #include "grid_map_core/IndexCheckerAnd.hpp"
@@ -20,7 +20,7 @@ using namespace std;
 
 namespace grid_map {
 
-LineThickIteratorAlt::LineThickIteratorAlt(const grid_map::GridMap& gridMap, const Position& start,
+LineThickIterator::LineThickIterator(const grid_map::GridMap& gridMap, const Position& start,
     const Position& end, double thickness):
 map_(gridMap)
 {
@@ -87,40 +87,40 @@ map_(gridMap)
 
 }
 
-LineThickIteratorAlt::~LineThickIteratorAlt(){
+LineThickIterator::~LineThickIterator(){
 
 }
 
-LineThickIteratorAlt& LineThickIteratorAlt::operator =(const LineThickIteratorAlt& other)
+LineThickIterator& LineThickIterator::operator =(const LineThickIterator& other)
 {
 
-  std::cout<<"WARNING: The assignment operator is not implemented for LineThickIteratorAlt"<<std::endl;
+  std::cout<<"WARNING: The assignment operator is not implemented for LineThickIterator"<<std::endl;
 
   return *this;
 }
 
-bool LineThickIteratorAlt::operator !=(const LineThickIteratorAlt& other) const
+bool LineThickIterator::operator !=(const LineThickIterator& other) const
 {
   return (operator *() != other.operator *()).any();
 }
 
-const Index& LineThickIteratorAlt::operator *() const
+const Index& LineThickIterator::operator *() const
 {
   return fill_iterator_->operator *();
 }
 
-LineThickIteratorAlt& LineThickIteratorAlt::operator ++()
+LineThickIterator& LineThickIterator::operator ++()
 {
   fill_iterator_->operator ++();
   return *this;
 }
 
-bool LineThickIteratorAlt::isPastEnd() const
+bool LineThickIterator::isPastEnd() const
 {
   return fill_iterator_->isPastEnd();
 }
 
-bool LineThickIteratorAlt::getIndexLimitedToMapRange(const grid_map::GridMap& gridMap,
+bool LineThickIterator::getIndexLimitedToMapRange(const grid_map::GridMap& gridMap,
                                                      const Position& start, const Position& end,
                                                      Index& index)
 {
