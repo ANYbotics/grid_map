@@ -152,7 +152,7 @@ bool FillIterator::isPastEnd() const
 }
 
 void FillIterator::tryToAddToQueue(const Index& index){
-  if (!checkIfIndexWithinRange(index, grid_map_.getSize())){
+  if (!checkIfIndexInRange(index, grid_map_.getSize())){
 
   }
   else if (traveled_grid_.checkIfMarked(index)){

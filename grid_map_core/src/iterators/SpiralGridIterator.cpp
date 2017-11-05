@@ -65,7 +65,7 @@ SpiralGridIterator& SpiralGridIterator::operator ++(){
     direction_ = Index(1,0);
     ++current_radius_;
     step_ = 0;
-    if (!checkIfIndexWithinRange(current_index_, grid_map_.getSize())){
+    if (!checkIfIndexInRange(current_index_, grid_map_.getSize())){
       operator++();
     }
   }
@@ -111,7 +111,7 @@ SpiralGridIterator& SpiralGridIterator::operator ++(){
 
       }
 
-    } while (!checkIfIndexWithinRange(temp_index, grid_map_.getSize()));
+    } while (!checkIfIndexInRange(temp_index, grid_map_.getSize()));
 
     current_index_ = temp_index;
   }

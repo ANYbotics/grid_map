@@ -65,8 +65,8 @@ map_(gridMap)
     Position top_left(x_max,y_max);
     Position bot_right(x_min,y_min);
 
-    limitPositionToRange(top_left, map_.getLength(), map_.getPosition());
-    limitPositionToRange(bot_right, map_.getLength(), map_.getPosition());
+    boundPositionToRange(top_left, map_.getLength(), map_.getPosition());
+    boundPositionToRange(bot_right, map_.getLength(), map_.getPosition());
     map_.getIndex(top_left, starting_index);
     Index end_index;
     map_.getIndex(bot_right, end_index);

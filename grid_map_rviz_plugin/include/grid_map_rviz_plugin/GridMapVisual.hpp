@@ -37,11 +37,10 @@ class GridMapVisual
   // Copy the grid map data to map_.
   void setMessage(const grid_map_msgs::GridMap::ConstPtr& msg);
   // Compute the visualization of map_.
-  void computeVisualization(float alpha, bool showGridLines, bool flatTerrain,
-                            std::string heightLayer, bool flatColor, Ogre::ColourValue meshColor,
-                            bool mapLayerColor, std::string colorLayer, bool useRainbow, 
-			    bool invertRainbow, Ogre::ColourValue minColor, Ogre::ColourValue maxColor, 
-			    bool autocomputeIntensity, float minIntensity, float maxIntensity);
+  void computeVisualization(float alpha, bool showGridLines, bool flatTerrain, std::string heightLayer, bool flatColor,
+                            bool noColor, Ogre::ColourValue meshColor, bool mapLayerColor, std::string colorLayer,
+                            bool useRainbow, bool invertRainbow, Ogre::ColourValue minColor, Ogre::ColourValue maxColor,
+                            bool autocomputeIntensity, float minIntensity, float maxIntensity);
 
   // Set the coordinate frame pose.
   void setFramePosition(const Ogre::Vector3& position);

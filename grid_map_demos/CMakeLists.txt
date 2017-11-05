@@ -6,14 +6,20 @@ set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
 ## Find catkin macros and libraries
 find_package(catkin REQUIRED COMPONENTS
   roscpp
+  grid_map_core
   grid_map_ros
   grid_map_cv
+  grid_map_filters
+  grid_map_loader
   grid_map_msgs
   grid_map_octomap
+  grid_map_rviz_plugin
+  grid_map_visualization
   geometry_msgs
   sensor_msgs
   cv_bridge
   octomap_msgs
+  filters
 )
 
 find_package(octomap REQUIRED)
@@ -96,6 +102,12 @@ add_executable(
   src/resolution_change_demo_node.cpp
 )
 
+add_executable(
+  filters_demo
+  src/filters_demo_node.cpp
+  src/FiltersDemo.cpp
+)
+
 ## Specify libraries to link a library or executable target against
 target_link_libraries(
   simple_demo
@@ -143,6 +155,11 @@ target_link_libraries(
   ${catkin_LIBRARIES}
 )
 
+target_link_libraries(
+  filters_demo
+  ${catkin_LIBRARIES}
+)
+
 #############
 ## Install ##
 #############
@@ -154,7 +171,7 @@ catkin_install_python(
 
 # Mark executables and/or libraries for installation
 install(
-  TARGETS simple_demo tutorial_demo iterators_demo image_to_gridmap_demo octomap_to_gridmap_demo move_demo iterator_benchmark opencv_demo resolution_change_demo
+  TARGETS simple_demo tutorial_demo iterators_demo image_to_gridmap_demo octomap_to_gridmap_demo move_demo iterator_benchmark opencv_demo resolution_change_demo filters_demo
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}

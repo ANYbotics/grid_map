@@ -1,37 +1,38 @@
 /*
- * MinFilter.hpp
+ * MathExpressionFilter.hpp
  *
- *  Created on: Mar 18, 2015
- *      Author: Martin Wermelinger
- *   Institute: ETH Zurich, Autonomous Systems Lab
+ *  Created on: Aug 16, 2017
+ *      Author: Peter Fankhauser
+ *   Institute: ETH Zurich, Robotic Systems Lab
  */
 
 #pragma once
 
+#include "EigenLab/EigenLab.h"
+
 #include <filters/filter_base.h>
 
-#include <vector>
 #include <string>
 
-namespace grid_map_filters {
+namespace grid_map {
 
 /*!
- * Minimum filter class takes the minimum out of different layers of a grid map.
+ * Parses and evaluates a mathematical matrix expression with layers of a grid map.
  */
 template<typename T>
-class MinFilter : public filters::FilterBase<T>
+class MathExpressionFilter : public filters::FilterBase<T>
 {
 
  public:
   /*!
    * Constructor
    */
-  MinFilter();
+  MathExpressionFilter();
 
   /*!
    * Destructor.
    */
-  virtual ~MinFilter();
+  virtual ~MathExpressionFilter();
 
   /*!
    * Configures the filter from parameters on the parameter server.
@@ -46,13 +47,14 @@ class MinFilter : public filters::FilterBase<T>
   virtual bool update(const T& mapIn, T& mapOut);
 
  private:
+  //! EigenLab parser.
+  EigenLab::Parser<Eigen::MatrixXf> parser_;
 
-  //! List of layers that are added together.
-  std::vector<std::string> layers_;
+  //! Expression to parse.
+  std::string expression_;
 
-  //! Layer type for summation.
-  std::string layerOut_;
-
+  //! Output layer name.
+  std::string outputLayer_;
 };
 
 } /* namespace */

@@ -71,6 +71,7 @@ add_library(${PROJECT_NAME}
    src/iterators/SpiralIterator.cpp
    src/iterators/PolygonIterator.cpp
    src/iterators/LineIterator.cpp
+   src/iterators/SlidingWindowIterator.cpp
    src/iterators/FillIterator.cpp
    src/iterators/SpiralGridIterator.cpp
    src/iterators/NearestValidIterator.cpp
@@ -125,9 +126,11 @@ catkin_add_gtest(${PROJECT_NAME}-test
   test/PolygonTest.cpp
   test/EigenPluginsTest.cpp
   test/SpiralIteratorTest.cpp
+  test/SlidingWindowIteratorTest.cpp
   test/FillIteratorTest.cpp
   test/SpiralGridIteratorTest.cpp
-  test/NearestValidIteratorTest.cpp)
+  test/NearestValidIteratorTest.cpp
+  )
 endif()
 
 if(TARGET ${PROJECT_NAME}-test)

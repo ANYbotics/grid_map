@@ -12,7 +12,6 @@
 #include "grid_map_core/Polygon.hpp"
 #include "grid_map_core/iterators/SubmapIterator.hpp"
 
-// unique_ptr
 #include <memory>
 
 namespace grid_map {

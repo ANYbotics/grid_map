@@ -43,7 +43,8 @@ class IteratorsDemo
   void demoEllipseIterator();
   void demoSpiralIterator();
   void demoLineIterator();
-  void demoPolygonIterator();
+  void demoPolygonIterator(const bool prepareForOtherDemos = false);
+  void demoSlidingWindowIterator();
   void demoFillIterator();
   void demoSpiralGridIterator();
   void demoNearestValidIterator();

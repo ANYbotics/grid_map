@@ -53,14 +53,11 @@ void GridMapVisual::setMessage(const grid_map_msgs::GridMap::ConstPtr& msg)
   haveMap_ = true;
 }
 
-void GridMapVisual::computeVisualization(float alpha, bool showGridLines, bool flatTerrain,
-                                         std::string heightLayer, bool flatColor,
-                                         Ogre::ColourValue meshColor, 
-					 bool mapLayerColor, std::string colorLayer,
-                                         bool useRainbow, bool invertRainbow, 
-					 Ogre::ColourValue minColor, Ogre::ColourValue maxColor, 
-					 bool autocomputeIntensity,
-                                         float minIntensity, float maxIntensity)
+void GridMapVisual::computeVisualization(float alpha, bool showGridLines, bool flatTerrain, std::string heightLayer,
+                                         bool flatColor, bool noColor, Ogre::ColourValue meshColor, bool mapLayerColor,
+                                         std::string colorLayer, bool useRainbow, bool invertRainbow,
+                                         Ogre::ColourValue minColor, Ogre::ColourValue maxColor,
+                                         bool autocomputeIntensity, float minIntensity, float maxIntensity)
 {
   if (!haveMap_) {
     ROS_DEBUG("Unable to visualize grid map, no map data. Use setMessage() first!");
@@ -73,7 +70,7 @@ void GridMapVisual::computeVisualization(float alpha, bool showGridLines, bool f
     ROS_DEBUG("Unable to visualize grid map, map must contain at least one layer.");
     return;
   }
-  if ((!flatTerrain && !map_.exists(heightLayer)) || (!flatColor && !map_.exists(colorLayer))) {
+  if ((!flatTerrain && !map_.exists(heightLayer)) || (!noColor && !flatColor && !map_.exists(colorLayer))) {
     ROS_DEBUG("Unable to visualize grid map, requested layer(s) not available.");
     return;
   }
@@ -170,21 +167,23 @@ void GridMapVisual::computeVisualization(float alpha, bool showGridLines, bool f
                                : (vertices[2] - vertices[1]).crossProduct(vertices[1] - vertices[0]);
         normal.normalise();
         // Create one or two triangles from the vertices depending on how many vertices we have.
-        for (size_t m = 1; m < vertices.size() - 1; m++) {
-          manualObject_->position(vertices[m-1]);
-          manualObject_->normal(normal);
-          Ogre::ColourValue color = flatColor ? meshColor : colors[m-1];
-          manualObject_->colour(color.r, color.g, color.b, alpha);
+        if (!noColor) {
+          for (size_t m = 1; m < vertices.size() - 1; m++) {
+            manualObject_->position(vertices[m-1]);
+            manualObject_->normal(normal);
+            Ogre::ColourValue color = flatColor ? meshColor : colors[m-1];
+            manualObject_->colour(color.r, color.g, color.b, alpha);
 
-          manualObject_->position(vertices[m]);
-          manualObject_->normal(normal);
-          color = flatColor ? meshColor : colors[m];
-          manualObject_->colour(color.r, color.g, color.b, alpha);
+            manualObject_->position(vertices[m]);
+            manualObject_->normal(normal);
+            color = flatColor ? meshColor : colors[m];
+            manualObject_->colour(color.r, color.g, color.b, alpha);
 
-          manualObject_->position(vertices[m+1]);
-          manualObject_->normal(normal);
-          color = flatColor ? meshColor : colors[m+1];
-          manualObject_->colour(color.r, color.g, color.b, alpha);
+            manualObject_->position(vertices[m+1]);
+            manualObject_->normal(normal);
+            color = flatColor ? meshColor : colors[m+1];
+            manualObject_->colour(color.r, color.g, color.b, alpha);
+          }
         }
 
         // plot grid lines

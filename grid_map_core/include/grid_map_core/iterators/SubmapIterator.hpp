@@ -12,7 +12,6 @@
 #include "grid_map_core/SubmapGeometry.hpp"
 #include "grid_map_core/BufferRegion.hpp"
 
-// Eigen
 #include <Eigen/Core>
 
 namespace grid_map {

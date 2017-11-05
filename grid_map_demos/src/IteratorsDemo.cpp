@@ -43,6 +43,7 @@ IteratorsDemo::IteratorsDemo(ros::NodeHandle& nodeHandle)
   demoSpiralIterator();
   demoLineIterator();
   demoPolygonIterator();
+  demoSlidingWindowIterator();
   demoFillIterator();
   demoSpiralGridIterator();
   demoNearestValidIterator();
@@ -178,10 +179,11 @@ void IteratorsDemo::demoLineIterator()
   duration.sleep();
 }
 
-void IteratorsDemo::demoPolygonIterator()
+void IteratorsDemo::demoPolygonIterator(const bool prepareForOtherDemos)
 {
   ROS_INFO("Running polygon iterator demo.");
   map_.clearAll();
+  if (prepareForOtherDemos) map_["type"].setZero();
   publish();
 
   grid_map::Polygon polygon;
@@ -205,6 +207,38 @@ void IteratorsDemo::demoPolygonIterator()
   for (grid_map::PolygonIterator iterator(map_, polygon);
       !iterator.isPastEnd(); ++iterator) {
     map_.at("type", *iterator) = 1.0;
+    if (!prepareForOtherDemos) {
+      publish();
+      ros::Duration duration(0.02);
+      duration.sleep();
+    }
+  }
+
+  if (!prepareForOtherDemos) {
+    ros::Duration duration(1.0);
+    duration.sleep();
+
+    grid_map::Polygon empty_polygon;
+    empty_polygon.setFrameId(map_.getFrameId());
+    geometry_msgs::PolygonStamped empty_message;
+    grid_map::PolygonRosConverter::toMessage(empty_polygon, empty_message);
+    polygonPublisher_.publish(empty_message);
+
+  }
+}
+
+void IteratorsDemo::demoSlidingWindowIterator()
+{
+  ROS_INFO("Running sliding window iterator demo.");
+  demoPolygonIterator(true);
+  publish();
+  const size_t windowSize = 3;
+  const grid_map::SlidingWindowIterator::EdgeHandling edgeHandling = grid_map::SlidingWindowIterator::EdgeHandling::CROP;
+  map_.add("copy", map_["type"]);
+
+  for (grid_map::SlidingWindowIterator iterator(map_, "copy", edgeHandling, windowSize);
+      !iterator.isPastEnd(); ++iterator) {
+    map_.at("type", *iterator) = iterator.getData().meanOfFinites(); // Blurring.
     publish();
     ros::Duration duration(0.02);
     duration.sleep();
@@ -212,14 +246,8 @@ void IteratorsDemo::demoPolygonIterator()
 
   ros::Duration duration(1.0);
   duration.sleep();
-
-  grid_map::Polygon empty_polygon;
-  empty_polygon.setFrameId(map_.getFrameId());
-  geometry_msgs::PolygonStamped empty_message;
-  grid_map::PolygonRosConverter::toMessage(empty_polygon, empty_message);
-  polygonPublisher_.publish(empty_message);
-
 }
+
 
 void IteratorsDemo::demoFillIterator()
 {
@@ -332,6 +360,7 @@ void IteratorsDemo::demoLineThickIterator()
   ros::Duration duration(1.0);
   duration.sleep();
 }
+
 
 void IteratorsDemo::publish()
 {

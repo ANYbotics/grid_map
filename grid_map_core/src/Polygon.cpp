@@ -180,6 +180,21 @@ bool Polygon::convertToInequalityConstraints(Eigen::MatrixXd& A, Eigen::VectorXd
   return true;
 }
 
+bool Polygon::thickenLine(const double thickness)
+{
+  if (vertices_.size() != 2) return false;
+  const Vector connection(vertices_[1] - vertices_[0]);
+  const Vector orthogonal = thickness * Vector(connection.y(), -connection.x()).normalized();
+  std::vector<Position> newVertices;
+  newVertices.reserve(4);
+  newVertices.push_back(vertices_[0] + orthogonal);
+  newVertices.push_back(vertices_[0] - orthogonal);
+  newVertices.push_back(vertices_[1] - orthogonal);
+  newVertices.push_back(vertices_[1] + orthogonal);
+  vertices_ = newVertices;
+  return true;
+}
+
 bool Polygon::offsetInward(const double margin)
 {
   // Create a list of indices of the neighbours of each vertex.
@@ -208,8 +223,11 @@ std::vector<Polygon> Polygon::triangulate(const TriangulationMethods& method) co
 {
   // TODO Add more triangulation methods.
   // https://en.wikipedia.org/wiki/Polygon_triangulation
-  size_t nPolygons = vertices_.size() - 2;
   std::vector<Polygon> polygons;
+  if (vertices_.size() < 3)
+    return polygons;
+
+  size_t nPolygons = vertices_.size() - 2;
   polygons.reserve(nPolygons);
 
   if (nPolygons < 1) {
