@@ -246,6 +246,13 @@ void IteratorsDemo::demoSlidingWindowIterator()
 
   ros::Duration duration(1.0);
   duration.sleep();
+
+  grid_map::Polygon empty_polygon;
+  empty_polygon.setFrameId(map_.getFrameId());
+  geometry_msgs::PolygonStamped empty_message;
+  grid_map::PolygonRosConverter::toMessage(empty_polygon, empty_message);
+  polygonPublisher_.publish(empty_message);
+
 }
 
 
