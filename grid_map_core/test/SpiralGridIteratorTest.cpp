@@ -133,3 +133,35 @@ TEST(SpiralGridIterator, PartialMapOverlap)
 
 }
 
+// Checks that the SpiralGridIterator does the correct iterations when starting outside the map.
+TEST(SpiralGridIterator, CenterOutsideMap)
+{
+  // Creates a 3x3 grid with a diagonal line splitting the grid.
+  GridMap map;
+  map.setGeometry(Length(2.0, 2.0), 1.0, Position(0.0, 0.0));
+  map.add("data", 0.0);
+
+  std::vector<grid_map::Index> traveled_set;
+
+  SpiralGridIterator iterator(map, grid_map::Index(2, 2), 8);
+
+  size_t iteration_count = 0;
+  for ( ; !iterator.isPastEnd(); ++iterator){
+    iteration_count++;
+    EXPECT_FALSE(iteration_count > 4) << "SpiralGridIterator is trying to iterate through more spaces than it should!";
+
+    EXPECT_FALSE( indexSetContains(traveled_set, *iterator) ) << "SpiralGridIterator revisited a space!";
+
+    traveled_set.push_back(*iterator);
+
+  }
+
+  EXPECT_EQ( iteration_count, 4 );
+
+  EXPECT_TRUE( indexSetContains(traveled_set, grid_map::Index(0,0) ) );
+  EXPECT_TRUE( indexSetContains(traveled_set, grid_map::Index(0,1) ) );
+  EXPECT_TRUE( indexSetContains(traveled_set, grid_map::Index(1,0) ) );
+  EXPECT_TRUE( indexSetContains(traveled_set, grid_map::Index(1,1) ) );
+
+}
+

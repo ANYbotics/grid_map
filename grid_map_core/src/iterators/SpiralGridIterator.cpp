@@ -33,6 +33,10 @@ SpiralGridIterator::SpiralGridIterator(const grid_map::GridMap& gridMap, const I
     maximum_radius_ = max_grid_radius;
   }
 
+  if (!checkIfIndexInRange(current_index_, grid_map_.getSize())){
+    operator++();
+  }
+
 }
 
 SpiralGridIterator& SpiralGridIterator::operator =(const SpiralGridIterator& other){
