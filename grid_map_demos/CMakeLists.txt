@@ -22,7 +22,7 @@ find_package(catkin REQUIRED COMPONENTS
   filters
 )
 
-find_package(OpenCV 3 REQUIRED)
+find_package(OpenCV REQUIRED)
 
 find_package(octomap REQUIRED)
 

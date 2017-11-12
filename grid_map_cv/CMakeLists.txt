@@ -10,7 +10,7 @@ find_package(catkin REQUIRED COMPONENTS
   filters
 )
 
-find_package(OpenCV 3 REQUIRED)
+find_package(OpenCV REQUIRED)
 
 ###################################
 ## catkin specific configuration ##
