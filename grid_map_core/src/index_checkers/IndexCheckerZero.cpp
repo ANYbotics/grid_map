@@ -5,8 +5,8 @@
  *      Author: Perry Franklin
  */
 
-#include "grid_map_core/IndexCheckerZero.hpp"
-#include <iostream>
+#include "grid_map_core/index_checkers/IndexCheckerZero.hpp"
+
 namespace grid_map {
 
 IndexCheckerZero::IndexCheckerZero(const GridMap& map, const std::string& layer):

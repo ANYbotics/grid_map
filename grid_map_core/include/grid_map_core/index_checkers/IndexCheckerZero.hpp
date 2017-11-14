@@ -1,13 +1,13 @@
 /*
- * IndexCheckerNonZero.hpp
+ * IndexCheckerZero.hpp
  *
- *  Created on: Oct 14, 2017
+ *  Created on: Oct 16, 2017
  *      Author: Perry Franklin
  */
 
 #pragma once
 
-#include "grid_map_core/IndexChecker.hpp"
+#include "grid_map_core/index_checkers/IndexChecker.hpp"
 
 namespace grid_map {
 
@@ -16,7 +16,7 @@ namespace grid_map {
  * It checks if an index in a layer of a GridMap is not zero
  * (ie it returns true if the value is nonzero).
  */
-class IndexCheckerNonZero : public IndexChecker {
+class IndexCheckerZero : public IndexChecker {
 
 public:
 
@@ -25,10 +25,10 @@ public:
    * @param gridMap the GridMap to query.
    * @param layer the layer of the GridMap to check.
    */
-  IndexCheckerNonZero(const GridMap& map, const std::string& layer);
+  IndexCheckerZero(const GridMap& map, const std::string& layer);
 
   /*!
-   * Checks if GridMap at index is nonzero.
+   * Checks if GridMap at index is zero.
    * @param index the index to check.
    */
   bool check(const Index& index) const override;

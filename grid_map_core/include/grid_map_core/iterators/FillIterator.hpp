@@ -8,7 +8,7 @@
 #pragma once
 
 #include "grid_map_core/GridMap.hpp"
-#include "grid_map_core/IndexChecker.hpp"
+#include "grid_map_core/index_checkers/IndexChecker.hpp"
 
 // vector
 #include <memory>

@@ -6,7 +6,7 @@
  */
 
 
-#include "grid_map_core/IndexCheckerAnd.hpp"
+#include "grid_map_core/index_checkers/IndexCheckerAnd.hpp"
 
 namespace grid_map {
 

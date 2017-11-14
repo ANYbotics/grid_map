@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include <grid_map_core/IndexChecker.hpp>
+#include <grid_map_core/index_checkers/IndexChecker.hpp>
 
 namespace grid_map{
 

@@ -10,7 +10,7 @@
 #include "grid_map_core/GridMap.hpp"
 
 #include "grid_map_core/iterators/SpiralGridIterator.hpp"
-#include "grid_map_core/IndexChecker.hpp"
+#include "grid_map_core/index_checkers/IndexChecker.hpp"
 
 #include <queue>
 #include <memory>

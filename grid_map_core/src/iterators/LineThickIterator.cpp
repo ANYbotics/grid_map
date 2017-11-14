@@ -9,8 +9,8 @@
 #include "grid_map_core/iterators/LineThickIterator.hpp"
 
 #include "grid_map_core/iterators/SubmapIterator.hpp"
-#include "grid_map_core/IndexCheckerAnd.hpp"
-#include "grid_map_core/IndexCheckerHalfSpace.hpp"
+#include "grid_map_core/index_checkers/IndexCheckerAnd.hpp"
+#include "grid_map_core/index_checkers/IndexCheckerHalfSpace.hpp"
 
 #include "grid_map_core/GridMapMath.hpp"
 

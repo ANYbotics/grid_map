@@ -5,8 +5,8 @@
  *      Author: Perry Franklin
  */
 
-#include "grid_map_core/IndexCheckerNan.hpp"
-#include <iostream>
+#include "grid_map_core/index_checkers/IndexCheckerNan.hpp"
+
 namespace grid_map {
 
 IndexCheckerNan::IndexCheckerNan(const GridMap& map, const std::string& layer):

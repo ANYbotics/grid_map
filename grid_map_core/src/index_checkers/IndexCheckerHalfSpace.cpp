@@ -5,7 +5,7 @@
  *      Author: Perry Franklin
  */
 
-#include "grid_map_core/IndexCheckerHalfSpace.hpp"
+#include "grid_map_core/index_checkers/IndexCheckerHalfSpace.hpp"
 
 namespace grid_map {
 

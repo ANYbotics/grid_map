@@ -59,11 +59,11 @@ add_library(${PROJECT_NAME}
    src/SubmapGeometry.cpp
    src/BufferRegion.cpp
    src/Polygon.cpp
-   src/IndexCheckerAnd.cpp
-   src/IndexCheckerHalfSpace.cpp
-   src/IndexCheckerNan.cpp
-   src/IndexCheckerNonZero.cpp
-   src/IndexCheckerZero.cpp
+   src/index_checkers/IndexCheckerAnd.cpp
+   src/index_checkers/IndexCheckerHalfSpace.cpp
+   src/index_checkers/IndexCheckerNan.cpp
+   src/index_checkers/IndexCheckerNonZero.cpp
+   src/index_checkers/IndexCheckerZero.cpp
    src/iterators/GridMapIterator.cpp
    src/iterators/SubmapIterator.cpp
    src/iterators/CircleIterator.cpp
