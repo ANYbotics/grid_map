@@ -8,7 +8,7 @@
 
 #include "grid_map_core/iterators/NearestValidIterator.hpp"
 #include "grid_map_core/GridMap.hpp"
-#include "grid_map_core/IndexCheckerZero.hpp"
+#include "grid_map_core/index_checkers/IndexCheckerZero.hpp"
 
 // Eigen
 #include <Eigen/Core>

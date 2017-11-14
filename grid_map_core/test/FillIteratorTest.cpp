@@ -7,8 +7,8 @@
 
 #include "grid_map_core/iterators/FillIterator.hpp"
 #include "grid_map_core/GridMap.hpp"
-#include "grid_map_core/IndexCheckerZero.hpp"
-#include "grid_map_core/IndexCheckerNonZero.hpp"
+#include "grid_map_core/index_checkers/IndexCheckerZero.hpp"
+#include "grid_map_core/index_checkers/IndexCheckerNonZero.hpp"
 
 // Eigen
 #include <Eigen/Core>
