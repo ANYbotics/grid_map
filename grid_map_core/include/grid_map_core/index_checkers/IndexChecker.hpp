@@ -9,6 +9,8 @@
 
 #include "grid_map_core/GridMap.hpp"
 
+#include <memory>
+
 namespace grid_map{
 
 /*!
@@ -42,7 +44,7 @@ public:
    * Note that the new IndexChecker is allocated on the heap,
    * and so will need to be deleted.
    */
-  virtual IndexChecker* clone() const = 0;
+  virtual std::unique_ptr<IndexChecker> clone() const = 0;
 
 protected:
 

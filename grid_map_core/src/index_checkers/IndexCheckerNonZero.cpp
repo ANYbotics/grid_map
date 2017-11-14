@@ -17,8 +17,8 @@ bool IndexCheckerNonZero::check(const Index& index) const{
   return (map_.at(layer_, index) != 0.0);
 }
 
-IndexChecker* IndexCheckerNonZero::clone() const{
-  return (new IndexCheckerNonZero(map_, layer_));
+std::unique_ptr<IndexChecker> IndexCheckerNonZero::clone() const{
+  return std::unique_ptr<IndexChecker>(new IndexCheckerNonZero(map_, layer_));
 }
 
 }  // namespace grid_map

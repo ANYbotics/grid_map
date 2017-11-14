@@ -24,7 +24,6 @@ NearestValidIterator::NearestValidIterator(const grid_map::GridMap& gridMap, con
 }
 
 NearestValidIterator::~NearestValidIterator(){
-  delete index_checker_;
 }
 
 const Index& NearestValidIterator::operator*() const{

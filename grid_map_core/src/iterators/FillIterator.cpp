@@ -60,7 +60,6 @@ FillIterator::FillIterator(const GridMap& grid_map, const Index& start_index, co
 }
 
 FillIterator::~FillIterator(){
-  delete index_checker_;
 }
 
 FillIterator& FillIterator::operator =(const FillIterator& other)

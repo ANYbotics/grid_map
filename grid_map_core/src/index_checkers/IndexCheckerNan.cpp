@@ -17,8 +17,8 @@ bool IndexCheckerNan::check(const Index& index) const{
   return std::isnan(map_.at(layer_, index));
 }
 
-IndexChecker* IndexCheckerNan::clone() const{
-  return (new IndexCheckerNan(map_, layer_));
+std::unique_ptr<IndexChecker> IndexCheckerNan::clone() const{
+  return std::unique_ptr<IndexChecker>(new IndexCheckerNan(map_, layer_));
 }
 
 }  // namespace grid_map

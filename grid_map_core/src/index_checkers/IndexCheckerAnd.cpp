@@ -14,13 +14,10 @@ IndexCheckerAnd::IndexCheckerAnd(const GridMap& map):
     IndexChecker(map){}
 
 IndexCheckerAnd::~IndexCheckerAnd(){
-  for (IndexChecker* element: checks_){
-    delete element;
-  }
 }
 
 bool IndexCheckerAnd::check(const Index& index) const{
-  for (IndexChecker* cur_checker: checks_){
+  for (const std::unique_ptr<IndexChecker>& cur_checker: checks_){
     if (!cur_checker->check(index)){
       return false;
     }
@@ -29,13 +26,13 @@ bool IndexCheckerAnd::check(const Index& index) const{
 }
 
 void IndexCheckerAnd::addChecker(const IndexChecker& checker){
-  checks_.push_back(checker.clone());
+  checks_.emplace_back(checker.clone());
 }
 
-IndexChecker* IndexCheckerAnd::clone() const{
-  IndexCheckerAnd* to_return = new IndexCheckerAnd(map_);
+std::unique_ptr<IndexChecker> IndexCheckerAnd::clone() const{
+  std::unique_ptr<IndexCheckerAnd> to_return(new IndexCheckerAnd(map_));
 
-  for (IndexChecker* element: checks_){
+  for (const std::unique_ptr<IndexChecker>& element: checks_){
     to_return->addChecker(*element);
   }
 

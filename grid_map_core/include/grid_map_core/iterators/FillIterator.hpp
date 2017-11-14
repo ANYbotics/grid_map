@@ -108,7 +108,7 @@ private:
 
   Index current_index_;
 
-  const IndexChecker* index_checker_;
+  std::unique_ptr<IndexChecker> index_checker_;
 
   void tryToAddToQueue(const Index& index);
 

@@ -94,7 +94,7 @@ private:
 
   std::unique_ptr<SpiralGridIterator> spiral_grid_iterator_;
 
-  const IndexChecker* index_checker_;
+  const std::unique_ptr<IndexChecker> index_checker_;
 
   const grid_map::GridMap& grid_map_;
 

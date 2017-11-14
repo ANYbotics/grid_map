@@ -53,7 +53,7 @@ public:
    * Note that the new IndexChecker is allocated on the heap,
    * and so will need to be deleted.
    */
-  IndexChecker* clone() const override;
+  std::unique_ptr<IndexChecker> clone() const override;
 
 private:
 

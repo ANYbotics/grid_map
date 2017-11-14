@@ -75,8 +75,8 @@ bool IndexCheckerHalfSpace::check(const Index& index) const{
   return normal_.dot(center_of_index+cell_corner_offset_) < offset_;
 }
 
-IndexChecker* IndexCheckerHalfSpace::clone() const{
-  return (new IndexCheckerHalfSpace(map_, normal_, offset_));
+std::unique_ptr<IndexChecker> IndexCheckerHalfSpace::clone() const{
+  return std::unique_ptr<IndexChecker>(new IndexCheckerHalfSpace(map_, normal_, offset_));
 }
 
 }  // namespace grid_map

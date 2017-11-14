@@ -32,7 +32,7 @@ public:
    */
   bool check(const Index& index) const override;
 
-  IndexChecker* clone() const override;
+  std::unique_ptr<IndexChecker> clone() const override;
 
 private:
 
