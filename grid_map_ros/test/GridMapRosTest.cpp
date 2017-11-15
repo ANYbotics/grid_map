@@ -84,6 +84,14 @@ TEST(RosbagHandling, saveLoad)
 
 TEST(RosbagHandling, saveLoadWithTime)
 {
+
+  std::cerr<<"Trying to print"<<std::endl;
+
+  if (!ros::Time::isValid()) ros::Time::init();
+  // TODO Do other time than now.
+
+  std::cerr<<"After the init check"<<std::endl;
+
   string layer = "layer";
   string pathToBag = "test.bag";
   string topic = "topic";
@@ -99,12 +107,15 @@ TEST(RosbagHandling, saveLoadWithTime)
 
   EXPECT_FALSE(gridMapOut.exists(layer));
 
-  if (!ros::Time::isValid()) ros::Time::init();
-  // TODO Do other time than now.
+  std::cerr<<"Trying to set time"<<std::endl;
+
   gridMapIn.setTimestamp(ros::Time::now().toNSec());
 
+  std::cerr<<"Trying some tests"<<std::endl;
   EXPECT_TRUE(GridMapRosConverter::saveToBag(gridMapIn, pathToBag, topic));
   EXPECT_TRUE(GridMapRosConverter::loadFromBag(pathToBag, topic, gridMapOut));
+
+  std::cerr<<"Did some of those tests"<<std::endl;
 
   EXPECT_TRUE(gridMapOut.exists(layer));
 
