@@ -113,6 +113,7 @@ TEST(RosbagHandling, saveLoadWithTime)
 
   std::cerr<<"Trying some tests"<<std::endl;
   EXPECT_TRUE(GridMapRosConverter::saveToBag(gridMapIn, pathToBag, topic));
+  std::cerr<<"Tried the first some tests"<<std::endl;
   EXPECT_TRUE(GridMapRosConverter::loadFromBag(pathToBag, topic, gridMapOut));
 
   std::cerr<<"Did some of those tests"<<std::endl;
