@@ -109,7 +109,12 @@ TEST(RosbagHandling, saveLoadWithTime)
 
   std::cerr<<"Trying to set time"<<std::endl;
 
+  std::cerr<<"time now is "<<ros::Time::now()<<std::endl;
+  std::cerr<<"time.toNSec now is "<<ros::Time::now().toNSec()<<std::endl;
+
   gridMapIn.setTimestamp(ros::Time::now().toNSec());
+
+  std::cerr<<"time.toNSec now is "<<ros::Time::now().toNSec()<<std::endl;
 
   std::cerr<<"Trying some tests"<<std::endl;
   EXPECT_TRUE(GridMapRosConverter::saveToBag(gridMapIn, pathToBag, topic));
@@ -119,6 +124,12 @@ TEST(RosbagHandling, saveLoadWithTime)
   std::cerr<<"Did some of those tests"<<std::endl;
 
   EXPECT_TRUE(gridMapOut.exists(layer));
+
+  std::cerr<<"Time in gridMapIn "<<gridMapIn.getTimestamp()<<std::endl;
+  std::cerr<<"Time in gridMapOut "<<gridMapOut.getTimestamp()<<std::endl;
+
+
+  EXPECT_EQ(gridMapIn.getTimestamp(), gridMapOut.getTimestamp());
 
   for (GridMapIterator iterator(gridMapIn); !iterator.isPastEnd(); ++iterator) {
     EXPECT_DOUBLE_EQ(gridMapIn.at(layer, *iterator), gridMapOut.at(layer, *iterator));

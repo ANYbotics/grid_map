@@ -522,6 +522,7 @@ bool GridMap::extendToInclude(const GridMap& other)
 
 void GridMap::setTimestamp(const Time timestamp)
 {
+  std::cout<<"Time in setTimestamp "<<timestamp <<std::endl;
   timestamp_ = timestamp;
 }
 
