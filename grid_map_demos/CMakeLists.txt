@@ -22,6 +22,10 @@ find_package(catkin REQUIRED COMPONENTS
   filters
 )
 
+find_package(OpenCV REQUIRED
+  COMPONENTS
+  opencv_highgui)
+
 find_package(octomap REQUIRED)
 
 ###################################
@@ -148,6 +152,7 @@ target_link_libraries(
 target_link_libraries(
   opencv_demo
   ${catkin_LIBRARIES}
+  ${OpenCV_LIBRARIES}
 )
 
 target_link_libraries(

@@ -444,12 +444,18 @@ bool GridMapRosConverter::saveToBag(const grid_map::GridMap& gridMap, const std:
 {
   grid_map_msgs::GridMap message;
   toMessage(gridMap, message);
-  ros::Time time(gridMap.getTimestamp());
+  std::cerr<<"The number in gridMap is..."<<gridMap.getTimestamp()<<std::endl;
+  ros::Time time;
+  time.fromNSec(gridMap.getTimestamp());
+  std::cerr<<"Time is "<<time.toNSec()<<std::endl;
 
   if (!time.isValid() || time.isZero()) {
     if (!ros::Time::isValid()) ros::Time::init();
     time = ros::Time::now();
+    std::cerr<<"Time corrected is "<<time.toNSec()<<std::endl;
   }
+
+  std::cerr<<"Time is "<<time.toNSec()<<std::endl;
 
   rosbag::Bag bag;
   bag.open(pathToBag, rosbag::bagmode::Write);
