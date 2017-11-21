@@ -30,13 +30,13 @@ void IndexCheckerAnd::addChecker(const IndexChecker& checker){
 }
 
 std::unique_ptr<IndexChecker> IndexCheckerAnd::clone() const{
-  std::unique_ptr<IndexCheckerAnd> to_return(new IndexCheckerAnd(map_));
+  IndexCheckerAnd* to_return = new IndexCheckerAnd(map_);
 
   for (const std::unique_ptr<IndexChecker>& element: checks_){
     to_return->addChecker(*element);
   }
 
-  return to_return;
+  return std::unique_ptr<IndexChecker>(to_return);
 }
 
 }  // namespace grid_map

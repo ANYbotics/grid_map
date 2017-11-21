@@ -8,8 +8,8 @@
 
 #include "grid_map_demos/IteratorsDemo.hpp"
 
-#include <grid_map_core/IndexCheckerNan.hpp>
-#include <grid_map_core/IndexCheckerZero.hpp>
+#include <grid_map_core/index_checkers/IndexCheckerNan.hpp>
+#include <grid_map_core/index_checkers/IndexCheckerZero.hpp>
 
 // ROS
 #include <geometry_msgs/PolygonStamped.h>
