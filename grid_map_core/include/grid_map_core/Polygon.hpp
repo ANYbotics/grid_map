@@ -84,7 +84,7 @@ class Polygon
    * Returns the number of vertices.
    * @return the number of vertices.
    */
-  const size_t nVertices() const;
+  size_t nVertices() const;
 
   /*!
    * Set the timestamp of the polygon.
@@ -120,7 +120,7 @@ class Polygon
    * "simple", i.e. not crossing itself.
    * @return area of the polygon.
    */
-  const double getArea() const;
+  double getArea() const;
 
   /*!
    * Get the centroid of polygon. The polygon has to be
