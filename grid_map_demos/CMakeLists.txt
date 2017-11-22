@@ -24,7 +24,9 @@ find_package(catkin REQUIRED COMPONENTS
 
 find_package(OpenCV REQUIRED
   COMPONENTS
-  opencv_highgui)
+  opencv_highgui
+  CONFIG
+)
 
 find_package(octomap REQUIRED)
 
