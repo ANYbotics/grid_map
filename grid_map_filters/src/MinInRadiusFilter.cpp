@@ -70,7 +70,7 @@ bool MinInRadiusFilter<T>::update(const T& mapIn, T& mapOut)
     if (!mapOut.isValid(*iterator, inputLayer_))
       continue;
     value = mapOut.at(inputLayer_, *iterator);
-    double valueMin;
+    double valueMin{0};
 
     // Requested position (center) of circle in map.
     Eigen::Vector2d center;
