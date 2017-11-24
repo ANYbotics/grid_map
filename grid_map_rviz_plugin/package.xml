@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>grid_map_rviz_plugin</name>
-  <version>1.5.2</version>
+  <version>1.6.0</version>
   <description>RViz plugin for displaying grid map messages.</description>
   <maintainer email="pfankhauser@ethz.ch">Péter Fankhauser</maintainer>
   <license>BSD</license>

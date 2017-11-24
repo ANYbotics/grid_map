@@ -2,8 +2,8 @@
 Changelog for package grid_map_ros
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.6.0 (2017-11-24)
+------------------
 * Fixed the constructor for the ros::Time in saveToBag to correctly use fromNSec.
 * Fixed cpp-check warnings and errors.
 * Removed dependency of grid_map_ros on grid_map_costmap_2d.

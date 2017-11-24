@@ -2,8 +2,8 @@
 Changelog for package grid_map_cv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.6.0 (2017-11-24)
+------------------
 * Fixed compatibility issue with OpenCV 3 (`#140 <https://github.com/ethz-asl/grid_map/issues/140>`_).
 * Makes the OpenCV include a bit more specific and adds in a dependency into the catkin_package call.
 * Moved inpaint filter to grid_map_cv, extended filter demo, cleanups.

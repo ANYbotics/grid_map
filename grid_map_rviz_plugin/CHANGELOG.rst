@@ -2,8 +2,8 @@
 Changelog for package grid_map_rviz_plugin
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.6.0 (2017-11-24)
+------------------
 * Added option to rviz plugin to hide color faces.
 * Fixed bug for RViz plugin.
 * Fixing cpp-check warnings and errors.

@@ -2,8 +2,8 @@
 Changelog for package grid_map_sdf
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.6.0 (2017-11-24)
+------------------
 * Release of new implementation to convert grid maps to signed distance fields.
 * Contributors: Takahiro Miki, Péter Fankhauser
 

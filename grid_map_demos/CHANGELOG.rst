@@ -2,8 +2,8 @@
 Changelog for package grid_map_demos
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.6.0 (2017-11-24)
+------------------
 * Fixed compatibility issue with OpenCV 3 (`#140 <https://github.com/ethz-asl/grid_map/issues/140>`_).
 * Fixing cpp-check warnings and errors.
 * Fixed dependencies for grid_map_demos.

@@ -2,8 +2,8 @@
 Changelog for package grid_map_filters
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.6.0 (2017-11-24)
+------------------
 * Implemented a set of new filters:
 * Math expression filter based on EigenLab
 * Sliding window math expression filter

@@ -2,8 +2,8 @@
 Changelog for package grid_map_core
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.6.0 (2017-11-24)
+------------------
 * Added new sliding window iterator.
 * Added new `thickenLine()`, triangulation, and bounding box method to polygon.
 * Added unit tests for LineIterator with using move function.
