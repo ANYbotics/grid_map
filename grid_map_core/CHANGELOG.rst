@@ -2,6 +2,16 @@
 Changelog for package grid_map_core
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Added new sliding window iterator.
+* Added new `thickenLine()`, triangulation, and bounding box method to polygon.
+* Added unit tests for LineIterator with using move function.
+* Fixed cpp-check warnings and errors.
+* Fixed line iterator for moved maps (`#119 <https://github.com/ethz-asl/grid_map/issues/119>`_).
+* Fixed error in SpiralIterator when center is outside the map (`#114 <https://github.com/ethz-asl/grid_map/issues/114>`_).
+* Contributors: Péter Fankhauser, 2scholz, Remo Diethelm, Takahiro Miki, Tanja Baumann
+
 1.5.2 (2017-07-25)
 ------------------
 

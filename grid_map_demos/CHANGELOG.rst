@@ -2,6 +2,15 @@
 Changelog for package grid_map_demos
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fixed compatibility issue with OpenCV 3 (`#140 <https://github.com/ethz-asl/grid_map/issues/140>`_).
+* Fixing cpp-check warnings and errors.
+* Fixed dependencies for grid_map_demos.
+* Updated terrain for filters demo.
+* Updated filter demo chain.
+* Contributors: Perry Franklin, Péter Fankhauser
+
 1.5.2 (2017-07-25)
 ------------------
 

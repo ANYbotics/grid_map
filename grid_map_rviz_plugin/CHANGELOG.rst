@@ -2,6 +2,13 @@
 Changelog for package grid_map_rviz_plugin
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Added option to rviz plugin to hide color faces.
+* Fixed bug for RViz plugin.
+* Fixing cpp-check warnings and errors.
+* Contributors: Péter Fankhauser
+
 1.5.2 (2017-07-25)
 ------------------
 * Fixes error in grid_map_rviz_plugin when rendering lines.
