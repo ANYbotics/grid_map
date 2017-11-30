@@ -124,6 +124,9 @@ private:
   Size bufferSize_;
   Index bufferStartIndex_;
 
+  Position pStart_; ///< Line origin
+  Position nInv_;   ///< Element-wise inverse of line direction
+
  public:
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
