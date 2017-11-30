@@ -70,6 +70,12 @@ public:
    */
   bool isPastEnd() const;
 
+  /*!
+   * Compute the line length within the current cell
+   * @return Length of line within the cell
+   */
+  double length() const;
+
 private:
 
 
