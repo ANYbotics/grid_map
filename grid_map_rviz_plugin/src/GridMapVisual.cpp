@@ -53,14 +53,11 @@ void GridMapVisual::setMessage(const grid_map_msgs::GridMap::ConstPtr& msg)
   haveMap_ = true;
 }
 
-void GridMapVisual::computeVisualization(float alpha, bool showGridLines, bool flatTerrain,
-                                         std::string heightLayer, bool flatColor,
-                                         Ogre::ColourValue meshColor, 
-					 bool mapLayerColor, std::string colorLayer,
-                                         bool useRainbow, bool invertRainbow, 
-					 Ogre::ColourValue minColor, Ogre::ColourValue maxColor, 
-					 bool autocomputeIntensity,
-                                         float minIntensity, float maxIntensity)
+void GridMapVisual::computeVisualization(float alpha, bool showGridLines, bool flatTerrain, std::string heightLayer,
+                                         bool flatColor, bool noColor, Ogre::ColourValue meshColor, bool mapLayerColor,
+                                         std::string colorLayer, bool useRainbow, bool invertRainbow,
+                                         Ogre::ColourValue minColor, Ogre::ColourValue maxColor,
+                                         bool autocomputeIntensity, float minIntensity, float maxIntensity)
 {
   if (!haveMap_) {
     ROS_DEBUG("Unable to visualize grid map, no map data. Use setMessage() first!");
@@ -73,7 +70,7 @@ void GridMapVisual::computeVisualization(float alpha, bool showGridLines, bool f
     ROS_DEBUG("Unable to visualize grid map, map must contain at least one layer.");
     return;
   }
-  if ((!flatTerrain && !map_.exists(heightLayer)) || (!flatColor && !map_.exists(colorLayer))) {
+  if ((!flatTerrain && !map_.exists(heightLayer)) || (!noColor && !flatColor && !map_.exists(colorLayer))) {
     ROS_DEBUG("Unable to visualize grid map, requested layer(s) not available.");
     return;
   }
@@ -81,14 +78,14 @@ void GridMapVisual::computeVisualization(float alpha, bool showGridLines, bool f
   // Convert to simple format, makes things easier.
   map_.convertToDefaultStartIndex();
 
-  // basic grid map data
-  size_t rows = map_.getSize()(0);
-  size_t cols = map_.getSize()(1);
+  // Basic grid map data.
+  const size_t rows = map_.getSize()(0);
+  const size_t cols = map_.getSize()(1);
   if (rows < 2 || cols < 2) {
     ROS_DEBUG("GridMap has not enough cells.");
     return;
   }
-  double resolution = map_.getResolution();
+  const double resolution = map_.getResolution();
   const grid_map::Matrix& heightData = map_[flatTerrain ? layerNames[0] : heightLayer];
   const grid_map::Matrix& colorData = map_[flatColor ? layerNames[0] : colorLayer];
 
@@ -118,10 +115,10 @@ void GridMapVisual::computeVisualization(float alpha, bool showGridLines, bool f
     meshLines_->setColor(0.0, 0.0, 0.0, alpha);
     meshLines_->setLineWidth(resolution / 10.0);
     meshLines_->setMaxPointsPerLine(2);
-    size_t nLines = rows * (cols - 1) + cols * (rows - 1);
+    // In the algorithm below, we have to account for max. 4 lines per cell.
+    size_t nLines = 2 * (rows * (cols - 1) + cols * (rows - 1));
     meshLines_->setNumLines(nLines);
   }
-  bool plottedFirstLine = false;
 
   // Determine max and min intensity.
   if (autocomputeIntensity && !flatColor && !mapLayerColor) {
@@ -134,88 +131,84 @@ void GridMapVisual::computeVisualization(float alpha, bool showGridLines, bool f
   // Plot mesh.
   for (size_t i = 0; i < rows - 1; ++i) {
     for (size_t j = 0; j < cols - 1; ++j) {
-      bool left_valid = true;
-      bool right_valid = true;
       std::vector<Ogre::Vector3> vertices;
       std::vector<Ogre::ColourValue> colors;
       for (size_t k = 0; k < 2; k++) {
         for (size_t l = 0; l < 2; l++) {
           grid_map::Position position;
           grid_map::Index index(i + k, j + l);
+          if (!map_.isValid(index)) continue;
+
           map_.getPosition(index, position);
           float height = heightData(index(0), index(1));
-          if (!map_.isValid(index)) {
-            if ((k + l) <= 1) left_valid = false;
-            if ((k + l) >= 1) right_valid = false;
-            vertices.push_back(Ogre::Vector3());
-            colors.push_back(Ogre::ColourValue());
-          } else {
-            vertices.push_back(
-                Ogre::Vector3(position(0), position(1), flatTerrain ? 0.0 : height));
-            if (!flatColor) {
-              float color = colorData(index(0), index(1));
-              Ogre::ColourValue colorValue;
-              if (mapLayerColor) {
-                Eigen::Vector3f colorVectorRGB;
-                grid_map::colorValueToVector(color, colorVectorRGB);
-                colorValue = Ogre::ColourValue(colorVectorRGB(0), colorVectorRGB(1), colorVectorRGB(2));
-              } else {
-                normalizeIntensity(color, minIntensity, maxIntensity);
-                colorValue =
-                    useRainbow ? (invertRainbow ?  getRainbowColor(1.0 - color) : getRainbowColor(color)) :
-                      getInterpolatedColor(color, minColor, maxColor);
-              }
-              colors.push_back(colorValue);
+          vertices.push_back(Ogre::Vector3(position(0), position(1), flatTerrain ? 0.0 : height));
+          if (!flatColor) {
+            float color = colorData(index(0), index(1));
+            Ogre::ColourValue colorValue;
+            if (mapLayerColor) {
+              Eigen::Vector3f colorVectorRGB;
+              grid_map::colorValueToVector(color, colorVectorRGB);
+              colorValue = Ogre::ColourValue(colorVectorRGB(0), colorVectorRGB(1), colorVectorRGB(2));
+            } else {
+              normalizeIntensity(color, minIntensity, maxIntensity);
+              colorValue = useRainbow ? (invertRainbow ? getRainbowColor(1.0f - color)
+                                                       : getRainbowColor(color))
+                                      : getInterpolatedColor(color, minColor, maxColor);
             }
+            colors.push_back(colorValue);
           }
         }
       }
-      // upper left triangle
-      if (left_valid) {
-        Ogre::Vector3 normal1 = (vertices[1] - vertices[0]).crossProduct(vertices[2] - vertices[0]);
-        normal1.normalise();
-        for (size_t m = 0; m < 3; m++) {
-          manualObject_->position(vertices[m]);
-          manualObject_->normal(normal1);
-          Ogre::ColourValue color = flatColor ? meshColor : colors[m];
-          manualObject_->colour(color.r, color.g, color.b, alpha);
+
+      // Plot triangles if we have enough vertices.
+      if (vertices.size() > 2) {
+        Ogre::Vector3 normal = vertices.size() == 4
+                               ? (vertices[3] - vertices[0]).crossProduct(vertices[2] -vertices[1])
+                               : (vertices[2] - vertices[1]).crossProduct(vertices[1] - vertices[0]);
+        normal.normalise();
+        // Create one or two triangles from the vertices depending on how many vertices we have.
+        if (!noColor) {
+          for (size_t m = 1; m < vertices.size() - 1; m++) {
+            manualObject_->position(vertices[m-1]);
+            manualObject_->normal(normal);
+            Ogre::ColourValue color = flatColor ? meshColor : colors[m-1];
+            manualObject_->colour(color.r, color.g, color.b, alpha);
+
+            manualObject_->position(vertices[m]);
+            manualObject_->normal(normal);
+            color = flatColor ? meshColor : colors[m];
+            manualObject_->colour(color.r, color.g, color.b, alpha);
+
+            manualObject_->position(vertices[m+1]);
+            manualObject_->normal(normal);
+            color = flatColor ? meshColor : colors[m+1];
+            manualObject_->colour(color.r, color.g, color.b, alpha);
+          }
         }
-      }
-      // lower right triangle
-      if (right_valid) {
-        Ogre::Vector3 normal2 = (vertices[2] - vertices[1]).crossProduct(vertices[3] - vertices[1]);
-        normal2.normalise();
-        for (size_t m = 1; m < 4; m++) {
-          manualObject_->position(vertices[m]);
-          manualObject_->normal(normal2);
-          Ogre::ColourValue color = flatColor ? meshColor : colors[m];
-          manualObject_->colour(color.r, color.g, color.b, alpha);
-        }
-      }
-      // plot grid lines
-      if (showGridLines) {
-        if (left_valid) {
-          // right line
-          if (plottedFirstLine) meshLines_->newLine();
+
+        // plot grid lines
+        if (showGridLines) {
           meshLines_->addPoint(vertices[0]);
           meshLines_->addPoint(vertices[1]);
-          plottedFirstLine = true;
-          // down line
           meshLines_->newLine();
+
+          if (vertices.size() == 3) {
+            meshLines_->addPoint(vertices[1]);
+            meshLines_->addPoint(vertices[2]);
+            meshLines_->newLine();
+          } else {
+            meshLines_->addPoint(vertices[1]);
+            meshLines_->addPoint(vertices[3]);
+            meshLines_->newLine();
+
+            meshLines_->addPoint(vertices[3]);
+            meshLines_->addPoint(vertices[2]);
+            meshLines_->newLine();
+          }
+
+          meshLines_->addPoint(vertices[2]);
           meshLines_->addPoint(vertices[0]);
-          meshLines_->addPoint(vertices[2]);
-        }
-        if (i == rows - 2 && right_valid) {
-          if (plottedFirstLine) meshLines_->newLine();
-          meshLines_->addPoint(vertices[2]);
-          meshLines_->addPoint(vertices[3]);
-          plottedFirstLine = true;
-        }
-        if (j == cols - 2 && right_valid) {
-          if (plottedFirstLine) meshLines_->newLine();
-          meshLines_->addPoint(vertices[1]);
-          meshLines_->addPoint(vertices[3]);
-          plottedFirstLine = true;
+          meshLines_->newLine();
         }
       }
     }

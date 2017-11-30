@@ -215,7 +215,7 @@ class GridMapCvConverter
     // Clamp outliers.
     grid_map::GridMap map = gridMap;
     map.get(layer) = map.get(layer).unaryExpr(grid_map::Clamp<float>(lowerValue, upperValue));
-    const grid_map::Matrix& data = gridMap[layer];
+    const grid_map::Matrix& data = map[layer];
 
     // Convert to image.
     bool isColor = false;

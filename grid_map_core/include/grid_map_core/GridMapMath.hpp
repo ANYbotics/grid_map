@@ -108,33 +108,50 @@ bool getPositionShiftFromIndexShift(Vector& positionShift,
  * @param[in] bufferSize the size of the buffer.
  * @return true if index is within, and false if index is outside of the buffer.
  */
-bool checkIfIndexWithinRange(const Index& index, const Size& bufferSize);
+bool checkIfIndexInRange(const Index& index, const Size& bufferSize);
 
 /*!
- * Maps an index that runs out of the range of the circular buffer back into allowed the region.
- * This is the 2d version of mapIndexWithinRange(int&, const int&).
- * @param[in/out] index the indeces that will be mapped into the valid region of the buffer.
+ * Bounds an index that runs out of the range of the buffer.
+ * This means that an index that overflows is stopped at the last valid index.
+ * This is the 2d version of boundIndexToRange(int&, const int&).
+ * @param[in/out] index the indeces that will be bounded to the valid region of the buffer.
  * @param[in] bufferSize the size of the buffer.
  */
-void mapIndexWithinRange(Index& index,
-                         const Size& bufferSize);
+void boundIndexToRange(Index& index, const Size& bufferSize);
 
 /*!
- * Maps an index that runs out of the range of the circular buffer back into allowed the region.
- * @param[in/out] index the index that will be mapped into the valid region of the buffer.
+ * Bounds an index that runs out of the range of the buffer.
+ * This means that an index that overflows is stopped at the last valid index.
+ * @param[in/out] index the index that will be bounded to the valid region of the buffer.
  * @param[in] bufferSize the size of the buffer.
  */
-void mapIndexWithinRange(int& index, const int& bufferSize);
+void boundIndexToRange(int& index, const int& bufferSize);
 
 /*!
- * Limits (cuts off) the position to lie inside the map.
- * @param[in/out] position the position to be limited.
+ * Wraps an index that runs out of the range of the buffer back into allowed the region.
+ * This means that an index that overflows is reset to zero.
+ * This is the 2d version of wrapIndexToRange(int&, const int&).
+ * @param[in/out] index the indeces that will be wrapped into the valid region of the buffer.
+ * @param[in] bufferSize the size of the buffer.
+ */
+void wrapIndexToRange(Index& index, const Size& bufferSize);
+
+/*!
+ * Wraps an index that runs out of the range of the buffer back into allowed the region.
+ * This means that an index that overflows is reset to zero.
+ * @param[in/out] index the index that will be wrapped into the valid region of the buffer.
+ * @param[in] bufferSize the size of the buffer.
+ */
+void wrapIndexToRange(int& index, const int& bufferSize);
+
+/*!
+ * Bound (cuts off) the position to lie inside the map.
+ * This means that an index that overflows is stopped at the last valid index.
+ * @param[in/out] position the position to be bounded.
  * @param[in] mapLength the lengths in x and y direction.
  * @param[in] mapPosition the position of the map.
  */
-void limitPositionToRange(Position& position,
-                          const Length& mapLength,
-                          const Position& mapPosition);
+void boundPositionToRange(Position& position, const Length& mapLength, const Position& mapPosition);
 
 /*!
  * Provides the alignment transformation from the buffer order (outer/inner storage)
@@ -244,6 +261,15 @@ Index getIndexFromBufferIndex(const Index& bufferIndex, const Size& bufferSize,
                               const Index& bufferStartIndex);
 
 /*!
+ * Retrieve the index of the buffer from a unwrapped index (reverse from function above).
+ * @param index the unwrapped index.
+ * @param bufferSize the map buffer size.
+ * @param bufferStartIndex the map buffer start index.
+ * @return the buffer index.
+ */
+Index getBufferIndexFromIndex(const Index& index, const Size& bufferSize, const Index& bufferStartIndex);
+
+/*!
  * Returns the linear index (1-dim.) corresponding to the regular index (2-dim.) for either
  * row- or column-major format.
  * Note: Eigen is defaulting to column-major format.
@@ -320,5 +346,12 @@ bool colorVectorToValue(const Eigen::Vector3i& colorVector, unsigned long& color
  * @param [out] colorValue the concatenated RGB color value.
  */
 void colorVectorToValue(const Eigen::Vector3i& colorVector, float& colorValue);
+
+/*!
+ * Transforms a color vector (RGB from 0.0-1.0) to a concatenated 3 single-byte float value.
+ * @param [in] colorVector the color vector in RGB from 0.0-1.0.
+ * @param [out] colorValue the concatenated RGB color value.
+ */
+void colorVectorToValue(const Eigen::Vector3f& colorVector, float& colorValue);
 
 } // namespace

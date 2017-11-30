@@ -2,11 +2,27 @@
 Changelog for package grid_map_rviz_plugin
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.6.0 (2017-11-24)
+------------------
+* Added option to rviz plugin to hide color faces.
+* Fixed bug for RViz plugin.
+* Fixing cpp-check warnings and errors.
+* Contributors: Péter Fankhauser
+
+1.5.2 (2017-07-25)
+------------------
+* Fixes error in grid_map_rviz_plugin when rendering lines.
+* Contributors: Peter Fankhauser
+
+1.5.1 (2017-07-25)
+------------------
+
+1.5.0 (2017-07-18)
+------------------
+* Improved visualization to support triangles in all directions.
 * Fixes transparency issue for grid maps in RViz. (`#68 <https://github.com/ethz-asl/grid_map/issues/68>`_).
 * Fixed package XML tag.
-* Contributors: Perry Franklin, Peter Fankhauser
+* Contributors: Perry Franklin, Stefan Fabian, Peter Fankhauser
 
 1.4.2 (2017-01-24)
 ------------------

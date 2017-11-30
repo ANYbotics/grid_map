@@ -7,6 +7,12 @@ set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
 find_package(catkin REQUIRED COMPONENTS
   grid_map_core
   cv_bridge
+  filters
+)
+
+find_package(OpenCV REQUIRED
+  COMPONENTS
+  opencv_photo
 )
 
 ###################################
@@ -26,7 +32,9 @@ catkin_package(
   CATKIN_DEPENDS
     grid_map_core
     cv_bridge
+    filters
   DEPENDS
+    OpenCV
 )
 
 ###########
@@ -43,10 +51,12 @@ include_directories(
 ## Declare a cpp library
 add_library(${PROJECT_NAME}
   src/GridMapCvProcessing.cpp
+  src/InpaintFilter.cpp
 )
 
 target_link_libraries(${PROJECT_NAME}
   ${catkin_LIBRARIES}
+  ${OpenCV_LIBRARIES}
 )
 
 add_dependencies(${PROJECT_NAME}
@@ -70,6 +80,12 @@ install(
   DIRECTORY include/${PROJECT_NAME}/
   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
   FILES_MATCHING PATTERN "*.hpp"
+)
+
+# Mark other files for installation.
+install(
+  FILES filter_plugins.xml
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
 
 #############

@@ -107,3 +107,71 @@ TEST(LineIterator, StartAndEndOutsideMapWithoutIntersectingMap)
 
   EXPECT_TRUE(iterator.isPastEnd());
 }
+
+TEST(LineIterator, MovedMap)
+{
+  GridMap map( { "types" });
+  map.setGeometry(Length(7.0, 5.0), 1.0, Position(0.0, 0.0));
+  map.move(Position(2.0, 2.0));
+
+  LineIterator iterator(map, Position(0.0, 0.0), Position(2.0, 2.0));
+  Position point;
+
+  EXPECT_FALSE(iterator.isPastEnd());
+  map.getPosition(*iterator, point);
+  EXPECT_EQ(0, point.x());
+  EXPECT_EQ(0, point.y());
+
+  ++iterator;
+  EXPECT_FALSE(iterator.isPastEnd());
+  map.getPosition(*iterator, point);
+  EXPECT_EQ(1, point.x());
+  EXPECT_EQ(1, point.y());
+
+  ++iterator;
+  EXPECT_FALSE(iterator.isPastEnd());
+  map.getPosition(*iterator, point);
+  EXPECT_EQ(2, point.x());
+  EXPECT_EQ(2, point.y());
+
+  ++iterator;
+  EXPECT_TRUE(iterator.isPastEnd());
+}
+
+TEST(LineIterator, StartAndEndOutsideMovedMap)
+{
+  GridMap map( { "types" });
+  map.setGeometry(Length(7.0, 5.0), 1.0, Position(0.0, 0.0));
+  map.move(Position(2.0, 2.0));
+
+  LineIterator iterator(map, Position(0.0, 0.0), Position(8.0, 8.0));
+  Position point;
+
+  EXPECT_FALSE(iterator.isPastEnd());
+  map.getPosition(*iterator, point);
+  EXPECT_EQ(0, point.x());
+  EXPECT_EQ(0, point.y());
+
+  ++iterator;
+  map.getPosition(*iterator, point);
+  EXPECT_EQ(1, point.x());
+  EXPECT_EQ(1, point.y());
+  //
+  ++iterator;
+  map.getPosition(*iterator, point);
+  EXPECT_EQ(2, point.x());
+  EXPECT_EQ(2, point.y());
+  //
+  ++iterator;
+  map.getPosition(*iterator, point);
+  EXPECT_EQ(3, point.x());
+  EXPECT_EQ(3, point.y());
+
+  ++iterator;
+  map.getPosition(*iterator, point);
+  EXPECT_EQ(4, point.x());
+  EXPECT_EQ(4, point.y());
+
+  ++iterator;
+  EXPECT_TRUE(iterator.isPastEnd());
+}

@@ -2,11 +2,26 @@
 Changelog for package grid_map_cv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.6.0 (2017-11-24)
+------------------
+* Fixed compatibility issue with OpenCV 3 (`#140 <https://github.com/ethz-asl/grid_map/issues/140>`_).
+* Makes the OpenCV include a bit more specific and adds in a dependency into the catkin_package call.
+* Moved inpaint filter to grid_map_cv, extended filter demo, cleanups.
+* Fixed problem where clamp changes were disregarded (`#115 <https://github.com/ethz-asl/grid_map/issues/115>`_ from Le-Fix/fix/toImageClamp).
+* Contributors: Péter Fankhauser, Perry Franklin, Le-Fix 
+
+1.5.2 (2017-07-25)
+------------------
+
+1.5.1 (2017-07-25)
+------------------
+
+1.5.0 (2017-07-18)
+------------------
 * Fixed bug for change resolution function in OpenCV processing class (including unit tests). (`#91 <https://github.com/ethz-asl/grid_map/issues/91>`_).
 * Extend grid_map_cv unit test for transparent pixels/nan-values.
-* Contributors: Peter Fankhauser, Marco Camurri
+* Remove constructor and destructor declaration in GridMapCvConverter.
+* Contributors: Peter Fankhauser, Marco Camurri, Sascha
 
 1.4.2 (2017-01-24)
 ------------------

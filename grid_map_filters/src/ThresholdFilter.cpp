@@ -2,20 +2,18 @@
  * ThresholdFilter.cpp
  *
  *  Created on: Mar 18, 2015
- *      Author: Martin Wermelinger
+ *      Author: Martin Wermelinger, Peter Fankhauser
  *   Institute: ETH Zurich, Autonomous Systems Lab
  */
 
-#include "filters/ThresholdFilter.hpp"
+#include "grid_map_filters/ThresholdFilter.hpp"
 
-#include <grid_map_core/GridMap.hpp>
-#include <grid_map_core/iterators/GridMapIterator.hpp>
+#include <grid_map_core/grid_map_core.hpp>
 #include <pluginlib/class_list_macros.h>
-#include <ros/ros.h>
 
 using namespace filters;
 
-namespace grid_map_filters {
+namespace grid_map {
 
 template<typename T>
 ThresholdFilter<T>::ThresholdFilter()
@@ -25,13 +23,11 @@ ThresholdFilter<T>::ThresholdFilter()
       upperThreshold_(1.0),
       setTo_(0.5)
 {
-
 }
 
 template<typename T>
 ThresholdFilter<T>::~ThresholdFilter()
 {
-
 }
 
 template<typename T>
@@ -41,13 +37,13 @@ bool ThresholdFilter<T>::configure()
   if (FilterBase<T>::getParam(std::string("lower_threshold"),
                               lowerThreshold_)) {
     useLowerThreshold_ = true;
-    ROS_INFO("lower threshold = %f", lowerThreshold_);
+    ROS_DEBUG("lower threshold = %f", lowerThreshold_);
   }
 
   if (FilterBase<T>::getParam(std::string("upper_threshold"),
                               upperThreshold_)) {
     useUpperThreshold_ = true;
-    ROS_INFO("upper threshold = %f", upperThreshold_);
+    ROS_DEBUG("upper threshold = %f", upperThreshold_);
   }
 
   if (!useLowerThreshold_ && !useUpperThreshold_) {
@@ -67,8 +63,8 @@ bool ThresholdFilter<T>::configure()
     return false;
   }
 
-  if (!FilterBase<T>::getParam(std::string("layers"), layers_)) {
-    ROS_ERROR("ThresholdFilter did not find parameter 'layers'.");
+  if (!FilterBase<T>::getParam(std::string("layer"), layer_)) {
+    ROS_ERROR("ThresholdFilter did not find parameter 'layer'.");
     return false;
   }
 
@@ -80,34 +76,20 @@ bool ThresholdFilter<T>::update(const T& mapIn, T& mapOut)
 {
   mapOut = mapIn;
 
-  for (const auto& layer : layers_) {
-    // Check if layer exists.
-    if (!mapOut.exists(layer)) {
-      ROS_ERROR("Check your threshold types! Type %s does not exist",
-                layer.c_str());
-      continue;
-    }
+  // Check if layer exists.
+  if (!mapOut.exists(layer_)) {
+    ROS_ERROR("Check your threshold types! Type %s does not exist", layer_.c_str());
+    return false;
+  }
 
-    std::vector<std::string> validTypes;
-    validTypes.push_back(layer);
-
-    for (grid_map::GridMapIterator iterator(mapOut); !iterator.isPastEnd();
-        ++iterator) {
-      if (!mapOut.isValid(*iterator, validTypes))
-        continue;
-
-      double value = mapOut.at(layer, *iterator);
-      if (useLowerThreshold_) {
-        if (value < lowerThreshold_)
-          value = setTo_;
-      }
-      if (useUpperThreshold_) {
-        if (value > upperThreshold_)
-          value = setTo_;
-      }
-      mapOut.at(layer, *iterator) = value;
-    }
-
+  // For each cell in map.
+  auto& data = mapOut[layer_];
+  for (grid_map::GridMapIterator iterator(mapOut); !iterator.isPastEnd(); ++iterator) {
+    if (!mapOut.isValid(*iterator, layer_)) continue;
+    const size_t i = iterator.getLinearIndex();
+    float& value = data(i);
+    if (useLowerThreshold_) if (value < lowerThreshold_) value = setTo_;
+    if (useUpperThreshold_) if (value > upperThreshold_) value = setTo_;
   }
 
   return true;
@@ -115,6 +97,4 @@ bool ThresholdFilter<T>::update(const T& mapIn, T& mapOut)
 
 } /* namespace */
 
-PLUGINLIB_REGISTER_CLASS(ThresholdFilter,
-                         grid_map_filters::ThresholdFilter<grid_map::GridMap>,
-                         filters::FilterBase<grid_map::GridMap>)
+PLUGINLIB_EXPORT_CLASS(grid_map::ThresholdFilter<grid_map::GridMap>, filters::FilterBase<grid_map::GridMap>)

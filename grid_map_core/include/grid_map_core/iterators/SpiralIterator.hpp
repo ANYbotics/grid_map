@@ -10,10 +10,7 @@
 
 #include "grid_map_core/GridMap.hpp"
 
-// Eigen
 #include <Eigen/Core>
-
-// unique_ptr
 #include <memory>
 #include <vector>
 

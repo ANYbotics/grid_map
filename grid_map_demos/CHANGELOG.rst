@@ -2,8 +2,27 @@
 Changelog for package grid_map_demos
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.6.0 (2017-11-24)
+------------------
+* Fixed compatibility issue with OpenCV 3 (`#140 <https://github.com/ethz-asl/grid_map/issues/140>`_).
+* Fixing cpp-check warnings and errors.
+* Fixed dependencies for grid_map_demos.
+* Updated terrain for filters demo.
+* Updated filter demo chain.
+* Contributors: Perry Franklin, Péter Fankhauser
+
+1.5.2 (2017-07-25)
+------------------
+
+1.5.1 (2017-07-25)
+------------------
+
+1.5.0 (2017-07-18)
+------------------
+* Added demo for octomap to grid map conversion.
+* Updated installation for demos.
+* General performance improvements, cleanups, and reformatting.
+* Contributors: Jeff Delmerico, Peter Fankhauser
 
 1.4.2 (2017-01-24)
 ------------------
