@@ -31,7 +31,7 @@ endif()
 catkin_package(
   INCLUDE_DIRS
     include
-    ${EIGEN3_INCLUDE_DIR}
+    ${EIGEN3_INCLUDE_DIRS}
   LIBRARIES
     ${PROJECT_NAME}
   CATKIN_DEPENDS
@@ -49,7 +49,7 @@ catkin_package(
 include_directories(
   include
   ${catkin_INCLUDE_DIRS}
-  ${EIGEN3_INCLUDE_DIR}
+  ${EIGEN3_INCLUDE_DIRS}
 )
 
 ## Declare a cpp library
