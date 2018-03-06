@@ -2,6 +2,16 @@
 Changelog for package grid_map_filters
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.6.0 (2017-11-24)
+------------------
+* Implemented a set of new filters:
+* Math expression filter based on EigenLab
+* Sliding window math expression filter
+* Normal vector and curvature filter
+* Color map, normal color, light intensity filter, added color blending mode
+* BufferNormalizerFilter
+* Contributors: Péter Fankhauser, Tanja Baumann
+
 1.5.2 (2017-07-25)
 ------------------
 

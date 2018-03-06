@@ -10,6 +10,11 @@ find_package(catkin REQUIRED COMPONENTS
   filters
 )
 
+find_package(OpenCV REQUIRED
+  COMPONENTS
+  opencv_photo
+)
+
 ###################################
 ## catkin specific configuration ##
 ###################################
@@ -29,6 +34,7 @@ catkin_package(
     cv_bridge
     filters
   DEPENDS
+    OpenCV
 )
 
 ###########
@@ -50,6 +56,7 @@ add_library(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME}
   ${catkin_LIBRARIES}
+  ${OpenCV_LIBRARIES}
 )
 
 add_dependencies(${PROJECT_NAME}
