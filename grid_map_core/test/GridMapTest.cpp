@@ -84,6 +84,43 @@ TEST(GridMap, Move)
   EXPECT_EQ(2, regions[1].getSize()[1]);
 }
 
+TEST(GridMap, ChangeSize)
+{
+  GridMap map;
+  map.setGeometry(Length(8.0, 5.0), 0.5, Position(0.0, 0.0));
+  map.add("layer", 0.0);
+
+  int original_rows = map.getSize()(0);
+  int original_cols = map.getSize()(1);
+
+  // Fill in map with data
+  for(int i = 0; i < original_rows; i++)
+  {
+    for(int j = 0; j < original_cols; j++)
+    {
+      map["layer"](i, j) = i*10 + j;
+    }
+  }
+
+  // Change size
+  map.changeSize(Length(5.0, 15.0));
+
+  int rows = map.getSize()(0);
+  int cols = map.getSize()(1);
+
+  // Check original data
+  for(int i = 0; i < rows; i++)
+  {
+    for(int j = 0; j < cols; j++)
+    {
+      if (i < original_rows && j < original_cols)
+      {
+        EXPECT_DOUBLE_EQ(map["layer"](i, j), i*10 + j);
+      }
+    }
+  }
+}
+
 TEST(AddDataFrom, ExtendMapAligned)
 {
   GridMap map1, map2;

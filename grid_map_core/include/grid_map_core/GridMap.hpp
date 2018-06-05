@@ -83,6 +83,13 @@ class GridMap
   void setGeometry(const SubmapGeometry& geometry);
 
   /*!
+   * Adjust the geometry of the grid map. Retains data contained in the intersection
+   * of old and new geometry.
+   * @param length the side lengths in x, and y-direction of the grid map [m].
+   */
+  void changeSize(const Length& length);
+
+  /*!
    * Add a new empty data layer.
    * @param layer the name of the layer.
    * @value value the value to initialize the cells with.
@@ -488,6 +495,12 @@ class GridMap
    * @param bufferSize the requested buffer size.
    */
   void resize(const Index& bufferSize);
+
+  /*!
+   * Resize the buffer without deleting data.
+   * @param size the requested buffer size.
+   */
+  void conservativeResize(const Index& size);
 
   //! Frame id of the grid map.
   std::string frameId_;
