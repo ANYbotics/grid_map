@@ -382,6 +382,11 @@ class GridMap
   void clearAll();
 
   /*!
+  * Clears cells that are set to 1.0 in the layer "clear".
+  */
+  void clearSubMap(const GridMap& subMap, bool inverted);
+
+  /*!
    * Set the timestamp of the grid map.
    * @param timestamp the timestamp to set (in  nanoseconds).
    */

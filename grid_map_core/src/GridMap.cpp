@@ -633,6 +633,19 @@ void GridMap::clearAll()
   }
 }
 
+void GridMap::clearSubMap(const GridMap& subMap, bool inverted)
+{
+  for (auto& data : data_) {
+    if (inverted) {
+      data.second = subMap.get("clear").unaryExpr([](DataType v) { return v == 1.0 ? 1.f : NAN; }).cwiseProduct(
+          data.second);
+    } else {
+      data.second = subMap.get("clear").unaryExpr([](DataType v) { return v == 1.0 ? NAN : 1.f; }).cwiseProduct(
+          data.second);
+    }
+  }
+}
+
 void GridMap::clearRows(unsigned int index, unsigned int nRows)
 {
   std::vector<std::string> layersToClear;
