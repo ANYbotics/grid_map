@@ -633,7 +633,7 @@ void GridMap::clearAll()
   }
 }
 
-void GridMap::clearSubMap(const GridMap& subMap, bool inverted)
+void GridMap::clearSubMap(const GridMap& subMap, const bool inverted)
 {
   for (auto& data : data_) {
     if (inverted) {

@@ -386,7 +386,7 @@ class GridMap
   * @param subMap the grid map containing the data which cells are cleared.
   * @param inverted if false, cells with 1.0 (true) are cleared.
   */
-  void clearSubMap(const GridMap& subMap, bool inverted);
+  void clearSubMap(const GridMap& subMap, const bool inverted);
 
   /*!
    * Set the timestamp of the grid map.
