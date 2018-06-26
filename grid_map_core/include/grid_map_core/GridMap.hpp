@@ -383,6 +383,8 @@ class GridMap
 
   /*!
   * Clears cells that are set to 1.0 in the layer "clear".
+  * @param subMap the grid map containing the data which cells are cleared.
+  * @param inverted if false, cells with 1.0 (true) are cleared.
   */
   void clearSubMap(const GridMap& subMap, bool inverted);
 

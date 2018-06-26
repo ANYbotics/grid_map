@@ -1,7 +1,7 @@
 # Sub map
 grid_map_msgs/GridMap map
 
-# inverted? true -> cells that are nan in the provided sub map will be cleared in the grid map
+# inverted?
 bool inverted
 
 ---

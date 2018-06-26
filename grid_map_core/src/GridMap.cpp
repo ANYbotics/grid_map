@@ -637,10 +637,10 @@ void GridMap::clearSubMap(const GridMap& subMap, bool inverted)
 {
   for (auto& data : data_) {
     if (inverted) {
-      data.second = subMap.get("clear").unaryExpr([](DataType v) { return v == 1.0 ? 1.f : NAN; }).cwiseProduct(
+      data.second = subMap.get("clear").unaryExpr([](DataType v) { return v == 1.0 ? static_cast<DataType>(1.0) : NAN; }).cwiseProduct(
           data.second);
     } else {
-      data.second = subMap.get("clear").unaryExpr([](DataType v) { return v == 1.0 ? NAN : 1.f; }).cwiseProduct(
+      data.second = subMap.get("clear").unaryExpr([](DataType v) { return v == 1.0 ? NAN : static_cast<DataType>(1.0); }).cwiseProduct(
           data.second);
     }
   }
