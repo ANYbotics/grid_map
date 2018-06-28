@@ -84,10 +84,10 @@ TEST(GridMap, Move)
   EXPECT_EQ(2, regions[1].getSize()[1]);
 }
 
-TEST(GridMap, ChangeSize)
+TEST(GridMap, Grow)
 {
   GridMap map;
-  map.setGeometry(Length(8.0, 5.0), 0.5, Position(0.0, 0.0));
+  map.setGeometry(Length(5.0, 5.0), 0.5, Position(0.0, 0.0));
   map.add("layer", 0.0);
 
   int original_rows = map.getSize()(0);
@@ -102,8 +102,7 @@ TEST(GridMap, ChangeSize)
     }
   }
 
-  // Change size
-  map.changeSize(Length(5.0, 15.0));
+  map.grow(Length(10.0, 10.0));
 
   int rows = map.getSize()(0);
   int cols = map.getSize()(1);
@@ -116,6 +115,10 @@ TEST(GridMap, ChangeSize)
       if (i < original_rows && j < original_cols)
       {
         EXPECT_DOUBLE_EQ(map["layer"](i, j), i*10 + j);
+      }
+      else
+      {
+        EXPECT_DOUBLE_EQ(map["layer"](i, j), 0.0);
       }
     }
   }

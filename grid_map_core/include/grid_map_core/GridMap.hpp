@@ -83,11 +83,24 @@ class GridMap
   void setGeometry(const SubmapGeometry& geometry);
 
   /*!
-   * Adjust the geometry of the grid map. Retains data contained in the intersection
-   * of old and new geometry.
-   * @param length the side lengths in x, and y-direction of the grid map [m].
+   * Specification for which direction(s) to grow the gridmap in.
    */
-  void changeSize(const Length& length);
+  enum Direction
+  {
+    CENTERED, // Grow the gridmap in all directions evenly from the center.
+    NE,       // Grow in the +X and +Y (Quadrant 1).
+    NW,       // Grow in the -X and +Y (Quadrant 2).
+    SW,       // Grow in the -X and -Y (Quadrant 3).
+    SE        // Grow in the +X and -Y (Quadrant 4).
+  };
+
+  /*!
+   * Increase the size of the grid map while retaining old data.
+   * @param length the new side lengths in x, and y-direction of the grid map [m].
+   * @param direction the direction to grow in (default = SE).
+   * @param value the value new elements should be initialized with.
+   */
+  void grow(const Length& length, const Direction direction=SE, float value=0.0);
 
   /*!
    * Add a new empty data layer.
@@ -499,8 +512,10 @@ class GridMap
   /*!
    * Resize the buffer without deleting data.
    * @param size the requested buffer size.
+   * @param direction the direction to grow in (default = SE).
+   * @param value the value new elements should be initialized with.
    */
-  void conservativeResize(const Index& size);
+  void conservativeResize(const Index& size, const Direction direction=SE, float value=0.0);
 
   //! Frame id of the grid map.
   std::string frameId_;
