@@ -63,7 +63,9 @@ void GridMap::setGeometry(const Length& length, const double resolution,
 
   resolution_ = resolution;
   length_ = (size_.cast<double>() * resolution_).matrix();
+
   position_ = position;
+
   startIndex_.setZero();
 
   return;
@@ -72,6 +74,49 @@ void GridMap::setGeometry(const Length& length, const double resolution,
 void GridMap::setGeometry(const SubmapGeometry& geometry)
 {
   setGeometry(geometry.getLength(), geometry.getResolution(), geometry.getPosition());
+}
+
+void GridMap::grow(const Length& length, const Direction direction, float value)
+{
+  if (length(0) < length_(0) || length(1) < length_(1))
+  {
+    return;
+  }
+
+  Length delta(length(0) - length_(0), length(1) - length_(1));
+
+  Size size;
+  size(0) = static_cast<int>(round(length(0) / resolution_));
+  size(1) = static_cast<int>(round(length(1) / resolution_));
+  conservativeResize(size, direction, value);
+  length_ = length;
+
+  // Update position
+  switch (direction)
+  {
+    case CENTERED:
+      break;
+
+    case NE:
+      position_(0) += delta(0)/2;
+      position_(1) -= delta(1)/2;
+      break;
+
+    case NW:
+      position_(0) += delta(0)/2;
+      position_(1) += delta(1)/2;
+      break;
+
+    case SW:
+      position_(0) -= delta(0)/2;
+      position_(1) += delta(1)/2;
+      break;
+
+    default:
+      position_(0) -= delta(0)/2;
+      position_(1) -= delta(1)/2;
+      break;
+  }
 }
 
 void GridMap::setBasicLayers(const std::vector<std::string>& basicLayers)
@@ -715,6 +760,63 @@ void GridMap::resize(const Index& size)
   for (auto& data : data_) {
     data.second.resize(size_(0), size_(1));
   }
+}
+
+void GridMap::conservativeResize(const Index& size, const Direction direction, float value)
+{
+  int row_delta = size(0) - size_(0);
+  int col_delta = size(1) - size_(1);
+
+  Eigen::MatrixXf like = Eigen::MatrixXf::Constant(size(0), size(1), value);
+  for (auto& data : data_)
+  {
+    data.second.conservativeResizeLike(like);
+
+    // Swap rows and columns as needed
+    switch (direction)
+    {
+      case CENTERED:
+        for (int i = size_(0)-1; i >= 0; i--)
+        {
+          data.second.row(i).swap(data.second.row(i+row_delta/2));
+        }
+        for (int i = size_(1)-1; i >= 0; i--)
+        {
+          data.second.col(i).swap(data.second.col(i+col_delta/2));
+        }
+        break;
+
+      case NE:
+        for (int i = size_(0)-1; i >= 0; i--)
+        {
+          data.second.row(i).swap(data.second.row(i+row_delta));
+        }
+        break;
+
+      case NW:
+        for (int i = size_(0)-1; i >= 0; i--)
+        {
+          data.second.row(i).swap(data.second.row(i+row_delta));
+        }
+        for (int i = size_(1)-1; i >= 0; i--)
+        {
+          data.second.col(i).swap(data.second.col(i+col_delta));
+        }
+        break;
+
+      case SW:
+        for (int i = size_(1)-1; i >= 0; i--)
+        {
+          data.second.col(i).swap(data.second.col(i+col_delta));
+        }
+        break;
+
+      default:
+        break;
+    }
+  }
+
+  size_ = size;
 }
 
 } /* namespace */
