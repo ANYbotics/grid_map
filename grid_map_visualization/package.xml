@@ -3,11 +3,11 @@
   <name>grid_map_visualization</name>
   <version>1.6.0</version>
   <description>Configurable tool to visualize grid maps in RViz.</description>
-  <maintainer email="pfankhauser@ethz.ch">Péter Fankhauser</maintainer>
+  <maintainer email="pfankhauser@anybotics.com">Péter Fankhauser</maintainer>
   <license>BSD</license>
   <url type="website">http://github.com/ethz-asl/grid_map</url>
   <url type="bugtracker">http://github.com/ethz-asl/grid_map/issues</url>
-  <author email="pfankhauser@ethz.ch">Péter Fankhauser</author>
+  <author email="pfankhauser@anybotics.com">Péter Fankhauser</author>
   <buildtool_depend>catkin</buildtool_depend>
   <depend>roscpp</depend>
   <depend>grid_map_core</depend>

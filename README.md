@@ -20,7 +20,7 @@ The grid map package has been tested with [ROS] Indigo, Jade (under Ubuntu 14.04
 The source code is released under a [BSD 3-Clause license](LICENSE).
 
 **Author: Péter Fankhauser<br />
-Maintainer: Péter Fankhauser, pfankhauser@ethz.ch<br />
+Maintainer: Péter Fankhauser, pfankhauser@anybotics.com<br />
 With contributions by: Tanja Baumann, Jeff Delmerico, Remo Diethelm, Perry Franklin, Dominic Jud, Ralph Kaestner, Philipp Krüsi, Alex Millane, Daniel Stonier, Elena Stumm, Martin Wermelinger, Christos Zalidis<br />
 Affiliation: Robotic Systems Lab, ETH Zurich**
 
