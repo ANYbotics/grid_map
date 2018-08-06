@@ -3,7 +3,7 @@
  *
  *  Created on: Aug 3, 2016
  *  Author: Philipp Krüsi, Péter Fankhauser
- *  Institute: ETH Zurich, Autonomous Systems Lab
+ *  Institute: ETH Zurich, ANYbotics
  */
 
 #include "grid_map_rviz_plugin/GridMapVisual.hpp"

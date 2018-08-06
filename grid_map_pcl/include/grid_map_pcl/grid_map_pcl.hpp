@@ -3,7 +3,7 @@
  *
  *  Created on: Oct 19, 2016
  *      Author: Dominic Jud
- *	 Institute: ETH Zurich, Robotic Systems Lab
+ *	 Institute: ETH Zurich, ANYbotics
  */
 
 #pragma once

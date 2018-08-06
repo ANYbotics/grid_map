@@ -3,7 +3,7 @@
  *
  *  Created on: Apr 14, 2016
  *      Author: Peter Fankhauser, Martin Wermelinger
- *	 Institute: ETH Zurich, Autonomous Systems Lab
+ *	 Institute: ETH Zurich, ANYbotics
  */
 
 #include "grid_map_cv/grid_map_cv.hpp"

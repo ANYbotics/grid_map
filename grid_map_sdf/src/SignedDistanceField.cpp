@@ -3,7 +3,7 @@
  *
  *  Created on: Aug 16, 2017
  *     Authors: Takahiro Miki, Peter Fankhauser
- *   Institute: ETH Zurich, Robotic Systems Lab
+ *   Institute: ETH Zurich, ANYbotics
  */
 
 #include <grid_map_sdf/SignedDistanceField.hpp>

@@ -20,9 +20,10 @@ The grid map package has been tested with [ROS] Indigo, Jade (under Ubuntu 14.04
 The source code is released under a [BSD 3-Clause license](LICENSE).
 
 **Author: Péter Fankhauser<br />
-Maintainer: Péter Fankhauser, pfankhauser@anybotics.com<br />
+Affiliation: [ANYbotics](https://www.anybotics.com/)<br />
+Maintainer: Péter Fankhauser, pfankhauser@anybotics.com<br />**
 With contributions by: Tanja Baumann, Jeff Delmerico, Remo Diethelm, Perry Franklin, Dominic Jud, Ralph Kaestner, Philipp Krüsi, Alex Millane, Daniel Stonier, Elena Stumm, Martin Wermelinger, Christos Zalidis<br />
-Affiliation: Robotic Systems Lab, ETH Zurich**
+This projected was initially developed at ETH Zurich (Autonomous Systems Lab & Robotic Systems Lab).
 
 ![Grid map example in RViz](grid_map_rviz_plugin/doc/grid_map_rviz_plugin_example.png)
 
@@ -84,7 +85,7 @@ The other packages depend additionally on the [ROS] standard installation (*rosc
 To build from source, clone the latest version from this repository into your catkin workspace and compile the package using
 
     cd catkin_ws/src
-    git clone https://github.com/ethz-asl/grid_map.git
+    git clone https://github.com/anybotics/grid_map.git
     cd ../
     catkin_make
 
@@ -481,7 +482,7 @@ Additionally, the *grid_map_cv* package provides the following filters:
 
 ## Bugs & Feature Requests
 
-Please report bugs and request features using the [Issue Tracker](https://github.com/ethz-asl/grid_map/issues).
+Please report bugs and request features using the [Issue Tracker](https://github.com/anybotics/grid_map/issues).
 
 [ROS]: http://www.ros.org
 [RViz]: http://wiki.ros.org/rviz

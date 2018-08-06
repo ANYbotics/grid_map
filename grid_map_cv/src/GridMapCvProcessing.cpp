@@ -3,7 +3,7 @@
  *
  *  Created on: Apr 15, 2016
  *      Author: Péter Fankhauser
- *	 Institute: ETH Zurich, Autonomous Systems Lab
+ *	 Institute: ETH Zurich, ANYbotics
  */
 
 #include "grid_map_cv/GridMapCvProcessing.hpp"

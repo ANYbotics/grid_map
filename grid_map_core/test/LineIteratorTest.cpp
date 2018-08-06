@@ -3,7 +3,7 @@
  *
  *  Created on: Sep 14, 2016
  *      Author: Dominic Jud
- *	 Institute: ETH Zurich, Robotic Systems Lab
+ *	 Institute: ETH Zurich, ANYbotics
  */
 
 #include "grid_map_core/iterators/LineIterator.hpp"

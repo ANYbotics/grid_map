@@ -3,7 +3,7 @@
  *
  *  Created on: Sep 23, 2017
  *      Author: Peter Fankhauser
- *   Institute: ETH Zurich, Robotic Systems Lab
+ *   Institute: ETH Zurich, ANYbotics
  */
 
 #include <grid_map_filters/ColorMapFilter.hpp>

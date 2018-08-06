@@ -3,7 +3,7 @@
  *
  *  Created on: Mar 24, 2015
  *      Author: Martin Wermelinger, Péter Fankhauser
- *	 Institute: ETH Zurich, Autonomous Systems Lab
+ *	 Institute: ETH Zurich, ANYbotics
  */
 
 #include "grid_map_core/Polygon.hpp"

@@ -3,7 +3,7 @@
  *
  *  Created on: Nov 23, 2016
  *      Author: Peter Fankhauser
- *	 Institute: ETH Zurich, Robotic Systems Lab
+ *	 Institute: ETH Zurich, ANYbotics
  */
 
 // Grid map

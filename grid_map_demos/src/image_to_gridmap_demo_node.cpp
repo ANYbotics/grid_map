@@ -3,7 +3,7 @@
  *
  *  Created on: May 04, 2015
  *      Author: Martin Wermelinger
- *   Institute: ETH Zurich, Autonomous Systems Lab
+ *   Institute: ETH Zurich, ANYbotics
  */
 
 #include <ros/ros.h>

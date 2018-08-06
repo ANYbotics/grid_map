@@ -3,7 +3,7 @@
  *
  *  Created on: Aug 25, 2017
  *      Author: Takahiro Miki, Peter Fankhauser
- *	 Institute: ETH Zurich, Robotic Systems Lab
+ *	 Institute: ETH Zurich, ANYbotics
  */
 
 #include "grid_map_core/GridMap.hpp"

@@ -3,7 +3,7 @@
  *
  *  Created on: Aug 16, 2017
  *      Author: Peter Fankhauser
- *   Institute: ETH Zurich, Robotic Systems Lab
+ *   Institute: ETH Zurich, ANYbotics
  */
 
 #include "../include/grid_map_filters/SetBasicLayersFilter.hpp"
