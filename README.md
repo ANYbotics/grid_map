@@ -29,25 +29,25 @@ This projected was initially developed at ETH Zurich (Autonomous Systems Lab & R
 
 ## Publications
 
-If you use this work in an academic context, please cite the following publication(s):
+If you use this work in an academic context, please cite the following publication:
 
-* P. Fankhauser and M. Hutter,
+P. Fankhauser and M. Hutter,
 **"A Universal Grid Map Library: Implementation and Use Case for Rough Terrain Navigation"**,
 in Robot Operating System (ROS) – The Complete Reference (Volume 1), A. Koubaa (Ed.), Springer, 2016. ([PDF](http://www.researchgate.net/publication/284415855))
 
 
-        @incollection{Fankhauser2016GridMapLibrary,
-            author = {Fankhauser, P{\'{e}}ter and Hutter, Marco},
-            booktitle = {Robot Operating System (ROS) – The Complete Reference (Volume 1)},
-            title = {{A Universal Grid Map Library: Implementation and Use Case for Rough Terrain Navigation}},
-            chapter = {5},
-            editor = {Koubaa, Anis},
-            publisher = {Springer},
-            year = {2016},
-            isbn = {978-3-319-26052-5},
-            doi = {10.1007/978-3-319-26054-9{\_}5},
-            url = {http://www.springer.com/de/book/9783319260525}
-        }
+    @incollection{Fankhauser2016GridMapLibrary,
+      author = {Fankhauser, P{\'{e}}ter and Hutter, Marco},
+      booktitle = {Robot Operating System (ROS) – The Complete Reference (Volume 1)},
+      title = {{A Universal Grid Map Library: Implementation and Use Case for Rough Terrain Navigation}},
+      chapter = {5},
+      editor = {Koubaa, Anis},
+      publisher = {Springer},
+      year = {2016},
+      isbn = {978-3-319-26052-5},
+      doi = {10.1007/978-3-319-26054-9{\_}5},
+      url = {http://www.springer.com/de/book/9783319260525}
+    }
 
 ## Documentation
 
