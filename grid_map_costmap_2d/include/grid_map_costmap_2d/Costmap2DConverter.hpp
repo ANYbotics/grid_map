@@ -192,15 +192,15 @@ public:
     const double resolution = costmap2d.getCostmap()->getResolution();
 
     // Get the Robot Pose Transform.
-    tf::Stamped<tf::Pose> tfPose;
-    if(!costmap2d.getRobotPose(tfPose))
+    geometry_msgs::PoseStamped pose;
+    if(!costmap2d.getRobotPose(pose))
     {
       errorMessage_ =  "Could not get robot pose, is it actually published?";
       return false;
     }
 
     // Determine new costmap origin.
-    Position robotPosition(tfPose.getOrigin().x() , tfPose.getOrigin().y());
+    Position robotPosition(pose.pose.position.x , pose.pose.position.y);
     Position rosMapOrigin(costmap2d.getCostmap()->getOriginX(), costmap2d.getCostmap()->getOriginY());
     Position newCostMapOrigin;
 
