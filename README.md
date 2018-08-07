@@ -2,7 +2,7 @@
 
 ## Overview
 
-This is a C++ library with [ROS] interface to manage two-dimensional grid maps with multiple data layers. It is designed for mobile robotic mapping to store data such as elevation, variance, color, friction coefficient, foothold quality, surface normal, traversability etc. It is used in the [Robot-Centric Elevation Mapping](https://github.com/ethz-asl/elevation_mapping) package designed for rough terrain navigation.
+This is a C++ library with [ROS] interface to manage two-dimensional grid maps with multiple data layers. It is designed for mobile robotic mapping to store data such as elevation, variance, color, friction coefficient, foothold quality, surface normal, traversability etc. It is used in the [Robot-Centric Elevation Mapping](https://github.com/anybotics/elevation_mapping) package designed for rough terrain navigation.
 
 Features:
 
@@ -20,33 +20,37 @@ The grid map package has been tested with [ROS] Indigo, Jade (under Ubuntu 14.04
 The source code is released under a [BSD 3-Clause license](LICENSE).
 
 **Author: Péter Fankhauser<br />
-Maintainer: Péter Fankhauser, pfankhauser@ethz.ch<br />
-With contributions by: Tanja Baumann, Jeff Delmerico, Remo Diethelm, Perry Franklin, Dominic Jud, Ralph Kaestner, Philipp Krüsi, Alex Millane, Daniel Stonier, Elena Stumm, Martin Wermelinger, Christos Zalidis<br />
-Affiliation: Robotic Systems Lab, ETH Zurich**
+Affiliation: [ANYbotics](https://www.anybotics.com/)<br />
+Maintainer: Péter Fankhauser, pfankhauser@anybotics.com<br />**
+With contributions by: Tanja Baumann, Jeff Delmerico, Remo Diethelm, Perry Franklin, Dominic Jud, Ralph Kaestner, Philipp Krüsi, Alex Millane, Daniel Stonier, Elena Stumm, Martin Wermelinger, Christos Zalidis
+
+This projected was initially developed at ETH Zurich (Autonomous Systems Lab & Robotic Systems Lab).
+
+[This work is conducted as part of ANYmal Research, a community to advance legged robotics.](https://www.anymal-research.org/)
 
 ![Grid map example in RViz](grid_map_rviz_plugin/doc/grid_map_rviz_plugin_example.png)
 
 ## Publications
 
-If you use this work in an academic context, please cite the following publication(s):
+If you use this work in an academic context, please cite the following publication:
 
-* P. Fankhauser and M. Hutter,
+P. Fankhauser and M. Hutter,
 **"A Universal Grid Map Library: Implementation and Use Case for Rough Terrain Navigation"**,
 in Robot Operating System (ROS) – The Complete Reference (Volume 1), A. Koubaa (Ed.), Springer, 2016. ([PDF](http://www.researchgate.net/publication/284415855))
 
 
-        @incollection{Fankhauser2016GridMapLibrary,
-            author = {Fankhauser, P{\'{e}}ter and Hutter, Marco},
-            booktitle = {Robot Operating System (ROS) – The Complete Reference (Volume 1)},
-            title = {{A Universal Grid Map Library: Implementation and Use Case for Rough Terrain Navigation}},
-            chapter = {5},
-            editor = {Koubaa, Anis},
-            publisher = {Springer},
-            year = {2016},
-            isbn = {978-3-319-26052-5},
-            doi = {10.1007/978-3-319-26054-9{\_}5},
-            url = {http://www.springer.com/de/book/9783319260525}
-        }
+    @incollection{Fankhauser2016GridMapLibrary,
+      author = {Fankhauser, P{\'{e}}ter and Hutter, Marco},
+      booktitle = {Robot Operating System (ROS) – The Complete Reference (Volume 1)},
+      title = {{A Universal Grid Map Library: Implementation and Use Case for Rough Terrain Navigation}},
+      chapter = {5},
+      editor = {Koubaa, Anis},
+      publisher = {Springer},
+      year = {2016},
+      isbn = {978-3-319-26052-5},
+      doi = {10.1007/978-3-319-26054-9{\_}5},
+      url = {http://www.springer.com/de/book/9783319260525}
+    }
 
 ## Documentation
 
@@ -84,7 +88,7 @@ The other packages depend additionally on the [ROS] standard installation (*rosc
 To build from source, clone the latest version from this repository into your catkin workspace and compile the package using
 
     cd catkin_ws/src
-    git clone https://github.com/ethz-asl/grid_map.git
+    git clone https://github.com/anybotics/grid_map.git
     cd ../
     catkin_make
 
@@ -481,7 +485,7 @@ Additionally, the *grid_map_cv* package provides the following filters:
 
 ## Bugs & Feature Requests
 
-Please report bugs and request features using the [Issue Tracker](https://github.com/ethz-asl/grid_map/issues).
+Please report bugs and request features using the [Issue Tracker](https://github.com/anybotics/grid_map/issues).
 
 [ROS]: http://www.ros.org
 [RViz]: http://wiki.ros.org/rviz

@@ -3,7 +3,7 @@
  *
  *  Created on: Aug 17, 2017
  *      Author: Péter Fankhauser
- *   Institute: ETH Zurich, Robotic Systems Lab
+ *   Institute: ETH Zurich, ANYbotics
  */
 
 #include "grid_map_core/iterators/SlidingWindowIterator.hpp"

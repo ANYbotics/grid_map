@@ -3,7 +3,7 @@
  *
  *  Created on: Feb 16, 2016
  *      Author: Péter Fankhauser
- *	 Institute: ETH Zurich, Autonomous Systems Lab
+ *	 Institute: ETH Zurich, ANYbotics
  */
 
 #include "grid_map_core/iterators/GridMapIterator.hpp"

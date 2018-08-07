@@ -3,7 +3,7 @@
  *
  *  Created on: Aug 14, 2017
  *      Author: Peter Fankhauser
- *   Institute: ETH Zurich, Robotic Systems Lab
+ *   Institute: ETH Zurich, ANYbotics
  */
 
 #include "grid_map_demos/FiltersDemo.hpp"
@@ -29,7 +29,7 @@ int main(int argc, char** argv)
 // *
 // *  Created on: Aug 14, 2017
 // *      Author: Peter Fankhauser
-// *   Institute: ETH Zurich, Robotic Systems Lab
+// *   Institute: ETH Zurich, ANYbotics
 // */
 //
 //#include <filters/filter_chain.h>

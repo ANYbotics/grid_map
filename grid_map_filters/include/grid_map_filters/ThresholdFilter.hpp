@@ -3,7 +3,7 @@
  *
  *  Created on: Mar 16, 2015
  *      Author: Martin Wermelinger, Peter Fankhauser
- *   Institute: ETH Zurich, Autonomous Systems Lab
+ *   Institute: ETH Zurich, ANYbotics
  */
 
 #pragma once

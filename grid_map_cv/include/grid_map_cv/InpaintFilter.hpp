@@ -3,7 +3,7 @@
  *
  *  Created on: May 6, 2017
  *      Author: Tanja Baumann, Peter Fankhauser
- *   Institute: ETH Zurich, Robotic Systems Lab
+ *   Institute: ETH Zurich, ANYbotics
  */
 
 #pragma once

@@ -3,7 +3,7 @@
  *
  *  Created on: Mar 19, 2015
  *      Author: Martin Wermelinger, Peter Fankhauser
- *   Institute: ETH Zurich, Autonomous Systems Lab
+ *   Institute: ETH Zurich, ANYbotics
  */
 
 #include "grid_map_filters/DeletionFilter.hpp"

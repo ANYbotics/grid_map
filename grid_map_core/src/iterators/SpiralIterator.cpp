@@ -3,7 +3,7 @@
  *
  *  Created on: Jul 7, 2015
  *      Author: Martin Wermelinger
- *   Institute: ETH Zurich, Autonomous Systems Lab
+ *   Institute: ETH Zurich, ANYbotics
  */
 
 #include "grid_map_core/iterators/SpiralIterator.hpp"
