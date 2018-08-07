@@ -633,15 +633,24 @@ void GridMap::clearAll()
   }
 }
 
-void GridMap::clearSubMap(const GridMap& subMap, const bool inverted)
+void GridMap::clearSubMap(const GridMap& subMap)
 {
+  const grid_map::Matrix& mapClear = subMap["clear"];
   for (auto& data : data_) {
-    if (inverted) {
-      data.second = subMap.get("clear").unaryExpr([](DataType v) { return v == 1.0 ? static_cast<DataType>(1.0) : NAN; }).cwiseProduct(
-          data.second);
+    auto layerIt = std::find(subMap.getLayers().begin(),subMap.getLayers().end(),data.first);
+    if (layerIt != subMap.getLayers().end()) {
+      const grid_map::Matrix& mapInitValues = subMap[data.first];
+      for (size_t i = 0; i < data.second.size(); ++i) {
+        if (mapClear(i) == 1.0) {
+          data.second(i) = mapInitValues(i);
+        }
+      }
     } else {
-      data.second = subMap.get("clear").unaryExpr([](DataType v) { return v == 1.0 ? NAN : static_cast<DataType>(1.0); }).cwiseProduct(
-          data.second);
+      for (size_t i = 0; i < data.second.size(); ++i) {
+        if (mapClear(i) == 1.0) {
+          data.second(i) = NAN;
+        }
+      }
     }
   }
 }
