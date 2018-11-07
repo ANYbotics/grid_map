@@ -43,14 +43,24 @@
 
 #include <geometry_msgs/Pose.h>
 
+
+#if ROS_VERSION_MINIMUM(1,14,0)
 #ifndef Q_MOC_RUN
 #include <tf2_ros/message_filter.h>
 #endif
-
 namespace tf2_ros
 {
 class TransformListener;
 }
+#else
+#ifndef Q_MOC_RUN
+#include <tf/message_filter.h>
+#endif
+namespace tf
+{
+class TransformListener;
+}
+#endif
 
 namespace rviz
 {
@@ -70,11 +80,18 @@ public:
     SyncExact,
     SyncApprox
   };
+#if ROS_VERSION_MINIMUM(1,14,0)
+  typedef tf2_ros::FilterFailureReason TF_FILTER_FAILURE_REASON_WRAPPER;
+  typedef tf2_ros::TransformListener TF_TRANSFORM_LISTENER_WRAPPER;
+#else
+  typedef tf::FilterFailureReason TF_FILTER_FAILURE_REASON_WRAPPER;
+  typedef tf::TransformListener TF_TRANSFORM_LISTENER_WRAPPER;
+#endif
 
   /** @brief Constructor
    * @param tf a pointer to tf::TransformListener (should not be used anywhere else because of thread safety)
    */
-  FrameManager(boost::shared_ptr<tf2_ros::TransformListener> tf = boost::shared_ptr<tf2_ros::TransformListener>());
+  FrameManager(boost::shared_ptr<TF_TRANSFORM_LISTENER_WRAPPER> tf = boost::shared_ptr<TF_TRANSFORM_LISTENER_WRAPPER>());
 
   /** @brief Destructor.
    *
@@ -170,21 +187,29 @@ public:
    * failure of tf::MessageFilters which call Display::setStatus()
    * based on success or failure of the filter, including appropriate
    * error messages. */
+#if ROS_VERSION_MINIMUM(1,14,0)
   template<class M>
   void registerFilterForTransformStatusCheck(tf2_ros::MessageFilter<M>* filter, Display* display)
   {
     filter->registerCallback(boost::bind(&FrameManager::messageCallback<M>, this, _1, display));
     filter->registerFailureCallback(boost::bind(&FrameManager::failureCallback<M>, this, _1, _2, display));
   }
-
+#else
+  template<class M>
+  void registerFilterForTransformStatusCheck(tf::MessageFilter<M>* filter, Display* display)
+  {
+    filter->registerCallback(boost::bind(&FrameManager::messageCallback<M>, this, _1, display));
+    filter->registerFailureCallback(boost::bind(&FrameManager::failureCallback<M>, this, _1, _2, display));
+  }
+#endif
   /** @brief Return the current fixed frame name. */
   const std::string& getFixedFrame() { return fixed_frame_; }
 
   /** @brief Return the tf::TransformListener used to receive transform data. */
-  tf2_ros::TransformListener* getTFClient() { return tf_.get(); }
+  TF_TRANSFORM_LISTENER_WRAPPER* getTFClient() { return tf_.get(); }
 
   /** @brief Return a boost shared pointer to the tf::TransformListener used to receive transform data. */
-  const boost::shared_ptr<tf2_ros::TransformListener>& getTFClientPtr() { return tf_; }
+  const boost::shared_ptr<TF_TRANSFORM_LISTENER_WRAPPER>& getTFClientPtr() { return tf_; }
 
   /** @brief Create a description of a transform problem.
    * @param frame_id The name of the frame with issues.
@@ -198,7 +223,7 @@ public:
   std::string discoverFailureReason(const std::string& frame_id,
                                     const ros::Time& stamp,
                                     const std::string& caller_id,
-                                    tf2_ros::FilterFailureReason reason);
+                                    TF_FILTER_FAILURE_REASON_WRAPPER reason);
 
 Q_SIGNALS:
   /** @brief Emitted whenever the fixed frame changes. */
@@ -218,7 +243,7 @@ private:
   }
 
   template<class M>
-  void failureCallback(const ros::MessageEvent<M const>& msg_evt, tf2_ros::FilterFailureReason reason, Display* display)
+  void failureCallback(const ros::MessageEvent<M const>& msg_evt, TF_FILTER_FAILURE_REASON_WRAPPER reason, Display* display)
   {
     boost::shared_ptr<M const> const &msg = msg_evt.getConstMessage();
     std::string authority = msg_evt.getPublisherName();
@@ -227,7 +252,7 @@ private:
   }
 
   void messageArrived(const std::string& frame_id, const ros::Time& stamp, const std::string& caller_id, Display* display);
-  void messageFailed(const std::string& frame_id, const ros::Time& stamp, const std::string& caller_id, tf2_ros::FilterFailureReason reason, Display* display);
+  void messageFailed(const std::string& frame_id, const ros::Time& stamp, const std::string& caller_id, TF_FILTER_FAILURE_REASON_WRAPPER reason, Display* display);
 
   struct CacheKey
   {
@@ -265,7 +290,7 @@ private:
   boost::mutex cache_mutex_;
   M_Cache cache_;
 
-  boost::shared_ptr<tf2_ros::TransformListener> tf_;
+  boost::shared_ptr<TF_TRANSFORM_LISTENER_WRAPPER> tf_;
   std::string fixed_frame_;
 
   bool pause_;
