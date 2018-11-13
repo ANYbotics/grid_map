@@ -252,7 +252,9 @@ private:
   }
 
   void messageArrived(const std::string& frame_id, const ros::Time& stamp, const std::string& caller_id, Display* display);
-  void messageFailed(const std::string& frame_id, const ros::Time& stamp, const std::string& caller_id, TF_FILTER_FAILURE_REASON_WRAPPER reason, Display* display);
+
+  template<class TfFilterFailureReasonType>
+  void messageFailed(const std::string& frame_id, const ros::Time& stamp, const std::string& caller_id, TfFilterFailureReasonType reason, Display* display);
 
   struct CacheKey
   {
