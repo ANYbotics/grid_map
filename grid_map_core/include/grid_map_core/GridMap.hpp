@@ -382,10 +382,10 @@ class GridMap
   void clearAll();
 
   /*!
-  * Clears cells that are set to 1.0 in the layer "clear".
-  * @param subMap the grid map containing the data which cells are cleared.
+  * Clears cells at provided indices.
+  * @param indices vector of indices.
   */
-  void clearSubMap(const GridMap& subMap);
+  void clearMapAtIndices(const std::vector<Index>& indices);
 
   /*!
    * Set the timestamp of the grid map.

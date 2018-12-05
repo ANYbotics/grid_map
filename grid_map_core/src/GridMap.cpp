@@ -633,24 +633,14 @@ void GridMap::clearAll()
   }
 }
 
-void GridMap::clearSubMap(const GridMap& subMap)
+void GridMap::clearMapAtIndices(const std::vector<Index>& indices)
 {
-  const grid_map::Matrix& mapClear = subMap["clear"];
-  for (auto& data : data_) {
-    auto layerIt = std::find(subMap.getLayers().begin(),subMap.getLayers().end(),data.first);
-    if (layerIt != subMap.getLayers().end()) {
-      const grid_map::Matrix& mapInitValues = subMap[data.first];
-      for (size_t i = 0; i < data.second.size(); ++i) {
-        if (mapClear(i) == 1.0) {
-          data.second(i) = mapInitValues(i);
-        }
-      }
-    } else {
-      for (size_t i = 0; i < data.second.size(); ++i) {
-        if (mapClear(i) == 1.0) {
-          data.second(i) = NAN;
-        }
-      }
+  std::vector<std::string> layersToClear;
+  if (basicLayers_.size() > 0) layersToClear = basicLayers_;
+  else layersToClear = layers_;
+  for (auto &layer : layersToClear) {
+    for (auto &index : indices) {
+      data_.at(layer)(index(0),index(1)) = NAN;
     }
   }
 }

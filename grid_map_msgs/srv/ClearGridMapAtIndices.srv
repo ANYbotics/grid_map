@@ -1,0 +1,5 @@
+# indices to be cleared
+int32[] indices0
+int32[] indices1
+
+---
