@@ -30,7 +30,9 @@ ROSCostmapServer::ROSCostmapServer(const std::string& name,
                                    const std::string& baseLinkTransformName,
                                    const grid_map::Position& origin, const double& width,
                                    const double& height)
-    : transformListener(ros::Duration(1.0))
+    :
+    tfBuffer(ros::Duration(1.0)),
+    tfListener(tfBuffer)
 {
   ros::NodeHandle privateNodeHandle("~");
   // lots of parameters here affect the construction ( e.g. rolling window)
@@ -46,7 +48,7 @@ ROSCostmapServer::ROSCostmapServer(const std::string& name,
   privateNodeHandle.setParam(name + "/plugins", std::vector<std::string>());
   privateNodeHandle.setParam(name + "/resolution", 0.5);
   privateNodeHandle.setParam(name + "/robot_radius", 0.03); // clears 1 cell if inside, up to 4 cells on a vertex
-  costmap = std::make_shared<ROSCostmap>(name, transformListener);
+  costmap = std::make_shared<ROSCostmap>(name, tfBuffer);
 
   for ( unsigned int index = 0; index < costmap->getCostmap()->getSizeInCellsY(); ++index ) {
     unsigned int dimension = costmap->getCostmap()->getSizeInCellsX();
