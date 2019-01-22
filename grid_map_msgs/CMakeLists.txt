@@ -24,6 +24,7 @@ add_service_files(
   FILES
   GetGridMap.srv
   GetGridMapInfo.srv
+  ProcessBag.srv
   ProcessFile.srv
 )
 
@@ -53,4 +54,3 @@ catkin_package(
         std_msgs
     #DEPENDS
 )
-
