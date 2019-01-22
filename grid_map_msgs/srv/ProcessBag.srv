@@ -1,7 +1,7 @@
 # Absolute file path of the rosbag.
 string file_path
 
-# Name of the topic in the ROS bag.
+# Name of the topic in the rosbag.
 string topic
 
 ---
