@@ -44,7 +44,8 @@
 #include <geometry_msgs/Pose.h>
 
 #ifndef Q_MOC_RUN
-#include <tf/message_filter.h>
+#include <tf2_ros/message_filter.h>
+
 #endif
 
 namespace tf
@@ -171,7 +172,7 @@ public:
    * based on success or failure of the filter, including appropriate
    * error messages. */
   template<class M>
-  void registerFilterForTransformStatusCheck(tf::MessageFilter<M>* filter, Display* display)
+  void registerFilterForTransformStatusCheck(tf2_ros::MessageFilter<M>* filter, Display* display)
   {
     filter->registerCallback(boost::bind(&FrameManager::messageCallback<M>, this, _1, display));
     filter->registerFailureCallback(boost::bind(&FrameManager::failureCallback<M>, this, _1, _2, display));
@@ -198,7 +199,7 @@ public:
   std::string discoverFailureReason(const std::string& frame_id,
                                     const ros::Time& stamp,
                                     const std::string& caller_id,
-                                    tf::FilterFailureReason reason);
+                                    tf2_ros::FilterFailureReason reason);
 
 Q_SIGNALS:
   /** @brief Emitted whenever the fixed frame changes. */
@@ -218,7 +219,7 @@ private:
   }
 
   template<class M>
-  void failureCallback(const ros::MessageEvent<M const>& msg_evt, tf::FilterFailureReason reason, Display* display)
+  void failureCallback(const ros::MessageEvent<M const>& msg_evt, tf2_ros::FilterFailureReason reason, Display* display)
   {
     boost::shared_ptr<M const> const &msg = msg_evt.getConstMessage();
     std::string authority = msg_evt.getPublisherName();
@@ -227,7 +228,7 @@ private:
   }
 
   void messageArrived(const std::string& frame_id, const ros::Time& stamp, const std::string& caller_id, Display* display);
-  void messageFailed(const std::string& frame_id, const ros::Time& stamp, const std::string& caller_id, tf::FilterFailureReason reason, Display* display);
+  void messageFailed(const std::string& frame_id, const ros::Time& stamp, const std::string& caller_id, tf2_ros::FilterFailureReason reason, Display* display);
 
   struct CacheKey
   {

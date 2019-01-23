@@ -23,7 +23,7 @@ class MessageFilterDisplayMod : public rviz::MessageFilterDisplay<MessageType>
 
   void onInitialize()
   {
-    MFDClass::tf_filter_ = new tf::MessageFilter<MessageType>(*MFDClass::context_->getTFClient(),
+    MFDClass::tf_filter_ = new tf2_ros::MessageFilter<MessageType>(*MFDClass::context_->getTF2BufferPtr(),
                                                               MFDClass::fixed_frame_.toStdString(),
                                                               10, MFDClass::update_nh_);
 
