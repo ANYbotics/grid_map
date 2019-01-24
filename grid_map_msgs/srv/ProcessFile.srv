@@ -1,6 +1,9 @@
 # Absolute file path.
 string file_path
 
+# Topic name.
+string topic_name
+
 ---
 
 # True if file processing was successful.
