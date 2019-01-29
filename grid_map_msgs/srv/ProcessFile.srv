@@ -1,8 +1,8 @@
 # Absolute file path.
 string file_path
 
-# For ROS bags: A list of topic names that should be processed (optional).
-string[] topic_names
+# For ROS bags: topic name that should be processed (optional).
+string topic_name
 
 ---
 
