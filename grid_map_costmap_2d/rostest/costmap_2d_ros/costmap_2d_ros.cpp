@@ -48,19 +48,19 @@ ROSCostmapServer::ROSCostmapServer(const std::string& name,
   privateNodeHandle.setParam(name + "/plugins", std::vector<std::string>());
   privateNodeHandle.setParam(name + "/resolution", 0.5);
   privateNodeHandle.setParam(name + "/robot_radius", 0.03); // clears 1 cell if inside, up to 4 cells on a vertex
-  costmap = std::make_shared<ROSCostmap>(name, transformListener);
+  costmap_ = std::make_shared<ROSCostmap>(name, transformListener);
 
-  for ( unsigned int index = 0; index < costmap->getCostmap()->getSizeInCellsY(); ++index ) {
-    unsigned int dimension = costmap->getCostmap()->getSizeInCellsX();
+  for ( unsigned int index = 0; index < costmap_->getCostmap()->getSizeInCellsY(); ++index ) {
+    unsigned int dimension = costmap_->getCostmap()->getSizeInCellsX();
     // @todo assert dimension > 1
     // set the first row to costmap_2d::FREE_SPACE? but it shows up invisibly in rviz, so don't bother
     for ( unsigned int fill_index = 0; fill_index < dimension - 2; ++fill_index )
     {
-      double fraction = static_cast<double>(fill_index + 1) / static_cast<double>(costmap->getCostmap()->getSizeInCellsX());
-      costmap->getCostmap()->setCost(fill_index, index, fraction*costmap_2d::INSCRIBED_INFLATED_OBSTACLE );
+      double fraction = static_cast<double>(fill_index + 1) / static_cast<double>(costmap_->getCostmap()->getSizeInCellsX());
+      costmap_->getCostmap()->setCost(fill_index, index, fraction*costmap_2d::INSCRIBED_INFLATED_OBSTACLE );
     }
-    costmap->getCostmap()->setCost(dimension - 2, index, costmap_2d::LETHAL_OBSTACLE);
-    costmap->getCostmap()->setCost(dimension - 1, index, costmap_2d::NO_INFORMATION);
+    costmap_->getCostmap()->setCost(dimension - 2, index, costmap_2d::LETHAL_OBSTACLE);
+    costmap_->getCostmap()->setCost(dimension - 1, index, costmap_2d::NO_INFORMATION);
   }
 }
 

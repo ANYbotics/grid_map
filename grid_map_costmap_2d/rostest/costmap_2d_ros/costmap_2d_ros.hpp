@@ -59,7 +59,7 @@ public:
   ROSCostmapPtr getROSCostmap() { return costmap; };
 
 private:
-  ROSCostmapPtr costmap;
+  ROSCostmapPtr costmap_;
   tf2_ros::Buffer tfBuffer_;
   tf2_ros::TransformListener tfListener_;
 };
