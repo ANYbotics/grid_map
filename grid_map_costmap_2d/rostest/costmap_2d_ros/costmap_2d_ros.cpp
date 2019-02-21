@@ -31,7 +31,7 @@ ROSCostmapServer::ROSCostmapServer(const std::string& name,
                                    const grid_map::Position& origin, const double& width,
                                    const double& height)
     : tfBuffer_(ros::Duration(1.0)),
-      tfListener_(tfBuffer)
+      tfListener_(tfBuffer_)
 
 {
   ros::NodeHandle privateNodeHandle("~");
@@ -48,7 +48,7 @@ ROSCostmapServer::ROSCostmapServer(const std::string& name,
   privateNodeHandle.setParam(name + "/plugins", std::vector<std::string>());
   privateNodeHandle.setParam(name + "/resolution", 0.5);
   privateNodeHandle.setParam(name + "/robot_radius", 0.03); // clears 1 cell if inside, up to 4 cells on a vertex
-  costmap_ = std::make_shared<ROSCostmap>(name, transformListener);
+  costmap_ = std::make_shared<ROSCostmap>(name, tfListener_);
 
   for ( unsigned int index = 0; index < costmap_->getCostmap()->getSizeInCellsY(); ++index ) {
     unsigned int dimension = costmap_->getCostmap()->getSizeInCellsX();

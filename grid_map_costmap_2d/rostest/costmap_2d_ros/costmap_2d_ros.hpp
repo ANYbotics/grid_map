@@ -56,7 +56,7 @@ public:
   ROSCostmapServer(const std::string& name, const std::string& baseLinkTransformName,
                    const grid_map::Position& origin, const double& width, const double& height);
 
-  ROSCostmapPtr getROSCostmap() { return costmap; };
+  ROSCostmapPtr getROSCostmap() { return costmap_; };
 
 private:
   ROSCostmapPtr costmap_;
@@ -76,3 +76,4 @@ private:
  * @param[in] broadcaster : uninitialised broadcaster object
  */
 void broadcastCostmap2DROSTestSuiteTransforms(TransformBroadcaster& broadcaster);
+b
