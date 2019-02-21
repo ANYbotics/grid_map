@@ -30,8 +30,8 @@ ROSCostmapServer::ROSCostmapServer(const std::string& name,
                                    const std::string& baseLinkTransformName,
                                    const grid_map::Position& origin, const double& width,
                                    const double& height)
-    : tfBuffer(ros::Duration(1.0)),
-      tfListener(tfBuffer)
+    : tfBuffer_(ros::Duration(1.0)),
+      tfListener_(tfBuffer)
 
 {
   ros::NodeHandle privateNodeHandle("~");

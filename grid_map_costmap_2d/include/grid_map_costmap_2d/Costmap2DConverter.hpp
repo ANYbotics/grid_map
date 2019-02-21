@@ -193,7 +193,7 @@ public:
 
     // Get the Robot Pose Transform.
 #if ROS_VERSION_MINIMUM(1,14,0)
-    geometry_msgs::PoseStamped tfpose;
+    geometry_msgs::PoseStamped tfPose;
     if(!costmap2d.getRobotPose(tfPose))
     {
       errorMessage_ =  "Could not get robot pose, is it actually published?";
