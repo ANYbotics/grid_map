@@ -338,6 +338,65 @@ GridMap GridMap::getSubmap(const Position& position, const Length& length,
   return submap;
 }
 
+GridMap GridMap::getTransformedMap(const Eigen::Affine3d& transform, const std::string& z_layer,
+                                   const double border_margin = 0.5, const double sample_ratio = 0.25) const
+{
+  GridMap newMap;
+  const double margin = 1.0 + border_margin;
+  const double sample_length = resolution_ * sample_ratio;
+  Position3 position3 = Position3(position_.x(), position_.y(), 0);
+  Position3 newPosition3 = transform * position3;
+  newMap.setGeometry(length_ * margin, resolution_, Position(newPosition3.x(), newPosition3.y()));
+  for(layer: layers_){
+    newMap.add(layer);
+  }
+  for (GridMapIterator iterator(*this); !iterator.isPastEnd(); ++iterator) {
+    // if (!isValid(*iterator)) continue;
+    Position3 center;
+    getPosition3(z_layer, *iterator, center);
+    // Sample 4 points around the center cell.
+    std::vector<Position3> positions;
+    positions.push_back(center);
+    positions.push_back(Position3(center.x() - sample_length,
+                                  center.y(),
+                                  center.z()));
+    positions.push_back(Position3(center.x() + sample_length,
+                                  center.y(),
+                                  center.z()));
+    positions.push_back(Position3(center.x(),
+                                  center.y() - sample_length,
+                                  center.z()));
+    positions.push_back(Position3(center.x(),
+                                  center.y() + sample_length,
+                                  center.z()));
+    // Transform the sampled points and register to the new map.
+    for (position: positions){
+      Position3 transformed_p = transform * position;
+      Index index;
+      newMap.getIndex(Position(transformed_p.x(), transformed_p.y()), index);
+
+      auto z_value = newMap.at(z_layer, index);
+      if(z_value > transformed_p.z()){
+        continue;
+      }
+
+      // Copy the layers except z_layer.
+      for(layer: layers_){
+        const auto currentLayer = at(layer, *iterator);
+        auto& newLayer = newMap.at(layer, index);
+        if(layer == z_layer){
+          newLayer = transformed_p.z();
+        }
+        else{
+          newLayer = currentLayer;
+        }
+      }
+    }
+  }
+
+  return newMap;
+}
+
 void GridMap::setPosition(const Position& position)
 {
   position_ = position;

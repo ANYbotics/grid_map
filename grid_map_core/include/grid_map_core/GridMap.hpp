@@ -18,6 +18,7 @@
 
 // Eigen
 #include <Eigen/Core>
+#include <Eigen/Geometry>
 
 namespace grid_map {
 
@@ -310,6 +311,18 @@ class GridMap
    */
   GridMap getSubmap(const Position& position, const Length& length, Index& indexInSubmap,
                     bool& isSuccess) const;
+
+  /*!
+   * Gets a transformed map from the map. The requested submap is specified with the requested
+   * transformation matrix.
+   * Note: The returned map may not have the requested length due to the borders
+   * of the map and discretization.
+   * @param[in] transform the requested transformation to apply.
+   * @param[in] z_layer the height layer of the map.
+   * @return map.
+   */
+  GridMap getTransformedMap(const Eigen::Affine3d& transform, const std::string& z_layer,
+                            const double border_margin = 0.5, const double sample_ratio = 0.25) const;
 
    /*!
     * Set the position of the grid map.
