@@ -76,4 +76,3 @@ private:
  * @param[in] broadcaster : uninitialised broadcaster object
  */
 void broadcastCostmap2DROSTestSuiteTransforms(TransformBroadcaster& broadcaster);
-b
