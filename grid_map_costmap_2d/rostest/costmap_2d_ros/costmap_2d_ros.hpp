@@ -7,7 +7,7 @@
 #include <costmap_2d/costmap_2d_ros.h>
 #include <grid_map_core/grid_map_core.hpp>
 #include <grid_map_costmap_2d/grid_map_costmap_2d.hpp>
-#include <tf/transform_listener.h>
+#include <tf2_ros/transform_listener.h>
 #include <tf/transform_broadcaster.h>
 
 #include <atomic>
@@ -60,7 +60,8 @@ public:
 
 private:
   ROSCostmapPtr costmap;
-  tf::TransformListener transformListener;
+  tf2_ros::Buffer tfBuffer_;
+  tf2_ros::TransformListener tfListener_;
 };
 
 

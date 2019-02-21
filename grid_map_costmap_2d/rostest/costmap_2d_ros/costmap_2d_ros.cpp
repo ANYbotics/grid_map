@@ -30,7 +30,9 @@ ROSCostmapServer::ROSCostmapServer(const std::string& name,
                                    const std::string& baseLinkTransformName,
                                    const grid_map::Position& origin, const double& width,
                                    const double& height)
-    : transformListener(ros::Duration(1.0))
+    : tfBuffer(ros::Duration(1.0)),
+      tfListener(tfBuffer)
+
 {
   ros::NodeHandle privateNodeHandle("~");
   // lots of parameters here affect the construction ( e.g. rolling window)
