@@ -8,7 +8,8 @@
 
 #include <ros/ros.h>
 #if ROS_VERSION_MINIMUM(1,14,0)
-#include <tf2_ros/TransformBroadcaster.h>
+#include <tf2_ros/transform_broadcaster.h>
+#include <tf/transform_datatypes.h>
 #else
 #include <tf/transform_broadcaster.h>
 #endif
@@ -114,8 +115,14 @@ void TransformBroadcaster::broadcast()
 #endif
   while (ros::ok() && !shutdownFlag_) {
     for (std::pair<std::string, tf::Transform> p : transforms_) {
-      tf::StampedTransform stampedTransform(p.second, ros::Time::now(), "map", p.first);
-      tfBroadcaster.sendTransform(stampedTransform);
+      tf::StampedTransform transform(p.second, ros::Time::now(), "map", p.first);
+#if ROS_VERSION_MINIMUM(1,14,0)
+      geometry_msgs::TransformStamped transformMsg;
+      tf::transformStampedTFToMsg(transform, transformMsg);
+      tfBroadcaster.sendTransform(transformMsg);
+#else
+      tfBroadcaster.sendTransform(transform);
+#endif
     }
     ros::Duration(0.1).sleep();
   }
