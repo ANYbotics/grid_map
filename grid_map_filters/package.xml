@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package format="2">
   <name>grid_map_filters</name>
-  <version>1.6.0</version>
+  <version>1.6.1</version>
   <description>Processing grid maps as a sequence of ROS filters.</description>
   <maintainer email="pfankhauser@anybotics.com">Péter Fankhauser</maintainer>
   <license>BSD</license>

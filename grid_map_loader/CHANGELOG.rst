@@ -2,8 +2,8 @@
 Changelog for package grid_map_loader
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.6.1 (2019-02-27)
+------------------
 * Updated host changes.
 * Updated author e-mail address.
 * Contributors: Peter Fankhauser, Péter Fankhauser

@@ -2,8 +2,8 @@
 Changelog for package grid_map
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.6.1 (2019-02-27)
+------------------
 * Updated author e-mail address.
 * Contributors: Peter Fankhauser
 

@@ -2,8 +2,8 @@
 Changelog for package grid_map_costmap_2d
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.6.1 (2019-02-27)
+------------------
 * Merge pull request `#202 <https://github.com/ANYbotics/grid_map/issues/202>`_ from ANYbotics/fix/tf_for_indigo_and_kinetic
   Fix/tf for indigo and kinetic
 * [grid_map_costmap_2d] Fixed test on melodic.

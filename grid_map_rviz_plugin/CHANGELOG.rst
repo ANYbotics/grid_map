@@ -2,8 +2,8 @@
 Changelog for package grid_map_rviz_plugin
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.6.1 (2019-02-27)
+------------------
 * Made FrameManager and MessageFilterDisplay ROS version dependent.
 * Update to tf2 MessageFilters
 * Updated host changes.
