@@ -2,6 +2,12 @@
 Changelog for package grid_map_filters
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Updated host changes.
+* Updated author e-mail address.
+* Contributors: Peter Fankhauser, Péter Fankhauser
+
 1.6.0 (2017-11-24)
 ------------------
 * Implemented a set of new filters:

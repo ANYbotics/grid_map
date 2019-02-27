@@ -2,6 +2,14 @@
 Changelog for package grid_map_rviz_plugin
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Made FrameManager and MessageFilterDisplay ROS version dependent.
+* Update to tf2 MessageFilters
+* Updated host changes.
+* Updated author e-mail address.
+* Contributors: Marco Sütterlin, Peter Fankhauser, Péter Fankhauser
+
 1.6.0 (2017-11-24)
 ------------------
 * Added option to rviz plugin to hide color faces.
