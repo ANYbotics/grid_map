@@ -23,9 +23,15 @@ class MessageFilterDisplayMod : public rviz::MessageFilterDisplay<MessageType>
 
   void onInitialize()
   {
+  #if ROS_VERSION_MINIMUM(1,14,0)
+    MFDClass::tf_filter_ = new tf2_ros::MessageFilter<MessageType>(*MFDClass::context_->getTF2BufferPtr(),
+                                                              MFDClass::fixed_frame_.toStdString(),
+                                                              10, MFDClass::update_nh_);
+  #else
     MFDClass::tf_filter_ = new tf::MessageFilter<MessageType>(*MFDClass::context_->getTFClient(),
                                                               MFDClass::fixed_frame_.toStdString(),
                                                               10, MFDClass::update_nh_);
+  #endif
 
     MFDClass::tf_filter_->connectInput(MFDClass::sub_);
     MFDClass::tf_filter_->registerCallback(

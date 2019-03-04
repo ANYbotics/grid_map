@@ -2,6 +2,17 @@
 Changelog for package grid_map_msgs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.6.1 (2019-02-27)
+------------------
+* Merge remote-tracking branch 'origin/master' into fix/melodic
+* Merge pull request `#198 <https://github.com/ANYbotics/grid_map/issues/198>`_ from ANYbotics/feature/extend_process_file_srv
+  Extend ProcessFile.srv to include topic_name field.
+* Restore single topic_name field, as discussed with Peter.
+* Update ProcessFile.srv
+* Extend ProcessFile.srv to include topic_name field.
+* Updated author e-mail address.
+* Contributors: Marco Tranzatto, MarcoSuetterlin, Peter Fankhauser, Péter Fankhauser
+
 1.6.0 (2017-11-24)
 ------------------
 

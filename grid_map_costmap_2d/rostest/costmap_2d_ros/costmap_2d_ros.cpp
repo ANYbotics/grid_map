@@ -6,6 +6,14 @@
 #include <iostream>
 #include <string>
 
+#include <ros/ros.h>
+#if ROS_VERSION_MINIMUM(1,14,0)
+#include <tf2_ros/transform_broadcaster.h>
+#include <tf/transform_datatypes.h>
+#else
+#include <tf/transform_broadcaster.h>
+#endif
+
 #include "costmap_2d_ros.hpp"
 
 /*****************************************************************************
@@ -30,7 +38,12 @@ ROSCostmapServer::ROSCostmapServer(const std::string& name,
                                    const std::string& baseLinkTransformName,
                                    const grid_map::Position& origin, const double& width,
                                    const double& height)
-    : transformListener(ros::Duration(1.0))
+#if ROS_VERSION_MINIMUM(1,14,0)
+    : tfBuffer_(ros::Duration(1.0)),
+      tfListener_(tfBuffer_)
+#else
+    : tfListener_(ros::Duration(1.0))
+#endif
 {
   ros::NodeHandle privateNodeHandle("~");
   // lots of parameters here affect the construction ( e.g. rolling window)
@@ -46,19 +59,23 @@ ROSCostmapServer::ROSCostmapServer(const std::string& name,
   privateNodeHandle.setParam(name + "/plugins", std::vector<std::string>());
   privateNodeHandle.setParam(name + "/resolution", 0.5);
   privateNodeHandle.setParam(name + "/robot_radius", 0.03); // clears 1 cell if inside, up to 4 cells on a vertex
-  costmap = std::make_shared<ROSCostmap>(name, transformListener);
+#if ROS_VERSION_MINIMUM(1,14,0)
+  costmap_ = std::make_shared<ROSCostmap>(name, tfBuffer_);
+#else
+  costmap_ = std::make_shared<ROSCostmap>(name, tfListener_);
+#endif
 
-  for ( unsigned int index = 0; index < costmap->getCostmap()->getSizeInCellsY(); ++index ) {
-    unsigned int dimension = costmap->getCostmap()->getSizeInCellsX();
+  for ( unsigned int index = 0; index < costmap_->getCostmap()->getSizeInCellsY(); ++index ) {
+    unsigned int dimension = costmap_->getCostmap()->getSizeInCellsX();
     // @todo assert dimension > 1
     // set the first row to costmap_2d::FREE_SPACE? but it shows up invisibly in rviz, so don't bother
     for ( unsigned int fill_index = 0; fill_index < dimension - 2; ++fill_index )
     {
-      double fraction = static_cast<double>(fill_index + 1) / static_cast<double>(costmap->getCostmap()->getSizeInCellsX());
-      costmap->getCostmap()->setCost(fill_index, index, fraction*costmap_2d::INSCRIBED_INFLATED_OBSTACLE );
+      double fraction = static_cast<double>(fill_index + 1) / static_cast<double>(costmap_->getCostmap()->getSizeInCellsX());
+      costmap_->getCostmap()->setCost(fill_index, index, fraction*costmap_2d::INSCRIBED_INFLATED_OBSTACLE );
     }
-    costmap->getCostmap()->setCost(dimension - 2, index, costmap_2d::LETHAL_OBSTACLE);
-    costmap->getCostmap()->setCost(dimension - 1, index, costmap_2d::NO_INFORMATION);
+    costmap_->getCostmap()->setCost(dimension - 2, index, costmap_2d::LETHAL_OBSTACLE);
+    costmap_->getCostmap()->setCost(dimension - 1, index, costmap_2d::NO_INFORMATION);
   }
 }
 
@@ -91,11 +108,21 @@ void TransformBroadcaster::startBroadCastingThread() {
 
 void TransformBroadcaster::broadcast()
 {
-  tf::TransformBroadcaster tf_broadcaster;
+#if ROS_VERSION_MINIMUM(1,14,0)
+  tf2_ros::TransformBroadcaster tfBroadcaster;
+#else
+  tf::TransformBroadcaster tfBroadcaster;
+#endif
   while (ros::ok() && !shutdownFlag_) {
     for (std::pair<std::string, tf::Transform> p : transforms_) {
-      tf::StampedTransform stamped_transform(p.second, ros::Time::now(), "map", p.first);
-      tf_broadcaster.sendTransform(stamped_transform);
+      tf::StampedTransform transform(p.second, ros::Time::now(), "map", p.first);
+#if ROS_VERSION_MINIMUM(1,14,0)
+      geometry_msgs::TransformStamped transformMsg;
+      tf::transformStampedTFToMsg(transform, transformMsg);
+      tfBroadcaster.sendTransform(transformMsg);
+#else
+      tfBroadcaster.sendTransform(transform);
+#endif
     }
     ros::Duration(0.1).sleep();
   }
@@ -108,7 +135,6 @@ void TransformBroadcaster::broadcast()
 bool fromCostmap2DROS(costmap_2d::Costmap2DROS& ros_costmap, const std::string& layer_name,
                       grid_map::GridMap& grid_map)
 {
-
   grid_map::Costmap2DConverter<grid_map::GridMap> converter;
   boost::lock_guard<costmap_2d::Costmap2D::mutex_t> lock(*(ros_costmap.getCostmap()->getMutex()));
   converter.initializeFromCostmap2D(ros_costmap, grid_map);

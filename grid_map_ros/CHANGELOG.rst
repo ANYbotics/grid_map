@@ -2,6 +2,12 @@
 Changelog for package grid_map_ros
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.6.1 (2019-02-27)
+------------------
+* Updated host changes.
+* Updated author e-mail address.
+* Contributors: Peter Fankhauser, Péter Fankhauser
+
 1.6.0 (2017-11-24)
 ------------------
 * Fixed the constructor for the ros::Time in saveToBag to correctly use fromNSec.
