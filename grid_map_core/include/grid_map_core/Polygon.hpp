@@ -221,8 +221,15 @@ class Polygon
   static double computeCrossProduct2D(const Eigen::Vector2d& vector1,
                                       const Eigen::Vector2d& vector2);
 
+  /*!
+   * Updates the maximum and minimum coordinates with this vertex point.
+   * @param[in] vertex Vertex point which was added to the polygon.
+   */
   void updateMinMaxCoords(const Position& vertex);
 
+  /*!
+   * Resets the minimum and maximum coordinates to the numeric limits.
+   */
   void resetMinMaxCoords();
 
   //! Frame id of the polygon.

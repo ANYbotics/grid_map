@@ -33,7 +33,7 @@ Polygon::~Polygon() {}
 
 bool Polygon::isInside(const Position& point) const
 {
-  // Check bounding box of polygon first. 
+  // Check bounding box of polygon first.
   if (point.x() < minCoord_.x()) return false;
   else if (point.x() > maxCoord_.x()) return false;
   else if (point.y() < minCoord_.y()) return false;
@@ -71,8 +71,8 @@ void Polygon::updateMinMaxCoords(const Position& vertex) {
 }
 
 void Polygon::resetMinMaxCoords() {
-  minCoord_.setConstant(std::numeric_limits<double>::max());
-  maxCoord_.setConstant(-std::numeric_limits<double>::max());
+  minCoord_.setConstant(std::numeric_limits<Position::Scalar>::max());
+  maxCoord_.setConstant(-std::numeric_limits<Position::Scalar>::max());
 }
 
 void Polygon::removeVertices()
