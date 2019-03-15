@@ -221,6 +221,10 @@ class Polygon
   static double computeCrossProduct2D(const Eigen::Vector2d& vector1,
                                       const Eigen::Vector2d& vector2);
 
+  void updateMinMaxCoords(const Position& vertex);
+
+  void resetMinMaxCoords();
+
   //! Frame id of the polygon.
   std::string frameId_;
 
@@ -229,6 +233,12 @@ class Polygon
 
   //! Vertices of the polygon.
   std::vector<Position> vertices_;
+
+  //! Helper variables for speeding up isInside() computation.
+  //! Maximum x and y values of polygon bounding box.
+  Position maxCoord_;
+  //! Minimum x and y values of polygon bounding box.
+  Position minCoord_;
 
  public:
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW

@@ -24,12 +24,22 @@ Polygon::Polygon(std::vector<Position> vertices)
     : Polygon()
 {
   vertices_ = vertices;
+  for (const auto& vertex: vertices) {
+    updateMinMaxCoords(vertex);
+  }
 }
 
 Polygon::~Polygon() {}
 
 bool Polygon::isInside(const Position& point) const
 {
+  // Check bounding box of polygon first. 
+  if (point.x() < minCoord_.x()) return false;
+  else if (point.x() > maxCoord_.x()) return false;
+  else if (point.y() < minCoord_.y()) return false;
+  else if (point.y() > maxCoord_.y()) return false;
+
+  // Do exact polygon check.
   int cross = 0;
   for (int i = 0, j = vertices_.size() - 1; i < vertices_.size(); j = i++) {
     if ( ((vertices_[i].y() > point.y()) != (vertices_[j].y() > point.y()))
@@ -45,11 +55,24 @@ bool Polygon::isInside(const Position& point) const
 void Polygon::addVertex(const Position& vertex)
 {
   vertices_.push_back(vertex);
+  updateMinMaxCoords(vertex);
 }
 
 const Position& Polygon::getVertex(const size_t index) const
 {
   return vertices_.at(index);
+}
+
+void Polygon::updateMinMaxCoords(const Position& vertex) {
+  if (vertex.x() > maxCoord_.x()) maxCoord_.x() = vertex.x();
+  if (vertex.y() > maxCoord_.y()) maxCoord_.y() = vertex.y();
+  if (vertex.x() < minCoord_.x()) minCoord_.x() = vertex.x();
+  if (vertex.y() > minCoord_.y()) minCoord_.y() = vertex.y();
+}
+
+void Polygon::resetMinMaxCoords() {
+  minCoord_.setConstant(std::numeric_limits<double>::max());
+  maxCoord_.setConstant(-std::numeric_limits<double>::max());
 }
 
 void Polygon::removeVertices()
