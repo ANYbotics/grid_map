@@ -12,6 +12,7 @@
 
 #include <pcl/point_types.h>
 #include <pcl/conversions.h>
+#include <boost/thread.hpp>
 
 #include <string>
 #include <vector>
@@ -37,6 +38,7 @@ class SignedDistanceField
   Size size_;
   Position position_;
   std::vector<Matrix> data_;
+  mutable boost::shared_mutex mutexData_;
   float zIndexStartHeight_;
   float maxDistance_;
   const float lowestHeight_;

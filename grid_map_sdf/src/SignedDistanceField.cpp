@@ -21,7 +21,8 @@ SignedDistanceField::SignedDistanceField()
     : maxDistance_(std::numeric_limits<float>::max()),
       zIndexStartHeight_(0.0),
       resolution_(0.0),
-      lowestHeight_(-1e5) // We need some precision.
+      lowestHeight_(-1e5), // We need some precision.
+      mutexData_()
 {
 }
 
@@ -32,7 +33,7 @@ SignedDistanceField::~SignedDistanceField()
 void SignedDistanceField::calculateSignedDistanceField(const GridMap& gridMap, const std::string& layer,
                                                        const double heightClearance)
 {
-  data_.clear();
+  std::vector<Matrix> dataBuffer;
   resolution_ = gridMap.getResolution();
   position_ = gridMap.getPosition();
   size_ = gridMap.getSize();
@@ -75,8 +76,10 @@ void SignedDistanceField::calculateSignedDistanceField(const GridMap& gridMap, c
       else if (sdf2d(i) < 0) sdfLayer(i) = -std::min(fabs(sdf2d(i)), fabs(map(i) - h));
       else sdfLayer(i) = std::min(sdf2d(i), sdfElevationAbove(i));
     }
-    data_.push_back(sdfLayer);
+    dataBuffer.push_back(sdfLayer);
   }
+  boost::shared_lock<boost::shared_mutex> lock(mutexData_);
+  data_ = dataBuffer;
 }
 
 grid_map::Matrix SignedDistanceField::getPlanarSignedDistanceField(Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic>& data) const
@@ -110,6 +113,7 @@ double SignedDistanceField::getDistanceAt(const Position3& position) const
   int i = std::round(xCenter - (position.x() - position_.x()) / resolution_);
   int j = std::round(yCenter - (position.y() - position_.y()) / resolution_);
   int k = std::round((position.z() - zIndexStartHeight_) / resolution_);
+  boost::shared_lock<boost::shared_mutex> lock(mutexData_);
   i = std::max(i, 0);
   i = std::min(i, size_.x() - 1);
   j = std::max(j, 0);
@@ -126,17 +130,20 @@ double SignedDistanceField::getInterpolatedDistanceAt(const Position3& position)
   int i = std::round(xCenter - (position.x() - position_.x()) / resolution_);
   int j = std::round(yCenter - (position.y() - position_.y()) / resolution_);
   int k = std::round((position.z() - zIndexStartHeight_) / resolution_);
+  boost::shared_lock<boost::shared_mutex> lock(mutexData_);
   i = std::max(i, 0);
   i = std::min(i, size_.x() - 1);
   j = std::max(j, 0);
   j = std::min(j, size_.y() - 1);
   k = std::max(k, 0);
   k = std::min(k, (int)data_.size() - 1);
+  lock.unlock();
   Vector3 gradient = getDistanceGradientAt(position);
   double xp = position_.x() + ((size_.x() - i) - xCenter) * resolution_;
   double yp = position_.y() + ((size_.y() - j) - yCenter) * resolution_;
   double zp = zIndexStartHeight_ + k * resolution_;
   Vector3 error = position - Vector3(xp, yp, zp);
+  lock.lock();
   return data_[k](i, j) + gradient.dot(error);
 }
 
@@ -147,6 +154,7 @@ Vector3 SignedDistanceField::getDistanceGradientAt(const Position3& position) co
   int i = std::round(xCenter - (position.x() - position_.x()) / resolution_);
   int j = std::round(yCenter - (position.y() - position_.y()) / resolution_);
   int k = std::round((position.z() - zIndexStartHeight_) / resolution_);
+  boost::shared_lock<boost::shared_mutex> lock(mutexData_);
   i = std::max(i, 1);
   i = std::min(i, size_.x() - 2);
   j = std::max(j, 1);
@@ -163,6 +171,7 @@ void SignedDistanceField::convertToPointCloud(pcl::PointCloud<pcl::PointXYZI>& p
 {
   double xCenter = size_.x() / 2.0;
   double yCenter = size_.y() / 2.0;
+  boost::shared_lock<boost::shared_mutex> lock(mutexData_);
   for (int z = 0; z < data_.size(); z++){
     for (int y = 0; y < size_.y(); y++) {
       for (int x = 0; x < size_.x(); x++) {
