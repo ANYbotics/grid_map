@@ -37,10 +37,12 @@ GridMapVisual::GridMapVisual(Ogre::SceneManager* sceneManager, Ogre::SceneNode* 
 
 GridMapVisual::~GridMapVisual()
 {
-  // Destroy the ManualObject.
-  sceneManager_->destroyManualObject(manualObject_);
-  material_->unload();
-  Ogre::MaterialManager::getSingleton().remove(material_->getName());
+  // Destroy the ManualObject if it was created.
+  if (manualObject_) {
+    sceneManager_->destroyManualObject(manualObject_);
+    material_->unload();
+    Ogre::MaterialManager::getSingleton().remove(material_->getName());
+  }
 
   // Destroy the frame node.
   sceneManager_->destroySceneNode(frameNode_);
