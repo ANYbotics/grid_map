@@ -335,4 +335,3 @@ double Polygon::computeCrossProduct2D(const Eigen::Vector2d& vector1,
 }
 
 } /* namespace grid_map */
-

@@ -23,7 +23,7 @@ namespace grid_map {
  * Returns the number of dimensions of the grid map.
  * @return number of dimensions.
  */
-const int nDimensions();
+int nDimensions();
 
 enum class StorageIndices {
     Column,
