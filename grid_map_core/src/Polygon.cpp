@@ -67,7 +67,7 @@ const std::vector<Position>& Polygon::getVertices() const
   return vertices_;
 }
 
-const size_t Polygon::nVertices() const
+size_t Polygon::nVertices() const
 {
   return vertices_.size();
 }
@@ -97,7 +97,7 @@ void Polygon::resetTimestamp()
   timestamp_ = 0.0;
 }
 
-const double Polygon::getArea() const
+double Polygon::getArea() const
 {
   double area = 0.0;
   int j = vertices_.size() - 1;
@@ -335,4 +335,3 @@ double Polygon::computeCrossProduct2D(const Eigen::Vector2d& vector1,
 }
 
 } /* namespace grid_map */
-
