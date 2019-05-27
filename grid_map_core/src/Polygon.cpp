@@ -12,6 +12,7 @@
 #include <Eigen/Geometry>
 
 #include <limits>
+#include <algorithm>
 
 namespace grid_map {
 
@@ -292,32 +293,41 @@ Polygon Polygon::convexHull(Polygon& polygon1, Polygon& polygon2)
   vertices.insert(vertices.end(), polygon1.getVertices().begin(), polygon1.getVertices().end());
   vertices.insert(vertices.end(), polygon2.getVertices().begin(), polygon2.getVertices().end());
 
-  std::vector<Position> hull(vertices.size()+1);
+  return monotoneChainConvexHullOfPoints(vertices);
+}
+
+Polygon Polygon::monotoneChainConvexHullOfPoints(const std::vector<Position>& points)
+{
+  // Adapted from https://en.wikibooks.org/wiki/Algorithm_Implementation/Geometry/Convex_hull/Monotone_chain
+  if (points.size() <= 3) {
+    return Polygon(points);
+  }
+  std::vector<Position> pointsConvexHull(2 * points.size());
 
   // Sort points lexicographically.
-  std::sort(vertices.begin(), vertices.end(), sortVertices);
+  auto sortedPoints(points);
+  std::sort(sortedPoints.begin(), sortedPoints.end(), sortVertices);
+
 
   int k = 0;
   // Build lower hull
-  for (int i = 0; i < vertices.size(); ++i) {
-    while (k >= 2
-        && computeCrossProduct2D(hull.at(k - 1) - hull.at(k - 2),
-                                 vertices.at(i) - hull.at(k - 2)) <= 0)
+  for (int i = 0; i < sortedPoints.size(); ++i) {
+    while (k >= 2 && vectorsMakeClockwiseTurn(pointsConvexHull.at(k - 2), pointsConvexHull.at(k - 1), sortedPoints.at(i))) {
       k--;
-    hull.at(k++) = vertices.at(i);
+    }
+    pointsConvexHull.at(k++) = sortedPoints.at(i);
   }
 
   // Build upper hull.
-  for (int i = vertices.size() - 2, t = k + 1; i >= 0; i--) {
-    while (k >= t
-        && computeCrossProduct2D(hull.at(k - 1) - hull.at(k - 2),
-                                 vertices.at(i) - hull.at(k - 2)) <= 0)
+  for (int i = sortedPoints.size() - 2, t = k + 1; i >= 0; i--) {
+    while (k >= t && vectorsMakeClockwiseTurn(pointsConvexHull.at(k - 2), pointsConvexHull.at(k - 1), sortedPoints.at(i))) {
       k--;
-    hull.at(k++) = vertices.at(i);
+    }
+    pointsConvexHull.at(k++) = sortedPoints.at(i);
   }
-  hull.resize(k - 1);
+  pointsConvexHull.resize(k - 1);
 
-  Polygon polygon(hull);
+  Polygon polygon(pointsConvexHull);
   return polygon;
 }
 
@@ -332,6 +342,13 @@ double Polygon::computeCrossProduct2D(const Eigen::Vector2d& vector1,
                                       const Eigen::Vector2d& vector2)
 {
   return (vector1.x() * vector2.y() - vector1.y() * vector2.x());
+}
+
+double Polygon::vectorsMakeClockwiseTurn(const Eigen::Vector2d &pointOrigin,
+                                         const Eigen::Vector2d &pointA,
+                                         const Eigen::Vector2d &pointB)
+{
+  return computeCrossProduct2D(pointA - pointOrigin, pointB - pointOrigin) <= 0;
 }
 
 } /* namespace grid_map */

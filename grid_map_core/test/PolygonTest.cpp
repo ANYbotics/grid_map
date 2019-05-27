@@ -67,6 +67,39 @@ TEST(Polygon, getBoundingBox)
   EXPECT_DOUBLE_EQ(expectedLength.y(), length.y());
 }
 
+TEST(Polygon, convexHullPoints)
+{
+  // Test that points which already create a convex shape (square) can be used to create a convex polygon.
+  std::vector<Position> points1;
+  points1.push_back(Vector2d(0.0, 0.0));
+  points1.push_back(Vector2d(1.0, 0.0));
+  points1.push_back(Vector2d(1.0, 1.0));
+  points1.push_back(Vector2d(0.0, 1.0));
+  Polygon polygon1 = Polygon::monotoneChainConvexHullOfPoints(points1);
+  EXPECT_EQ(4, polygon1.nVertices());
+  EXPECT_TRUE(polygon1.isInside(Vector2d(0.5, 0.5)));
+  EXPECT_FALSE(polygon1.isInside(Vector2d(-0.01, 0.5)));
+
+  // Test that a random set of points can be used to create a convex polygon.
+  std::vector<Position> points2;
+  points2.push_back(Vector2d(0.0, 0.0));
+  points2.push_back(Vector2d(1.0, 0.0));
+  points2.push_back(Vector2d(2.0, 1.0));
+  points2.push_back(Vector2d(1.0, 2.0));
+  points2.push_back(Vector2d(-1.0, 2.0));
+  points2.push_back(Vector2d(-1.0, -2.0));
+  points2.push_back(Vector2d(0.0, 1.0));
+  points2.push_back(Vector2d(1.0, 1.0));
+  Polygon polygon2 = Polygon::monotoneChainConvexHullOfPoints(points2);
+  EXPECT_EQ(4, polygon2.nVertices());
+  EXPECT_TRUE(polygon2.isInside(Vector2d(0.5, 0.5)));
+  EXPECT_TRUE(polygon2.isInside(Vector2d(0.0, 1.0)));
+  EXPECT_TRUE(polygon2.isInside(Vector2d(-0.5, -0.5)));
+  EXPECT_FALSE(polygon2.isInside(Vector2d(2.0, 0.0)));
+  EXPECT_FALSE(polygon2.isInside(Vector2d(-0.5, -2)));
+  EXPECT_FALSE(polygon2.isInside(Vector2d(1.75, 1.75)));
+}
+
 TEST(Polygon, convexHullPolygon)
 {
   Polygon polygon1;
