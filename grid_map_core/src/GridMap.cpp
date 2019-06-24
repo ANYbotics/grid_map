@@ -338,6 +338,113 @@ GridMap GridMap::getSubmap(const Position& position, const Length& length,
   return submap;
 }
 
+GridMap GridMap::getTransformedMap(const Eigen::Isometry3d& transform, const std::string& heightLayerName,
+                                   const std::string& newFrameId,
+                                   const double sampleRatio) const
+{
+  // Check if height layer is valid.
+  if (!exists(heightLayerName)) {
+    throw std::out_of_range("GridMap::getTransformedMap(...) : No map layer '" + heightLayerName + "' available.");
+  }
+
+  // Initialization.
+  std::vector<Position3> positionSamples;
+  Position3 center;
+  Index newIndex;
+
+  const double sampleLength = resolution_*sampleRatio;
+
+  // Find edges in new coordinate frame.
+  const double halfLengthX = length_.x()*0.5;
+  const double halfLengthY = length_.y()*0.5;
+  const Position3 topLeftCorner     (position_.x() + halfLengthX, position_.y() + halfLengthY, 0.0);
+  const Position3 topRightCorner    (position_.x() + halfLengthX, position_.y() - halfLengthY, 0.0);
+  const Position3 bottomLeftCorner  (position_.x() - halfLengthX, position_.y() + halfLengthY, 0.0);
+  const Position3 bottomRightCorner (position_.x() - halfLengthX, position_.y() - halfLengthY, 0.0);
+
+  std::vector<Position3> newEdges;
+  newEdges.reserve(4);
+  newEdges.push_back(transform * topLeftCorner);
+  newEdges.push_back(transform * topRightCorner);
+  newEdges.push_back(transform * bottomLeftCorner);
+  newEdges.push_back(transform * bottomRightCorner);
+
+
+  // Find new grid center.
+  Position3 newCenter = Position3::Zero();
+  for (const auto& newEdge : newEdges) { newCenter += newEdge; }
+  newCenter *= 0.25;
+
+  // Find new grid length.
+  Length maxLengthFromCenter = Length(0.0, 0.0);
+  for (const auto& newEdge : newEdges) {
+    Position3 positionCenterToEdge = newEdge-newCenter;
+    maxLengthFromCenter.x() = std::fmax(std::fabs(positionCenterToEdge.x()), maxLengthFromCenter.x());
+    maxLengthFromCenter.y() = std::fmax(std::fabs(positionCenterToEdge.y()), maxLengthFromCenter.y());
+  }
+  Length newLength = 2.0*maxLengthFromCenter;
+
+  // Create new grid map.
+  GridMap newMap(layers_);
+  newMap.setBasicLayers(basicLayers_);
+  newMap.setTimestamp(timestamp_);
+  newMap.setFrameId(newFrameId);
+  newMap.setGeometry(newLength, resolution_, Position(newCenter.x(), newCenter.y()));
+  newMap.startIndex_.setZero();
+
+  for (GridMapIterator iterator(*this); !iterator.isPastEnd(); ++iterator) {
+    // Get position at current index.
+    if(!getPosition3(heightLayerName, *iterator, center)) { continue; }
+
+    // Sample four points around the center cell.
+    positionSamples.clear();
+
+    if (sampleRatio>0.0) {
+      positionSamples.reserve(5);
+      positionSamples.push_back(center);
+      positionSamples.push_back(Position3(center.x() - sampleLength,
+                                          center.y(),
+                                          center.z()));
+      positionSamples.push_back(Position3(center.x() + sampleLength,
+                                          center.y(),
+                                          center.z()));
+      positionSamples.push_back(Position3(center.x(),
+                                          center.y() - sampleLength,
+                                          center.z()));
+      positionSamples.push_back(Position3(center.x(),
+                                          center.y() + sampleLength,
+                                          center.z()));
+    } else {
+      positionSamples.push_back(center);
+    }
+
+
+    // Transform the sampled points and register to the new map.
+    for (const auto& position : positionSamples){
+      const Position3 transformedPosition = transform * position;
+
+      // Get new index.
+      if(!newMap.getIndex(Position(transformedPosition.x(), transformedPosition.y()), newIndex)) { continue; }
+
+      // Check if we have already assigned a value (preferably larger height values -> inpainting).
+      const auto newExistingValue = newMap.at(heightLayerName, newIndex);
+      if(!std::isnan(newExistingValue) && newExistingValue > transformedPosition.z()){
+        continue;
+      }
+
+      // Copy the layers.
+      for(const auto& layer: layers_){
+        const auto currentValueInOldGrid = at(layer, *iterator);
+        auto& newValue = newMap.at(layer, newIndex);
+        if(layer == heightLayerName) { newValue = transformedPosition.z(); } // adjust height
+        else { newValue = currentValueInOldGrid; } // re-assign
+      }
+    }
+  }
+
+  return newMap;
+}
+
 void GridMap::setPosition(const Position& position)
 {
   position_ = position;

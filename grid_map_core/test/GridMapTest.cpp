@@ -84,6 +84,46 @@ TEST(GridMap, Move)
   EXPECT_EQ(2, regions[1].getSize()[1]);
 }
 
+TEST(GridMap, Transform)
+{
+  // Initial map.
+  GridMap map;
+  const auto heightLayerName = "height";
+
+  map.setGeometry(Length(1.0, 2.0), 0.1, Position(0.0, 0.0));
+  map.add(heightLayerName, 0.0);
+  map.setBasicLayers(map.getLayers());
+  map.get(heightLayerName)(0,0) = 1.0;
+
+  // Transformation (90° rotation).
+  Eigen::Isometry3d transform;
+
+  transform.translation().x() = 0.0;
+  transform.translation().y() = 0.0;
+  transform.translation().z() = 0.0;
+
+  transform.linear()(0,0) =  0.0;
+  transform.linear()(0,1) = -1.0;
+  transform.linear()(0,2) =  0.0;
+
+  transform.linear()(1,0) =  1.0;
+  transform.linear()(1,1) =  0.0;
+  transform.linear()(1,2) =  0.0;
+
+  transform.linear()(2,0) =  0.0;
+  transform.linear()(2,1) =  0.0;
+  transform.linear()(2,2) =  1.0;
+
+  // Apply affine transformation.
+  const GridMap transformedMap = map.getTransformedMap(transform, heightLayerName, map.getFrameId(), 0.25);
+
+  // Check if map has been rotated by 90° about z
+  EXPECT_NEAR(map.getLength().x(), transformedMap.getLength().y(), 1e-6);
+  EXPECT_NEAR(map.getLength().y(), transformedMap.getLength().x(), 1e-6);
+  EXPECT_EQ(map.get(heightLayerName).size(), transformedMap.get(heightLayerName).size());
+  EXPECT_DOUBLE_EQ(map.get(heightLayerName)(0,0), transformedMap.get(heightLayerName)(19,0));
+}
+
 TEST(AddDataFrom, ExtendMapAligned)
 {
   GridMap map1, map2;
