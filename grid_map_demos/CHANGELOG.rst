@@ -10,7 +10,7 @@ Changelog for package grid_map_demos
 
 1.6.0 (2017-11-24)
 ------------------
-* Fixed compatibility issue with OpenCV 3 (`#140 <https://github.com/ethz-asl/grid_map/issues/140>`_).
+* Fixed compatibility issue with OpenCV 3 (`#140 <https://github.com/anybotics/grid_map/issues/140>`_).
 * Fixing cpp-check warnings and errors.
 * Fixed dependencies for grid_map_demos.
 * Updated terrain for filters demo.
@@ -62,7 +62,7 @@ Changelog for package grid_map_demos
 ------------------
 * Added new demonstrators for OpenCV based operations.
 * Resolving build errors for OpenCV.
-* Added comment on iterator performance (`#45 <https://github.com/ethz-asl/grid_map/issues/45>`_).
+* Added comment on iterator performance (`#45 <https://github.com/anybotics/grid_map/issues/45>`_).
 * Contributors: Peter Fankhauser
 
 1.2.0 (2016-03-03)

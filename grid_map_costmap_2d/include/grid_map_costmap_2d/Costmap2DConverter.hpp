@@ -219,7 +219,7 @@ public:
     //   that (two cases to consider, rolling window and globally fixed).
     //
     // Relevant diagrams:
-    //  - https://github.com/ethz-asl/grid_map
+    //  - https://github.com/anybotics/grid_map
 
     // Float versions of the cell co-ordinates, use static_cast<int> to get the indices.
     Position robotCellPosition = (robotPosition - rosMapOrigin) / resolution;
