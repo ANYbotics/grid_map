@@ -111,13 +111,21 @@ void NormalVectorsFilter<T>::computeWithArea(GridMap& map, const std::string& in
     Position center;
     map.getPosition(*iterator, center);
 
-    // Prepare data computation.
-    const int maxNumberOfCells = pow(ceil(2 * estimationRadius_ / map.getResolution()), 2);
+    // Prepare data computation. Check if area is bigger than cell.
+    const double minAllowedEstimationRadius = 0.5 * map.getResolution();
+    if (estimationRadius_ <= minAllowedEstimationRadius) {
+      ROS_WARN("Estimation radius is smaller than allowed by the map resolution (%d < %d)", estimationRadius_, minAllowedEstimationRadius);
+    }
+    // Max number of cells is the square in which the estimation area would fit. If area < cell, one cell is taken.
+    const int maxNumberOfCells = pow(ceil(2 * estimationRadius_ / map.getResolution()) + 1, 2);
     Eigen::MatrixXd points(3, maxNumberOfCells);
 
     // Gather surrounding data.
     size_t nPoints = 0;
     for (CircleIterator iterator(map, center, estimationRadius_); !iterator.isPastEnd(); ++iterator) {
+      // Guard to prevent memory allocation issues
+      if (nPoints > maxNumberOfCells) break;
+      // Guard to prevent invalid points from being considered
       if (!map.isValid(*iterator, inputLayer_)) continue;
       Position3 point;
       map.getPosition3(inputLayer_, *iterator, point);
