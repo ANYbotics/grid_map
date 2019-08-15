@@ -245,10 +245,37 @@ private:
     std::string authority = msg_evt.getPublisherName();
 
     messageFailed(msg->info.header.frame_id, msg->info.header.stamp, authority, reason, display);
-  }
+  } 
 
   void messageArrived(const std::string& frame_id, const ros::Time& stamp, const std::string& caller_id, Display* display);
-  void messageFailed(const std::string& frame_id, const ros::Time& stamp, const std::string& caller_id, FilterFailureReason reason, Display* display);
+  
+  void messageFailedImpl(
+    const std::string& caller_id,
+    const std::string& status_text,
+    Display* display);
+
+  template<class TfFilterFailureReasonType>
+  void messageFailed(
+    const std::string& frame_id,
+    const ros::Time& stamp,
+    const std::string& caller_id,
+    TfFilterFailureReasonType reason,
+    Display* display)
+  {
+    // TODO(wjwwood): remove this when only Tf2 is supported
+#ifndef _WIN32
+# pragma GCC diagnostic push
+# pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
+
+    std::string status_text = discoverFailureReason( frame_id, stamp, caller_id, reason );
+
+#ifndef _WIN32
+# pragma GCC diagnostic pop
+#endif
+
+    messageFailedImpl(caller_id, status_text, display);
+  }
 
   struct CacheKey
   {
