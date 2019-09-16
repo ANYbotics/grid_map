@@ -476,6 +476,14 @@ class GridMap
    */
   void convertToDefaultStartIndex();
 
+  /*!
+   * Calculates the closest point to positionOutMap that is in the grid map.
+   * If positionOutMap is already in the grid map, that position is returned.
+   * @param[in] position position that should be approached as close as possible.
+   * @return position in map.
+   */
+  Position getClosestPositionInMap(const Position& position) const;
+
  private:
 
   /*!

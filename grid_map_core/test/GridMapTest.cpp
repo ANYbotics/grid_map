@@ -124,6 +124,30 @@ TEST(GridMap, Transform)
   EXPECT_DOUBLE_EQ(map.get(heightLayerName)(0,0), transformedMap.get(heightLayerName)(19,0));
 }
 
+TEST(GridMap, ClipToMap)
+{
+  GridMap map({"layer_a", "layer_b"});
+  map.setGeometry(Length(1.0, 1.0), 0.1, Position(0.5, 0.5));
+  map["layer_a"].setConstant(1.0);
+  map["layer_b"].setConstant(2.0);
+
+  const Position positionInMap = Position(0.4, 0.3); // position located inside the map
+  const Position positionOutMap = Position(1.0, 2.0); // position located outside the map
+
+  const Position clippedPositionInMap = map.getClosestPositionInMap(positionInMap);
+  const Position clippedPositionOutMap = map.getClosestPositionInMap(positionOutMap);
+
+  // Check if position-in-map remains unchanged.
+  EXPECT_NEAR(clippedPositionInMap.x(),positionInMap.x(), 1e-6);
+  EXPECT_NEAR(clippedPositionInMap.y(), positionInMap.y(), 1e-6);
+
+  // Check if position-out-map is indeed outside of the map.
+  EXPECT_TRUE(!map.isInside(positionOutMap));
+
+  // Check if position-out-map has been projected into the map.
+  EXPECT_TRUE(map.isInside(clippedPositionOutMap));
+}
+
 TEST(AddDataFrom, ExtendMapAligned)
 {
   GridMap map1, map2;

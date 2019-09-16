@@ -717,6 +717,41 @@ void GridMap::convertToDefaultStartIndex()
   startIndex_.setZero();
 }
 
+Position GridMap::getClosestPositionInMap(const Position& position) const {
+  if (getSize().x()<1u || getSize().y()<1u) {
+    return position_;
+  }
+
+  if (isInside(position)) {
+    return position;
+  }
+
+  Position positionInMap = position;
+
+  // Find edges.
+  const double halfLengthX = length_.x()*0.5;
+  const double halfLengthY = length_.y()*0.5;
+  const Position3 topLeftCorner     (position_.x() + halfLengthX, position_.y() + halfLengthY, 0.0);
+  const Position3 topRightCorner    (position_.x() + halfLengthX, position_.y() - halfLengthY, 0.0);
+  const Position3 bottomLeftCorner  (position_.x() - halfLengthX, position_.y() + halfLengthY, 0.0);
+  const Position3 bottomRightCorner (position_.x() - halfLengthX, position_.y() - halfLengthY, 0.0);
+
+  // Find constraints.
+  const double maxX = topRightCorner.x();
+  const double minX = bottomRightCorner.x();
+  const double maxY = bottomLeftCorner.y();
+  const double minY = bottomRightCorner.y();
+
+  // Clip to box constraints.
+  positionInMap.x() = std::fmin(positionInMap.x(), maxX);
+  positionInMap.y() = std::fmin(positionInMap.y(), maxY);
+
+  positionInMap.x() = std::fmax(positionInMap.x(), minX);
+  positionInMap.y() = std::fmax(positionInMap.y(), minY);
+
+  return positionInMap;
+}
+
 void GridMap::clear(const std::string& layer)
 {
   try {
