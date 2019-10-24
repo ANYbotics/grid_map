@@ -2,6 +2,11 @@
 Changelog for package grid_map_filters
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.6.2 (2019-10-14)
+------------------
+* Update MinInRadiusFilter.cpp
+* Contributors: Sascha Wirges
+
 1.6.1 (2019-02-27)
 ------------------
 * Updated host changes.

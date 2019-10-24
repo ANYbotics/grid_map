@@ -2,6 +2,13 @@
 Changelog for package grid_map_core
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.6.2 (2019-10-14)
+------------------
+* Implements a grid map transformation from one map frame to another map frame given the transform between the frames.
+  Authors:
+  Co-authored-by: fabianje <fabian.jenelten@mavt.ethz.ch>
+* Contributors: fabianje
+
 1.6.1 (2019-02-27)
 ------------------
 * Updated host changes.
