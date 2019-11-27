@@ -22,7 +22,7 @@ The source code is released under a [BSD 3-Clause license](LICENSE).
 **Author: Péter Fankhauser<br />
 Affiliation: [ANYbotics](https://www.anybotics.com/)<br />
 Maintainer: Péter Fankhauser, pfankhauser@anybotics.com<br />**
-With contributions by: Tanja Baumann, Jeff Delmerico, Remo Diethelm, Perry Franklin, Dominic Jud, Ralph Kaestner, Philipp Krüsi, Alex Millane, Daniel Stonier, Elena Stumm, Martin Wermelinger, Christos Zalidis
+With contributions by: Tanja Baumann, Jeff Delmerico, Remo Diethelm, Perry Franklin, Dominic Jud, Ralph Kaestner, Philipp Krüsi, Alex Millane, Daniel Stonier, Elena Stumm, Martin Wermelinger, Christos Zalidis, Edo Jelavic
 
 This projected was initially developed at ETH Zurich (Autonomous Systems Lab & Robotic Systems Lab).
 
@@ -115,7 +115,7 @@ Additional conversion packages:
 * ***grid_map_costmap_2d*** provides conversions of grid maps from [costmap_2d] map types.
 * ***grid_map_cv*** provides conversions of grid maps from and to [OpenCV] image types.
 * ***grid_map_octomap*** provides conversions of grid maps from OctoMap ([OctoMap]) maps.
-* ***grid_map_pcl*** provides conversions of grid maps from Point Cloud Library ([PCL]) polygon meshes.
+* ***grid_map_pcl*** provides conversions of grid maps from Point Cloud Library ([PCL](http://pointclouds.org/)) polygon meshes and point clouds. For details, see the grid map pcl package [README](grid_map_pcl/README.md).
 
 ### Unit Tests
 

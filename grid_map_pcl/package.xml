@@ -8,7 +8,13 @@
   <url type="website">http://github.com/anybotics/grid_map</url>
   <url type="bugtracker">http://github.com/anybotics/grid_map/issues</url>
   <author email="djud@ethz.ch">Dominic Jud</author>
+  <author email="jelavice@ethz.ch">Edo Jelavic</author>
+  
   <buildtool_depend>catkin</buildtool_depend>
   <depend>grid_map_core</depend>
+  <depend>grid_map_msgs</depend>
+  <depend>grid_map_ros</depend>
   <depend>pcl_ros</depend>
+  <depend>roscpp</depend>
+  <depend>yaml-cpp</depend>
 </package>

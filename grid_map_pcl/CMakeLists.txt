@@ -1,12 +1,36 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(grid_map_pcl)
 
-set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
+set(CMAKE_CXX_STANDARD 14)
+add_compile_options(-Wall -Wextra -Wpedantic)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+set(SRC_FILES
+  src/GridMapPclConverter.cpp
+  src/GridMapPclLoader.cpp
+  src/helpers.cpp
+  src/PclLoaderParameters.cpp
+  src/PointcloudProcessor.cpp
+)
+
+set(CATKIN_PACKAGE_DEPENDENCIES  
+  grid_map_core
+  grid_map_msgs
+  grid_map_ros
+  pcl_ros
+  roscpp
+)
+
+find_package(OpenMP QUIET)
+if (OpenMP_FOUND)
+  add_compile_options("${OpenMP_CXX_FLAGS}")
+  add_definitions(-DGRID_MAP_PCL_OPENMP_FOUND=${OpenMP_FOUND})
+endif()
 
 ## Find catkin macros and libraries
-find_package(catkin REQUIRED COMPONENTS
-  grid_map_core
-  pcl_ros
+find_package(catkin REQUIRED 
+  COMPONENTS
+    ${CATKIN_PACKAGE_DEPENDENCIES}
 )
 
 ###################################
@@ -23,9 +47,9 @@ catkin_package(
     include
   LIBRARIES
     ${PROJECT_NAME}
+    yaml-cpp
   CATKIN_DEPENDS
-    grid_map_core
-    pcl_ros
+    ${CATKIN_PACKAGE_DEPENDENCIES}
   DEPENDS
 )
 
@@ -36,21 +60,35 @@ catkin_package(
 ## Specify additional locations of header files
 include_directories(
   include
-  ${catkin_INCLUDE_DIRS}
-  ${EIGEN3_INCLUDE_DIR}
+  SYSTEM
+    ${catkin_INCLUDE_DIRS}
+    ${EIGEN3_INCLUDE_DIR}
+    ${OpenMP_CXX_INCLUDE_DIRS}
 )
 
 ## Declare a cpp library
 add_library(${PROJECT_NAME}
-  src/GridMapPclConverter.cpp
+  ${SRC_FILES}
 )
 
 target_link_libraries(${PROJECT_NAME}
   ${catkin_LIBRARIES}
+  ${OpenMP_CXX_LIBRARIES}
+  yaml-cpp
 )
 
 add_dependencies(${PROJECT_NAME}
   ${catkin_EXPORTED_TARGETS}
+)
+
+add_executable(grid_map_pcl_loader_node
+  src/grid_map_pcl_loader_node.cpp
+)
+
+target_link_libraries(grid_map_pcl_loader_node
+  ${PROJECT_NAME}
+  ${catkin_LIBRARIES}
+  ${OpenMP_CXX_LIBRARIES}
 )
 
 #############
@@ -59,7 +97,9 @@ add_dependencies(${PROJECT_NAME}
 
 # Mark executables and/or libraries for installation
 install(
-  TARGETS ${PROJECT_NAME}
+  TARGETS
+    ${PROJECT_NAME}
+    grid_map_pcl_loader_node
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
@@ -76,13 +116,22 @@ install(
 ## Testing ##
 #############
 
-#if(CATKIN_ENABLE_TESTING)
-#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
+if(CATKIN_ENABLE_TESTING)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
 ## Add gtest based cpp test target and link libraries
-#catkin_add_gtest(${PROJECT_NAME}-test test/test_grid_map_pcl.cpp test/GridMapPclTest.cpp)
-#endif()
+catkin_add_gtest(${PROJECT_NAME}-test
+  test/test_grid_map_pcl.cpp
+  test/GridMapPclLoaderTest.cpp
+  test/HelpersTest.cpp
+  test/PointcloudProcessorTest.cpp
+  test/test_helpers.cpp
+  test/PointcloudCreator.cpp
+  )
+endif()
 
-#if(TARGET ${PROJECT_NAME}-test)
-#  target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
-#endif()
+if(TARGET ${PROJECT_NAME}-test)
+  target_link_libraries(${PROJECT_NAME}-test 
+    ${PROJECT_NAME}
+    ${catkin_LIBRARIES})
+endif()
 
