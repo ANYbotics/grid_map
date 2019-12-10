@@ -3,9 +3,10 @@
   <name>grid_map_rviz_plugin</name>
   <version>1.6.2</version>
   <description>RViz plugin for displaying grid map messages.</description>
-  <maintainer email="pfankhauser@anybotics.com">Péter Fankhauser</maintainer>
+  <maintainer email="mwulf@anybotics.com">Maximilian Wulf</maintainer>
+  <maintainer email="ynava@anybotics.com">Yoshua Nava</maintainer>
   <license>BSD</license>
-  <author>Philipp Krüsi</author>
+  <author email="philipp.kruesi@mavt.ethz.ch">Philipp Krüsi</author>
   <author>Péter Fankhauser</author>
 
   <buildtool_depend>catkin</buildtool_depend>

@@ -3,7 +3,8 @@
   <name>grid_map_pcl</name>
   <version>1.6.2</version>
   <description>Conversions between grid maps and Point Cloud Library (PCL) types.</description>
-  <maintainer email="pfankhauser@anybotics.com">Péter Fankhauser</maintainer>
+  <maintainer email="mwulf@anybotics.com">Maximilian Wulf</maintainer>
+  <maintainer email="ynava@anybotics.com">Yoshua Nava</maintainer>
   <license>BSD</license>
   <url type="website">http://github.com/anybotics/grid_map</url>
   <url type="bugtracker">http://github.com/anybotics/grid_map/issues</url>
