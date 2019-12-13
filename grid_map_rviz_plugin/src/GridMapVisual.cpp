@@ -165,6 +165,11 @@ void GridMapVisual::computeVisualization(float alpha, bool showGridLines, bool f
         Ogre::Vector3 normal = vertices.size() == 4
                                ? (vertices[3] - vertices[0]).crossProduct(vertices[2] -vertices[1])
                                : (vertices[2] - vertices[1]).crossProduct(vertices[1] - vertices[0]);
+
+        if (!std::isfinite(normal[0]) || !std::isfinite(normal[1]) || !std::isfinite(normal[2])) {
+          continue;
+        }
+
         normal.normalise();
         // Create one or two triangles from the vertices depending on how many vertices we have.
         if (!noColor) {
