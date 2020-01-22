@@ -28,6 +28,7 @@ public:
    * @param gridMap the grid map to iterate on.
    * @param start the starting point of the line.
    * @param end the ending point of the line.
+   * @throw std::invalid_argument if start and end impose an ill conditioned line iteration.
    */
   LineIterator(const grid_map::GridMap& gridMap, const Position& start, const Position& end);
 
