@@ -218,10 +218,12 @@ void wrapIndexToRange(Index& index, const Size& bufferSize)
   }
 }
 
-void wrapIndexToRange(int& index, const int& bufferSize)
+void wrapIndexToRange(int& index, int bufferSize)
 {
-  if (index < 0) index += ((-index / bufferSize) + 1) * bufferSize;
   index = index % bufferSize;
+  if (index < 0) {
+    index += bufferSize;
+  }
 }
 
 void boundPositionToRange(Position& position, const Length& mapLength, const Position& mapPosition)

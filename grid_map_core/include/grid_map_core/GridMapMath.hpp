@@ -142,7 +142,7 @@ void wrapIndexToRange(Index& index, const Size& bufferSize);
  * @param[in/out] index the index that will be wrapped into the valid region of the buffer.
  * @param[in] bufferSize the size of the buffer.
  */
-void wrapIndexToRange(int& index, const int& bufferSize);
+void wrapIndexToRange(int& index, int bufferSize);
 
 /*!
  * Bound (cuts off) the position to lie inside the map.
