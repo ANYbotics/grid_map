@@ -8,8 +8,8 @@
 
 #include <grid_map_filters/NormalVectorsFilter.hpp>
 
-#include <grid_map_core/grid_map_core.hpp>
 #include <pluginlib/class_list_macros.h>
+#include <grid_map_core/grid_map_core.hpp>
 
 #include <Eigen/Dense>
 #include <stdexcept>
@@ -18,21 +18,14 @@ using namespace filters;
 
 namespace grid_map {
 
-template<typename T>
-NormalVectorsFilter<T>::NormalVectorsFilter()
-    : method_(Method::Raster),
-      estimationRadius_(0.0)
-{
-}
+template <typename T>
+NormalVectorsFilter<T>::NormalVectorsFilter() : method_(Method::Raster), estimationRadius_(0.0) {}
 
-template<typename T>
-NormalVectorsFilter<T>::~NormalVectorsFilter()
-{
-}
+template <typename T>
+NormalVectorsFilter<T>::~NormalVectorsFilter() {}
 
-template<typename T>
-bool NormalVectorsFilter<T>::configure()
-{
+template <typename T>
+bool NormalVectorsFilter<T>::configure() {
   if (!FilterBase<T>::getParam(std::string("radius"), estimationRadius_)) {
     ROS_DEBUG("Normal vectors filter did not find parameter `radius`.");
     method_ = Method::Raster;
@@ -61,13 +54,13 @@ bool NormalVectorsFilter<T>::configure()
     return false;
   }
 
-  if (!FilterBase < T > ::getParam(std::string("input_layer"), inputLayer_)) {
+  if (!FilterBase<T>::getParam(std::string("input_layer"), inputLayer_)) {
     ROS_ERROR("Normal vectors filter did not find parameter `input_layer`.");
     return false;
   }
   ROS_DEBUG("Normal vectors filter input layer is = %s.", inputLayer_.c_str());
 
-  if (!FilterBase < T > ::getParam(std::string("output_layers_prefix"), outputLayersPrefix_)) {
+  if (!FilterBase<T>::getParam(std::string("output_layers_prefix"), outputLayersPrefix_)) {
     ROS_ERROR("Normal vectors filter did not find parameter `output_layers_prefix`.");
     return false;
   }
@@ -76,16 +69,17 @@ bool NormalVectorsFilter<T>::configure()
   return true;
 }
 
-template<typename T>
-bool NormalVectorsFilter<T>::update(const T& mapIn, T& mapOut)
-{
+template <typename T>
+bool NormalVectorsFilter<T>::update(const T& mapIn, T& mapOut) {
   std::vector<std::string> normalVectorsLayers;
   normalVectorsLayers.push_back(outputLayersPrefix_ + "x");
   normalVectorsLayers.push_back(outputLayersPrefix_ + "y");
   normalVectorsLayers.push_back(outputLayersPrefix_ + "z");
 
   mapOut = mapIn;
-  for (const auto& layer : normalVectorsLayers) mapOut.add(layer);
+  for (const auto& layer : normalVectorsLayers) {
+    mapOut.add(layer);
+  }
   switch (method_) {
     case Method::Area:
       computeWithArea(mapOut, inputLayer_, outputLayersPrefix_);
@@ -98,14 +92,14 @@ bool NormalVectorsFilter<T>::update(const T& mapIn, T& mapOut)
   return true;
 }
 
-template<typename T>
-void NormalVectorsFilter<T>::computeWithArea(GridMap& map, const std::string& inputLayer, const std::string& outputLayersPrefix)
-{
+template <typename T>
+void NormalVectorsFilter<T>::computeWithArea(GridMap& map, const std::string& inputLayer, const std::string& outputLayersPrefix) {
   // For each cell in requested area.
-  for (GridMapIterator iterator(map);
-      !iterator.isPastEnd(); ++iterator) {
+  for (GridMapIterator iterator(map); !iterator.isPastEnd(); ++iterator) {
     // Check if this is an empty cell (hole in the map).
-    if (!map.isValid(*iterator, inputLayer_)) continue;
+    if (!map.isValid(*iterator, inputLayer)) {
+      continue;
+    }
 
     // Requested position (center) of circle in map.
     Position center;
@@ -116,65 +110,61 @@ void NormalVectorsFilter<T>::computeWithArea(GridMap& map, const std::string& in
     if (estimationRadius_ <= minAllowedEstimationRadius) {
       ROS_WARN("Estimation radius is smaller than allowed by the map resolution (%d < %d)", estimationRadius_, minAllowedEstimationRadius);
     }
-    // Max number of cells is the square in which the estimation area would fit. If area < cell, one cell is taken.
-    const int maxNumberOfCells = pow(ceil(2 * estimationRadius_ / map.getResolution()) + 1, 2);
-    Eigen::MatrixXd points(3, maxNumberOfCells);
 
     // Gather surrounding data.
     size_t nPoints = 0;
-    for (CircleIterator iterator(map, center, estimationRadius_); !iterator.isPastEnd(); ++iterator) {
-      // Guard to prevent memory allocation issues
-      if (nPoints > maxNumberOfCells) break;
-      // Guard to prevent invalid points from being considered
-      if (!map.isValid(*iterator, inputLayer_)) continue;
+    Position3 sum = Position3::Zero();
+    Eigen::Matrix3d sumSquared = Eigen::Matrix3d::Zero();
+    for (CircleIterator circleIterator(map, center, estimationRadius_); !circleIterator.isPastEnd(); ++circleIterator) {
       Position3 point;
-      map.getPosition3(inputLayer_, *iterator, point);
-      points.col(nPoints) = point;
+      if (!map.getPosition3(inputLayer, *circleIterator, point)) {
+        continue;
+      }
       nPoints++;
+      sum += point;
+      sumSquared.noalias() += point * point.transpose();
     }
-    points.conservativeResize(3, nPoints); // TODO Eigen version?
 
-    // Compute Eigenvectors.
-    const Position3 mean = points.leftCols(nPoints).rowwise().sum() / nPoints;
-    const Eigen::MatrixXd NN = points.leftCols(nPoints).colwise() - mean;
-
-    const Eigen::Matrix3d covarianceMatrix(NN * NN.transpose());
-    Vector3 eigenvalues = Vector3::Ones();
-    Eigen::Matrix3d eigenvectors = Eigen::Matrix3d::Identity();
-    // Ensure that the matrix is suited for eigenvalues calculation.
-    if (covarianceMatrix.fullPivHouseholderQr().rank() >= 3) {
-      const Eigen::EigenSolver<Eigen::MatrixXd> solver(covarianceMatrix);
-      eigenvalues = solver.eigenvalues().real();
-      eigenvectors = solver.eigenvectors().real();
+    Vector3 unitaryNormalVector = Vector3::Zero();
+    if (nPoints < 3) {
+      ROS_DEBUG("Not enough points to establish normal direction (nPoints = %i)", nPoints);
+      unitaryNormalVector = {0, 0, 1};
     } else {
-      ROS_DEBUG("Covariance matrix needed for eigen decomposition is degenerated. Expected cause: no noise in data (nPoints = %i)", (int) nPoints);
-      // Use z-axis as default surface normal. // TODO Make dependend on surfaceNormalPositiveAxis_;
-      eigenvalues.z() = 0.0;
-    }
-    // Keep the smallest Eigenvector as normal vector.
-    int smallestId(0);
-    double smallestValue(std::numeric_limits<double>::max());
-    for (int j = 0; j < eigenvectors.cols(); j++) {
-      if (eigenvalues(j) < smallestValue) {
-        smallestId = j;
-        smallestValue = eigenvalues(j);
+      const Position3 mean = sum / nPoints;
+      const Eigen::Matrix3d covarianceMatrix = sumSquared / nPoints - mean * mean.transpose();
+
+      // Compute Eigenvectors.
+      // Eigenvalues are ordered small to large
+      // Worst case bound for zero eigenvalue from : https://eigen.tuxfamily.org/dox/classEigen_1_1SelfAdjointEigenSolver.html
+      Eigen::SelfAdjointEigenSolver<Eigen::Matrix3d> solver;
+      solver.computeDirect(covarianceMatrix, Eigen::DecompositionOptions::ComputeEigenvectors);
+      if (solver.eigenvalues()(1) > 1e-8) {
+        unitaryNormalVector = solver.eigenvectors().col(0);
+      } else {  // If second eigenvalue is zero, the normal is not defined
+        ROS_DEBUG(
+            "Covariance matrix needed for eigen decomposition is degenerated. Expected cause: data is on a straight line (nPoints = %i)",
+            nPoints);
+        unitaryNormalVector = {0, 0, 1};
       }
     }
-    Vector3 eigenvector = eigenvectors.col(smallestId);
-    if (eigenvector.dot(normalVectorPositiveAxis_) < 0.0) eigenvector = -eigenvector;
-    map.at(outputLayersPrefix_ + "x", *iterator) = eigenvector.x();
-    map.at(outputLayersPrefix_ + "y", *iterator) = eigenvector.y();
-    map.at(outputLayersPrefix_ + "z", *iterator) = eigenvector.z();
+
+    // Check direction of the normal vector and flip the sign towards the user defined direction.
+    if (unitaryNormalVector.dot(normalVectorPositiveAxis_) < 0.0) {
+      unitaryNormalVector = -unitaryNormalVector;
+    }
+
+    map.at(outputLayersPrefix + "x", *iterator) = unitaryNormalVector.x();
+    map.at(outputLayersPrefix + "y", *iterator) = unitaryNormalVector.y();
+    map.at(outputLayersPrefix + "z", *iterator) = unitaryNormalVector.z();
   }
 }
 
-template<typename T>
-void NormalVectorsFilter<T>::computeWithRaster(GridMap& map, const std::string& inputLayer, const std::string& outputLayersPrefix)
-{
+template <typename T>
+void NormalVectorsFilter<T>::computeWithRaster(GridMap& map, const std::string& inputLayer, const std::string& outputLayersPrefix) {
   throw std::runtime_error("NormalVectorsFilter::computeWithRaster() is not yet implemented!");
   // TODO: http://www.flipcode.com/archives/Calculating_Vertex_Normals_for_Height_Maps.shtml
 }
 
-} /* namespace */
+}  // namespace grid_map
 
 PLUGINLIB_EXPORT_CLASS(grid_map::NormalVectorsFilter<grid_map::GridMap>, filters::FilterBase<grid_map::GridMap>)
