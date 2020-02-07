@@ -66,7 +66,7 @@ class GridMap
   /*!
    * Destructor.
    */
-  virtual ~GridMap();
+  virtual ~GridMap() = default;
 
   /*!
    * Set the geometry of the grid map. Clears all the data.
@@ -485,6 +485,12 @@ class GridMap
   Position getClosestPositionInMap(const Position& position) const;
 
  private:
+  /**
+   * Defines data validation check
+   * @param value
+   * @return true if value is valid
+   */
+  bool isValid(DataType value) const;
 
   /*!
    * Clear a number of columns of the grid map.
