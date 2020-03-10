@@ -45,6 +45,10 @@ class IteratorsDemo
   void demoLineIterator();
   void demoPolygonIterator(const bool prepareForOtherDemos = false);
   void demoSlidingWindowIterator();
+  void demoFillIterator();
+  void demoSpiralGridIterator();
+  void demoNearestValidIterator();
+  void demoLineThickIterator();
 
   /*!
    * Publish the grid map to ROS.

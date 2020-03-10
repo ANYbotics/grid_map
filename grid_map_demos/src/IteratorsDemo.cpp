@@ -8,6 +8,9 @@
 
 #include "grid_map_demos/IteratorsDemo.hpp"
 
+#include <grid_map_core/index_checkers/IndexCheckerNan.hpp>
+#include <grid_map_core/index_checkers/IndexCheckerZero.hpp>
+
 // ROS
 #include <geometry_msgs/PolygonStamped.h>
 
@@ -41,6 +44,10 @@ IteratorsDemo::IteratorsDemo(ros::NodeHandle& nodeHandle)
   demoLineIterator();
   demoPolygonIterator();
   demoSlidingWindowIterator();
+  demoFillIterator();
+  demoSpiralGridIterator();
+  demoNearestValidIterator();
+  demoLineThickIterator();
 }
 
 IteratorsDemo::~IteratorsDemo() {}
@@ -210,6 +217,13 @@ void IteratorsDemo::demoPolygonIterator(const bool prepareForOtherDemos)
   if (!prepareForOtherDemos) {
     ros::Duration duration(1.0);
     duration.sleep();
+
+    grid_map::Polygon empty_polygon;
+    empty_polygon.setFrameId(map_.getFrameId());
+    geometry_msgs::PolygonStamped empty_message;
+    grid_map::PolygonRosConverter::toMessage(empty_polygon, empty_message);
+    polygonPublisher_.publish(empty_message);
+
   }
 }
 
@@ -226,25 +240,134 @@ void IteratorsDemo::demoSlidingWindowIterator()
       !iterator.isPastEnd(); ++iterator) {
     map_.at("type", *iterator) = iterator.getData().meanOfFinites(); // Blurring.
     publish();
-
-    // Visualize sliding window as polygon.
-    grid_map::Polygon polygon;
-    Position center;
-    map_.getPosition(*iterator, center);
-    const Length windowHalfLength(Length::Constant(0.5 * (double) windowSize * map_.getResolution()));
-    polygon.addVertex(center + (Eigen::Array2d(-1.0,-1.0) * windowHalfLength).matrix());
-    polygon.addVertex(center + (Eigen::Array2d(-1.0, 1.0) * windowHalfLength).matrix());
-    polygon.addVertex(center + (Eigen::Array2d( 1.0, 1.0) * windowHalfLength).matrix());
-    polygon.addVertex(center + (Eigen::Array2d( 1.0,-1.0) * windowHalfLength).matrix());
-    polygon.setFrameId(map_.getFrameId());
-    geometry_msgs::PolygonStamped message;
-    grid_map::PolygonRosConverter::toMessage(polygon, message);
-    polygonPublisher_.publish(message);
-
     ros::Duration duration(0.02);
     duration.sleep();
   }
+
+  ros::Duration duration(1.0);
+  duration.sleep();
+
+  grid_map::Polygon empty_polygon;
+  empty_polygon.setFrameId(map_.getFrameId());
+  geometry_msgs::PolygonStamped empty_message;
+  grid_map::PolygonRosConverter::toMessage(empty_polygon, empty_message);
+  polygonPublisher_.publish(empty_message);
+
 }
+
+
+void IteratorsDemo::demoFillIterator()
+{
+  ROS_INFO("Running fill iterator demo.");
+  map_.clearAll();
+
+  // This just draws some shapes to fill around
+  for (grid_map::LineIterator iterator(map_, Index(19,2), Index(5,19));
+      !iterator.isPastEnd(); ++iterator) {
+    map_.at("type", *iterator) = 1.0;
+  }
+  for (grid_map::LineIterator iterator(map_, Index(5,5), Index(7,15));
+      !iterator.isPastEnd(); ++iterator) {
+    map_.at("type", *iterator) = 1.0;
+  }
+  for (grid_map::LineIterator iterator(map_, Index(5,5), Index(16,6));
+      !iterator.isPastEnd(); ++iterator) {
+    map_.at("type", *iterator) = 1.0;
+  }
+
+  publish();
+
+  Index fill_start(4, 4);
+
+  IndexCheckerNan checker(map_, "type");
+
+
+  for (grid_map::FillIterator iterator(map_, fill_start, checker );
+      !iterator.isPastEnd(); ++iterator) {
+    map_.at("type", *iterator) = 0.8;
+    publish();
+    ros::Duration duration(0.02);
+    duration.sleep();
+  }
+
+  ros::Duration duration(1.0);
+  duration.sleep();
+}
+
+
+void IteratorsDemo::demoSpiralGridIterator()
+{
+  ROS_INFO("Running spiral grid iterator demo.");
+  map_.clearAll();
+
+  Index spiral_start(6, 14);
+
+  for (grid_map::SpiralGridIterator iterator(map_, spiral_start, 8 );
+      !iterator.isPastEnd(); ++iterator) {
+    map_.at("type", *iterator) = 1.0;
+    publish();
+    ros::Duration duration(0.02);
+    duration.sleep();
+  }
+
+  ros::Duration duration(1.0);
+  duration.sleep();
+}
+
+void IteratorsDemo::demoNearestValidIterator()
+{
+  ROS_INFO("Running fill iterator demo.");
+  map_.clearAll();
+
+  // Randomly fill the grid with some "valid" cells to iterate over.
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::bernoulli_distribution d(0.33);
+
+  for (grid_map::GridMapIterator iterator(map_); !iterator.isPastEnd(); ++iterator){
+      if (d(gen)){
+        map_.at("type", *iterator) = 0.0;
+      }
+  }
+
+
+  publish();
+
+  IndexCheckerZero checker(map_, "type");
+
+  for (grid_map::NearestValidIterator iterator(map_, Position(0.2,0.2), checker );
+      !iterator.isPastEnd(); ++iterator) {
+    map_.at("type", *iterator) = 1.0;
+    publish();
+    ros::Duration duration(0.02);
+    duration.sleep();
+  }
+
+  ros::Duration duration(1.0);
+  duration.sleep();
+}
+
+void IteratorsDemo::demoLineThickIterator()
+{
+  ROS_INFO("Running thick line iterator (LineThickIterator) demo.");
+  map_.clearAll();
+  publish();
+
+  Position start(-0.43, -0.2);
+  Position end(0.42, 0.32);
+
+  for (grid_map::LineThickIterator iterator(map_, start, end, 0.1);
+      !iterator.isPastEnd(); ++iterator) {
+    map_.at("type", *iterator) = 1.0;
+    publish();
+    ros::Duration duration(0.02);
+    duration.sleep();
+  }
+
+  ros::Duration duration(1.0);
+  duration.sleep();
+}
+
 
 void IteratorsDemo::publish()
 {
