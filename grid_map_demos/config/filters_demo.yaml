@@ -8,17 +8,17 @@ image_to_gridmap_demo:
 grid_map_visualization:
   grid_map_topic: /grid_map_filter_demo/filtered_map
   grid_map_visualizations:
-  - name: surface_normals
-    type: vectors
-    params:
-     layer_prefix: normal_vectors_
-     position_layer: elevation
-     scale: 0.06
-     line_width: 0.005
-     color: 15600153 # red
-  - name: traversability_grid
-    type: occupancy_grid
-    params:
-     layer: traversability
-     data_min: 0.0
-     data_max: 1.0
+    - name: surface_normals
+      type: vectors
+      params:
+        layer_prefix: normal_vectors_
+        position_layer: elevation
+        scale: 0.06
+        line_width: 0.005
+        color: 15600153 # red
+    - name: traversability_grid
+      type: occupancy_grid
+      params:
+        layer: traversability
+        data_min: 0.0
+        data_max: 1.0

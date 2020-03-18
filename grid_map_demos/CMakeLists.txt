@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(grid_map_demos)
 
-set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
+set(CMAKE_CXX_STANDARD 11)
 
 ## Find catkin macros and libraries
 find_package(catkin REQUIRED COMPONENTS
@@ -114,6 +114,11 @@ add_executable(
   src/FiltersDemo.cpp
 )
 
+add_executable(
+  normal_filter_comparison_demo
+  src/normal_filter_comparison_node.cpp
+)
+
 ## Specify libraries to link a library or executable target against
 target_link_libraries(
   simple_demo
@@ -167,6 +172,11 @@ target_link_libraries(
   ${catkin_LIBRARIES}
 )
 
+target_link_libraries(
+  normal_filter_comparison_demo
+  ${catkin_LIBRARIES}
+)
+
 #############
 ## Install ##
 #############
@@ -189,3 +199,4 @@ install(
   DIRECTORY config data doc launch rviz scripts
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
+

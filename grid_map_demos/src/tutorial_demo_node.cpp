@@ -59,7 +59,7 @@ int main(int argc, char** argv)
     Index startIndex;
     map.getIndex(topLeftCorner, startIndex);
     ROS_INFO_ONCE("Top left corner was limited from (1.0, 0.2) to (%f, %f) and corresponds to index (%i, %i).",
-             topLeftCorner.x(), topLeftCorner.y(), startIndex(0), startIndex(1));
+      topLeftCorner.x(), topLeftCorner.y(), startIndex(0), startIndex(1));
 
     Size size = (Length(1.2, 0.8) / map.getResolution()).cast<int>();
     SubmapIterator it(map, startIndex, size);
@@ -71,8 +71,7 @@ int main(int argc, char** argv)
       double sumOfWeights = 0.0;
 
       // Compute weighted mean.
-      for (CircleIterator circleIt(map, currentPosition, radius);
-          !circleIt.isPastEnd(); ++circleIt) {
+      for (CircleIterator circleIt(map, currentPosition, radius); !circleIt.isPastEnd(); ++circleIt) {
         if (!map.isValid(*circleIt, "elevation_noisy")) continue;
         Position currentPositionInCircle;
         map.getPosition(*circleIt, currentPositionInCircle);

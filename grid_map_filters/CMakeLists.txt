@@ -1,7 +1,16 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(grid_map_filters)
 
-set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
+# Better with parallelized algorithms.
+#set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}  -ffast-math")
+
+# Better with serial algorithms.
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  -ffast-math")
+
+# Other possible options.
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native -mtune=native -ffast-math")
+#set(TARGET_ARCHITECTURE "kaby-lake")
 
 ## Find catkin macros and libraries
 find_package(catkin REQUIRED COMPONENTS
