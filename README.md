@@ -169,7 +169,24 @@ The *grid_map_demos* package contains several demonstration nodes. Use this code
 
     [![Filters demo results](grid_map_demos/doc/filters_demo_preview.gif)](grid_map_demos/doc/filters_demo.gif)
 
-For more information about grid map filters, see [grid_map_filters](#grid_map_filters).
+ For more information about grid map filters, see [grid_map_filters](#grid_map_filters).
+
+* *[interpolation_demo](grid_map_demos/src/InterpolationDemo.cpp)* shows the result of different interpolation methods on the resulting surface. The start the demo, use
+
+        roslaunch grid_map_demos interpolation_demo.launch
+
+<img src="grid_map_core/doc/interpolationSineWorld.gif" width="256" height="252">
+<img src="grid_map_core/doc/interpolationGaussWorld.gif" width="256" height="252">
+
+The user can play with different worlds (surfaces) and different interpolation settings in the [`interpolation_demo.yaml`](grid_map_demos/config/interpolation_demo.yaml) file. The visualization displays the ground truth in green and yellow color. The interpolation result is shown in red and purple colors. Also, the demo computes maximal and average interpolation errors, as well as the average time required for a single interpolation query.
+
+Grid map features four different interpolation methods (in order of increasing accuracy and increasing complexity):
+* **NN** - Nearest Neighbour (fastest, but least accurate).
+* **Linear** - Linear interpolation.
+* **Cubic convolution** - Piecewise cubic interpolation. Implemented using the cubic convolution algorithm.
+* **Cubic** - Cubic interpolation (slowest, but most accurate).
+
+For more details check the literature listed in  [`CubicInterpolation.hpp`](grid_map_core/include/grid_map_core/CubicInterpolation.hpp) file.
 
 ### Conventions & Definitions
 

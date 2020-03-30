@@ -59,6 +59,7 @@ add_library(${PROJECT_NAME}
    src/SubmapGeometry.cpp
    src/BufferRegion.cpp
    src/Polygon.cpp
+   src/CubicInterpolation.cpp
    src/iterators/GridMapIterator.cpp
    src/iterators/SubmapIterator.cpp
    src/iterators/CircleIterator.cpp
@@ -107,6 +108,9 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
 ## Add gtest based cpp test target and link libraries
 catkin_add_gtest(${PROJECT_NAME}-test
   test/test_grid_map_core.cpp
+  test/test_helpers.cpp
+  test/CubicConvolutionInterpolationTest.cpp
+  test/CubicInterpolationTest.cpp
   test/GridMapMathTest.cpp
   test/GridMapTest.cpp
   test/GridMapIteratorTest.cpp

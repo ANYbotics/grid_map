@@ -7,6 +7,8 @@
  */
 
 #include "grid_map_core/GridMap.hpp"
+
+#include "grid_map_core/CubicInterpolation.hpp"
 #include "grid_map_core/GridMapMath.hpp"
 #include "grid_map_core/SubmapGeometry.hpp"
 #include "grid_map_core/iterators/GridMapIterator.hpp"
@@ -164,7 +166,28 @@ float& GridMap::atPosition(const std::string& layer, const Position& position) {
 }
 
 float GridMap::atPosition(const std::string& layer, const Position& position, InterpolationMethods interpolationMethod) const {
+
+  bool skipNextSwitchCase = false;
   switch (interpolationMethod) {
+    case InterpolationMethods::INTER_CUBIC_CONVOLUTION: {
+      float value;
+      if (atPositionBicubicConvolutionInterpolated(layer, position, value)) {
+        return value;
+      } else {
+        interpolationMethod = InterpolationMethods::INTER_LINEAR;
+        skipNextSwitchCase = true;
+      }
+    }
+    case InterpolationMethods::INTER_CUBIC: {
+      if (!skipNextSwitchCase) {
+        float value;
+        if (atPositionBicubicInterpolated(layer, position, value)) {
+          return value;
+        } else {
+          interpolationMethod = InterpolationMethods::INTER_LINEAR;
+        }
+      }
+    }
     case InterpolationMethods::INTER_LINEAR: {
       float value;
       if (atPositionLinearInterpolated(layer, position, value))
@@ -824,5 +847,40 @@ void GridMap::resize(const Index& size) {
     data.second.resize(size_(0), size_(1));
   }
 }
+
+
+bool GridMap::atPositionBicubicConvolutionInterpolated(const std::string& layer, const Position& position,
+                                            float& value) const
+{
+  double interpolatedValue = 0.0;
+  if (!bicubic_conv::evaluateBicubicConvolutionInterpolation(*this, layer, position, &interpolatedValue)) {
+    return false;
+  }
+
+  if (!std::isfinite(interpolatedValue)) {
+    return false;
+  }
+  value = interpolatedValue;
+
+  return true;
+}
+
+bool GridMap::atPositionBicubicInterpolated(const std::string& layer, const Position& position,
+                                            float& value) const
+{
+  double interpolatedValue = 0.0;
+  if (!bicubic::evaluateBicubicInterpolation(*this, layer, position, &interpolatedValue)) {
+    return false;
+  }
+
+  if (!std::isfinite(interpolatedValue)) {
+    return false;
+  }
+  value = interpolatedValue;
+
+  return true;
+
+}
+
 
 }  // namespace grid_map

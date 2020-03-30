@@ -1,0 +1,19 @@
+
+world: Sine # options are: Sine, Poly, Gauss, Tanh
+
+interpolation_type: Nearest # options are: Nearest, Linear, Cubic_convolution, Cubic
+
+world_size:
+  length: 5.0
+  width: 5.0
+
+groundtruth_resolution: 0.02 # resolution in which ground truth is displayed in rviz
+
+interpolation:
+  data_resolution: 0.1 # resolution of the data points for the interpolating algorithm
+                       # this number should be higher than groundtruth_resolution
+                       # if you want to see any effect
+                       
+  interpolated_resolution: 0.02 # resolution requested for the interpolated map
+                                # this number should be lower than data_resolution
+                                # if you want to see any interpolation effect

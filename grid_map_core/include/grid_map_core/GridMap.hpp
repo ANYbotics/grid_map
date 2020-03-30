@@ -515,6 +515,36 @@ class GridMap
    */
   bool atPositionLinearInterpolated(const std::string& layer, const Position& position, float& value) const;
 
+
+  /*!
+   * Get cell data at requested position, cubic convolution
+   * interpolated from 4x4 cells. At the edge of the map,
+   * the algorithm assumes that height continues with the slope 0.
+   * I.e. the border cells just repeat outside of the map
+   * Taken from: https://en.wikipedia.org/wiki/Bicubic_interpolation
+   * @param[in] layer the name of the layer to be accessed.
+   * @param[in] position the requested position.
+   * @param[out] value the data of the cell.
+   * @return true if bicubic convolution interpolation was successful.
+   */
+  bool atPositionBicubicConvolutionInterpolated(const std::string& layer, const Position& position,
+                                             float& value) const;
+
+  /*!
+   * Get cell data at requested position, cubic interpolated
+   * on a square. At the edge of the map,
+   * the algorithm assumes that height continues with the slope 0.
+   * I.e. the border cells just repeat outside of the map
+   * Taken from: https://en.wikipedia.org/wiki/Bicubic_interpolation
+   * @param[in] layer the name of the layer to be accessed.
+   * @param[in] position the requested position.
+   * @param[out] value the data of the cell.
+   * @return true if bicubic interpolation was successful.
+   */
+  bool atPositionBicubicInterpolated(const std::string& layer, const Position& position,
+                                             float& value) const;
+
+
   /*!
    * Resize the buffer.
    * @param bufferSize the requested buffer size.
