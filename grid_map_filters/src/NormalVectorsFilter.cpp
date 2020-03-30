@@ -32,7 +32,7 @@ bool NormalVectorsFilter<T>::configure() {
   // Read which algorithm is chosen: area or raster.
   std::string algorithm;
   if (!filters::FilterBase<T>::getParam(std::string("algorithm"), algorithm)) {
-    ROS_ERROR("Normal vectors filter did not find parameter `algorithm`, default 'area' algorithm will be used.");
+    ROS_WARN("Could not find the parameter: `algorithm`. Setting to default value: 'area'.");
     // Default value.
     algorithm = "area";
   }
@@ -42,13 +42,13 @@ bool NormalVectorsFilter<T>::configure() {
   if (algorithm != "raster") {
     // Read radius, if found, its value will be used for area method. If radius parameter is not found, raster method will be used.
     if (!filters::FilterBase<T>::getParam(std::string("radius"), estimationRadius_)) {
-      ROS_ERROR("Normal vectors filter did not find parameter `radius`, automatically switch to raster method.");
+      ROS_WARN("Could not find the parameter: `radius`. Switching to raster method.");
       algorithm = "raster";
     }
     ROS_DEBUG("Normal vectors estimation radius = %f", estimationRadius_);
     // If radius not positive switch to raster method.
     if (estimationRadius_ <= 0) {
-      ROS_ERROR("Parameter `radius` is not positive, automatically switch to raster method.");
+      ROS_WARN("Parameter `radius` is not positive. Switching to raster method.");
       algorithm = "raster";
     }
   }
@@ -56,7 +56,7 @@ bool NormalVectorsFilter<T>::configure() {
   // Read parallelization_enabled to decide whether parallelization has to be used, if parameter is not found an error is thrown and
   // the false default value will be used.
   if (!filters::FilterBase<T>::getParam(std::string("parallelization_enabled"), parallelizationEnabled_)) {
-    ROS_ERROR("Normal vectors filter did not find parameter `parallelization_enabled`.");
+    ROS_WARN("Could not find the parameter: `parallelization_enabled`. Setting to default value: 'false'.");
     parallelizationEnabled_ = false;
   }
   ROS_DEBUG("Parallelization_enabled = %d", parallelizationEnabled_);
@@ -64,7 +64,7 @@ bool NormalVectorsFilter<T>::configure() {
   // Read thread_number to set the number of threads to be used if parallelization is enebled,
   // if parameter is not found an error is thrown and the default is to set it to automatic.
   if (!filters::FilterBase<T>::getParam(std::string("thread_number"), threadCount_)) {
-    ROS_ERROR("Normal vectors filter did not find parameter `thread_number`.");
+    ROS_WARN("Could not find the parameter: `thread_number`. Setting to default value: 'automatic'.");
     threadCount_ = tbb::task_scheduler_init::automatic;
   }
   ROS_DEBUG("Thread_number = %d", threadCount_);
