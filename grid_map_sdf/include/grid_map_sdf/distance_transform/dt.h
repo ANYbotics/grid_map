@@ -92,7 +92,7 @@ namespace distance_transform
       delete [] d;
     }
 
-    delete f;
+    delete [] f;
   }
 
   /* dt of binary image using squared distance */
