@@ -21,7 +21,18 @@ find_package(catkin REQUIRED COMPONENTS
 )
 
 ## System dependencies are found with CMake's conventions
-#find_package(Eigen3 REQUIRED)
+find_package(PkgConfig REQUIRED)
+
+
+pkg_check_modules(TBB "tbb")
+if (TBB_FOUND)
+  add_definitions(
+    ${TBB_CFLAGS}
+    ${TBB_CFLAGS_OTHER}
+  )
+else()
+  message([FATAL_ERROR] "tbb module not found")
+endif ()
 
 ###################################
 ## catkin specific configuration ##
@@ -43,7 +54,7 @@ catkin_package(
     grid_map_msgs
     filters
   DEPENDS
-    #Eigen3
+    TBB
 )
 
 ###########
@@ -53,8 +64,9 @@ catkin_package(
 ## Specify additional locations of header files
 include_directories(
   include
-  ${catkin_INCLUDE_DIRS}
-  ${EIGEN3_INCLUDE_DIR}
+  SYSTEM
+    ${catkin_INCLUDE_DIRS}
+    ${TBB_INCLUDE_DIRS}
 )
 
 ## Declare a cpp library
@@ -79,6 +91,7 @@ add_library(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME}
   ${catkin_LIBRARIES}
+  ${TBB_LIBRARIES}
 )
 
 #############
