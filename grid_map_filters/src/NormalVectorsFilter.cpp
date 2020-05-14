@@ -75,21 +75,21 @@ bool NormalVectorsFilter<T>::configure() {
     // If parallelizationEnabled_=true, use the parallel method, otherwise serial.
     if (parallelizationEnabled_) {
       method_ = Method::RasterParallel;
-      ROS_INFO("Method RasterParallel");
+      ROS_DEBUG("Method RasterParallel");
     } else {
       method_ = Method::RasterSerial;
-      ROS_INFO("Method RasterSerial");
+      ROS_DEBUG("Method RasterSerial");
     }
   } else {
     // If parallelizationEnabled_=true, use the parallel method, otherwise serial.
     if (parallelizationEnabled_) {
       method_ = Method::AreaParallel;
-      ROS_INFO("Method AreaParallel");
+      ROS_DEBUG("Method AreaParallel");
     } else {
       method_ = Method::AreaSerial;
-      ROS_INFO("Method AreaSerial");
+      ROS_DEBUG("Method AreaSerial");
     }
-    ROS_INFO("estimationRadius_ = %f", estimationRadius_);
+    ROS_DEBUG("estimationRadius_ = %f", estimationRadius_);
   }
 
   // Read normal_vector_positive_axis, to define normal vector positive direction.
