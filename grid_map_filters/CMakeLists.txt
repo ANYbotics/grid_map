@@ -23,7 +23,6 @@ find_package(catkin REQUIRED COMPONENTS
 ## System dependencies are found with CMake's conventions
 find_package(PkgConfig REQUIRED)
 
-
 pkg_check_modules(TBB "tbb")
 if (TBB_FOUND)
   add_definitions(
@@ -46,6 +45,7 @@ endif ()
 catkin_package(
   INCLUDE_DIRS
     include
+    ${TBB_INCLUDE_DIRS}
   LIBRARIES
     ${PROJECT_NAME}
   CATKIN_DEPENDS
@@ -54,7 +54,6 @@ catkin_package(
     grid_map_msgs
     filters
   DEPENDS
-    TBB
 )
 
 ###########
