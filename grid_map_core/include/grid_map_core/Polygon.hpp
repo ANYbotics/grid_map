@@ -6,24 +6,27 @@
  *   Institute: ETH Zurich, ANYbotics
  */
 
-#pragma once
+// Eigen
+#include <Eigen/Core>
 
 #include <grid_map_core/TypeDefs.hpp>
 
 // STD
+#include <string>
 #include <vector>
 
-// Eigen
-#include <Eigen/Core>
+#ifndef GRID_MAP_CORE__POLYGON_HPP_
+#define GRID_MAP_CORE__POLYGON_HPP_
 
-namespace grid_map {
+namespace grid_map
+{
 
 class Polygon
 {
- public:
-
-  enum class TriangulationMethods {
-    FAN // Fan triangulation (only for convex polygons).
+public:
+  enum class TriangulationMethods
+  {
+    FAN  // Fan triangulation (only for convex polygons).
   };
 
   /*!
@@ -35,7 +38,7 @@ class Polygon
    * Constructor with vertices.
    * @param vertices the points of the polygon.
    */
-  Polygon(std::vector<Position> vertices);
+  explicit Polygon(std::vector<Position> vertices);
 
   /*!
    * Destructor.
@@ -47,20 +50,20 @@ class Polygon
    * @param point the point to be checked.
    * @return true if inside, false otherwise.
    */
-  bool isInside(const Position& point) const;
+  bool isInside(const Position & point) const;
 
   /*!
    * Add a vertex to the polygon
    * @param vertex the point to be added.
    */
-  void addVertex(const Position& vertex);
+  void addVertex(const Position & vertex);
 
   /*!
    * Get the vertex with index.
    * @param index the index of the requested vertex.
    * @return the requested vertex.
    */
-  const Position& getVertex(const size_t index) const;
+  const Position & getVertex(const size_t index) const;
 
   /*!
    * Removes all vertices from the polygon.
@@ -72,13 +75,13 @@ class Polygon
    * @param index the index of the requested vertex.
    * @return the requested vertex.
    */
-  const Position& operator [](const size_t index) const;
+  const Position & operator[](const size_t index) const;
 
   /*!
    * Returns the vertices of the polygon.
    * @return the vertices of the polygon.
    */
-  const std::vector<Position>& getVertices() const;
+  const std::vector<Position> & getVertices() const;
 
   /*!
    * Returns the number of vertices.
@@ -107,13 +110,13 @@ class Polygon
    * Set the frame id of the polygon.
    * @param frameId the frame id to set.
    */
-  void setFrameId(const std::string& frameId);
+  void setFrameId(const std::string & frameId);
 
   /*!
    * Get the frameId of the polygon.
    * @return frameId.
    */
-  const std::string& getFrameId() const;
+  const std::string & getFrameId() const;
 
   /*!
    * Get the area of the polygon. The polygon has to be
@@ -134,7 +137,7 @@ class Polygon
    * @param center the center of the bounding box.
    * @param length the side lengths of the bounding box.
    */
-  void getBoundingBox(Position& center, Length& length) const;
+  void getBoundingBox(Position & center, Length & length) const;
 
   /*!
    * Convert polygon to inequality constraints which most tightly contain the points; i.e.,
@@ -147,8 +150,9 @@ class Polygon
    * @param b the b matrix in of the inequality constraint.
    * @return true if conversion successful, false otherwise.
    */
-  bool convertToInequalityConstraints(Eigen::MatrixXd& A,
-                                      Eigen::VectorXd& b) const;
+  bool convertToInequalityConstraints(
+    Eigen::MatrixXd & A,
+    Eigen::VectorXd & b) const;
 
   /*!
    * Offsets the polygon inward (buffering) by a margin.
@@ -170,7 +174,9 @@ class Polygon
    * Return a triangulated version of the polygon.
    * @return a list of triangle polygons covering the same polygon.
    */
-  std::vector<Polygon> triangulate(const TriangulationMethods& method = TriangulationMethods::FAN) const;
+  std::vector<Polygon> triangulate(
+    const TriangulationMethods & method =
+    TriangulationMethods::FAN) const;
 
   /*!
    * Approximates a circle with a polygon.
@@ -179,8 +185,9 @@ class Polygon
    * @param[in] nVertices number of vertices of the approximation polygon. Default = 20.
    * @return circle as polygon.
    */
-  static Polygon fromCircle(const Position center, const double radius,
-                            const int nVertices = 20);
+  static Polygon fromCircle(
+    const Position center, const double radius,
+    const int nVertices = 20);
 
   /*!
    * Approximates two circles with a convex hull and returns it as polygon.
@@ -190,10 +197,11 @@ class Polygon
    * @param[in] nVertices number of vertices of the approximation polygon. Default = 20.
    * @return convex hull of the two circles as polygon.
    */
-  static Polygon convexHullOfTwoCircles(const Position center1,
-                                        const Position center2,
-                                        const double radius,
-                                        const int nVertices = 20);
+  static Polygon convexHullOfTwoCircles(
+    const Position center1,
+    const Position center2,
+    const double radius,
+    const int nVertices = 20);
 
   /*!
    * Computes the convex hull of two polygons and returns it as polygon.
@@ -201,32 +209,33 @@ class Polygon
    * @param[in] polygon2 the second input polygon.
    * @return convex hull as polygon.
    */
-  static Polygon convexHull(Polygon& polygon1, Polygon& polygon2);
+  static Polygon convexHull(Polygon & polygon1, Polygon & polygon2);
 
   /*!
    * Computes the convex hull of given points, using Andrew's monotone chain convex hull algorithm, and returns it as polygon.
    * @param[in] points points to use to compute the convex hull used to create the polygon.
    * @return convex hull as polygon.
    */
-  static Polygon monotoneChainConvexHullOfPoints(const std::vector<Position>& points);
+  static Polygon monotoneChainConvexHullOfPoints(const std::vector<Position> & points);
 
- protected:
-
+protected:
   /*!
    * Returns true if the vector1 and vector2 are sorted lexicographically.
    * @param[in] vector1 the first input vector.
    * @param[in] vector2 the second input vector.
    */
-  static bool sortVertices(const Eigen::Vector2d& vector1,
-                           const Eigen::Vector2d& vector2);
+  static bool sortVertices(
+    const Eigen::Vector2d & vector1,
+    const Eigen::Vector2d & vector2);
 
   /*!
    * Returns the 2D cross product of vector1 and vector2.
    * @param[in] vector1 the first input vector.
    * @param[in] vector2 the second input vector.
    */
-  static double computeCrossProduct2D(const Eigen::Vector2d& vector1,
-                                      const Eigen::Vector2d& vector2);
+  static double computeCrossProduct2D(
+    const Eigen::Vector2d & vector1,
+    const Eigen::Vector2d & vector2);
 
   /*!
    * Returns true if OAB makes a clockwise turn or if the OA and OB vectors are collinear.
@@ -234,9 +243,10 @@ class Polygon
    * @param[in] pointA input point A, used to compute OA.
    * @param[in] pointB input point B, used to compute OB.
    */
-  static double vectorsMakeClockwiseTurn(const Eigen::Vector2d& pointO,
-                                         const Eigen::Vector2d& pointA,
-                                         const Eigen::Vector2d& pointB);
+  static double vectorsMakeClockwiseTurn(
+    const Eigen::Vector2d & pointO,
+    const Eigen::Vector2d & pointA,
+    const Eigen::Vector2d & pointB);
 
   //! Frame id of the polygon.
   std::string frameId_;
@@ -247,8 +257,9 @@ class Polygon
   //! Vertices of the polygon.
   std::vector<Position> vertices_;
 
- public:
+public:
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
 
-} /* namespace grid_map */
+}  // namespace grid_map
+#endif  // GRID_MAP_CORE__POLYGON_HPP_

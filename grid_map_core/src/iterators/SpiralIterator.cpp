@@ -6,20 +6,20 @@
  *   Institute: ETH Zurich, ANYbotics
  */
 
+#include <cmath>
+
 #include "grid_map_core/iterators/SpiralIterator.hpp"
 #include "grid_map_core/GridMapMath.hpp"
 
-#include <cmath>
+namespace grid_map
+{
 
-using namespace std;
-
-namespace grid_map {
-
-SpiralIterator::SpiralIterator(const grid_map::GridMap& gridMap, const Eigen::Vector2d& center,
-                               const double radius)
-    : center_(center),
-      radius_(radius),
-      distance_(0)
+SpiralIterator::SpiralIterator(
+  const grid_map::GridMap & gridMap, const Eigen::Vector2d & center,
+  const double radius)
+: center_(center),
+  radius_(radius),
+  distance_(0)
 {
   radiusSquare_ = radius_ * radius_;
   mapLength_ = gridMap.getLength();
@@ -28,14 +28,16 @@ SpiralIterator::SpiralIterator(const grid_map::GridMap& gridMap, const Eigen::Ve
   bufferSize_ = gridMap.getSize();
   gridMap.getIndex(center_, indexCenter_);
   nRings_ = std::ceil(radius_ / resolution_);
-  if (checkIfIndexInRange(indexCenter_, bufferSize_))
+  if (checkIfIndexInRange(indexCenter_, bufferSize_)) {
     pointsRing_.push_back(indexCenter_);
-  else
-    while(pointsRing_.empty() && !isPastEnd())
+  } else {
+    while (pointsRing_.empty() && !isPastEnd()) {
       generateRing();
+    }
+  }
 }
 
-SpiralIterator& SpiralIterator::operator =(const SpiralIterator& other)
+SpiralIterator & SpiralIterator::operator=(const SpiralIterator & other)
 {
   center_ = other.center_;
   indexCenter_ = other.indexCenter_;
@@ -51,26 +53,26 @@ SpiralIterator& SpiralIterator::operator =(const SpiralIterator& other)
   return *this;
 }
 
-bool SpiralIterator::operator !=(const SpiralIterator& other) const
+bool SpiralIterator::operator!=(const SpiralIterator & other) const
 {
   return (pointsRing_.back() != pointsRing_.back()).any();
 }
 
-const Eigen::Array2i& SpiralIterator::operator *() const
+const Eigen::Array2i & SpiralIterator::operator*() const
 {
   return pointsRing_.back();
 }
 
-SpiralIterator& SpiralIterator::operator ++()
+SpiralIterator & SpiralIterator::operator++()
 {
   pointsRing_.pop_back();
-  if (pointsRing_.empty() && !isPastEnd()) generateRing();
+  if (pointsRing_.empty() && !isPastEnd()) {generateRing();}
   return *this;
 }
 
 bool SpiralIterator::isPastEnd() const
 {
-  return (distance_ == nRings_ && pointsRing_.empty());
+  return distance_ == nRings_ && pointsRing_.empty();
 }
 
 bool SpiralIterator::isInside(const Index index) const
@@ -78,7 +80,7 @@ bool SpiralIterator::isInside(const Index index) const
   Eigen::Vector2d position;
   getPositionFromIndex(position, index, mapLength_, mapPosition_, resolution_, bufferSize_);
   double squareNorm = (position - center_).array().square().sum();
-  return (squareNorm <= radiusSquare_);
+  return squareNorm <= radiusSquare_;
 }
 
 void SpiralIterator::generateRing()
@@ -92,21 +94,24 @@ void SpiralIterator::generateRing()
     pointInMap.y() = point.y() + indexCenter_.y();
     if (checkIfIndexInRange(pointInMap, bufferSize_)) {
       if (distance_ == nRings_ || distance_ == nRings_ - 1) {
-        if (isInside(pointInMap))
+        if (isInside(pointInMap)) {
           pointsRing_.push_back(pointInMap);
+        }
       } else {
         pointsRing_.push_back(pointInMap);
       }
     }
     normal.x() = -signum(point.y());
     normal.y() = signum(point.x());
-    if (normal.x() != 0
-        && (int) Vector(point.x() + normal.x(), point.y()).norm() == distance_)
+    if (normal.x() != 0 &&
+      static_cast<int> Vector(point.x() + normal.x(), point.y()).norm() == distance_)
+    {
       point.x() += normal.x();
-    else if (normal.y() != 0
-        && (int) Vector(point.x(), point.y() + normal.y()).norm() == distance_)
+    } else if (normal.y() != 0 &&  // NOLINT
+      static_cast<int> Vector(point.x(), point.y() + normal.y()).norm() == distance_)
+    {
       point.y() += normal.y();
-    else {
+    } else {
       point.x() += normal.x();
       point.y() += normal.y();
     }
@@ -119,5 +124,4 @@ double SpiralIterator::getCurrentRadius() const
   return radius.matrix().norm() * resolution_;
 }
 
-} /* namespace grid_map */
-
+}  // namespace grid_map

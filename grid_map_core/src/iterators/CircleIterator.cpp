@@ -6,16 +6,19 @@
  *   Institute: ETH Zurich, ANYbotics
  */
 
+#include <memory>
+
 #include "grid_map_core/iterators/CircleIterator.hpp"
 #include "grid_map_core/GridMapMath.hpp"
 
-using namespace std;
+namespace grid_map
+{
 
-namespace grid_map {
-
-CircleIterator::CircleIterator(const GridMap& gridMap, const Position& center, const double radius)
-    : center_(center),
-      radius_(radius)
+CircleIterator::CircleIterator(
+  const GridMap & gridMap, const Position & center,
+  const double radius)
+: center_(center),
+  radius_(radius)
 {
   radiusSquare_ = pow(radius_, 2);
   mapLength_ = gridMap.getLength();
@@ -26,11 +29,15 @@ CircleIterator::CircleIterator(const GridMap& gridMap, const Position& center, c
   Index submapStartIndex;
   Index submapBufferSize;
   findSubmapParameters(center, radius, submapStartIndex, submapBufferSize);
-  internalIterator_ = std::shared_ptr<SubmapIterator>(new SubmapIterator(gridMap, submapStartIndex, submapBufferSize));
-  if(!isInside()) ++(*this);
+  internalIterator_ =
+    std::shared_ptr<SubmapIterator>(
+    new SubmapIterator(
+      gridMap, submapStartIndex,
+      submapBufferSize));
+  if (!isInside()) {++(*this);}
 }
 
-CircleIterator& CircleIterator::operator =(const CircleIterator& other)
+CircleIterator & CircleIterator::operator=(const CircleIterator & other)
 {
   center_ = other.center_;
   radius_ = other.radius_;
@@ -44,23 +51,23 @@ CircleIterator& CircleIterator::operator =(const CircleIterator& other)
   return *this;
 }
 
-bool CircleIterator::operator !=(const CircleIterator& other) const
+bool CircleIterator::operator!=(const CircleIterator & other) const
 {
-  return (internalIterator_ != other.internalIterator_);
+  return internalIterator_ != other.internalIterator_;
 }
 
-const Index& CircleIterator::operator *() const
+const Index & CircleIterator::operator*() const
 {
   return *(*internalIterator_);
 }
 
-CircleIterator& CircleIterator::operator ++()
+CircleIterator & CircleIterator::operator++()
 {
   ++(*internalIterator_);
-  if (internalIterator_->isPastEnd()) return *this;
+  if (internalIterator_->isPastEnd()) {return *this;}
 
   for ( ; !internalIterator_->isPastEnd(); ++(*internalIterator_)) {
-    if (isInside()) break;
+    if (isInside()) {break;}
   }
 
   return *this;
@@ -74,23 +81,29 @@ bool CircleIterator::isPastEnd() const
 bool CircleIterator::isInside() const
 {
   Position position;
-  getPositionFromIndex(position, *(*internalIterator_), mapLength_, mapPosition_, resolution_, bufferSize_, bufferStartIndex_);
+  getPositionFromIndex(
+    position, *(*internalIterator_), mapLength_, mapPosition_, resolution_,
+    bufferSize_, bufferStartIndex_);
   double squareNorm = (position - center_).array().square().sum();
-  return (squareNorm <= radiusSquare_);
+  return squareNorm <= radiusSquare_;
 }
 
-void CircleIterator::findSubmapParameters(const Position& center, const double radius,
-                                          Index& startIndex, Size& bufferSize) const
+void CircleIterator::findSubmapParameters(
+  const Position & center, const double radius,
+  Index & startIndex, Size & bufferSize) const
 {
   Position topLeft = center.array() + radius;
   Position bottomRight = center.array() - radius;
   boundPositionToRange(topLeft, mapLength_, mapPosition_);
   boundPositionToRange(bottomRight, mapLength_, mapPosition_);
-  getIndexFromPosition(startIndex, topLeft, mapLength_, mapPosition_, resolution_, bufferSize_, bufferStartIndex_);
+  getIndexFromPosition(
+    startIndex, topLeft, mapLength_, mapPosition_, resolution_, bufferSize_,
+    bufferStartIndex_);
   Index endIndex;
-  getIndexFromPosition(endIndex, bottomRight, mapLength_, mapPosition_, resolution_, bufferSize_, bufferStartIndex_);
+  getIndexFromPosition(
+    endIndex, bottomRight, mapLength_, mapPosition_, resolution_, bufferSize_,
+    bufferStartIndex_);
   bufferSize = getSubmapSizeFromCornerIndeces(startIndex, endIndex, bufferSize_, bufferStartIndex_);
 }
 
-} /* namespace grid_map */
-
+}  // namespace grid_map

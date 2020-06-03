@@ -6,15 +6,17 @@
  *   Institute: ETH Zurich, ANYbotics
  */
 
-#pragma once
+#include <Eigen/Core>
+#include <string>
 
 #include "grid_map_core/GridMap.hpp"
-
 #include "grid_map_core/iterators/GridMapIterator.hpp"
 
-#include <Eigen/Core>
+#ifndef GRID_MAP_CORE__ITERATORS__SLIDINGWINDOWITERATOR_HPP_
+#define GRID_MAP_CORE__ITERATORS__SLIDINGWINDOWITERATOR_HPP_
 
-namespace grid_map {
+namespace grid_map
+{
 
 /*!
  * Iterator class to iterate trough the entire grid map with access to a layer's
@@ -24,12 +26,12 @@ namespace grid_map {
 class SlidingWindowIterator : public GridMapIterator
 {
 public:
-
-  enum class EdgeHandling {
-    INSIDE, // Only visit indices that are surrounded by a full window.
-    CROP, // Crop data matrix with missing cells at edges.
-    EMPTY, // Fill in missing edges with empty cells (NAN-value).
-    MEAN // Fill in missing edges with MEAN of valid values.
+  enum class EdgeHandling
+  {
+    INSIDE,  // Only visit indices that are surrounded by a full window.
+    CROP,  // Crop data matrix with missing cells at edges.
+    EMPTY,  // Fill in missing edges with empty cells (NAN-value).
+    MEAN  // Fill in missing edges with MEAN of valid values.
   };
 
   /*!
@@ -39,28 +41,29 @@ public:
    * @param edgeHandling the method to handle edges of the map.
    * @param windowSize the size of the moving window in number of cells (has to be an odd number!).
    */
-  SlidingWindowIterator(const GridMap& gridMap, const std::string& layer,
-                        const EdgeHandling& edgeHandling = EdgeHandling::CROP,
-                        const size_t windowSize = 3);
+  SlidingWindowIterator(
+    const GridMap & gridMap, const std::string & layer,
+    const EdgeHandling & edgeHandling = EdgeHandling::CROP,
+    const size_t windowSize = 3);
 
   /*!
    * Copy constructor.
    * @param other the object to copy.
    */
-  SlidingWindowIterator(const SlidingWindowIterator* other);
+  explicit SlidingWindowIterator(const SlidingWindowIterator * other);
 
   /*!
    * Set the side length of the moving window (in m).
    * @param gridMap the grid map to iterate on.
    * @param windowLength the side length of the window (in m).
    */
-  void setWindowLength(const GridMap& gridMap, const double windowLength);
+  void setWindowLength(const GridMap & gridMap, const double windowLength);
 
   /*!
    * Increase the iterator to the next element.
    * @return a reference to the updated iterator.
    */
-  SlidingWindowIterator& operator ++();
+  SlidingWindowIterator & operator++();
 
   /*!
    * Return the data of the sliding window.
@@ -70,7 +73,7 @@ public:
 
 private:
   //! Setup members.
-  void setup(const GridMap& gridMap);
+  void setup(const GridMap & gridMap);
 
   //! Check if data for current index is fully inside map.
   bool dataInsideMap() const;
@@ -79,7 +82,7 @@ private:
   const EdgeHandling edgeHandling_;
 
   //! Data.
-  const Matrix& data_;
+  const Matrix & data_;
 
   //! Size of the sliding window.
   size_t windowSize_;
@@ -87,8 +90,10 @@ private:
   //! Size of the border of the window around the center cell.
   size_t windowMargin_;
 
- public:
+public:
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
 
-} /* namespace */
+}  // namespace grid_map
+
+#endif  // GRID_MAP_CORE__ITERATORS__SLIDINGWINDOWITERATOR_HPP_

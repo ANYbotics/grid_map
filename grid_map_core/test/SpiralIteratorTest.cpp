@@ -6,9 +6,6 @@
  *	 Institute: University of Hamburg, TAMS
  */
 
-#include "grid_map_core/iterators/SpiralIterator.hpp"
-#include "grid_map_core/GridMap.hpp"
-
 // Eigen
 #include <Eigen/Core>
 
@@ -21,20 +18,21 @@
 // Vector
 #include <vector>
 
-using namespace std;
-using namespace Eigen;
-using namespace grid_map;
+#include "grid_map_core/iterators/SpiralIterator.hpp"
+#include "grid_map_core/GridMap.hpp"
 
-TEST(SpiralIterator, CenterOutOfMap)
+// using namespace grid_map;
+
+TEST(grid_map::SpiralIterator, CenterOutOfMap)
 {
-  GridMap map( { "types" });
+  grid_map::GridMap map({"types"});
   map.setGeometry(Length(8.0, 5.0), 1.0, Position(0.0, 0.0));
-  Position center(8.0, 0.0);
+  grid_map::Position center(8.0, 0.0);
   double radius = 5.0;
 
-  SpiralIterator iterator(map, center, radius);
+  grid_map::SpiralIterator iterator(map, center, radius);
 
-  Position iterator_position;
+  grid_map::Position iterator_position;
   map.getPosition(*iterator, iterator_position);
 
   EXPECT_TRUE(map.isInside(iterator_position));

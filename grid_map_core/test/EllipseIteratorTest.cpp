@@ -1,13 +1,10 @@
 /*
- * EllipseIteratorTest.cpp
+ * grid_map::EllipseIteratorTest.cpp
  *
  *  Created on: Dec 2, 2015
  *      Author: Péter Fankhauser
  *	 Institute: ETH Zurich, ANYbotics
  */
-
-#include "grid_map_core/iterators/EllipseIterator.hpp"
-#include "grid_map_core/GridMap.hpp"
 
 // Eigen
 #include <Eigen/Core>
@@ -21,16 +18,19 @@
 // Vector
 #include <vector>
 
-using namespace std;
-using namespace Eigen;
-using namespace grid_map;
+#include "grid_map_core/iterators/EllipseIterator.hpp"
+#include "grid_map_core/GridMap.hpp"
 
-TEST(EllipseIterator, OneCellWideEllipse)
+// using namespace std;
+// using namespace Eigen;
+// using namespace grid_map;
+
+TEST(grid_map::EllipseIterator, OneCellWideEllipse)
 {
-  GridMap map( { "types" });
-  map.setGeometry(Length(8.0, 5.0), 1.0, Position(0.0, 0.0));
+  grid_map::GridMap map({"types"});
+  map.setGeometry(grid_map::Length(8.0, 5.0), 1.0, grid_map::Position(0.0, 0.0));
 
-  EllipseIterator iterator(map, Position(0.0, 0.0), Length(8.0, 1.0));
+  grid_map::EllipseIterator iterator(map, grid_map::Position(0.0, 0.0), grid_map::Length(8.0, 1.0));
 
   EXPECT_FALSE(iterator.isPastEnd());
   EXPECT_EQ(0, (*iterator)(0));

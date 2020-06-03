@@ -6,11 +6,13 @@
  *   Institute: ETH Zurich, ANYbotics
  */
 
-#pragma once
-
 #include "grid_map_core/TypeDefs.hpp"
 
-namespace grid_map {
+#ifndef GRID_MAP_CORE__BUFFERREGION_HPP_
+#define GRID_MAP_CORE__BUFFERREGION_HPP_
+
+namespace grid_map
+{
 
 /*!
  * This class holds information about a rectangular region
@@ -18,8 +20,7 @@ namespace grid_map {
  */
 class BufferRegion
 {
- public:
-
+public:
   /*!
    * The definition of the buffer region positions.
    */
@@ -35,18 +36,19 @@ class BufferRegion
   constexpr static unsigned int nQuadrants = 4;
 
   BufferRegion();
-  BufferRegion(const Index& startIndex, const Size& size, const BufferRegion::Quadrant& quadrant);
+  BufferRegion(
+    const Index & startIndex, const Size & size,
+    const BufferRegion::Quadrant & quadrant);
   virtual ~BufferRegion();
 
-  const Index& getStartIndex() const;
-  void setStartIndex(const Index& startIndex);
-  const Size& getSize() const;
-  void setSize(const Size& size);
+  const Index & getStartIndex() const;
+  void setStartIndex(const Index & startIndex);
+  const Size & getSize() const;
+  void setSize(const Size & size);
   BufferRegion::Quadrant getQuadrant() const;
   void setQuadrant(BufferRegion::Quadrant type);
 
- private:
-
+private:
   //! Start index (typically top-left) of the buffer region.
   Index staretIndex_;
 
@@ -56,8 +58,9 @@ class BufferRegion
   //! Quadrant type of the buffer region.
   Quadrant quadrant_;
 
- public:
+public:
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
 
-} /* namespace grid_map */
+}  // namespace grid_map
+#endif  // GRID_MAP_CORE__BUFFERREGION_HPP_
