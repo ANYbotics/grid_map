@@ -37,8 +37,8 @@ GridMapRosConverter::~GridMapRosConverter()
 
 bool GridMapRosConverter::fromMessage(const grid_map_msgs::GridMap& message, grid_map::GridMap& gridMap, const std::vector<std::string>& layers, bool copyBasicLayers, bool copyAllNonBasicLayers)
 {
-  gridMap.setTimestamp(message.info.header.stamp.toNSec());
-  gridMap.setFrameId(message.info.header.frame_id);
+  gridMap.setTimestamp(message.header.stamp.toNSec());
+  gridMap.setFrameId(message.header.frame_id);
   gridMap.setGeometry(Length(message.info.length_x, message.info.length_y), message.info.resolution,
                       Position(message.info.pose.position.x, message.info.pose.position.y));
 
@@ -87,8 +87,8 @@ void GridMapRosConverter::toMessage(const grid_map::GridMap& gridMap, grid_map_m
 void GridMapRosConverter::toMessage(const grid_map::GridMap& gridMap, const std::vector<std::string>& layers,
                       grid_map_msgs::GridMap& message)
 {
-  message.info.header.stamp.fromNSec(gridMap.getTimestamp());
-  message.info.header.frame_id = gridMap.getFrameId();
+  message.header.stamp.fromNSec(gridMap.getTimestamp());
+  message.header.frame_id = gridMap.getFrameId();
   message.info.resolution = gridMap.getResolution();
   message.info.length_x = gridMap.getLength().x();
   message.info.length_y = gridMap.getLength().y();

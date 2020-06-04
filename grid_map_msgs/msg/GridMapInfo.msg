@@ -1,6 +1,3 @@
-# Header (time and frame)
-Header header
-
 # Resolution of the grid [m/cell].
 float64 resolution
 

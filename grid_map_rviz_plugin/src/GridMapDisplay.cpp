@@ -203,9 +203,9 @@ void GridMapDisplay::processMessage(const grid_map_msgs::GridMap::ConstPtr& msg)
   // Check if transform between the message's frame and the fixed frame exists.
   Ogre::Quaternion orientation;
   Ogre::Vector3 position;
-  if (!context_->getFrameManager()->getTransform(msg->info.header.frame_id, msg->info.header.stamp,
+  if (!context_->getFrameManager()->getTransform(msg->header.frame_id, msg->header.stamp,
                                                  position, orientation)) {
-    ROS_DEBUG("Error transforming from frame '%s' to frame '%s'", msg->info.header.frame_id.c_str(),
+    ROS_DEBUG("Error transforming from frame '%s' to frame '%s'", msg->header.frame_id.c_str(),
               qPrintable(fixed_frame_));
     return;
   }

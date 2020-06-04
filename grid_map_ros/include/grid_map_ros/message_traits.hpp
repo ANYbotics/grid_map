@@ -14,12 +14,12 @@ struct Header<grid_map_msgs::GridMap, typename boost::enable_if<HasHeader<grid_m
 {
   static std_msgs::Header* pointer(grid_map_msgs::GridMap& m)
   {
-    return &m.info.header;
+    return &m.header;
   }
 
   static std_msgs::Header const* pointer(const grid_map_msgs::GridMap& m)
   {
-    return &m.info.header;
+    return &m.header;
   }
 };
 
@@ -28,17 +28,17 @@ struct FrameId<grid_map_msgs::GridMap, typename boost::enable_if<HasHeader<grid_
 {
   static std::string* pointer(grid_map_msgs::GridMap& m)
   {
-    return &m.info.header.frame_id;
+    return &m.header.frame_id;
   }
 
   static std::string const* pointer(const grid_map_msgs::GridMap& m)
   {
-    return &m.info.header.frame_id;
+    return &m.header.frame_id;
   }
 
   static std::string value(const grid_map_msgs::GridMap& m)
   {
-    return m.info.header.frame_id;
+    return m.header.frame_id;
   }
 };
 
@@ -47,17 +47,17 @@ struct TimeStamp<grid_map_msgs::GridMap, typename boost::enable_if<HasHeader<gri
 {
   static ros::Time* pointer(grid_map_msgs::GridMap& m)
   {
-    return &m.info.header.stamp;
+    return &m.header.stamp;
   }
 
   static ros::Time const* pointer(const grid_map_msgs::GridMap& m)
   {
-    return &m.info.header.stamp;
+    return &m.header.stamp;
   }
 
   static ros::Time value(const grid_map_msgs::GridMap& m)
   {
-    return m.info.header.stamp;
+    return m.header.stamp;
   }
 };
 

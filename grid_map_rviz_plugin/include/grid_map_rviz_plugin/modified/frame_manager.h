@@ -235,7 +235,7 @@ private:
     boost::shared_ptr<M const> const &msg = msg_evt.getConstMessage();
     std::string authority = msg_evt.getPublisherName();
 
-    messageArrived(msg->info.header.frame_id, msg->info.header.stamp, authority, display);
+    messageArrived(msg->header.frame_id, msg->header.stamp, authority, display);
   }
 
   template<class M>
@@ -244,7 +244,7 @@ private:
     boost::shared_ptr<M const> const &msg = msg_evt.getConstMessage();
     std::string authority = msg_evt.getPublisherName();
 
-    messageFailed(msg->info.header.frame_id, msg->info.header.stamp, authority, reason, display);
+    messageFailed(msg->header.frame_id, msg->header.stamp, authority, reason, display);
   } 
 
   void messageArrived(const std::string& frame_id, const ros::Time& stamp, const std::string& caller_id, Display* display);

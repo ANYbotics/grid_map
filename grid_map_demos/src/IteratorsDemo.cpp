@@ -252,7 +252,7 @@ void IteratorsDemo::publish()
   grid_map_msgs::GridMap message;
   grid_map::GridMapRosConverter::toMessage(map_, message);
   gridMapPublisher_.publish(message);
-  ROS_DEBUG("Grid map (timestamp %f) published.", message.info.header.stamp.toSec());
+  ROS_DEBUG("Grid map (timestamp %f) published.", message.header.stamp.toSec());
 }
 
 } /* namespace */

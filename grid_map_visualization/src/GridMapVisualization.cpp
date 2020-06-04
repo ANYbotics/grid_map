@@ -158,7 +158,7 @@ void GridMapVisualization::updateSubscriptionCallback(const ros::TimerEvent&)
 void GridMapVisualization::callback(const grid_map_msgs::GridMap& message)
 {
   ROS_DEBUG("Grid map visualization received a map (timestamp %f) for visualization.",
-            message.info.header.stamp.toSec());
+            message.header.stamp.toSec());
   grid_map::GridMap map;
   grid_map::GridMapRosConverter::fromMessage(message, map);
 
