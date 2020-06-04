@@ -6,16 +6,14 @@
  *   Institute: ETH Zurich, ANYbotics
  */
 
-// #pragma once
+#ifndef GRID_MAP_CORE__ITERATORS__POLYGONITERATOR_HPP_
+#define GRID_MAP_CORE__ITERATORS__POLYGONITERATOR_HPP_
 
 #include <memory>
 
 #include "grid_map_core/GridMap.hpp"
 #include "grid_map_core/Polygon.hpp"
 #include "grid_map_core/iterators/SubmapIterator.hpp"
-
-#ifndef GRID_MAP_CORE__ITERATORS__POLYGONITERATOR_HPP_
-#define GRID_MAP_CORE__ITERATORS__POLYGONITERATOR_HPP_
 
 namespace grid_map
 {

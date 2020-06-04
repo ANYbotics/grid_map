@@ -6,6 +6,9 @@
  *	 Institute: ETH Zurich, ANYbotics
  */
 
+#ifndef GRID_MAP_CORE__GRIDMAP_HPP_
+#define GRID_MAP_CORE__GRIDMAP_HPP_
+
 // Eigen
 #include <Eigen/Core>
 #include <Eigen/Geometry>
@@ -19,9 +22,6 @@
 #include "grid_map_core/TypeDefs.hpp"
 #include "grid_map_core/SubmapGeometry.hpp"
 #include "grid_map_core/BufferRegion.hpp"
-
-#ifndef GRID_MAP_CORE__GRIDMAP_HPP_
-#define GRID_MAP_CORE__GRIDMAP_HPP_
 
 namespace grid_map
 {

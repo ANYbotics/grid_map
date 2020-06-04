@@ -6,15 +6,15 @@
  */
 
 
+#ifndef GRID_MAP_CORE__GTEST_EIGEN_HPP_
+#define GRID_MAP_CORE__GTEST_EIGEN_HPP_
+
 #include <gtest/gtest.h>
 #include <Eigen/Core>
 #include <iostream>
 #include <cmath>
 #include <string>
 #include <algorithm>
-
-#ifndef GRID_MAP_CORE__GTEST_EIGEN_HPP_
-#define GRID_MAP_CORE__GTEST_EIGEN_HPP_
 
 namespace grid_map
 {

@@ -8,14 +8,14 @@
 
 // #pragma once
 
+#ifndef GRID_MAP_CORE__ITERATORS__SPIRALITERATOR_HPP_
+#define GRID_MAP_CORE__ITERATORS__SPIRALITERATOR_HPP_
+
 #include <Eigen/Core>
 #include <memory>
 #include <vector>
 
 #include "grid_map_core/GridMap.hpp"
-
-#ifndef GRID_MAP_CORE__ITERATORS__SPIRALITERATOR_HPP_
-#define GRID_MAP_CORE__ITERATORS__SPIRALITERATOR_HPP_
 
 namespace grid_map
 {

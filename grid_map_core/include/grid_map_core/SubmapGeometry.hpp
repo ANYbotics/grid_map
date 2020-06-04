@@ -6,11 +6,11 @@
  *   Institute: ETH Zurich, ANYbotics
  */
 
-
-#include <grid_map_core/GridMap.hpp>
-
 #ifndef GRID_MAP_CORE__SUBMAPGEOMETRY_HPP_
 #define GRID_MAP_CORE__SUBMAPGEOMETRY_HPP_
+
+
+#include <grid_map_core/GridMap.hpp>
 
 namespace grid_map
 {

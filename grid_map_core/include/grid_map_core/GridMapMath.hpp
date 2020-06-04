@@ -6,16 +6,15 @@
  *	 Institute: ETH Zurich, ANYbotics
  */
 
+#ifndef GRID_MAP_CORE__GRIDMAPMATH_HPP_
+#define GRID_MAP_CORE__GRIDMAPMATH_HPP_
+
 #include <Eigen/Core>
 #include <vector>
 #include <map>
 
 #include "grid_map_core/TypeDefs.hpp"
 #include "grid_map_core/BufferRegion.hpp"
-
-
-#ifndef GRID_MAP_CORE__GRIDMAPMATH_HPP_
-#define GRID_MAP_CORE__GRIDMAPMATH_HPP_
 
 namespace grid_map
 {

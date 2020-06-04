@@ -5,13 +5,12 @@
  *      Author: Péter Fankhauser
  *   Institute: ETH Zurich, ANYbotics
  */
+#ifndef GRID_MAP_CORE__ITERATORS__GRIDMAPITERATOR_HPP_
+#define GRID_MAP_CORE__ITERATORS__GRIDMAPITERATOR_HPP_
 
 #include <Eigen/Core>
 
 #include "grid_map_core/GridMap.hpp"
-
-#ifndef GRID_MAP_CORE__ITERATORS__GRIDMAPITERATOR_HPP_
-#define GRID_MAP_CORE__ITERATORS__GRIDMAPITERATOR_HPP_
 
 namespace grid_map
 {

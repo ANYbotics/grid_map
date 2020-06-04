@@ -7,14 +7,14 @@
  */
 
 
+#ifndef GRID_MAP_CORE__CUBICINTERPOLATION_HPP_
+#define GRID_MAP_CORE__CUBICINTERPOLATION_HPP_
+
 #include <Eigen/Core>
 #include <vector>
 #include <map>
 #include <string>
 #include "grid_map_core/TypeDefs.hpp"
-
-#ifndef GRID_MAP_CORE__CUBICINTERPOLATION_HPP_
-#define GRID_MAP_CORE__CUBICINTERPOLATION_HPP_
 
 /*
  * For difference between bicubic convolution interpolation (piecewise cubic)

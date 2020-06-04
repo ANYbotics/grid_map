@@ -6,6 +6,9 @@
  *   Institute: ETH Zurich, ANYbotics
  */
 
+#ifndef GRID_MAP_CORE__POLYGON_HPP_
+#define GRID_MAP_CORE__POLYGON_HPP_
+
 // Eigen
 #include <Eigen/Core>
 
@@ -14,9 +17,6 @@
 // STD
 #include <string>
 #include <vector>
-
-#ifndef GRID_MAP_CORE__POLYGON_HPP_
-#define GRID_MAP_CORE__POLYGON_HPP_
 
 namespace grid_map
 {

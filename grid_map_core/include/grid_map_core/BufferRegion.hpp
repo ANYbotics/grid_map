@@ -6,10 +6,10 @@
  *   Institute: ETH Zurich, ANYbotics
  */
 
-#include "grid_map_core/TypeDefs.hpp"
-
 #ifndef GRID_MAP_CORE__BUFFERREGION_HPP_
 #define GRID_MAP_CORE__BUFFERREGION_HPP_
+
+#include "grid_map_core/TypeDefs.hpp"
 
 namespace grid_map
 {

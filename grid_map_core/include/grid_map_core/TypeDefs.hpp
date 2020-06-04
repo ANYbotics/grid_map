@@ -6,11 +6,11 @@
  *	 Institute: ETH Zurich, ANYbotics
  */
 
-// Eigen
-#include <Eigen/Core>
-
 #ifndef GRID_MAP_CORE__TYPEDEFS_HPP_
 #define GRID_MAP_CORE__TYPEDEFS_HPP_
+
+// Eigen
+#include <Eigen/Core>
 
 namespace grid_map
 {

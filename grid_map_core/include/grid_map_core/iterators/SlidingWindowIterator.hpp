@@ -6,14 +6,14 @@
  *   Institute: ETH Zurich, ANYbotics
  */
 
+#ifndef GRID_MAP_CORE__ITERATORS__SLIDINGWINDOWITERATOR_HPP_
+#define GRID_MAP_CORE__ITERATORS__SLIDINGWINDOWITERATOR_HPP_
+
 #include <Eigen/Core>
 #include <string>
 
 #include "grid_map_core/GridMap.hpp"
 #include "grid_map_core/iterators/GridMapIterator.hpp"
-
-#ifndef GRID_MAP_CORE__ITERATORS__SLIDINGWINDOWITERATOR_HPP_
-#define GRID_MAP_CORE__ITERATORS__SLIDINGWINDOWITERATOR_HPP_
 
 namespace grid_map
 {
