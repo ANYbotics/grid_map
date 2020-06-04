@@ -28,18 +28,19 @@
 // using namespace Eigen;
 // using namespace grid_map;
 
-TEST(grid_map::PolygonIterator, FullCover)
+TEST(PolygonIterator, FullCover)
 {
-  std::vector<string> types;
+  std::vector<std::string> types;
   types.push_back("type");
   grid_map::GridMap map(types);
-  map.setGeometry(Length(8.0, 5.0), 1.0, Position(0.0, 0.0));  // bufferSize(8, 5)
+  // bufferSize(8, 5)
+  map.setGeometry(grid_map::Length(8.0, 5.0), 1.0, grid_map::Position(0.0, 0.0));
 
   grid_map::Polygon polygon;
-  polygon.addVertex(Position(-100.0, 100.0));
-  polygon.addVertex(Position(100.0, 100.0));
-  polygon.addVertex(Position(100.0, -100.0));
-  polygon.addVertex(Position(-100.0, -100.0));
+  polygon.addVertex(grid_map::Position(-100.0, 100.0));
+  polygon.addVertex(grid_map::Position(100.0, 100.0));
+  polygon.addVertex(grid_map::Position(100.0, -100.0));
+  polygon.addVertex(grid_map::Position(-100.0, -100.0));
 
   grid_map::PolygonIterator iterator(map, polygon);
 
@@ -69,32 +70,34 @@ TEST(grid_map::PolygonIterator, FullCover)
   EXPECT_TRUE(iterator.isPastEnd());
 }
 
-TEST(grid_map::PolygonIterator, Outside)
+TEST(PolygonIterator, Outside)
 {
   grid_map::GridMap map({"types"});
-  map.setGeometry(Length(8.0, 5.0), 1.0, Position(0.0, 0.0));  // bufferSize(8, 5)
+  // bufferSize(8, 5)
+  map.setGeometry(grid_map::Length(8.0, 5.0), 1.0, grid_map::Position(0.0, 0.0));
 
   grid_map::Polygon polygon;
-  polygon.addVertex(Position(99.0, 101.0));
-  polygon.addVertex(Position(101.0, 101.0));
-  polygon.addVertex(Position(101.0, 99.0));
-  polygon.addVertex(Position(99.0, 99.0));
+  polygon.addVertex(grid_map::Position(99.0, 101.0));
+  polygon.addVertex(grid_map::Position(101.0, 101.0));
+  polygon.addVertex(grid_map::Position(101.0, 99.0));
+  polygon.addVertex(grid_map::Position(99.0, 99.0));
 
   grid_map::PolygonIterator iterator(map, polygon);
 
   EXPECT_TRUE(iterator.isPastEnd());
 }
 
-TEST(grid_map::PolygonIterator, Square)
+TEST(PolygonIterator, Square)
 {
   grid_map::GridMap map({"types"});
-  map.setGeometry(Length(8.0, 5.0), 1.0, Position(0.0, 0.0));  // bufferSize(8, 5)
+  // bufferSize(8, 5)
+  map.setGeometry(grid_map::Length(8.0, 5.0), 1.0, grid_map::Position(0.0, 0.0));
 
   grid_map::Polygon polygon;
-  polygon.addVertex(Position(-1.0, 1.5));
-  polygon.addVertex(Position(1.0, 1.5));
-  polygon.addVertex(Position(1.0, -1.5));
-  polygon.addVertex(Position(-1.0, -1.5));
+  polygon.addVertex(grid_map::Position(-1.0, 1.5));
+  polygon.addVertex(grid_map::Position(1.0, 1.5));
+  polygon.addVertex(grid_map::Position(1.0, -1.5));
+  polygon.addVertex(grid_map::Position(-1.0, -1.5));
 
   grid_map::PolygonIterator iterator(map, polygon);
 
@@ -131,11 +134,16 @@ TEST(grid_map::PolygonIterator, Square)
   EXPECT_TRUE(iterator.isPastEnd());
 }
 
-TEST(grid_map::PolygonIterator, TopLeftTriangle)
+TEST(PolygonIterator, TopLeftTriangle)
 {
-  ++iterator;
-  polygon.addVertex(Position(40.1, 20.4));
-  polygon.addVertex(Position(-40.1, -20.6));
+  grid_map::GridMap map({"types"});
+  // bufferSize(8, 5)
+  map.setGeometry(grid_map::Length(8.0, 5.0), 1.0, grid_map::Position(0.0, 0.0));
+
+  grid_map::Polygon polygon;
+  polygon.addVertex(grid_map::Position(-40.1, 20.6));
+  polygon.addVertex(grid_map::Position(40.1, 20.4));
+  polygon.addVertex(grid_map::Position(-40.1, -20.6));
 
   grid_map::PolygonIterator iterator(map, polygon);
 
@@ -151,17 +159,18 @@ TEST(grid_map::PolygonIterator, TopLeftTriangle)
   // TODO(needs_assignment): Extend.
 }
 
-TEST(grid_map::PolygonIterator, MoveMap)
+TEST(PolygonIterator, MoveMap)
 {
   grid_map::GridMap map({"layer"});
-  map.setGeometry(Length(8.0, 5.0), 1.0, Position(0.0, 0.0));  // bufferSize(8, 5)
-  map.move(Position(2.0, 0.0));
+  // bufferSize(8, 5)
+  map.setGeometry(grid_map::Length(8.0, 5.0), 1.0, grid_map::Position(0.0, 0.0));
+  map.move(grid_map::Position(2.0, 0.0));
 
   grid_map::Polygon polygon;
-  polygon.addVertex(Position(6.1, 1.6));
-  polygon.addVertex(Position(0.9, 1.6));
-  polygon.addVertex(Position(0.9, -1.6));
-  polygon.addVertex(Position(6.1, -1.6));
+  polygon.addVertex(grid_map::Position(6.1, 1.6));
+  polygon.addVertex(grid_map::Position(0.9, 1.6));
+  polygon.addVertex(grid_map::Position(0.9, -1.6));
+  polygon.addVertex(grid_map::Position(6.1, -1.6));
   grid_map::PolygonIterator iterator(map, polygon);
 
   EXPECT_FALSE(iterator.isPastEnd());

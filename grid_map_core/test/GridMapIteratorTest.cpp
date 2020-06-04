@@ -24,7 +24,7 @@
 // using namespace std;
 // using namespace grid_map;
 
-TEST(grid_map::GridMapIterator, Simple)
+TEST(GridMapIterator, Simple)
 {
   grid_map::GridMap map;
   map.setGeometry(
@@ -38,12 +38,12 @@ TEST(grid_map::GridMapIterator, Simple)
     EXPECT_FALSE(iterator.isPastEnd());
   }
 
-  EXPECT_EQ(40, i);
+  EXPECT_EQ(40u, i);
   EXPECT_TRUE(iterator.isPastEnd());
   EXPECT_TRUE((map["layer"].array() == 1.0f).all());
 }
 
-TEST(grid_map::GridMapIterator, LinearIndex)
+TEST(GridMapIterator, LinearIndex)
 {
   grid_map::GridMap map;
   map.setGeometry(
@@ -59,7 +59,7 @@ TEST(grid_map::GridMapIterator, LinearIndex)
     EXPECT_FALSE(iterator.isPastEnd());
   }
 
-  EXPECT_EQ(40, i);
+  EXPECT_EQ(40u, i);
   EXPECT_TRUE(iterator.isPastEnd());
   EXPECT_TRUE((map["layer"].array() == 1.0f).all());
 }

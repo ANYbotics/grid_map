@@ -25,6 +25,8 @@ AnalyticalFunctions createFlatWorld(grid_map::GridMap * map)
   AnalyticalFunctions func;
 
   func.f_ = [](double x, double y) {
+      (void)(y);  // y param unused, remove when used.
+      (void)(x);  // x param unused, remove when used.
       return 0.0;
     };
 
@@ -104,6 +106,7 @@ AnalyticalFunctions createTanhWorld(grid_map::GridMap * map)
   std::uniform_real_distribution<double> scaling(0.1, 2.0);
   const double s = scaling(rndGenerator);
   func.f_ = [s](double x, double y) {
+      (void)(y);  // y param unused, remove when used.
       const double expZ = std::exp(2 * s * x);
       return (expZ - 1) / (expZ + 1);
     };
@@ -140,7 +143,7 @@ AnalyticalFunctions createGaussianWorld(grid_map::GridMap * map)
 
   func.f_ = [g](double x, double y) {
       double value = 0.0;
-      for (int i = 0; i < g.size(); ++i) {
+      for (std::size_t i = 0; i < g.size(); ++i) {
         const double x0 = g.at(i).x0;
         const double y0 = g.at(i).y0;
         const double varX = g.at(i).varX;

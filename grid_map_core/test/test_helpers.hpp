@@ -6,13 +6,13 @@
  *      Institute: ETH Zurich, Robotic Systems Lab
  */
 
+#ifndef TEST_HELPERS_HPP_
+#define TEST_HELPERS_HPP_
+
 #include <functional>
 #include <vector>
 #include <random>
 #include "grid_map_core/TypeDefs.hpp"
-
-#ifndef TEST_HELPERS_HPP_
-#define TEST_HELPERS_HPP_
 
 namespace grid_map
 {

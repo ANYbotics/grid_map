@@ -23,10 +23,10 @@
 
 // using namespace grid_map;
 
-TEST(grid_map::SpiralIterator, CenterOutOfMap)
+TEST(SpiralIterator, CenterOutOfMap)
 {
   grid_map::GridMap map({"types"});
-  map.setGeometry(Length(8.0, 5.0), 1.0, Position(0.0, 0.0));
+  map.setGeometry(grid_map::Length(8.0, 5.0), 1.0, grid_map::Position(0.0, 0.0));
   grid_map::Position center(8.0, 0.0);
   double radius = 5.0;
 

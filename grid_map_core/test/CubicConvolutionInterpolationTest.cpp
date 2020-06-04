@@ -18,7 +18,7 @@ namespace gmt = grid_map_test;
 
 TEST(CubicConvolutionInterpolation, FlatWorld)
 {
-  const int seed = rand_r();
+  const int seed = std::rand();
   gmt::rndGenerator.seed(seed);
   auto map = gmt::createMap(gm::Length(2.0, 2.0), 0.1, gm::Position(0.0, 0.0));
   auto trueValues = gmt::createFlatWorld(&map);
@@ -36,7 +36,7 @@ TEST(CubicConvolutionInterpolation, FlatWorld)
 
 TEST(CubicConvolutionInterpolation, RationalFunctionWorld)
 {
-  const int seed = rand_r();
+  const int seed = std::rand();
   gmt::rndGenerator.seed(seed);
   auto map = gmt::createMap(gm::Length(3.0, 3.0), 0.01, gm::Position(0.0, 0.0));
   auto trueValues = gmt::createRationalFunctionWorld(&map);
@@ -55,7 +55,7 @@ TEST(CubicConvolutionInterpolation, RationalFunctionWorld)
 
 TEST(CubicConvolutionInterpolation, SaddleWorld)
 {
-  const int seed = rand_r();
+  const int seed = std::rand();
   gmt::rndGenerator.seed(seed);
   auto map = gmt::createMap(gm::Length(3.0, 3.0), 0.1, gm::Position(0.0, 0.0));
   auto trueValues = gmt::createSaddleWorld(&map);
@@ -73,7 +73,7 @@ TEST(CubicConvolutionInterpolation, SaddleWorld)
 
 TEST(CubicConvolutionInterpolation, SecondOrderPolyWorld)
 {
-  const int seed = rand_r();
+  const int seed = std::rand();
   gmt::rndGenerator.seed(seed);
   auto map = gmt::createMap(gm::Length(3.0, 3.0), 0.1, gm::Position(0.0, 0.0));
   auto trueValues = gmt::createSecondOrderPolyWorld(&map);
@@ -91,7 +91,7 @@ TEST(CubicConvolutionInterpolation, SecondOrderPolyWorld)
 
 TEST(CubicConvolutionInterpolation, SineWorld)
 {
-  const int seed = rand_r();
+  const int seed = std::rand();
   gmt::rndGenerator.seed(seed);
   auto map = gmt::createMap(gm::Length(3.0, 3.0), 0.01, gm::Position(0.0, 0.0));
   auto trueValues = gmt::createSineWorld(&map);
@@ -109,7 +109,7 @@ TEST(CubicConvolutionInterpolation, SineWorld)
 
 TEST(CubicConvolutionInterpolation, TanhWorld)
 {
-  const int seed = rand_r();
+  const int seed = std::rand();
   gmt::rndGenerator.seed(seed);
   auto map = gmt::createMap(gm::Length(2.5, 2.5), 0.02, gm::Position(0.0, 0.0));
   auto trueValues = gmt::createTanhWorld(&map);
@@ -127,7 +127,7 @@ TEST(CubicConvolutionInterpolation, TanhWorld)
 
 TEST(CubicConvolutionInterpolation, GaussianWorld)
 {
-  const int seed = rand_r();
+  const int seed = std::rand();
   gmt::rndGenerator.seed(seed);
   auto map = gmt::createMap(gm::Length(3.0, 3.0), 0.02, gm::Position(0.0, 0.0));
   auto trueValues = gmt::createGaussianWorld(&map);

@@ -25,7 +25,7 @@
 // using namespace Eigen;
 // using namespace grid_map;
 
-TEST(grid_map::EllipseIterator, OneCellWideEllipse)
+TEST(EllipseIterator, OneCellWideEllipse)
 {
   grid_map::GridMap map({"types"});
   map.setGeometry(grid_map::Length(8.0, 5.0), 1.0, grid_map::Position(0.0, 0.0));

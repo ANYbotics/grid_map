@@ -17,13 +17,16 @@
 
 // using namespace grid_m ap;
 
-TEST(grid_map::LineIterator, StartOutsideMap)
+TEST(LineIterator, StartOutsideMap)
 {
   grid_map::GridMap map({"types"});
-  map.setGeometry(Length(8.0, 5.0), 1.0, Position(0.0, 0.0));
+  map.setGeometry(grid_map::Length(8.0, 5.0), 1.0, grid_map::Position(0.0, 0.0));
 
-  EXPECT_NO_THROW(grid_map::LineIterator iterator(map, Position(2.0, 2.0), Position(0.0, 0.0)));
-  grid_map::LineIterator iterator(map, Position(2.0, 2.0), Position(0.0, 0.0));
+  EXPECT_NO_THROW(
+    grid_map::LineIterator iterator(
+      map, grid_map::Position(2.0, 2.0),
+      grid_map::Position(0.0, 0.0)));
+  grid_map::LineIterator iterator(map, grid_map::Position(2.0, 2.0), grid_map::Position(0.0, 0.0));
 
   EXPECT_FALSE(iterator.isPastEnd());
   EXPECT_EQ(2, (*iterator)(0));
@@ -43,13 +46,16 @@ TEST(grid_map::LineIterator, StartOutsideMap)
   EXPECT_TRUE(iterator.isPastEnd());
 }
 
-TEST(grid_map::LineIterator, EndOutsideMap)
+TEST(LineIterator, EndOutsideMap)
 {
   grid_map::GridMap map({"types"});
-  map.setGeometry(Length(8.0, 5.0), 1.0, Position(0.0, 0.0));
+  map.setGeometry(grid_map::Length(8.0, 5.0), 1.0, grid_map::Position(0.0, 0.0));
 
-  EXPECT_NO_THROW(grid_map::LineIterator iterator(map, Position(0.0, 0.0), Position(9.0, 6.0)));
-  grid_map::LineIterator iterator(map, Position(0.0, 0.0), Position(9.0, 6.0));
+  EXPECT_NO_THROW(
+    grid_map::LineIterator iterator(
+      map, grid_map::Position(0.0, 0.0),
+      grid_map::Position(9.0, 6.0)));
+  grid_map::LineIterator iterator(map, grid_map::Position(0.0, 0.0), grid_map::Position(9.0, 6.0));
 
   EXPECT_FALSE(iterator.isPastEnd());
   EXPECT_EQ(4, (*iterator)(0));
@@ -73,13 +79,17 @@ TEST(grid_map::LineIterator, EndOutsideMap)
   EXPECT_TRUE(iterator.isPastEnd());
 }
 
-TEST(grid_map::LineIterator, StartAndEndOutsideMap)
+TEST(LineIterator, StartAndEndOutsideMap)
 {
   grid_map::GridMap map({"types"});
-  map.setGeometry(Length(8.0, 5.0), 1.0, Position(0.0, 0.0));
+  map.setGeometry(grid_map::Length(8.0, 5.0), 1.0, grid_map::Position(0.0, 0.0));
 
-  EXPECT_NO_THROW(grid_map::LineIterator iterator(map, Position(-7.0, -9.0), Position(8.0, 8.0)));
-  grid_map::LineIterator iterator(map, Position(-7.0, -9.0), Position(8.0, 8.0));
+  EXPECT_NO_THROW(
+    grid_map::LineIterator iterator(
+      map, grid_map::Position(-7.0, -9.0),
+      grid_map::Position(8.0, 8.0)));
+  grid_map::LineIterator iterator(map, grid_map::Position(-7.0, -9.0),
+    grid_map::Position(8.0, 8.0));
 
   EXPECT_FALSE(iterator.isPastEnd());
   EXPECT_EQ(5, (*iterator)(0));
@@ -101,28 +111,31 @@ TEST(grid_map::LineIterator, StartAndEndOutsideMap)
   EXPECT_TRUE(iterator.isPastEnd());
 }
 
-TEST(grid_map::LineIterator, StartAndEndOutsideMapWithoutIntersectingMap)
+TEST(LineIterator, StartAndEndOutsideMapWithoutIntersectingMap)
 {
   grid_map::GridMap map({"types"});
-  map.setGeometry(Length(8.0, 5.0), 1.0, Position(0.0, 0.0));
+  map.setGeometry(grid_map::Length(8.0, 5.0), 1.0, grid_map::Position(0.0, 0.0));
 
   EXPECT_THROW(
     grid_map::LineIterator iterator(
-      map, Position(-8.0, 8.0), Position(
+      map, grid_map::Position(-8.0, 8.0), grid_map::Position(
         8.0,
         8.0)),
     std::invalid_argument);
 }
 
-TEST(grid_map::LineIterator, MovedMap)
+TEST(LineIterator, MovedMap)
 {
   grid_map::GridMap map({"types"});
-  map.setGeometry(Length(7.0, 5.0), 1.0, Position(0.0, 0.0));
-  map.move(Position(2.0, 2.0));
+  map.setGeometry(grid_map::Length(7.0, 5.0), 1.0, grid_map::Position(0.0, 0.0));
+  map.move(grid_map::Position(2.0, 2.0));
 
-  EXPECT_NO_THROW(grid_map::LineIterator iterator(map, Position(0.0, 0.0), Position(2.0, 2.0)));
-  grid_map::LineIterator iterator(map, Position(0.0, 0.0), Position(2.0, 2.0));
-  Position point;
+  EXPECT_NO_THROW(
+    grid_map::LineIterator iterator(
+      map, grid_map::Position(0.0, 0.0),
+      grid_map::Position(2.0, 2.0)));
+  grid_map::LineIterator iterator(map, grid_map::Position(0.0, 0.0), grid_map::Position(2.0, 2.0));
+  grid_map::Position point;
 
   EXPECT_FALSE(iterator.isPastEnd());
   map.getPosition(*iterator, point);
@@ -145,15 +158,18 @@ TEST(grid_map::LineIterator, MovedMap)
   EXPECT_TRUE(iterator.isPastEnd());
 }
 
-TEST(grid_map::LineIterator, StartAndEndOutsideMovedMap)
+TEST(LineIterator, StartAndEndOutsideMovedMap)
 {
   grid_map::GridMap map({"types"});
-  map.setGeometry(Length(7.0, 5.0), 1.0, Position(0.0, 0.0));
-  map.move(Position(2.0, 2.0));
+  map.setGeometry(grid_map::Length(7.0, 5.0), 1.0, grid_map::Position(0.0, 0.0));
+  map.move(grid_map::Position(2.0, 2.0));
 
-  EXPECT_NO_THROW(grid_map::LineIterator iterator(map, Position(0.0, 0.0), Position(8.0, 8.0)));
-  grid_map::LineIterator iterator(map, Position(0.0, 0.0), Position(8.0, 8.0));
-  Position point;
+  EXPECT_NO_THROW(
+    grid_map::LineIterator iterator(
+      map, grid_map::Position(0.0, 0.0),
+      grid_map::Position(8.0, 8.0)));
+  grid_map::LineIterator iterator(map, grid_map::Position(0.0, 0.0), grid_map::Position(8.0, 8.0));
+  grid_map::Position point;
 
   EXPECT_FALSE(iterator.isPastEnd());
   map.getPosition(*iterator, point);

@@ -13,6 +13,6 @@
 int main(int argc, char ** argv)
 {
   testing::InitGoogleTest(&argc, argv);
-  srand(static_cast<int> time(0));
+  srand(static_cast<int>(time(0)));
   return RUN_ALL_TESTS();
 }
