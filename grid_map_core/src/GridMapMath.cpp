@@ -125,7 +125,7 @@ inline BufferRegion::Quadrant getQuadrant(const Index & index, const Index & buf
 
 }  // namespace internal
 
-using namespace internal;
+// using namespace internal;
 
 bool getPositionFromIndex(
   Position & position,
@@ -138,8 +138,8 @@ bool getPositionFromIndex(
 {
   if (!checkIfIndexInRange(index, bufferSize)) {return false;}
   Vector offset;
-  getVectorToFirstCell(offset, mapLength, resolution);
-  position = mapPosition + offset + resolution * getIndexVectorFromIndex(
+  internal::getVectorToFirstCell(offset, mapLength, resolution);
+  position = mapPosition + offset + resolution * internal::getIndexVectorFromIndex(
     index, bufferSize,
     bufferStartIndex);
   return true;
@@ -155,9 +155,9 @@ bool getIndexFromPosition(
   const Index & bufferStartIndex)
 {
   Vector offset;
-  getVectorToOrigin(offset, mapLength);
+  internal::getVectorToOrigin(offset, mapLength);
   Vector indexVector = ((position - offset - mapPosition).array() / resolution).matrix();
-  index = getIndexFromIndexVector(indexVector, bufferSize, bufferStartIndex);
+  index = internal::getIndexFromIndexVector(indexVector, bufferSize, bufferStartIndex);
   if (!checkIfPositionWithinMap(position, mapLength, mapPosition)) {return false;}
   return true;
 }
@@ -168,8 +168,8 @@ bool checkIfPositionWithinMap(
   const Position & mapPosition)
 {
   Vector offset;
-  getVectorToOrigin(offset, mapLength);
-  Position positionTransformed = getMapFrameToBufferOrderTransformation().cast<double>() *
+  internal::getVectorToOrigin(offset, mapLength);
+  Position positionTransformed = internal::getMapFrameToBufferOrderTransformation().cast<double>() *
     (position - mapPosition - offset);
 
   if (positionTransformed.x() >= 0.0 && positionTransformed.y() >= 0.0 &&
@@ -186,7 +186,7 @@ void getPositionOfDataStructureOrigin(
   Position & positionOfOrigin)
 {
   Vector vectorToOrigin;
-  getVectorToOrigin(vectorToOrigin, mapLength);
+  internal::getVectorToOrigin(vectorToOrigin, mapLength);
   positionOfOrigin = position + vectorToOrigin;
 }
 
@@ -203,7 +203,7 @@ bool getIndexShiftFromPositionShift(
       static_cast<int>(indexShiftVectorTemp[i] + 0.5 * (indexShiftVectorTemp[i] > 0 ? 1 : -1));
   }
 
-  indexShift = transformMapFrameToBufferOrder(indexShiftVector);
+  indexShift = internal::transformMapFrameToBufferOrder(indexShiftVector);
   return true;
 }
 
@@ -212,7 +212,7 @@ bool getPositionShiftFromIndexShift(
   const Index & indexShift,
   const double & resolution)
 {
-  positionShift = transformBufferOrderToMapFrame(indexShift) * resolution;
+  positionShift = internal::transformBufferOrderToMapFrame(indexShift) * resolution;
   return true;
 }
 
@@ -256,13 +256,13 @@ void boundPositionToRange(
   const Position & mapPosition)
 {
   Vector vectorToOrigin;
-  getVectorToOrigin(vectorToOrigin, mapLength);
+  internal::getVectorToOrigin(vectorToOrigin, mapLength);
   Position positionShifted = position - mapPosition + vectorToOrigin;
 
   // We have to make sure to stay inside the map.
   for (int i = 0; i < positionShifted.size(); i++) {
     // TODO(needs_assignment): Why is the factor 10 necessary.
-    double epsilon = 10.0 * numeric_limits<double>::epsilon();
+    double epsilon = 10.0 * std::numeric_limits<double>::epsilon();
     if (std::fabs(position(i)) > 1.0) {epsilon *= std::fabs(position(i));}
 
     if (positionShifted(i) <= 0) {
@@ -280,7 +280,7 @@ void boundPositionToRange(
 
 const Eigen::Matrix2i getBufferOrderToMapFrameAlignment()
 {
-  return getBufferOrderToMapFrameTransformation().array().abs().matrix();
+  return internal::getBufferOrderToMapFrameTransformation().array().abs().matrix();
 }
 
 bool getSubmapInformation(
@@ -299,7 +299,7 @@ bool getSubmapInformation(
 {
   // (Top left / bottom right corresponds to the position in the matrix, not the map frame)
   const Eigen::Matrix2d halfTransform = 0.5 *
-    getMapFrameToBufferOrderTransformation().cast<double>();
+    internal::getMapFrameToBufferOrderTransformation().cast<double>();
 
   // Corners of submap.
   Position topLeftPosition = requestedSubmapPosition - halfTransform *
@@ -335,7 +335,7 @@ bool getSubmapInformation(
 
   // Position of submap.
   Vector vectorToSubmapOrigin;
-  getVectorToOrigin(vectorToSubmapOrigin, submapLength);
+  internal::getVectorToOrigin(vectorToSubmapOrigin, submapLength);
   submapPosition = topLeftCorner - vectorToSubmapOrigin;
 
   // Get the index of the cell which corresponds the requested
@@ -374,8 +374,10 @@ bool getBufferRegionsForSubmap(
   Index bottomRightIndex = submapIndex + submapBufferSize - Index::Ones();
   wrapIndexToRange(bottomRightIndex, bufferSize);
 
-  BufferRegion::Quadrant quadrantOfTopLeft = getQuadrant(submapIndex, bufferStartIndex);
-  BufferRegion::Quadrant quadrantOfBottomRight = getQuadrant(bottomRightIndex, bufferStartIndex);
+  BufferRegion::Quadrant quadrantOfTopLeft = internal::getQuadrant(submapIndex, bufferStartIndex);
+  BufferRegion::Quadrant quadrantOfBottomRight = internal::getQuadrant(
+    bottomRightIndex,
+    bufferStartIndex);
 
   if (quadrantOfTopLeft == BufferRegion::Quadrant::TopLeft) {
     if (quadrantOfBottomRight == BufferRegion::Quadrant::TopLeft) {
@@ -570,7 +572,7 @@ Index getIndexFromBufferIndex(
   const Index & bufferIndex, const Size & bufferSize,
   const Index & bufferStartIndex)
 {
-  if (checkIfStartIndexAtDefaultPosition(bufferStartIndex)) {return bufferIndex;}
+  if (internal::checkIfStartIndexAtDefaultPosition(bufferStartIndex)) {return bufferIndex;}
 
   Index index = bufferIndex - bufferStartIndex;
   wrapIndexToRange(index, bufferSize);
@@ -581,7 +583,7 @@ Index getBufferIndexFromIndex(
   const Index & index, const Size & bufferSize,
   const Index & bufferStartIndex)
 {
-  if (checkIfStartIndexAtDefaultPosition(bufferStartIndex)) {return index;}
+  if (internal::checkIfStartIndexAtDefaultPosition(bufferStartIndex)) {return index;}
 
   Index bufferIndex = index + bufferStartIndex;
   wrapIndexToRange(bufferIndex, bufferSize);
@@ -600,32 +602,32 @@ Index getIndexFromLinearIndex(
 {
   if (!rowMajor) {
     return Index(
-      static_cast<int> linearIndex % bufferSize(
-        0), static_cast<int> linearIndex / bufferSize(0));
+      static_cast<int>(linearIndex) % bufferSize(
+        0), static_cast<int>(linearIndex) / bufferSize(0));
   }
   return Index(
-    static_cast<int> linearIndex / bufferSize(
-      1), static_cast<int> linearIndex % bufferSize(1));
+    static_cast<int>(linearIndex) / bufferSize(
+      1), static_cast<int>(linearIndex) % bufferSize(1));
 }
 
-void getIndicesForRegion(
-  const Index & regionIndex, const Size & regionSize,
-  std::vector<Index> indices)
-{
-//  for (int i = line.index_; col < line.endIndex(); col++) {
-//    for (int i = 0; i < getSize()(0); i++) {
-//
-//    }
-//  }
-}
+// void getIndicesForRegion(
+//   const Index & regionIndex, const Size & regionSize,
+//   std::vector<Index> indices)
+// {
+// //  for (int i = line.index_; col < line.endIndex(); col++) {
+// //    for (int i = 0; i < getSize()(0); i++) {
+// //
+// //    }
+// //  }
+// }
 
-void getIndicesForRegions(
-  const std::vector<Index> & regionIndeces, const Size & regionSizes,
-  std::vector<Index> indices)
-{
-}
+// void getIndicesForRegions(
+//   const std::vector<Index> & regionIndeces, const Size & regionSizes,
+//   std::vector<Index> indices)
+// {
+// }
 
-bool colorValueToVector(const unsigned int64 & colorValue, Eigen::Vector3i & colorVector)
+bool colorValueToVector(const uint64_t & colorValue, Eigen::Vector3i & colorVector)
 {
   colorVector(0) = (colorValue >> 16) & 0x0000ff;
   colorVector(1) = (colorValue >> 8) & 0x0000ff;
@@ -633,7 +635,7 @@ bool colorValueToVector(const unsigned int64 & colorValue, Eigen::Vector3i & col
   return true;
 }
 
-bool colorValueToVector(const unsigned int64 & colorValue, Eigen::Vector3f & colorVector)
+bool colorValueToVector(const uint64_t & colorValue, Eigen::Vector3f & colorVector)
 {
   Eigen::Vector3i tempColorVector;
   colorValueToVector(colorValue, tempColorVector);
@@ -644,23 +646,22 @@ bool colorValueToVector(const unsigned int64 & colorValue, Eigen::Vector3f & col
 bool colorValueToVector(const float & colorValue, Eigen::Vector3f & colorVector)
 {
   // cppcheck-suppress invalidPointerCast
-  const unsigned int64 tempColorValue = *reinterpret_cast<const unsigned int64 *>(&colorValue);
+  const uint64_t tempColorValue = *reinterpret_cast<const uint64_t *>(&colorValue);
   colorValueToVector(tempColorValue, colorVector);
   return true;
 }
 
-bool colorVectorToValue(const Eigen::Vector3i & colorVector, unsigned int64 & colorValue)
+bool colorVectorToValue(const Eigen::Vector3i & colorVector, uint64_t & colorValue)
 {
-  colorValue = (static_cast<int> colorVector(0)) << 16 | (static_cast<int> colorVector(1)) << 8 |
-    (static_cast<int> colorVector(2));
+  colorValue = static_cast<int>(colorVector(0)) << 16 | static_cast<int>(colorVector(1)) << 8 |
+    static_cast<int>(colorVector(2));
   return true;
 }
 
 void colorVectorToValue(const Eigen::Vector3i & colorVector, float & colorValue)
 {
-  unsigned int64 color = (colorVector(0) << 16) + (colorVector(1) << 8) + colorVector(2);
-  // cppcheck-suppress invalidPointerCast
-  colorValue = *reinterpret_cast<float *>(&color);
+  uint64_t color = (colorVector(0) << 16) + (colorVector(1) << 8) + colorVector(2);
+  colorValue = static_cast<float>(color);
 }
 
 void colorVectorToValue(const Eigen::Vector3f & colorVector, float & colorValue)

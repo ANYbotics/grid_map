@@ -55,6 +55,7 @@ SpiralIterator & SpiralIterator::operator=(const SpiralIterator & other)
 
 bool SpiralIterator::operator!=(const SpiralIterator & other) const
 {
+  (void)(other);  // other parameter unused, should be removed when used.
   return (pointsRing_.back() != pointsRing_.back()).any();
 }
 
@@ -104,18 +105,18 @@ void SpiralIterator::generateRing()
     normal.x() = -signum(point.y());
     normal.y() = signum(point.x());
     if (normal.x() != 0 &&
-      static_cast<int> Vector(point.x() + normal.x(), point.y()).norm() == distance_)
+      static_cast<unsigned int>(Vector(point.x() + normal.x(), point.y()).norm()) == distance_)
     {
       point.x() += normal.x();
     } else if (normal.y() != 0 &&  // NOLINT
-      static_cast<int> Vector(point.x(), point.y() + normal.y()).norm() == distance_)
+      static_cast<unsigned int>(Vector(point.x(), point.y() + normal.y()).norm()) == distance_)
     {
       point.y() += normal.y();
     } else {
       point.x() += normal.x();
       point.y() += normal.y();
     }
-  } while (point.x() != distance_ || point.y() != 0);
+  } while ((unsigned)point.x() != distance_ || point.y() != 0);
 }
 
 double SpiralIterator::getCurrentRadius() const

@@ -338,7 +338,7 @@ void getIndicesForRegions(
  * @param [out] colorVector the color vector in RGB from 0-255.
  * @return true if successful.
  */
-bool colorValueToVector(const unsigned int64 & colorValue, Eigen::Vector3i & colorVector);
+bool colorValueToVector(const uint64_t & colorValue, Eigen::Vector3i & colorVector);
 
 /*!
  * Transforms an int color value (concatenated RGB values) to a float color vector (RGB from 0.0-1.0).
@@ -346,7 +346,7 @@ bool colorValueToVector(const unsigned int64 & colorValue, Eigen::Vector3i & col
  * @param [out] colorVector the color vector in RGB from 0.0-1.0.
  * @return true if successful.
  */
-bool colorValueToVector(const unsigned int64 & colorValue, Eigen::Vector3f & colorVector);
+bool colorValueToVector(const uint64_t & colorValue, Eigen::Vector3f & colorVector);
 
 /*!
  * Transforms a float color value (concatenated 3 single-byte value) to a float color vector (RGB from 0.0-1.0).
@@ -362,7 +362,7 @@ bool colorValueToVector(const float & colorValue, Eigen::Vector3f & colorVector)
  * @param [out] colorValue the concatenated RGB color value.
  * @return true if successful.
  */
-bool colorVectorToValue(const Eigen::Vector3i & colorVector, unsigned int64 & colorValue);
+bool colorVectorToValue(const Eigen::Vector3i & colorVector, uint64_t & colorValue);
 
 /*!
  * Transforms a color vector (RGB from 0-255) to a concatenated 3 single-byte float value.

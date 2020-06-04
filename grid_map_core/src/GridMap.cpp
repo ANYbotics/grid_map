@@ -201,6 +201,7 @@ float GridMap::atPosition(
           interpolationMethod = InterpolationMethods::INTER_LINEAR;
           skipNextSwitchCase = true;
         }
+        [[fallthrough]];
       }
     case InterpolationMethods::INTER_CUBIC: {
         if (!skipNextSwitchCase) {
@@ -211,6 +212,7 @@ float GridMap::atPosition(
             interpolationMethod = InterpolationMethods::INTER_LINEAR;
           }
         }
+        [[fallthrough]];
       }
     case InterpolationMethods::INTER_LINEAR: {
         float value;
@@ -219,6 +221,7 @@ float GridMap::atPosition(
         } else {
           interpolationMethod = InterpolationMethods::INTER_NEAREST;
         }
+        [[fallthrough]];
       }
     case InterpolationMethods::INTER_NEAREST: {
         Index index;
@@ -271,7 +274,7 @@ bool GridMap::isInside(const Position & position) const
 
 bool GridMap::isValid(DataType value) const
 {
-  return isfinite(value);
+  return std::isfinite(value);
 }
 
 bool GridMap::isValid(const Index & index) const
@@ -336,6 +339,9 @@ GridMap GridMap::getSubmap(
   const Position & position, const Length & length, Index & indexInSubmap,
   bool & isSuccess) const
 {
+  // indexInSubmap parameter is unused, should be removed once used.
+  (void)(indexInSubmap);
+
   // Submap the generate.
   GridMap submap(layers_);
   submap.setBasicLayers(basicLayers_);
@@ -357,7 +363,7 @@ GridMap GridMap::getSubmap(
       bufferRegions, submapInformation.getStartIndex(), submap.getSize(),
       size_, startIndex_))
   {
-    cout << "Cannot access submap of this size." << endl;
+    std::cout << "Cannot access submap of this size." << std::endl;
     isSuccess = false;
     return GridMap(layers_);
   }
@@ -599,7 +605,7 @@ bool GridMap::move(const Position & position, std::vector<BufferRegion> & newReg
 bool GridMap::move(const Position & position)
 {
   std::vector<BufferRegion> newRegions;
-  return move(position, newRegions);
+  return GridMap::move(position, newRegions);
 }
 
 bool GridMap::addDataFrom(
@@ -809,7 +815,7 @@ void GridMap::convertToDefaultStartIndex()
 
 Position GridMap::getClosestPositionInMap(const Position & position) const
 {
-  if (getSize().x() < 1u || getSize().y() < 1u) {
+  if (getSize().x() < 1 || getSize().y() < 1) {
     return position_;
   }
 
