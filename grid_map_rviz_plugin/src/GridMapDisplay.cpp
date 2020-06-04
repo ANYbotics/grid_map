@@ -8,7 +8,7 @@
 
 #include "grid_map_rviz_plugin/GridMapVisual.hpp"
 #include "grid_map_rviz_plugin/GridMapDisplay.hpp"
-#include "grid_map_rviz_plugin/modified/frame_manager.h"
+#include <rviz/frame_manager.h>
 
 #include <OGRE/OgreSceneNode.h>
 #include <OGRE/OgreSceneManager.h>
