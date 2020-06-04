@@ -1,10 +1,9 @@
 cmake_minimum_required(VERSION 3.5)
 project(grid_map_core)
 
-grid_map_common()
-
 ## Find ament_cmake macros and libraries
 find_package(ament_cmake REQUIRED)
+find_package(grid_map_common REQUIRED)
 
 ## Define Eigen addons. 
 include(cmake/${PROJECT_NAME}-extras.cmake)
@@ -14,56 +13,22 @@ include(cmake/${PROJECT_NAME}-extras.cmake)
 # Solution to find Eigen3 with Saucy.
 find_package(Eigen3 QUIET)
 if(NOT EIGEN3_FOUND)
-  find_package(PkgConfig REQUIRED)
-  pkg_check_modules(EIGEN3 REQUIRED eigen3)
-  set(EIGEN3_INCLUDE_DIR ${EIGEN3_INCLUDE_DIRS})
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(EIGEN3 REQUIRED eigen3)
+set(EIGEN3_INCLUDE_DIR ${EIGEN3_INCLUDE_DIRS})
 endif()
 
-###################################
-## catkin specific configuration ##
-###################################
-## The catkin_package macro generates cmake config files for your package
-## Declare things to be passed to dependent projects
-## INCLUDE_DIRS: uncomment this if you package contains header files
-## LIBRARIES: libraries you create in this project that dependent projects also need
-## CATKIN_DEPENDS: catkin_packages dependent projects also need
-## DEPENDS: system dependencies of this project that dependent projects also need
-# catkin_package(
-#   INCLUDE_DIRS
-#     include
-#     ${EIGEN3_INCLUDE_DIR}
-#   LIBRARIES
-#     ${PROJECT_NAME}
-#   CATKIN_DEPENDS
-#   DEPENDS
-#     #Eigen3
-#   CFG_EXTRAS
-#     ${PROJECT_NAME}-extras.cmake
-# )
+grid_map_package()
 
-ament_export_include_directories(
+## Specify additional locations of header files
+include_directories(
   include
   ${EIGEN3_INCLUDE_DIR}
-)
-
-ament_export_libraries(
-  ${PROJECT_NAME}
-)
-
-ament_export_cfg_extra(
-  ${PROJECT_NAME}-extras.cmake
 )
 
 ###########
 ## Build ##
 ###########
-
-## Specify additional locations of header files
-include_directories(
-  include
-  ${catkin_INCLUDE_DIRS}
-  ${EIGEN3_INCLUDE_DIR}
-)
 
 ## Declare a cpp library
 add_library(${PROJECT_NAME}
@@ -81,10 +46,6 @@ add_library(${PROJECT_NAME}
    src/iterators/PolygonIterator.cpp
    src/iterators/LineIterator.cpp
    src/iterators/SlidingWindowIterator.cpp
-)
-
-target_link_libraries(${PROJECT_NAME}
-  ${catkin_LIBRARIES}
 )
 
 #############
@@ -117,10 +78,12 @@ install(
 #############
 
 if(BUILD_TESTING)
-  find_package(ament_cmake_gtest REQUIRED)
   find_package(ament_lint_auto REQUIRED)
   set(ament_cmake_copyright_FOUND TRUE)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
+
+  find_package(ament_cmake_gtest REQUIRED)
+  
   ## Add gtest based cpp test target and link libraries
   ament_add_gtest(${PROJECT_NAME}-test
     test/test_grid_map_core.cpp
@@ -141,8 +104,12 @@ if(BUILD_TESTING)
   )
 endif()
 
-# if(TARGET ${PROJECT_NAME}-test)
-#   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
-# endif()
+if(TARGET ${PROJECT_NAME}-test)
+  target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
+endif()
 
+ament_export_include_directories(include)
+ament_export_libraries(
+  ${PROJECT_NAME}
+)
 ament_package()
