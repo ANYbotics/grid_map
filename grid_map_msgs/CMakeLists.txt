@@ -3,9 +3,10 @@ project(grid_map_msgs)
 
 ## Find catkin macros and libraries
 find_package(ament_cmake REQUIRED)
+find_package(grid_map_common REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
-find_package(message_generation REQUIRED)
+find_package(rosidl_default_generators REQUIRED)
 
 grid_map_package()
 
