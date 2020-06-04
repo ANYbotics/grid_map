@@ -1,8 +1,6 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(grid_map_sdf)
 
-set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
-
 ## Find catkin macros and libraries
 find_package(catkin REQUIRED COMPONENTS
   grid_map_core
