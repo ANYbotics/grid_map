@@ -21,7 +21,6 @@ macro(grid_map_package)
     add_compile_options(-Wall -Wextra -Wpedantic -Werror -Wdeprecated -fPIC)
   endif()
 
-  option(COVERAGE_ENABLED "Enable code coverage" FALSE)
   if(COVERAGE_ENABLED)
     add_compile_options(--coverage)
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --coverage")
