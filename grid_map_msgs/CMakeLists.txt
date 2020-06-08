@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 project(grid_map_msgs)
 
-## Find catkin macros and libraries
 find_package(ament_cmake REQUIRED)
 find_package(grid_map_common REQUIRED)
 find_package(std_msgs REQUIRED)
