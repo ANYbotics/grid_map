@@ -1,3 +1,6 @@
+# Header (time and frame)
+std_msgs/Header header
+
 # Grid map header
 GridMapInfo info
 
