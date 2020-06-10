@@ -4,7 +4,9 @@
   <name>grid_map_cmake_helpers</name>
   <version>2.0.0</version>
   <description>CMake support functionality used throughout grid_map</description>
-  <maintainer email="someone@gmail.com">who_is_the_maintainer</maintainer>
+  <maintainer email="mwulf@anybotics.com">Maximilian Wulf</maintainer>
+  <maintainer email="ynava@anybotics.com">Yoshua Nava</maintainer>
+  <maintainer email="stevenmacenski@gmail.com">Steve Macenski</maintainer>
   <license>BSD</license>
 
   <buildtool_depend>ament_cmake_core</buildtool_depend>
