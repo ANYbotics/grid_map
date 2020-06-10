@@ -6,7 +6,6 @@
  *   Institute: ETH Zurich, ANYbotics
  */
 
-// #pragma once
 
 #ifndef GRID_MAP_CORE__ITERATORS__SPIRALITERATOR_HPP_
 #define GRID_MAP_CORE__ITERATORS__SPIRALITERATOR_HPP_
