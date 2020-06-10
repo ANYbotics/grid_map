@@ -23,7 +23,7 @@ jobs:
           name: Run Tests
           command: |
             source `find /opt/ros -maxdepth 2 -name local_setup.bash | sort | head -1`
-            colcon test --packages-select grid_map_core --parallel-workers 1
+            colcon test --parallel-workers 1
             colcon test-result --verbose
 workflows:
   version: 2
