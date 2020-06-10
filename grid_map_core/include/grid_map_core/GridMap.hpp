@@ -306,21 +306,6 @@ public:
   GridMap getSubmap(const Position & position, const Length & length, bool & isSuccess) const;
 
   /*!
-   * Gets a submap from the map. The requested submap is specified with the requested
-   * location and length.
-   * Note: The returned submap may not have the requested length due to the borders
-   * of the map and discretization.
-   * @param[in] position the requested position of the submap (usually the center).
-   * @param[in] length the requested length of the submap.
-   * @param[out] indexInSubmap the index of the requested position in the submap.
-   * @param[out] isSuccess true if successful, false otherwise.
-   * @return submap (is empty if success is false).
-   */
-  GridMap getSubmap(
-    const Position & position, const Length & length, Index & indexInSubmap,
-    bool & isSuccess) const;
-
-  /*!
    * Apply isometric transformation (rotation + offset) to grid map and returns the transformed map.
    * Note: The returned map may not have the same length since it's geometric description contains
    * the original map.

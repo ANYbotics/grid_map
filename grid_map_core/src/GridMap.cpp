@@ -328,14 +328,6 @@ bool GridMap::getVector(
 
 GridMap GridMap::getSubmap(const Position & position, const Length & length, bool & isSuccess) const
 {
-  Index index;
-  return getSubmap(position, length, index, isSuccess);
-}
-
-GridMap GridMap::getSubmap(
-  const Position & position, const Length & length,
-  bool & isSuccess) const
-{
   // Submap the generate.
   GridMap submap(layers_);
   submap.setBasicLayers(basicLayers_);
