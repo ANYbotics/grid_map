@@ -13,7 +13,6 @@
 #include "grid_map_core/iterators/EllipseIterator.hpp"
 #include "grid_map_core/GridMapMath.hpp"
 
-// using namespace std;
 
 namespace grid_map
 {

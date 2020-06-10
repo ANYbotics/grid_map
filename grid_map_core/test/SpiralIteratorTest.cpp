@@ -21,7 +21,6 @@
 #include "grid_map_core/iterators/SpiralIterator.hpp"
 #include "grid_map_core/GridMap.hpp"
 
-// using namespace grid_map;
 
 TEST(SpiralIterator, CenterOutOfMap)
 {

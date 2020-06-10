@@ -14,8 +14,6 @@
 
 #include "grid_map_core/grid_map_core.hpp"
 
-// using namespace std;
-// using namespace Eigen;
 
 TEST(EigenMatrixBaseAddons, numberOfFinites)
 {

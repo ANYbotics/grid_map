@@ -16,7 +16,6 @@
 
 #include "grid_map_core/GridMapMath.hpp"
 
-// using namespace std;
 
 namespace grid_map
 {
@@ -124,8 +123,6 @@ inline BufferRegion::Quadrant getQuadrant(const Index & index, const Index & buf
 }
 
 }  // namespace internal
-
-// using namespace internal;
 
 bool getPositionFromIndex(
   Position & position,

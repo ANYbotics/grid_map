@@ -25,9 +25,6 @@
 #include "grid_map_core/iterators/GridMapIterator.hpp"
 
 
-// using namespace std;
-// using namespace grid_map;
-
 namespace grid_map
 {
 

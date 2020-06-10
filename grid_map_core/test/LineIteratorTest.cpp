@@ -15,7 +15,6 @@
 #include "grid_map_core/iterators/LineIterator.hpp"
 #include "grid_map_core/GridMap.hpp"
 
-// using namespace grid_m ap;
 
 TEST(LineIterator, StartOutsideMap)
 {

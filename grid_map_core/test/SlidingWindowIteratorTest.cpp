@@ -14,8 +14,6 @@
 #include "grid_map_core/iterators/SlidingWindowIterator.hpp"
 #include "grid_map_core/GridMap.hpp"
 
-// using namespace std;
-// using namespace grid_map;
 
 TEST(SlidingWindowIterator, WindowSize3Cutoff)
 {

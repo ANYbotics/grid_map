@@ -23,9 +23,6 @@
 #include "grid_map_core/iterators/SubmapIterator.hpp"
 #include "grid_map_core/GridMap.hpp"
 
-// using namespace std;
-// using namespace Eigen;
-// using namespace grid_map;
 
 TEST(SubmapIterator, Simple)
 {

@@ -17,8 +17,6 @@
 
 #include "grid_map_core/GridMap.hpp"
 
-// using namespace std;
-// using namespace grid_map;
 
 TEST(GridMap, CopyConstructor)
 {

@@ -22,8 +22,6 @@
 
 #include "grid_map_core/GridMapMath.hpp"
 
-// using namespace std;
-// using namespace grid_map;
 
 TEST(PositionFromIndex, Simple)
 {
