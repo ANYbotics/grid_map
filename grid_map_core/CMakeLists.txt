@@ -3,7 +3,7 @@ project(grid_map_core)
 
 ## Find ament_cmake macros and libraries
 find_package(ament_cmake REQUIRED)
-find_package(grid_map_common REQUIRED)
+find_package(grid_map_cmake_helpers REQUIRED)
 
 ## Define Eigen addons. 
 include(cmake/${PROJECT_NAME}-extras.cmake)
