@@ -333,12 +333,9 @@ GridMap GridMap::getSubmap(const Position & position, const Length & length, boo
 }
 
 GridMap GridMap::getSubmap(
-  const Position & position, const Length & length, Index & indexInSubmap,
+  const Position & position, const Length & length,
   bool & isSuccess) const
 {
-  // indexInSubmap parameter is unused, should be removed once used.
-  (void)(indexInSubmap);
-
   // Submap the generate.
   GridMap submap(layers_);
   submap.setBasicLayers(basicLayers_);
