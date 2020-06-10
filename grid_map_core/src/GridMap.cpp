@@ -188,51 +188,44 @@ float GridMap::atPosition(
   const std::string & layer, const Position & position,
   InterpolationMethods interpolationMethod) const
 {
-  bool skipNextSwitchCase = false;
-  switch (interpolationMethod) {
-    case InterpolationMethods::INTER_CUBIC_CONVOLUTION: {
-        float value;
-        if (atPositionBicubicConvolutionInterpolated(layer, position, value)) {
-          return value;
-        } else {
-          interpolationMethod = InterpolationMethods::INTER_LINEAR;
-          skipNextSwitchCase = true;
-        }
-        [[fallthrough]];
-      }
-    case InterpolationMethods::INTER_CUBIC: {
-        if (!skipNextSwitchCase) {
-          float value;
-          if (atPositionBicubicInterpolated(layer, position, value)) {
-            return value;
-          } else {
-            interpolationMethod = InterpolationMethods::INTER_LINEAR;
-          }
-        }
-        [[fallthrough]];
-      }
-    case InterpolationMethods::INTER_LINEAR: {
-        float value;
-        if (atPositionLinearInterpolated(layer, position, value)) {
-          return value;
-        } else {
-          interpolationMethod = InterpolationMethods::INTER_NEAREST;
-        }
-        [[fallthrough]];
-      }
-    case InterpolationMethods::INTER_NEAREST: {
-        Index index;
-        if (getIndex(position, index)) {
-          return at(layer, index);
-        } else {
-          throw std::out_of_range("GridMap::atPosition(...) : Position is out of range.");
-        }
-        break;
-      }
-    default:
-      throw std::runtime_error(
-              "GridMap::atPosition(...) : Specified "
-              "interpolation method not implemented.");
+  if (interpolationMethod == InterpolationMethods::INTER_CUBIC_CONVOLUTION) {
+    float value;
+    if (atPositionBicubicConvolutionInterpolated(layer, position, value)) {
+      return value;
+    } else {
+      interpolationMethod = InterpolationMethods::INTER_LINEAR;
+    }
+  }
+
+  if (interpolationMethod == InterpolationMethods::INTER_CUBIC) {
+    float value;
+    if (atPositionBicubicInterpolated(layer, position, value)) {
+      return value;
+    } else {
+      interpolationMethod = InterpolationMethods::INTER_LINEAR;
+    }
+  }
+
+  if (interpolationMethod == InterpolationMethods::INTER_LINEAR) {
+    float value;
+    if (atPositionLinearInterpolated(layer, position, value)) {
+      return value;
+    } else {
+      interpolationMethod = InterpolationMethods::INTER_NEAREST;
+    }
+  }
+
+  if (interpolationMethod == InterpolationMethods::INTER_NEAREST) {
+    Index index;
+    if (getIndex(position, index)) {
+      return at(layer, index);
+    } else {
+      throw std::out_of_range("GridMap::atPosition(...) : Position is out of range.");
+    }
+  } else {
+    throw std::runtime_error(
+            "GridMap::atPosition(...) : Specified "
+            "interpolation method not implemented.");
   }
 }
 
