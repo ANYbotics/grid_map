@@ -2,7 +2,7 @@ version: 2
 jobs:
   debug_build_and_test:
     docker:
-      - image: jwhitleywork/ros:foxy-ros-base-focal
+      - image: ros:foxy
     steps:
       - checkout
       - run:
