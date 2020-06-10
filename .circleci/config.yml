@@ -1,0 +1,32 @@
+version: 2
+jobs:
+  debug_build_and_test:
+    docker:
+      - image: jwhitleywork/ros:foxy-ros-base-focal
+    steps:
+      - checkout
+      - run:
+          name: Set Up Container
+          command: |
+            apt update -qq && apt install -y build-essential cmake python3-colcon-common-extensions python3-rosdep libeigen3-dev
+            apt upgrade -y
+            source `find /opt/ros -maxdepth 2 -name local_setup.bash | sort | head -1`
+            mkdir -p src/grid_map && mv `find -maxdepth 1 -not -name . -not -name src` src/grid_map/
+            rosdep update
+            rosdep install -y --ignore-src --from-paths src
+      - run:
+          name: Debug Build
+          command: |
+            source `find /opt/ros -maxdepth 2 -name local_setup.bash | sort | head -1`
+            colcon build --parallel-workers 1
+      - run:
+          name: Run Tests
+          command: |
+            source `find /opt/ros -maxdepth 2 -name local_setup.bash | sort | head -1`
+            colcon test --packages-select grid_map_core --parallel-workers 1
+            colcon test-result --verbose
+workflows:
+  version: 2
+  ros_build:
+    jobs:
+      - debug_build_and_test
