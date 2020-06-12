@@ -30,3 +30,6 @@ workflows:
   ros_build:
     jobs:
       - debug_build_and_test
+          filters:
+            branches:
+              only: ros2
