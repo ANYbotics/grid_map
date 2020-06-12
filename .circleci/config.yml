@@ -2,7 +2,7 @@ version: 2
 jobs:
   debug_build_and_test:
     docker:
-      - image: jwhitleywork/ros:foxy-ros-base-focal
+      - image: ros:foxy
     steps:
       - checkout
       - run:
@@ -23,7 +23,7 @@ jobs:
           name: Run Tests
           command: |
             source `find /opt/ros -maxdepth 2 -name local_setup.bash | sort | head -1`
-            colcon test --packages-select grid_map_core --parallel-workers 1
+            colcon test --parallel-workers 1
             colcon test-result --verbose
 workflows:
   version: 2
