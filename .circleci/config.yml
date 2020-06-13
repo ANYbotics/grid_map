@@ -29,7 +29,7 @@ workflows:
   version: 2
   ros_build:
     jobs:
-      - debug_build_and_test
+      - debug_build_and_test:
           filters:
             branches:
               only: ros2
