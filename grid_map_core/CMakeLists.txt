@@ -5,7 +5,7 @@ project(grid_map_core)
 find_package(ament_cmake REQUIRED)
 find_package(grid_map_cmake_helpers REQUIRED)
 
-## Define Eigen addons. 
+## Define Eigen addons.
 include(cmake/${PROJECT_NAME}-extras.cmake)
 
 ## System dependencies are found with CMake's conventions
@@ -32,20 +32,20 @@ include_directories(
 
 ## Declare a cpp library
 add_library(${PROJECT_NAME}
-   src/GridMap.cpp
-   src/GridMapMath.cpp
-   src/SubmapGeometry.cpp
-   src/BufferRegion.cpp
-   src/Polygon.cpp
-   src/CubicInterpolation.cpp
-   src/iterators/GridMapIterator.cpp
-   src/iterators/SubmapIterator.cpp
-   src/iterators/CircleIterator.cpp
-   src/iterators/EllipseIterator.cpp
-   src/iterators/SpiralIterator.cpp
-   src/iterators/PolygonIterator.cpp
-   src/iterators/LineIterator.cpp
-   src/iterators/SlidingWindowIterator.cpp
+  src/GridMap.cpp
+  src/GridMapMath.cpp
+  src/SubmapGeometry.cpp
+  src/BufferRegion.cpp
+  src/Polygon.cpp
+  src/CubicInterpolation.cpp
+  src/iterators/GridMapIterator.cpp
+  src/iterators/SubmapIterator.cpp
+  src/iterators/CircleIterator.cpp
+  src/iterators/EllipseIterator.cpp
+  src/iterators/SpiralIterator.cpp
+  src/iterators/PolygonIterator.cpp
+  src/iterators/LineIterator.cpp
+  src/iterators/SlidingWindowIterator.cpp
 )
 
 #############
@@ -83,7 +83,7 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 
   find_package(ament_cmake_gtest REQUIRED)
-  
+
   ## Add gtest based cpp test target and link libraries
   ament_add_gtest(${PROJECT_NAME}-test
     test/test_grid_map_core.cpp
