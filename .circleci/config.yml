@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  debug_build_and_test:
+  build_and_test:
     docker:
       - image: ros:foxy
     steps:
@@ -29,7 +29,4 @@ workflows:
   version: 2
   ros_build:
     jobs:
-      - debug_build_and_test:
-          filters:
-            branches:
-              only: ros2
+      - build_and_test
