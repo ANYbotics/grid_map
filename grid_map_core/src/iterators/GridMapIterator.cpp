@@ -75,7 +75,7 @@ GridMapIterator GridMapIterator::end() const
 {
   GridMapIterator res(this);
   res.linearIndex_ = linearSize_ - 1;
-  return res;
+  return GridMapIterator(&res);
 }
 
 bool GridMapIterator::isPastEnd() const
