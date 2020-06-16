@@ -78,6 +78,12 @@ install(
 #############
 
 if(BUILD_TESTING)
+  # Linting is setup this way to add a filter
+  # to ament_cpplint to ignore the lack of
+  # copyright messages at the top of files.
+  # Copyright messages are being checked for by both
+  # ament_cmake_cpplint & ament_cmake_copyright.
+
   find_package(ament_lint_auto REQUIRED)
   find_package(ament_lint_auto QUIET)
   if(ament_lint_auto_FOUND)
