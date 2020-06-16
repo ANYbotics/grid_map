@@ -79,7 +79,21 @@ install(
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
-  set(ament_cmake_copyright_FOUND TRUE)
+  find_package(ament_lint_auto QUIET)
+  if(ament_lint_auto_FOUND)
+    # exclude copyright checks
+    list(APPEND AMENT_LINT_AUTO_EXCLUDE
+      ament_cmake_cpplint
+      ament_cmake_copyright
+    )
+    ament_lint_auto_find_test_dependencies()
+
+    # run cpplint without copyright filter
+    find_package(ament_cmake_cpplint)
+    ament_cpplint(
+      FILTERS -legal/copyright
+    )
+  endif()
   ament_lint_auto_find_test_dependencies()
 
   find_package(ament_cmake_gtest REQUIRED)
