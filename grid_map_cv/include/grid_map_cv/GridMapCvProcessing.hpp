@@ -13,14 +13,15 @@
 // OpenCV
 #include <cv_bridge/cv_bridge.h>
 
-namespace grid_map {
+namespace grid_map
+{
 
 /*!
  * Processing of grid maps with OpenCV methods.
  */
 class GridMapCvProcessing
 {
- public:
+public:
   /*!
    * Default constructor.
    */
@@ -39,10 +40,11 @@ class GridMapCvProcessing
    * @param[in](optional) interpolationAlgorithm the interpolation method.
    * @return true if successful, false otherwise.
    */
-  static bool changeResolution(const GridMap& gridMapSource,
-                               GridMap& gridMapResult,
-                               const double resolution,
-                               const int interpolationAlgorithm = cv::INTER_CUBIC);
+  static bool changeResolution(
+    const GridMap & gridMapSource,
+    GridMap & gridMapResult,
+    const double resolution,
+    const int interpolationAlgorithm = cv::INTER_CUBIC);
 
 };
 

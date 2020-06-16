@@ -17,15 +17,17 @@
 #include <vector>
 #include <string>
 
-namespace grid_map {
+namespace grid_map
+{
 
 /*!
  * Uses OpenCV function to inpaint/fill holes in the input layer.
  */
 template<typename T>
-class InpaintFilter : public filters::FilterBase<T> {
+class InpaintFilter : public filters::FilterBase<T>
+{
 
- public:
+public:
   /*!
    * Constructor
    */
@@ -48,10 +50,9 @@ class InpaintFilter : public filters::FilterBase<T> {
    * @param mapIn grid map containing input layer
    * @param mapOut grid map containing mapIn and inpainted input layer.
    */
-  virtual bool update(const T& mapIn, T& mapOut);
+  virtual bool update(const T & mapIn, T & mapOut);
 
- private:
-
+private:
   //! Inpainting radius.
   double radius_;
 

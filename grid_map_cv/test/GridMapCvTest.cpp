@@ -36,10 +36,13 @@ TEST(ImageConversion, roundTrip8UC3)
   // Convert back to grid map.
   GridMap mapOut(mapIn);
   mapOut["layer"].setConstant(NAN);
-  GridMapCvConverter::addLayerFromImage<unsigned char, 3>(image, "layer", mapOut, minValue, maxValue);
+  GridMapCvConverter::addLayerFromImage<unsigned char, 3>(
+    image, "layer", mapOut, minValue,
+    maxValue);
 
   // Check data.
-  const float resolution = (maxValue - minValue) / (float) std::numeric_limits<unsigned char>::max();
+  const float resolution = (maxValue - minValue) /
+    (float) std::numeric_limits<unsigned char>::max();
   expectNear(mapIn["layer"], mapOut["layer"], resolution, "");
   EXPECT_TRUE((mapIn.getLength() == mapOut.getLength()).all());
   EXPECT_TRUE((mapIn.getSize() == mapOut.getSize()).all());
@@ -62,10 +65,13 @@ TEST(ImageConversion, roundTrip8UC4)
   // Convert back to grid map.
   GridMap mapOut(mapIn);
   mapOut["layer"].setConstant(NAN);
-  GridMapCvConverter::addLayerFromImage<unsigned char, 4>(image, "layer", mapOut, minValue, maxValue);
+  GridMapCvConverter::addLayerFromImage<unsigned char, 4>(
+    image, "layer", mapOut, minValue,
+    maxValue);
 
   // Check data.
-  const float resolution = (maxValue - minValue) / (float) std::numeric_limits<unsigned char>::max();
+  const float resolution = (maxValue - minValue) /
+    (float) std::numeric_limits<unsigned char>::max();
   expectNear(mapIn["layer"], mapOut["layer"], resolution, "");
   EXPECT_TRUE((mapIn.getLength() == mapOut.getLength()).all());
   EXPECT_TRUE((mapIn.getSize() == mapOut.getSize()).all());
@@ -82,15 +88,20 @@ TEST(ImageConversion, roundTrip16UC1)
 
   // Convert to image.
   cv::Mat image;
-  GridMapCvConverter::toImage<unsigned short, 1>(mapIn, "layer", CV_16UC1, minValue, maxValue, image);
+  GridMapCvConverter::toImage<unsigned short, 1>(
+    mapIn, "layer", CV_16UC1, minValue, maxValue,
+    image);
 
   // Convert back to grid map.
   GridMap mapOut(mapIn);
   mapOut["layer"].setConstant(NAN);
-  GridMapCvConverter::addLayerFromImage<unsigned short, 1>(image, "layer", mapOut, minValue, maxValue);
+  GridMapCvConverter::addLayerFromImage<unsigned short, 1>(
+    image, "layer", mapOut, minValue,
+    maxValue);
 
   // Check data.
-  const float resolution = (maxValue - minValue) / (float) std::numeric_limits<unsigned char>::max();
+  const float resolution = (maxValue - minValue) /
+    (float) std::numeric_limits<unsigned char>::max();
   expectNear(mapIn["layer"], mapOut["layer"], resolution, "");
   EXPECT_TRUE((mapIn.getLength() == mapOut.getLength()).all());
   EXPECT_TRUE((mapIn.getSize() == mapOut.getSize()).all());
@@ -115,7 +126,8 @@ TEST(ImageConversion, roundTrip32FC1)
   GridMapCvConverter::addLayerFromImage<float, 1>(image, "layer", mapOut, minValue, maxValue);
 
   // Check data.
-  const float resolution = (maxValue - minValue) / (float) std::numeric_limits<unsigned char>::max();
+  const float resolution = (maxValue - minValue) /
+    (float) std::numeric_limits<unsigned char>::max();
   expectNear(mapIn["layer"], mapOut["layer"], resolution, "");
   EXPECT_TRUE((mapIn.getLength() == mapOut.getLength()).all());
   EXPECT_TRUE((mapIn.getSize() == mapOut.getSize()).all());

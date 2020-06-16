@@ -25,7 +25,9 @@ TEST(GridMapCvProcessing, changeResolution)
   GridMap mapIn;
   mapIn.setGeometry(grid_map::Length(2.0, 1.0), 0.01);
   mapIn.add("layer", 1.0);
-  for (grid_map::CircleIterator iterator(mapIn, mapIn.getPosition(), 0.2); !iterator.isPastEnd(); ++iterator) {
+  for (grid_map::CircleIterator iterator(mapIn, mapIn.getPosition(), 0.2); !iterator.isPastEnd();
+    ++iterator)
+  {
     mapIn.at("layer", *iterator) = 2.0;
   }
 
@@ -38,7 +40,9 @@ TEST(GridMapCvProcessing, changeResolution)
   EXPECT_TRUE(mapIn.getPosition() == mapOut.getPosition());
   EXPECT_TRUE((mapIn.getSize() == mapOut.getSize() * 10).all());
   EXPECT_EQ(mapIn["layer"](0, 0), mapOut["layer"](0, 0)); // Corner.
-  EXPECT_EQ(mapIn.atPosition("layer", mapIn.getPosition()), mapOut.atPosition("layer", mapOut.getPosition())); // Center.
+  EXPECT_EQ(
+    mapIn.atPosition("layer", mapIn.getPosition()),
+    mapOut.atPosition("layer", mapOut.getPosition()));                                                         // Center.
 }
 
 TEST(GridMapCvProcessing, changeResolutionForMovedMap)
@@ -62,5 +66,7 @@ TEST(GridMapCvProcessing, changeResolutionForMovedMap)
   EXPECT_TRUE(mapIn.getPosition() == mapOut.getPosition());
   EXPECT_TRUE((mapIn.getSize() == mapOut.getSize() * 10).all());
   EXPECT_EQ(mapIn["layer"](0, 0), mapOut["layer"](0, 0)); // Corner.
-  EXPECT_EQ(mapIn.atPosition("layer", mapIn.getPosition()), mapOut.atPosition("layer", mapOut.getPosition())); // Center.
+  EXPECT_EQ(
+    mapIn.atPosition("layer", mapIn.getPosition()),
+    mapOut.atPosition("layer", mapOut.getPosition()));                                                         // Center.
 }
