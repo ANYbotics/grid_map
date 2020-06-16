@@ -232,6 +232,7 @@ float GridMap::atPosition(
 float & GridMap::at(const std::string & layer, const Index & index)
 {
   try {
+    // cppcheck-suppress returnTempReference
     return data_.at(layer)(index(0), index(1));
   } catch (const std::out_of_range & exception) {
     throw std::out_of_range("GridMap::at(...) : No map layer '" + layer + "' available.");
