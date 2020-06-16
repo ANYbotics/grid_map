@@ -6,7 +6,8 @@
  *	 Institute: ETH Zurich, ANYbotics
  */
 
-#pragma once
+#ifndef GRID_MAP_CV__GRIDMAPCVCONVERTER_HPP_
+#define GRID_MAP_CV__GRIDMAPCVCONVERTER_HPP_
 
 #include <grid_map_core/grid_map_core.hpp>
 
@@ -15,6 +16,9 @@
 
 // STD
 #include <iostream>
+
+#include <string>
+#include <limits>
 
 namespace grid_map
 {
@@ -90,10 +94,8 @@ public:
     float maxImageValue;
     if (std::is_same<Type_, float>::value || std::is_same<Type_, double>::value) {
       maxImageValue = 1.0;
-    } else if (std::is_same<Type_,
-      unsigned short>::value || std::is_same<Type_, unsigned char>::value)
-    {
-      maxImageValue = (float)std::numeric_limits<Type_>::max();
+    } else if (std::is_same<Type_, uint16_t>::value || std::is_same<Type_, unsigned char>::value) {
+      maxImageValue = static_cast<float>(std::numeric_limits<Type_>::max());
     } else {
       std::cerr << "This image type is not supported." << std::endl;
       return false;
@@ -116,7 +118,8 @@ public:
 
       // Compute value.
       const Type_ imageValue = imageMono.at<Type_>(index(0), index(1));
-      const float mapValue = lowerValue + mapValueDifference * ((float) imageValue / maxImageValue);
+      const float mapValue = lowerValue + mapValueDifference *
+        (static_cast<float>(imageValue) / maxImageValue);
       data(index(0), index(1)) = mapValue;
     }
 
@@ -214,9 +217,7 @@ public:
     Type_ imageMax;
     if (std::is_same<Type_, float>::value || std::is_same<Type_, double>::value) {
       imageMax = 1.0;
-    } else if (std::is_same<Type_,
-      unsigned short>::value || std::is_same<Type_, unsigned char>::value)
-    {
+    } else if (std::is_same<Type_, uint16_t>::value || std::is_same<Type_, unsigned char>::value) {
       imageMax = (Type_)std::numeric_limits<Type_>::max();
     } else {
       std::cerr << "This image type is not supported." << std::endl;
@@ -239,7 +240,8 @@ public:
       if (std::isfinite(data(index(0), index(1)))) {
         const float & value = data(index(0), index(1));
         const Type_ imageValue =
-          (Type_) (((value - lowerValue) / (upperValue - lowerValue)) * (float) imageMax);
+          (Type_) (((value - lowerValue) / (upperValue - lowerValue)) *
+          static_cast<float>(imageMax));
         const Index imageIndex(iterator.getUnwrappedIndex());
         unsigned int channel = 0;
         image.at<cv::Vec<Type_, NChannels_>>(imageIndex(0), imageIndex(1))[channel] = imageValue;
@@ -257,10 +259,9 @@ public:
         }
       }
     }
-
     return true;
   }
-
 };
 
-} /* namespace */
+}  // namespace grid_map
+#endif  // GRID_MAP_CV__GRIDMAPCVCONVERTER_HPP_

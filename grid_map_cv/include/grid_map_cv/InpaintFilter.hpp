@@ -6,16 +6,17 @@
  *   Institute: ETH Zurich, ANYbotics
  */
 
-#pragma once
+#ifndef GRID_MAP_CV__INPAINTFILTER_HPP_
+#define GRID_MAP_CV__INPAINTFILTER_HPP_
 
 #include <filters/filter_base.h>
-
-//OpenCV
-#include "grid_map_cv/grid_map_cv.hpp"
 #include <opencv2/opencv.hpp>
 
 #include <vector>
 #include <string>
+
+// OpenCV
+#include "grid_map_cv/grid_map_cv.hpp"
 
 namespace grid_map
 {
@@ -26,7 +27,6 @@ namespace grid_map
 template<typename T>
 class InpaintFilter : public filters::FilterBase<T>
 {
-
 public:
   /*!
    * Constructor
@@ -63,4 +63,5 @@ private:
   std::string outputLayer_;
 };
 
-} /* namespace */
+}  // namespace grid_map
+#endif  // GRID_MAP_CV__INPAINTFILTER_HPP_

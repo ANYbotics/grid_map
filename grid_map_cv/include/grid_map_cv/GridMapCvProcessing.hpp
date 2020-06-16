@@ -6,7 +6,8 @@
  *	 Institute: ETH Zurich, ANYbotics
  */
 
-#pragma once
+#ifndef GRID_MAP_CV__GRIDMAPCVPROCESSING_HPP_
+#define GRID_MAP_CV__GRIDMAPCVPROCESSING_HPP_
 
 #include <grid_map_core/grid_map_core.hpp>
 
@@ -41,11 +42,11 @@ public:
    * @return true if successful, false otherwise.
    */
   static bool changeResolution(
-    const GridMap & gridMapSource,
-    GridMap & gridMapResult,
+    const grid_map::GridMap & gridMapSource,
+    grid_map::GridMap & gridMapResult,
     const double resolution,
     const int interpolationAlgorithm = cv::INTER_CUBIC);
-
 };
 
-} /* namespace */
+}  // namespace grid_map
+#endif  // GRID_MAP_CV__GRIDMAPCVPROCESSING_HPP_

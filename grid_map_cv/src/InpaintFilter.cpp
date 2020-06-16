@@ -13,7 +13,11 @@
 // Grid Map
 #include <grid_map_core/grid_map_core.hpp>
 
+#include <string>
+#include <vector>
+
 using namespace filters;
+
 
 namespace grid_map
 {
@@ -22,13 +26,11 @@ template<typename T>
 InpaintFilter<T>::InpaintFilter()
 : radius_(5.0)
 {
-
 }
 
 template<typename T>
 InpaintFilter<T>::~InpaintFilter()
 {
-
 }
 
 template<typename T>
@@ -70,8 +72,8 @@ bool InpaintFilter<T>::update(const T & mapIn, T & mapOut)
   mapOut = mapIn;
   mapOut.add(outputLayer_);
 
-  //Convert elevation layer to OpenCV image to fill in holes.
-  //Get the inpaint mask (nonzero pixels indicate where values need to be filled in).
+  // Convert elevation layer to OpenCV image to fill in holes.
+  // Get the inpaint mask (nonzero pixels indicate where values need to be filled in).
   mapOut.add("inpaint_mask", 0.0);
 
   mapOut.setBasicLayers(std::vector<std::string>());
@@ -102,7 +104,7 @@ bool InpaintFilter<T>::update(const T & mapIn, T & mapOut)
   return true;
 }
 
-}/* namespace */
+}  // namespace grid_map
 
 PLUGINLIB_EXPORT_CLASS(
   grid_map::InpaintFilter<grid_map::GridMap>,

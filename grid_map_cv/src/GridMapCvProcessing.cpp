@@ -21,12 +21,12 @@ GridMapCvProcessing::~GridMapCvProcessing()
 }
 
 bool GridMapCvProcessing::changeResolution(
-  const GridMap & gridMapSource,
-  GridMap & gridMapResult,
+  const grid_map::GridMap & gridMapSource,
+  grid_map::GridMap & gridMapResult,
   const double resolution,
   const int interpolationAlgorithm)
 {
-  GridMap gridMapSourceCopy(gridMapSource);
+  grid_map::GridMap gridMapSourceCopy(gridMapSource);
   gridMapSourceCopy.convertToDefaultStartIndex();
   const double sizeFactor = gridMapSourceCopy.getResolution() / resolution;
   bool firstLayer = true;
@@ -37,11 +37,11 @@ bool GridMapCvProcessing::changeResolution(
     const bool hasNaN = gridMapSourceCopy.get(layer).hasNaN();
     bool result;
     if (hasNaN) {
-      result = GridMapCvConverter::toImage<unsigned short, 4>(
+      result = grid_map::GridMapCvConverter::toImage<uint16_t, 4>(
         gridMapSourceCopy, layer, CV_16UC4,
         minValue, maxValue, imageSource);
     } else {
-      result = GridMapCvConverter::toImage<unsigned short, 1>(
+      result = grid_map::GridMapCvConverter::toImage<uint16_t, 1>(
         gridMapSourceCopy, layer, CV_16UC1,
         minValue, maxValue, imageSource);
     }
@@ -61,12 +61,12 @@ bool GridMapCvProcessing::changeResolution(
       firstLayer = false;
     }
     if (hasNaN) {
-      result = GridMapCvConverter::addLayerFromImage<unsigned short, 4>(
+      result = grid_map::GridMapCvConverter::addLayerFromImage<uint16_t, 4>(
         imageResult, layer,
         gridMapResult, minValue,
         maxValue);
     } else {
-      result = GridMapCvConverter::addLayerFromImage<unsigned short, 1>(
+      result = grid_map::GridMapCvConverter::addLayerFromImage<uint16_t, 1>(
         imageResult, layer,
         gridMapResult, minValue,
         maxValue);
@@ -79,4 +79,4 @@ bool GridMapCvProcessing::changeResolution(
   return true;
 }
 
-} /* namespace */
+}  // namespace grid_map
