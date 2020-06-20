@@ -30,7 +30,7 @@ TEST(GridMapCvProcessing, changeResolution)
 
   // Change resolution.
   grid_map::GridMap mapOut;
-  EXPECT_TRUE(GridMapCvProcessing::changeResolution(mapIn, mapOut, 0.1));
+  EXPECT_TRUE(grid_map::GridMapCvProcessing::changeResolution(mapIn, mapOut, 0.1));
 
   // Check data.
   EXPECT_TRUE((mapIn.getLength() == mapOut.getLength()).all());
@@ -47,7 +47,7 @@ TEST(GridMapCvProcessing, changeResolutionForMovedMap)
   // Create grid map.
   grid_map::GridMap mapIn;
   mapIn.setGeometry(grid_map::Length(2.0, 1.0), 0.01);
-  Position position(0.3, 0.4);
+  grid_map::Position position(0.3, 0.4);
   mapIn.move(position);
   mapIn.add("layer", 1.0);
   for (grid_map::CircleIterator iterator(mapIn, position, 0.2); !iterator.isPastEnd(); ++iterator) {
@@ -56,7 +56,7 @@ TEST(GridMapCvProcessing, changeResolutionForMovedMap)
 
   // Change resolution.
   grid_map::GridMap mapOut;
-  EXPECT_TRUE(GridMapCvProcessing::changeResolution(mapIn, mapOut, 0.1));
+  EXPECT_TRUE(grid_map::GridMapCvProcessing::changeResolution(mapIn, mapOut, 0.1));
 
   // Check data.
   EXPECT_TRUE((mapIn.getLength() == mapOut.getLength()).all());

@@ -45,7 +45,7 @@ TEST(ImageConversion, roundTrip8UC3)
   // Check data.
   const float resolution = (maxValue - minValue) /
     static_cast<float>(std::numeric_limits<unsigned char>::max());
-  expectNear(mapIn["layer"], mapOut["layer"], resolution, "");
+  grid_map::expectNear(mapIn["layer"], mapOut["layer"], resolution, "");
   EXPECT_TRUE((mapIn.getLength() == mapOut.getLength()).all());
   EXPECT_TRUE((mapIn.getSize() == mapOut.getSize()).all());
 }
@@ -76,7 +76,7 @@ TEST(ImageConversion, roundTrip8UC4)
   // Check data.
   const float resolution = (maxValue - minValue) /
     static_cast<float>(std::numeric_limits<unsigned char>::max());
-  expectNear(mapIn["layer"], mapOut["layer"], resolution, "");
+  grid_map::expectNear(mapIn["layer"], mapOut["layer"], resolution, "");
   EXPECT_TRUE((mapIn.getLength() == mapOut.getLength()).all());
   EXPECT_TRUE((mapIn.getSize() == mapOut.getSize()).all());
 }
@@ -106,7 +106,7 @@ TEST(ImageConversion, roundTrip16UC1)
   // Check data.
   const float resolution = (maxValue - minValue) /
     static_cast<float>(std::numeric_limits<unsigned char>::max());
-  expectNear(mapIn["layer"], mapOut["layer"], resolution, "");
+  grid_map::expectNear(mapIn["layer"], mapOut["layer"], resolution, "");
   EXPECT_TRUE((mapIn.getLength() == mapOut.getLength()).all());
   EXPECT_TRUE((mapIn.getSize() == mapOut.getSize()).all());
 }
@@ -136,7 +136,7 @@ TEST(ImageConversion, roundTrip32FC1)
   // Check data.
   const float resolution = (maxValue - minValue) /
     static_cast<float>(std::numeric_limits<unsigned char>::max());
-  expectNear(mapIn["layer"], mapOut["layer"], resolution, "");
+  grid_map::expectNear(mapIn["layer"], mapOut["layer"], resolution, "");
   EXPECT_TRUE((mapIn.getLength() == mapOut.getLength()).all());
   EXPECT_TRUE((mapIn.getSize() == mapOut.getSize()).all());
 }

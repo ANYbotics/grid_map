@@ -7,17 +7,14 @@
  */
 
 #include "grid_map_cv/InpaintFilter.hpp"
-#include <pluginlib/class_list_macros.h>
-#include <ros/ros.h>
+#include <pluginlib/class_list_macros.hpp>
+#include <rclcpp/rclcpp.hpp>
 
 // Grid Map
 #include <grid_map_core/grid_map_core.hpp>
 
 #include <string>
 #include <vector>
-
-using namespace filters;
-
 
 namespace grid_map
 {
@@ -36,31 +33,33 @@ InpaintFilter<T>::~InpaintFilter()
 template<typename T>
 bool InpaintFilter<T>::configure()
 {
-  if (!FilterBase<T>::getParam(std::string("radius"), radius_)) {
-    ROS_ERROR("InpaintRadius filter did not find param radius.");
+  auto node = rclcpp::Node::make_shared("inpaint_filter_node");
+
+  if (!filters::FilterBase<T>::getParam(std::string("radius"), radius_)) {
+    RCLCPP_ERROR(node->get_logger(), "InpaintRadius filter did not find param radius.");
     return false;
   }
 
   if (radius_ < 0.0) {
-    ROS_ERROR("Radius must be greater than zero.");
+    RCLCPP_ERROR(node->get_logger(), "Radius must be greater than zero.");
     return false;
   }
 
-  ROS_DEBUG("Radius = %f.", radius_);
+  RCLCPP_DEBUG(node->get_logger(), "Radius = %f.", radius_);
 
-  if (!FilterBase<T>::getParam(std::string("input_layer"), inputLayer_)) {
-    ROS_ERROR("Inpaint filter did not find parameter `input_layer`.");
+  if (!filters::FilterBase<T>::getParam(std::string("input_layer"), inputLayer_)) {
+    RCLCPP_ERROR(node->get_logger(), "Inpaint filter did not find parameter `input_layer`.");
     return false;
   }
 
-  ROS_DEBUG("Inpaint input layer is = %s.", inputLayer_.c_str());
+  RCLCPP_DEBUG(node->get_logger(), "Inpaint input layer is = %s.", inputLayer_.c_str());
 
-  if (!FilterBase<T>::getParam(std::string("output_layer"), outputLayer_)) {
-    ROS_ERROR("Inpaint filter did not find parameter `output_layer`.");
+  if (!filters::FilterBase<T>::getParam(std::string("output_layer"), outputLayer_)) {
+    RCLCPP_ERROR(node->get_logger(), "Inpaint filter did not find parameter `output_layer`.");
     return false;
   }
 
-  ROS_DEBUG("Inpaint output layer = %s.", outputLayer_.c_str());
+  RCLCPP_DEBUG(node->get_logger(), "Inpaint output layer = %s.", outputLayer_.c_str());
 
   return true;
 }

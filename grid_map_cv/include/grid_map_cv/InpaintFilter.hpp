@@ -9,7 +9,7 @@
 #ifndef GRID_MAP_CV__INPAINTFILTER_HPP_
 #define GRID_MAP_CV__INPAINTFILTER_HPP_
 
-#include <filters/filter_base.h>
+#include <filters/filter_base.hpp>
 #include <opencv2/opencv.hpp>
 
 #include <vector>
