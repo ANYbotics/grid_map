@@ -128,8 +128,10 @@ if(TARGET ${PROJECT_NAME}-test)
   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 endif()
 
-ament_export_include_directories(include)
+ament_export_include_directories(include ${EIGEN3_INCLUDE_DIR})
 ament_export_libraries(
   ${PROJECT_NAME}
 )
-ament_package()
+ament_package(CONFIG_EXTRAS
+  cmake/${PROJECT_NAME}-extras.cmake
+)
