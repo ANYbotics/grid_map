@@ -33,33 +33,38 @@ InpaintFilter<T>::~InpaintFilter()
 template<typename T>
 bool InpaintFilter<T>::configure()
 {
-  auto node = rclcpp::Node::make_shared("inpaint_filter_node");
-
   if (!filters::FilterBase<T>::getParam(std::string("radius"), radius_)) {
-    RCLCPP_ERROR(node->get_logger(), "InpaintRadius filter did not find param radius.");
+    RCLCPP_ERROR(
+      this->logging_interface_->get_logger(), "InpaintRadius filter did not find param radius.");
     return false;
   }
 
   if (radius_ < 0.0) {
-    RCLCPP_ERROR(node->get_logger(), "Radius must be greater than zero.");
+    RCLCPP_ERROR(this->logging_interface_->get_logger(), "Radius must be greater than zero.");
     return false;
   }
 
-  RCLCPP_DEBUG(node->get_logger(), "Radius = %f.", radius_);
+  RCLCPP_DEBUG(this->logging_interface_->get_logger(), "Radius = %f.", radius_);
 
   if (!filters::FilterBase<T>::getParam(std::string("input_layer"), inputLayer_)) {
-    RCLCPP_ERROR(node->get_logger(), "Inpaint filter did not find parameter `input_layer`.");
+    RCLCPP_ERROR(
+      this->logging_interface_->get_logger(),
+      "Inpaint filter did not find parameter `input_layer`.");
     return false;
   }
 
-  RCLCPP_DEBUG(node->get_logger(), "Inpaint input layer is = %s.", inputLayer_.c_str());
+  RCLCPP_DEBUG(
+    this->logging_interface_->get_logger(), "Inpaint input layer is = %s.", inputLayer_.c_str());
 
   if (!filters::FilterBase<T>::getParam(std::string("output_layer"), outputLayer_)) {
-    RCLCPP_ERROR(node->get_logger(), "Inpaint filter did not find parameter `output_layer`.");
+    RCLCPP_ERROR(
+      this->logging_interface_->get_logger(),
+      "Inpaint filter did not find parameter `output_layer`.");
     return false;
   }
 
-  RCLCPP_DEBUG(node->get_logger(), "Inpaint output layer = %s.", outputLayer_.c_str());
+  RCLCPP_DEBUG(
+    this->logging_interface_->get_logger(), "Inpaint output layer = %s.", outputLayer_.c_str());
 
   return true;
 }
