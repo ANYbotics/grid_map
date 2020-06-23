@@ -6,49 +6,52 @@
  *   Institute: ETH Zurich, ANYbotics
  */
 
-#include <grid_map_core/Polygon.hpp>
-
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 
+#include <grid_map_core/Polygon.hpp>
+
+#include <string>
+#include <vector>
 #include <limits>
 #include <algorithm>
 
-namespace grid_map {
+namespace grid_map
+{
 
 Polygon::Polygon()
-    : timestamp_(0)
+: timestamp_(0)
 {
 }
 
 Polygon::Polygon(std::vector<Position> vertices)
-    : Polygon()
+: Polygon()
 {
   vertices_ = vertices;
 }
 
 Polygon::~Polygon() {}
 
-bool Polygon::isInside(const Position& point) const
+bool Polygon::isInside(const Position & point) const
 {
   int cross = 0;
-  for (int i = 0, j = vertices_.size() - 1; i < vertices_.size(); j = i++) {
-    if ( ((vertices_[i].y() > point.y()) != (vertices_[j].y() > point.y()))
-           && (point.x() < (vertices_[j].x() - vertices_[i].x()) * (point.y() - vertices_[i].y()) /
-            (vertices_[j].y() - vertices_[i].y()) + vertices_[i].x()) )
+  for (std::size_t i = 0, j = vertices_.size() - 1; i < vertices_.size(); j = i++) {
+    if ( ((vertices_[i].y() > point.y()) != (vertices_[j].y() > point.y())) &&
+      (point.x() < (vertices_[j].x() - vertices_[i].x()) * (point.y() - vertices_[i].y()) /
+      (vertices_[j].y() - vertices_[i].y()) + vertices_[i].x()) )
     {
       cross++;
     }
   }
-  return bool(cross % 2);
+  return static_cast<bool>(cross % 2);
 }
 
-void Polygon::addVertex(const Position& vertex)
+void Polygon::addVertex(const Position & vertex)
 {
   vertices_.push_back(vertex);
 }
 
-const Position& Polygon::getVertex(const size_t index) const
+const Position & Polygon::getVertex(const size_t index) const
 {
   return vertices_.at(index);
 }
@@ -58,12 +61,12 @@ void Polygon::removeVertices()
   vertices_.clear();
 }
 
-const Position& Polygon::operator [](const size_t index) const
+const Position & Polygon::operator[](const size_t index) const
 {
   return getVertex(index);
 }
 
-const std::vector<Position>& Polygon::getVertices() const
+const std::vector<Position> & Polygon::getVertices() const
 {
   return vertices_;
 }
@@ -73,12 +76,12 @@ size_t Polygon::nVertices() const
   return vertices_.size();
 }
 
-const std::string& Polygon::getFrameId() const
+const std::string & Polygon::getFrameId() const
 {
   return frameId_;
 }
 
-void Polygon::setFrameId(const std::string& frameId)
+void Polygon::setFrameId(const std::string & frameId)
 {
   frameId_ = frameId;
 }
@@ -102,9 +105,9 @@ double Polygon::getArea() const
 {
   double area = 0.0;
   int j = vertices_.size() - 1;
-  for (int i = 0; i < vertices_.size(); i++) {
-    area += (vertices_.at(j).x() + vertices_.at(i).x())
-        * (vertices_.at(j).y() - vertices_.at(i).y());
+  for (std::size_t i = 0; i < vertices_.size(); i++) {
+    area += (vertices_.at(j).x() + vertices_.at(i).x()) *
+      (vertices_.at(j).y() - vertices_.at(i).y());
     j = i;
   }
   return std::abs(area / 2.0);
@@ -116,28 +119,28 @@ Position Polygon::getCentroid() const
   std::vector<Position> vertices = getVertices();
   vertices.push_back(vertices.at(0));
   double area = 0.0;
-  for (int i = 0; i < vertices.size() - 1; i++) {
-    const double a = vertices[i].x() * vertices[i+1].y() - vertices[i+1].x() * vertices[i].y();
+  for (std::size_t i = 0; i < vertices.size() - 1; i++) {
+    const double a = vertices[i].x() * vertices[i + 1].y() - vertices[i + 1].x() * vertices[i].y();
     area += a;
-    centroid.x() += a * (vertices[i].x() + vertices[i+1].x());
-    centroid.y() += a * (vertices[i].y() + vertices[i+1].y());
+    centroid.x() += a * (vertices[i].x() + vertices[i + 1].x());
+    centroid.y() += a * (vertices[i].y() + vertices[i + 1].y());
   }
   area *= 0.5;
   centroid /= (6.0 * area);
   return centroid;
 }
 
-void Polygon::getBoundingBox(Position& center, Length& length) const
+void Polygon::getBoundingBox(Position & center, Length & length) const
 {
   double minX = std::numeric_limits<double>::infinity();
   double maxX = -std::numeric_limits<double>::infinity();
   double minY = std::numeric_limits<double>::infinity();
   double maxY = -std::numeric_limits<double>::infinity();
-  for (const auto& vertex : vertices_) {
-    if (vertex.x() > maxX) maxX = vertex.x();
-    if (vertex.y() > maxY) maxY = vertex.y();
-    if (vertex.x() < minX) minX = vertex.x();
-    if (vertex.y() < minY) minY = vertex.y();
+  for (const auto & vertex : vertices_) {
+    if (vertex.x() > maxX) {maxX = vertex.x();}
+    if (vertex.y() > maxY) {maxY = vertex.y();}
+    if (vertex.x() < minX) {minX = vertex.x();}
+    if (vertex.y() < minY) {minY = vertex.y();}
   }
   center.x() = (minX + maxX) / 2.0;
   center.y() = (minY + maxY) / 2.0;
@@ -145,19 +148,21 @@ void Polygon::getBoundingBox(Position& center, Length& length) const
   length.y() = (maxY - minY);
 }
 
-bool Polygon::convertToInequalityConstraints(Eigen::MatrixXd& A, Eigen::VectorXd& b) const
+bool Polygon::convertToInequalityConstraints(Eigen::MatrixXd & A, Eigen::VectorXd & b) const
 {
   Eigen::MatrixXd V(nVertices(), 2);
-  for (unsigned int i = 0; i < nVertices(); ++i)
+  for (unsigned int i = 0; i < nVertices(); ++i) {
     V.row(i) = vertices_[i];
+  }
 
   // Create k, a list of indices from V forming the convex hull.
-  // TODO: Assuming counter-clockwise ordered convex polygon.
+  // TODO(needs_assignment): Assuming counter-clockwise ordered convex polygon.
   // MATLAB: k = convhulln(V);
   Eigen::MatrixXi k;
   k.resizeLike(V);
-  for (unsigned int i = 0; i < V.rows(); ++i)
-    k.row(i) << i, (i+1) % V.rows();
+  for (unsigned int i = 0; i < V.rows(); ++i) {
+    k.row(i) << i, (i + 1) % V.rows();
+  }
   Eigen::RowVectorXd c = V.colwise().mean();
   V.rowwise() -= c;
   A = Eigen::MatrixXd::Constant(k.rows(), V.cols(), NAN);
@@ -183,7 +188,7 @@ bool Polygon::convertToInequalityConstraints(Eigen::MatrixXd& A, Eigen::VectorXd
 
 bool Polygon::thickenLine(const double thickness)
 {
-  if (vertices_.size() != 2) return false;
+  if (vertices_.size() != 2) {return false;}
   const Vector connection(vertices_[1] - vertices_[0]);
   const Vector orthogonal = thickness * Vector(connection.y(), -connection.x()).normalized();
   std::vector<Position> newVertices;
@@ -199,12 +204,12 @@ bool Polygon::thickenLine(const double thickness)
 bool Polygon::offsetInward(const double margin)
 {
   // Create a list of indices of the neighbours of each vertex.
-  // TODO: Assuming counter-clockwise ordered convex polygon.
+  // TODO(needs_assignment): Assuming counter-clockwise ordered convex polygon.
   std::vector<Eigen::Array2i> neighbourIndices;
   const unsigned int n = nVertices();
   neighbourIndices.resize(n);
   for (unsigned int i = 0; i < n; ++i) {
-    neighbourIndices[i] << (i > 0 ? (i-1)%n : n-1), (i + 1) % n;
+    neighbourIndices[i] << (i > 0 ? (i - 1) % n : n - 1), (i + 1) % n;
   }
 
   std::vector<Position> copy(vertices_);
@@ -220,13 +225,15 @@ bool Polygon::offsetInward(const double margin)
   return true;
 }
 
-std::vector<Polygon> Polygon::triangulate(const TriangulationMethods& method) const
+std::vector<Polygon> Polygon::triangulate(const TriangulationMethods & method) const
 {
-  // TODO Add more triangulation methods.
+  // TODO(needs_assignment): Add more triangulation methods.
   // https://en.wikipedia.org/wiki/Polygon_triangulation
+  (void)(method);  // method parameter unused, should be removed once used.
   std::vector<Polygon> polygons;
-  if (vertices_.size() < 3)
+  if (vertices_.size() < 3) {
     return polygons;
+  }
 
   size_t nPolygons = vertices_.size() - 2;
   polygons.reserve(nPolygons);
@@ -245,8 +252,9 @@ std::vector<Polygon> Polygon::triangulate(const TriangulationMethods& method) co
   return polygons;
 }
 
-Polygon Polygon::fromCircle(const Position center, const double radius,
-                                  const int nVertices)
+Polygon Polygon::fromCircle(
+  const Position center, const double radius,
+  const int nVertices)
 {
   Eigen::Vector2d centerToVertex(radius, 0.0), centerToVertexTemp;
 
@@ -260,11 +268,12 @@ Polygon Polygon::fromCircle(const Position center, const double radius,
   return polygon;
 }
 
-Polygon Polygon::convexHullOfTwoCircles(const Position center1,
-                                   const Position center2, const double radius,
-                                   const int nVertices)
+Polygon Polygon::convexHullOfTwoCircles(
+  const Position center1,
+  const Position center2, const double radius,
+  const int nVertices)
 {
-  if (center1 == center2) return fromCircle(center1, radius, nVertices);
+  if (center1 == center2) {return fromCircle(center1, radius, nVertices);}
   Eigen::Vector2d centerToVertex, centerToVertexTemp;
   centerToVertex = center2 - center1;
   centerToVertex.normalize();
@@ -286,7 +295,7 @@ Polygon Polygon::convexHullOfTwoCircles(const Position center1,
   return polygon;
 }
 
-Polygon Polygon::convexHull(Polygon& polygon1, Polygon& polygon2)
+Polygon Polygon::convexHull(Polygon & polygon1, Polygon & polygon2)
 {
   std::vector<Position> vertices;
   vertices.reserve(polygon1.nVertices() + polygon2.nVertices());
@@ -296,7 +305,7 @@ Polygon Polygon::convexHull(Polygon& polygon1, Polygon& polygon2)
   return monotoneChainConvexHullOfPoints(vertices);
 }
 
-Polygon Polygon::monotoneChainConvexHullOfPoints(const std::vector<Position>& points)
+Polygon Polygon::monotoneChainConvexHullOfPoints(const std::vector<Position> & points)
 {
   // Adapted from https://en.wikibooks.org/wiki/Algorithm_Implementation/Geometry/Convex_hull/Monotone_chain
   if (points.size() <= 3) {
@@ -311,8 +320,12 @@ Polygon Polygon::monotoneChainConvexHullOfPoints(const std::vector<Position>& po
 
   int k = 0;
   // Build lower hull
-  for (int i = 0; i < sortedPoints.size(); ++i) {
-    while (k >= 2 && vectorsMakeClockwiseTurn(pointsConvexHull.at(k - 2), pointsConvexHull.at(k - 1), sortedPoints.at(i))) {
+  for (std::size_t i = 0; i < sortedPoints.size(); ++i) {
+    while (k >= 2 &&
+      vectorsMakeClockwiseTurn(
+        pointsConvexHull.at(k - 2), pointsConvexHull.at(k - 1),
+        sortedPoints.at(i)))
+    {
       k--;
     }
     pointsConvexHull.at(k++) = sortedPoints.at(i);
@@ -320,7 +333,11 @@ Polygon Polygon::monotoneChainConvexHullOfPoints(const std::vector<Position>& po
 
   // Build upper hull.
   for (int i = sortedPoints.size() - 2, t = k + 1; i >= 0; i--) {
-    while (k >= t && vectorsMakeClockwiseTurn(pointsConvexHull.at(k - 2), pointsConvexHull.at(k - 1), sortedPoints.at(i))) {
+    while (k >= t &&
+      vectorsMakeClockwiseTurn(
+        pointsConvexHull.at(k - 2), pointsConvexHull.at(k - 1),
+        sortedPoints.at(i)))
+    {
       k--;
     }
     pointsConvexHull.at(k++) = sortedPoints.at(i);
@@ -331,24 +348,27 @@ Polygon Polygon::monotoneChainConvexHullOfPoints(const std::vector<Position>& po
   return polygon;
 }
 
-bool Polygon::sortVertices(const Eigen::Vector2d& vector1,
-                           const Eigen::Vector2d& vector2)
+bool Polygon::sortVertices(
+  const Eigen::Vector2d & vector1,
+  const Eigen::Vector2d & vector2)
 {
-  return (vector1.x() < vector2.x()
-      || (vector1.x() == vector2.x() && vector1.y() < vector2.y()));
+  return vector1.x() < vector2.x() ||
+         (vector1.x() == vector2.x() && vector1.y() < vector2.y());
 }
 
-double Polygon::computeCrossProduct2D(const Eigen::Vector2d& vector1,
-                                      const Eigen::Vector2d& vector2)
+double Polygon::computeCrossProduct2D(
+  const Eigen::Vector2d & vector1,
+  const Eigen::Vector2d & vector2)
 {
-  return (vector1.x() * vector2.y() - vector1.y() * vector2.x());
+  return vector1.x() * vector2.y() - vector1.y() * vector2.x();
 }
 
-double Polygon::vectorsMakeClockwiseTurn(const Eigen::Vector2d &pointOrigin,
-                                         const Eigen::Vector2d &pointA,
-                                         const Eigen::Vector2d &pointB)
+double Polygon::vectorsMakeClockwiseTurn(
+  const Eigen::Vector2d & pointOrigin,
+  const Eigen::Vector2d & pointA,
+  const Eigen::Vector2d & pointB)
 {
   return computeCrossProduct2D(pointA - pointOrigin, pointB - pointOrigin) <= 0;
 }
 
-} /* namespace grid_map */
+}  // namespace grid_map

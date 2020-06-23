@@ -6,32 +6,36 @@
  *   Institute: ETH Zurich, ANYbotics
  */
 
+#include <limits>
+
 #include "grid_map_core/iterators/LineIterator.hpp"
 #include "grid_map_core/GridMapMath.hpp"
 
-using namespace std;
+namespace grid_map
+{
 
-namespace grid_map {
-
-LineIterator::LineIterator(const grid_map::GridMap& gridMap, const Position& start,
-                           const Position& end)
+LineIterator::LineIterator(
+  const grid_map::GridMap & gridMap, const Position & start,
+  const Position & end)
 {
   Index startIndex, endIndex;
-  if (getIndexLimitedToMapRange(gridMap, start, end, startIndex)
-      && getIndexLimitedToMapRange(gridMap, end, start, endIndex)) {
+  if (getIndexLimitedToMapRange(gridMap, start, end, startIndex) &&
+    getIndexLimitedToMapRange(gridMap, end, start, endIndex))
+  {
     initialize(gridMap, startIndex, endIndex);
-  }
-  else {
+  } else {
     throw std::invalid_argument("Failed to construct LineIterator.");
   }
 }
 
-LineIterator::LineIterator(const grid_map::GridMap& gridMap, const Index& start, const Index& end)
+LineIterator::LineIterator(
+  const grid_map::GridMap & gridMap, const Index & start,
+  const Index & end)
 {
   initialize(gridMap, start, end);
 }
 
-LineIterator& LineIterator::operator =(const LineIterator& other)
+LineIterator & LineIterator::operator=(const LineIterator & other)
 {
   index_ = other.index_;
   start_ = other.start_;
@@ -51,25 +55,27 @@ LineIterator& LineIterator::operator =(const LineIterator& other)
   return *this;
 }
 
-bool LineIterator::operator !=(const LineIterator& other) const
+bool LineIterator::operator!=(const LineIterator & other) const
 {
   return (index_ != other.index_).any();
 }
 
-const Index& LineIterator::operator *() const
+const Index & LineIterator::operator*() const
 {
   return index_;
 }
 
-LineIterator& LineIterator::operator ++()
+LineIterator & LineIterator::operator++()
 {
   numerator_ += numeratorAdd_;  // Increase the numerator by the top of the fraction.
   if (numerator_ >= denominator_) {
     numerator_ -= denominator_;
-    const Index unwrappedIndex = getIndexFromBufferIndex(index_, bufferSize_, bufferStartIndex_) + increment1_;
+    const Index unwrappedIndex =
+      getIndexFromBufferIndex(index_, bufferSize_, bufferStartIndex_) + increment1_;
     index_ = getBufferIndexFromIndex(unwrappedIndex, bufferSize_, bufferStartIndex_);
   }
-  const Index unwrappedIndex = getIndexFromBufferIndex(index_, bufferSize_, bufferStartIndex_) + increment2_;
+  const Index unwrappedIndex =
+    getIndexFromBufferIndex(index_, bufferSize_, bufferStartIndex_) + increment2_;
   index_ = getBufferIndexFromIndex(unwrappedIndex, bufferSize_, bufferStartIndex_);
   ++iCell_;
   return *this;
@@ -80,29 +86,35 @@ bool LineIterator::isPastEnd() const
   return iCell_ >= nCells_;
 }
 
-bool LineIterator::initialize(const grid_map::GridMap& gridMap, const Index& start, const Index& end)
+bool LineIterator::initialize(
+  const grid_map::GridMap & gridMap, const Index & start,
+  const Index & end)
 {
-    start_ = start;
-    end_ = end;
-    mapLength_ = gridMap.getLength();
-    mapPosition_ = gridMap.getPosition();
-    resolution_ = gridMap.getResolution();
-    bufferSize_ = gridMap.getSize();
-    bufferStartIndex_ = gridMap.getStartIndex();
-    initializeIterationParameters();
-    return true;
+  start_ = start;
+  end_ = end;
+  mapLength_ = gridMap.getLength();
+  mapPosition_ = gridMap.getPosition();
+  resolution_ = gridMap.getResolution();
+  bufferSize_ = gridMap.getSize();
+  bufferStartIndex_ = gridMap.getStartIndex();
+  initializeIterationParameters();
+  return true;
 }
 
-bool LineIterator::getIndexLimitedToMapRange(const grid_map::GridMap& gridMap,
-                                             const Position& start, const Position& end,
-                                             Index& index)
+bool LineIterator::getIndexLimitedToMapRange(
+  const grid_map::GridMap & gridMap,
+  const Position & start, const Position & end,
+  Index & index)
 {
   Position newStart = start;
   Vector direction = (end - start).normalized();
   while (!gridMap.getIndex(newStart, index)) {
     newStart += (gridMap.getResolution() - std::numeric_limits<double>::epsilon()) * direction;
-    if ((end - newStart).norm() < gridMap.getResolution() - std::numeric_limits<double>::epsilon())
+    if ((end - newStart).norm() <
+      gridMap.getResolution() - std::numeric_limits<double>::epsilon())
+    {
       return false;
+    }
   }
   return true;
 }
@@ -138,21 +150,21 @@ void LineIterator::initializeIterationParameters()
 
   if (delta.x() >= delta.y()) {
     // There is at least one x-value for every y-value.
-    increment1_.x() = 0; // Do not change the x when numerator >= denominator.
-    increment2_.y() = 0; // Do not change the y for every iteration.
+    increment1_.x() = 0;  // Do not change the x when numerator >= denominator.
+    increment2_.y() = 0;  // Do not change the y for every iteration.
     denominator_ = delta.x();
     numerator_ = delta.x() / 2;
     numeratorAdd_ = delta.y();
-    nCells_ = delta.x() + 1; // There are more x-values than y-values.
+    nCells_ = delta.x() + 1;  // There are more x-values than y-values.
   } else {
     // There is at least one y-value for every x-value
-    increment2_.x() = 0; // Do not change the x for every iteration.
-    increment1_.y() = 0; // Do not change the y when numerator >= denominator.
+    increment2_.x() = 0;  // Do not change the x for every iteration.
+    increment1_.y() = 0;  // Do not change the y when numerator >= denominator.
     denominator_ = delta.y();
     numerator_ = delta.y() / 2;
     numeratorAdd_ = delta.x();
-    nCells_ = delta.y() + 1; // There are more y-values than x-values.
+    nCells_ = delta.y() + 1;  // There are more y-values than x-values.
   }
 }
 
-} /* namespace grid_map */
+}  // namespace grid_map

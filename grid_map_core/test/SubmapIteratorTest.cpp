@@ -6,9 +6,6 @@
  *	 Institute: ETH Zurich, ANYbotics
  */
 
-#include "grid_map_core/iterators/SubmapIterator.hpp"
-#include "grid_map_core/GridMap.hpp"
-
 // Eigen
 #include <Eigen/Core>
 
@@ -21,9 +18,11 @@
 // Vector
 #include <vector>
 
-using namespace std;
-using namespace Eigen;
-using namespace grid_map;
+#include <string>
+
+#include "grid_map_core/iterators/SubmapIterator.hpp"
+#include "grid_map_core/GridMap.hpp"
+
 
 TEST(SubmapIterator, Simple)
 {
@@ -32,12 +31,12 @@ TEST(SubmapIterator, Simple)
   Eigen::Array2i index;
   Eigen::Array2i submapIndex;
 
-  vector<string> types;
+  std::vector<std::string> types;
   types.push_back("type");
-  GridMap map(types);
-  map.setGeometry(Array2d(8.1, 5.1), 1.0, Vector2d(0.0, 0.0)); // bufferSize(8, 5)
+  grid_map::GridMap map(types);
+  map.setGeometry(Eigen::Array2d(8.1, 5.1), 1.0, Eigen::Vector2d(0.0, 0.0));  // bufferSize(8, 5)
 
-  SubmapIterator iterator(map, submapTopLeftIndex, submapBufferSize);
+  grid_map::SubmapIterator iterator(map, submapTopLeftIndex, submapBufferSize);
 
   EXPECT_FALSE(iterator.isPastEnd());
   EXPECT_EQ(submapTopLeftIndex(0), (*iterator)(0));
@@ -95,13 +94,14 @@ TEST(SubmapIterator, CircularBuffer)
   Eigen::Array2i index;
   Eigen::Array2i submapIndex;
 
-  vector<string> types;
+  std::vector<std::string> types;
   types.push_back("type");
-  GridMap map(types);
-  map.setGeometry(Length(8.1, 5.1), 1.0, Position(0.0, 0.0)); // bufferSize(8, 5)
-  map.move(Position(-3.0, -2.0)); // bufferStartIndex(3, 2)
+  grid_map::GridMap map(types);
+  // bufferSize(8, 5)
+  map.setGeometry(grid_map::Length(8.1, 5.1), 1.0, grid_map::Position(0.0, 0.0));
+  map.move(grid_map::Position(-3.0, -2.0));  // bufferStartIndex(3, 2)
 
-  SubmapIterator iterator(map, submapTopLeftIndex, submapBufferSize);
+  grid_map::SubmapIterator iterator(map, submapTopLeftIndex, submapBufferSize);
 
   EXPECT_FALSE(iterator.isPastEnd());
   EXPECT_EQ(submapTopLeftIndex(0), (*iterator)(0));

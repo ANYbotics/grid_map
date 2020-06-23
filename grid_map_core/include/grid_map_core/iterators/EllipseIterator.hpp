@@ -5,17 +5,17 @@
  *      Author: Péter Fankhauser
  *   Institute: ETH Zurich, ANYbotics
  */
+#ifndef GRID_MAP_CORE__ITERATORS__ELLIPSEITERATOR_HPP_
+#define GRID_MAP_CORE__ITERATORS__ELLIPSEITERATOR_HPP_
 
-#pragma once
+#include <Eigen/Core>
+#include <memory>
 
 #include "grid_map_core/GridMap.hpp"
 #include "grid_map_core/iterators/SubmapIterator.hpp"
 
-#include <Eigen/Core>
-
-#include <memory>
-
-namespace grid_map {
+namespace grid_map
+{
 
 /*!
  * Iterator class to iterate through a ellipsoid area of the map.
@@ -24,7 +24,6 @@ namespace grid_map {
 class EllipseIterator
 {
 public:
-
   /*!
    * Constructor.
    * @param gridMap the grid map to iterate on.
@@ -32,32 +31,34 @@ public:
    * @param length the length of the main axis.
    * @param angle the rotation angle of the ellipse (in [rad]).
    */
-  EllipseIterator(const GridMap& gridMap, const Position& center, const Length& length, const double rotation = 0.0);
+  EllipseIterator(
+    const GridMap & gridMap, const Position & center, const Length & length,
+    const double rotation = 0.0);
 
   /*!
    * Assignment operator.
    * @param iterator the iterator to copy data from.
    * @return a reference to *this.
    */
-  EllipseIterator& operator =(const EllipseIterator& other);
+  EllipseIterator & operator=(const EllipseIterator & other);
 
   /*!
    * Compare to another iterator.
    * @return whether the current iterator points to a different address than the other one.
    */
-  bool operator !=(const EllipseIterator& other) const;
+  bool operator!=(const EllipseIterator & other) const;
 
   /*!
    * Dereference the iterator with const.
    * @return the value to which the iterator is pointing.
    */
-  const Index& operator *() const;
+  const Index & operator*() const;
 
   /*!
    * Increase the iterator to the next element.
    * @return a reference to the updated iterator.
    */
-  EllipseIterator& operator ++();
+  EllipseIterator & operator++();
 
   /*!
    * Indicates if iterator is past end.
@@ -69,10 +70,9 @@ public:
    * Returns the size of the submap covered by the iterator.
    * @return the size of the submap covered by the iterator.
    */
-  const Size& getSubmapSize() const;
+  const Size & getSubmapSize() const;
 
 private:
-
   /*!
    * Check if current index is inside the ellipse.
    * @return true if inside, false otherwise.
@@ -87,8 +87,9 @@ private:
    * @param[out] startIndex the start index of the submap.
    * @param[out] bufferSize the buffer size of the submap.
    */
-  void findSubmapParameters(const Position& center, const Length& length, const double rotation,
-                            Index& startIndex, Size& bufferSize) const;
+  void findSubmapParameters(
+    const Position & center, const Length & length, const double rotation,
+    Index & startIndex, Size & bufferSize) const;
 
   //! Position of the circle center;
   Position center_;
@@ -99,7 +100,7 @@ private:
   //! Sine and cosine values of the rotation angle as transformation matrix.
   Eigen::Matrix2d transformMatrix_;
 
-  //! Grid submap iterator. // TODO Think of using unique_ptr instead.
+  //! Grid submap iterator. // TODO(needs_assignment): Think of using unique_ptr instead.
   std::shared_ptr<SubmapIterator> internalIterator_;
 
   //! Map information needed to get position from iterator.
@@ -109,8 +110,9 @@ private:
   Size bufferSize_;
   Index bufferStartIndex_;
 
- public:
+public:
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
 
-} /* namespace */
+}  // namespace grid_map
+#endif  // GRID_MAP_CORE__ITERATORS__ELLIPSEITERATOR_HPP_

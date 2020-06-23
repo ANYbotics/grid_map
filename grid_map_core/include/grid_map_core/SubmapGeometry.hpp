@@ -6,11 +6,14 @@
  *   Institute: ETH Zurich, ANYbotics
  */
 
-#pragma once
+#ifndef GRID_MAP_CORE__SUBMAPGEOMETRY_HPP_
+#define GRID_MAP_CORE__SUBMAPGEOMETRY_HPP_
+
 
 #include <grid_map_core/GridMap.hpp>
 
-namespace grid_map {
+namespace grid_map
+{
 
 class GridMap;
 
@@ -21,8 +24,7 @@ class GridMap;
  */
 class SubmapGeometry
 {
- public:
-
+public:
   /*!
    * Constructor. Note that the requested position and length
    * of the submap is adapted to fit the geometry of the parent
@@ -32,23 +34,23 @@ class SubmapGeometry
    * @param[in] length the requested submap length.
    * @param[out] isSuccess true if successful, false otherwise.
    */
-  SubmapGeometry(const GridMap& gridMap, const Position& position, const Length& length,
-                 bool& isSuccess);
+  SubmapGeometry(
+    const GridMap & gridMap, const Position & position, const Length & length,
+    bool & isSuccess);
 
   virtual ~SubmapGeometry();
 
-  const GridMap& getGridMap() const;
-  const Length& getLength() const;
-  const Position& getPosition() const;
-  const Index& getRequestedIndexInSubmap() const;
-  const Size& getSize() const;
+  const GridMap & getGridMap() const;
+  const Length & getLength() const;
+  const Position & getPosition() const;
+  const Index & getRequestedIndexInSubmap() const;
+  const Size & getSize() const;
   double getResolution() const;
-  const Index& getStartIndex() const;
+  const Index & getStartIndex() const;
 
- private:
-
+private:
   //! Parent grid map of the submap.
-  const GridMap& gridMap_;
+  const GridMap & gridMap_;
 
   //! Start index (typically top left) index of the submap.
   Index startIndex_;
@@ -66,8 +68,9 @@ class SubmapGeometry
   //! position of the submap.
   Index requestedIndexInSubmap_;
 
- public:
+public:
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
 
-} /* namespace grid_map */
+}  // namespace grid_map
+#endif  // GRID_MAP_CORE__SUBMAPGEOMETRY_HPP_

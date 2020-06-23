@@ -1,12 +1,11 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.5)
 project(grid_map_core)
 
-set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
+## Find ament_cmake macros and libraries
+find_package(ament_cmake REQUIRED)
+find_package(grid_map_cmake_helpers REQUIRED)
 
-## Find catkin macros and libraries
-find_package(catkin REQUIRED COMPONENTS)
-
-## Define Eigen addons. 
+## Define Eigen addons.
 include(cmake/${PROJECT_NAME}-extras.cmake)
 
 ## System dependencies are found with CMake's conventions
@@ -14,64 +13,39 @@ include(cmake/${PROJECT_NAME}-extras.cmake)
 # Solution to find Eigen3 with Saucy.
 find_package(Eigen3 QUIET)
 if(NOT EIGEN3_FOUND)
-  find_package(PkgConfig REQUIRED)
-  pkg_check_modules(EIGEN3 REQUIRED eigen3)
-  set(EIGEN3_INCLUDE_DIR ${EIGEN3_INCLUDE_DIRS})
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(EIGEN3 REQUIRED eigen3)
+set(EIGEN3_INCLUDE_DIR ${EIGEN3_INCLUDE_DIRS})
 endif()
 
-###################################
-## catkin specific configuration ##
-###################################
-## The catkin_package macro generates cmake config files for your package
-## Declare things to be passed to dependent projects
-## INCLUDE_DIRS: uncomment this if you package contains header files
-## LIBRARIES: libraries you create in this project that dependent projects also need
-## CATKIN_DEPENDS: catkin_packages dependent projects also need
-## DEPENDS: system dependencies of this project that dependent projects also need
-catkin_package(
-  INCLUDE_DIRS
-    include
-    ${EIGEN3_INCLUDE_DIR}
-  LIBRARIES
-    ${PROJECT_NAME}
-  CATKIN_DEPENDS
-  DEPENDS
-    #Eigen3
-  CFG_EXTRAS
-    ${PROJECT_NAME}-extras.cmake
+grid_map_package()
+
+## Specify additional locations of header files
+include_directories(
+  include
+  ${EIGEN3_INCLUDE_DIR}
 )
 
 ###########
 ## Build ##
 ###########
 
-## Specify additional locations of header files
-include_directories(
-  include
-  ${catkin_INCLUDE_DIRS}
-  ${EIGEN3_INCLUDE_DIR}
-)
-
 ## Declare a cpp library
 add_library(${PROJECT_NAME}
-   src/GridMap.cpp
-   src/GridMapMath.cpp
-   src/SubmapGeometry.cpp
-   src/BufferRegion.cpp
-   src/Polygon.cpp
-   src/CubicInterpolation.cpp
-   src/iterators/GridMapIterator.cpp
-   src/iterators/SubmapIterator.cpp
-   src/iterators/CircleIterator.cpp
-   src/iterators/EllipseIterator.cpp
-   src/iterators/SpiralIterator.cpp
-   src/iterators/PolygonIterator.cpp
-   src/iterators/LineIterator.cpp
-   src/iterators/SlidingWindowIterator.cpp
-)
-
-target_link_libraries(${PROJECT_NAME}
-  ${catkin_LIBRARIES}
+  src/GridMap.cpp
+  src/GridMapMath.cpp
+  src/SubmapGeometry.cpp
+  src/BufferRegion.cpp
+  src/Polygon.cpp
+  src/CubicInterpolation.cpp
+  src/iterators/GridMapIterator.cpp
+  src/iterators/SubmapIterator.cpp
+  src/iterators/CircleIterator.cpp
+  src/iterators/EllipseIterator.cpp
+  src/iterators/SpiralIterator.cpp
+  src/iterators/PolygonIterator.cpp
+  src/iterators/LineIterator.cpp
+  src/iterators/SlidingWindowIterator.cpp
 )
 
 #############
@@ -81,50 +55,81 @@ target_link_libraries(${PROJECT_NAME}
 # Mark executables and/or libraries for installation
 install(
   TARGETS ${PROJECT_NAME}
-  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION lib/${PROJECT_NAME}
 )
 
 # Mark cpp header files for installation
 install(
   DIRECTORY include/${PROJECT_NAME}/
-  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+  DESTINATION include/${PROJECT_NAME}
   FILES_MATCHING PATTERN "*.hpp"
 )
 
 # Mark other files for installation
 install(
   DIRECTORY doc
-  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+  DESTINATION share/${PROJECT_NAME}
 )
 
 #############
 ## Testing ##
 #############
 
-if(CATKIN_ENABLE_TESTING)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
-## Add gtest based cpp test target and link libraries
-catkin_add_gtest(${PROJECT_NAME}-test
-  test/test_grid_map_core.cpp
-  test/test_helpers.cpp
-  test/CubicConvolutionInterpolationTest.cpp
-  test/CubicInterpolationTest.cpp
-  test/GridMapMathTest.cpp
-  test/GridMapTest.cpp
-  test/GridMapIteratorTest.cpp
-  test/LineIteratorTest.cpp
-  test/EllipseIteratorTest.cpp
-  test/SubmapIteratorTest.cpp
-  test/PolygonIteratorTest.cpp
-  test/PolygonTest.cpp
-  test/EigenPluginsTest.cpp
-  test/SpiralIteratorTest.cpp
-  test/SlidingWindowIteratorTest.cpp
+if(BUILD_TESTING)
+  # Linting is setup this way to add a filter
+  # to ament_cpplint to ignore the lack of
+  # copyright messages at the top of files.
+  # Copyright messages are being checked for by both
+  # ament_cmake_cpplint & ament_cmake_copyright.
+
+  find_package(ament_lint_auto REQUIRED)
+  find_package(ament_lint_auto QUIET)
+  if(ament_lint_auto_FOUND)
+    # exclude copyright checks
+    list(APPEND AMENT_LINT_AUTO_EXCLUDE
+      ament_cmake_cpplint
+      ament_cmake_copyright
+    )
+    ament_lint_auto_find_test_dependencies()
+
+    # run cpplint without copyright filter
+    find_package(ament_cmake_cpplint)
+    ament_cpplint(
+      FILTERS -legal/copyright
+    )
+  endif()
+  ament_lint_auto_find_test_dependencies()
+
+  find_package(ament_cmake_gtest REQUIRED)
+
+  ## Add gtest based cpp test target and link libraries
+  ament_add_gtest(${PROJECT_NAME}-test
+    test/test_grid_map_core.cpp
+    test/test_helpers.cpp
+    test/CubicConvolutionInterpolationTest.cpp
+    test/CubicInterpolationTest.cpp
+    test/GridMapMathTest.cpp
+    test/GridMapTest.cpp
+    test/GridMapIteratorTest.cpp
+    test/LineIteratorTest.cpp
+    test/EllipseIteratorTest.cpp
+    test/SubmapIteratorTest.cpp
+    test/PolygonIteratorTest.cpp
+    test/PolygonTest.cpp
+    test/EigenPluginsTest.cpp
+    test/SpiralIteratorTest.cpp
+    test/SlidingWindowIteratorTest.cpp
   )
 endif()
 
 if(TARGET ${PROJECT_NAME}-test)
   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 endif()
+
+ament_export_include_directories(include)
+ament_export_libraries(
+  ${PROJECT_NAME}
+)
+ament_package()
