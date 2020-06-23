@@ -6,7 +6,8 @@
  *	 Institute: ETH Zurich, ANYbotics
  */
 
-#pragma once
+#ifndef GRID_MAP_CV__GRIDMAPCVCONVERTER_HPP_
+#define GRID_MAP_CV__GRIDMAPCVCONVERTER_HPP_
 
 #include <grid_map_core/grid_map_core.hpp>
 
@@ -16,14 +17,18 @@
 // STD
 #include <iostream>
 
-namespace grid_map {
+#include <string>
+#include <limits>
+
+namespace grid_map
+{
 
 /*!
  * Conversions between grid maps and OpenCV images.
  */
 class GridMapCvConverter
 {
- public:
+public:
   /*!
    * Initializes the geometry of a grid map from an image. This changes
    * the geometry of the map and deletes all contents of the layers!
@@ -33,8 +38,9 @@ class GridMapCvConverter
    * @param[in](optional) position the position of the grid map.
    * @return true if successful, false otherwise.
    */
-  static bool initializeFromImage(const cv::Mat& image, const double resolution,
-                                  grid_map::GridMap& gridMap, const grid_map::Position& position)
+  static bool initializeFromImage(
+    const cv::Mat & image, const double resolution,
+    grid_map::GridMap & gridMap, const grid_map::Position & position)
   {
     const double lengthX = resolution * image.rows;
     const double lengthY = resolution * image.cols;
@@ -56,9 +62,10 @@ class GridMapCvConverter
    * @return true if successful, false otherwise.
    */
   template<typename Type_, int NChannels_>
-  static bool addLayerFromImage(const cv::Mat& image, const std::string& layer,
-                                grid_map::GridMap& gridMap, const float lowerValue = 0.0,
-                                const float upperValue = 1.0, const double alphaThreshold = 0.5)
+  static bool addLayerFromImage(
+    const cv::Mat & image, const std::string & layer,
+    grid_map::GridMap & gridMap, const float lowerValue = 0.0,
+    const float upperValue = 1.0, const double alphaThreshold = 0.5)
   {
     if (gridMap.getSize()(0) != image.rows || gridMap.getSize()(1) != image.cols) {
       std::cerr << "Image size does not correspond to grid map size!" << std::endl;
@@ -66,16 +73,16 @@ class GridMapCvConverter
     }
 
     bool isColor = false;
-    if (image.channels() >= 3) isColor = true;
+    if (image.channels() >= 3) {isColor = true;}
     bool hasAlpha = false;
-    if (image.channels() >= 4) hasAlpha = true;
+    if (image.channels() >= 4) {hasAlpha = true;}
 
     cv::Mat imageMono;
     if (isColor && !hasAlpha) {
       cv::cvtColor(image, imageMono, CV_BGR2GRAY);
     } else if (isColor && hasAlpha) {
       cv::cvtColor(image, imageMono, CV_BGRA2GRAY);
-    } else if (!isColor && !hasAlpha){
+    } else if (!isColor && !hasAlpha) {
       imageMono = image;
     } else {
       std::cerr << "Something went wrong when adding grid map layer form image!" << std::endl;
@@ -87,8 +94,8 @@ class GridMapCvConverter
     float maxImageValue;
     if (std::is_same<Type_, float>::value || std::is_same<Type_, double>::value) {
       maxImageValue = 1.0;
-    } else if (std::is_same<Type_, unsigned short>::value || std::is_same<Type_, unsigned char>::value) {
-      maxImageValue = (float)std::numeric_limits<Type_>::max();
+    } else if (std::is_same<Type_, uint16_t>::value || std::is_same<Type_, unsigned char>::value) {
+      maxImageValue = static_cast<float>(std::numeric_limits<Type_>::max());
     } else {
       std::cerr << "This image type is not supported." << std::endl;
       return false;
@@ -97,25 +104,27 @@ class GridMapCvConverter
     const Type_ alphaTreshold = (Type_)(alphaThreshold * maxImageValue);
 
     gridMap.add(layer);
-    grid_map::Matrix& data = gridMap[layer];
+    grid_map::Matrix & data = gridMap[layer];
 
     for (GridMapIterator iterator(gridMap); !iterator.isPastEnd(); ++iterator) {
       const Index index(*iterator);
 
       // Check for alpha layer.
       if (hasAlpha) {
-        const Type_ alpha = image.at<cv::Vec<Type_, NChannels_>>(index(0), index(1))[NChannels_ - 1];
-        if (alpha < alphaTreshold) continue;
+        const Type_ alpha =
+          image.at<cv::Vec<Type_, NChannels_>>(index(0), index(1))[NChannels_ - 1];
+        if (alpha < alphaTreshold) {continue;}
       }
 
       // Compute value.
       const Type_ imageValue = imageMono.at<Type_>(index(0), index(1));
-      const float mapValue = lowerValue + mapValueDifference * ((float) imageValue / maxImageValue);
+      const float mapValue = lowerValue + mapValueDifference *
+        (static_cast<float>(imageValue) / maxImageValue);
       data(index(0), index(1)) = mapValue;
     }
 
     return true;
-  };
+  }
 
   /*!
    * Adds a color layer with data from an image.
@@ -125,8 +134,9 @@ class GridMapCvConverter
    * @return true if successful, false otherwise.
    */
   template<typename Type_, int NChannels_>
-  static bool addColorLayerFromImage(const cv::Mat& image, const std::string& layer,
-                                     grid_map::GridMap& gridMap)
+  static bool addColorLayerFromImage(
+    const cv::Mat & image, const std::string & layer,
+    grid_map::GridMap & gridMap)
   {
     if (gridMap.getSize()(0) != image.rows || gridMap.getSize()(1) != image.cols) {
       std::cerr << "Image size does not correspond to grid map size!" << std::endl;
@@ -134,7 +144,7 @@ class GridMapCvConverter
     }
 
     bool hasAlpha = false;
-    if (image.channels() >= 4) hasAlpha = true;
+    if (image.channels() >= 4) {hasAlpha = true;}
 
     cv::Mat imageRGB;
     if (hasAlpha) {
@@ -146,7 +156,7 @@ class GridMapCvConverter
     gridMap.add(layer);
 
     for (GridMapIterator iterator(gridMap); !iterator.isPastEnd(); ++iterator) {
-      const auto& cvColor = imageRGB.at<cv::Vec<Type_, 3>>((*iterator)(0), (*iterator)(1));
+      const auto & cvColor = imageRGB.at<cv::Vec<Type_, 3>>((*iterator)(0), (*iterator)(1));
       Eigen::Vector3i colorVector;
       colorVector(0) = cvColor[0];
       colorVector(1) = cvColor[1];
@@ -170,13 +180,14 @@ class GridMapCvConverter
    * @return true if successful, false otherwise.
    */
   template<typename Type_, int NChannels_>
-  static bool toImage(const grid_map::GridMap& gridMap, const std::string& layer,
-                      const int encoding, cv::Mat& image)
+  static bool toImage(
+    const grid_map::GridMap & gridMap, const std::string & layer,
+    const int encoding, cv::Mat & image)
   {
     const float minValue = gridMap.get(layer).minCoeffOfFinites();
     const float maxValue = gridMap.get(layer).maxCoeffOfFinites();
     return toImage<Type_, NChannels_>(gridMap, layer, encoding, minValue, maxValue, image);
-  };
+  }
 
   /*!
    * Creates a cv mat from a grid map layer.
@@ -189,9 +200,10 @@ class GridMapCvConverter
    * @return true if successful, false otherwise.
    */
   template<typename Type_, int NChannels_>
-  static bool toImage(const grid_map::GridMap& gridMap, const std::string& layer,
-                      const int encoding, const float lowerValue, const float upperValue,
-                      cv::Mat& image)
+  static bool toImage(
+    const grid_map::GridMap & gridMap, const std::string & layer,
+    const int encoding, const float lowerValue, const float upperValue,
+    cv::Mat & image)
   {
     // Initialize image.
     if (gridMap.getSize()(0) > 0 && gridMap.getSize()(1) > 0) {
@@ -205,7 +217,7 @@ class GridMapCvConverter
     Type_ imageMax;
     if (std::is_same<Type_, float>::value || std::is_same<Type_, double>::value) {
       imageMax = 1.0;
-    } else if (std::is_same<Type_, unsigned short>::value || std::is_same<Type_, unsigned char>::value) {
+    } else if (std::is_same<Type_, uint16_t>::value || std::is_same<Type_, unsigned char>::value) {
       imageMax = (Type_)std::numeric_limits<Type_>::max();
     } else {
       std::cerr << "This image type is not supported." << std::endl;
@@ -215,36 +227,41 @@ class GridMapCvConverter
     // Clamp outliers.
     grid_map::GridMap map = gridMap;
     map.get(layer) = map.get(layer).unaryExpr(grid_map::Clamp<float>(lowerValue, upperValue));
-    const grid_map::Matrix& data = map[layer];
+    const grid_map::Matrix & data = map[layer];
 
     // Convert to image.
     bool isColor = false;
-    if (image.channels() >= 3) isColor = true;
+    if (image.channels() >= 3) {isColor = true;}
     bool hasAlpha = false;
-    if (image.channels() >= 4) hasAlpha = true;
+    if (image.channels() >= 4) {hasAlpha = true;}
 
     for (GridMapIterator iterator(map); !iterator.isPastEnd(); ++iterator) {
       const Index index(*iterator);
       if (std::isfinite(data(index(0), index(1)))) {
-        const float& value = data(index(0), index(1));
-        const Type_ imageValue = (Type_) (((value - lowerValue) / (upperValue - lowerValue)) * (float) imageMax);
+        const float & value = data(index(0), index(1));
+        const Type_ imageValue =
+          (Type_) (((value - lowerValue) / (upperValue - lowerValue)) *
+          static_cast<float>(imageMax));
         const Index imageIndex(iterator.getUnwrappedIndex());
         unsigned int channel = 0;
         image.at<cv::Vec<Type_, NChannels_>>(imageIndex(0), imageIndex(1))[channel] = imageValue;
 
         if (isColor) {
-          image.at<cv::Vec<Type_, NChannels_>>(imageIndex(0), imageIndex(1))[++channel] = imageValue;
-          image.at<cv::Vec<Type_, NChannels_>>(imageIndex(0), imageIndex(1))[++channel] = imageValue;
+          image.at<cv::Vec<Type_, NChannels_>>(
+            imageIndex(0),
+            imageIndex(1))[++channel] = imageValue;
+          image.at<cv::Vec<Type_, NChannels_>>(
+            imageIndex(0),
+            imageIndex(1))[++channel] = imageValue;
         }
         if (hasAlpha) {
           image.at<cv::Vec<Type_, NChannels_>>(imageIndex(0), imageIndex(1))[++channel] = imageMax;
         }
       }
     }
-
     return true;
-  };
-
+  }
 };
 
-} /* namespace */
+}  // namespace grid_map
+#endif  // GRID_MAP_CV__GRIDMAPCVCONVERTER_HPP_

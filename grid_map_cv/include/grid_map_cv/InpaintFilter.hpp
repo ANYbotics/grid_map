@@ -6,26 +6,28 @@
  *   Institute: ETH Zurich, ANYbotics
  */
 
-#pragma once
+#ifndef GRID_MAP_CV__INPAINTFILTER_HPP_
+#define GRID_MAP_CV__INPAINTFILTER_HPP_
 
-#include <filters/filter_base.h>
-
-//OpenCV
-#include "grid_map_cv/grid_map_cv.hpp"
+#include <filters/filter_base.hpp>
 #include <opencv2/opencv.hpp>
 
 #include <vector>
 #include <string>
 
-namespace grid_map {
+// OpenCV
+#include "grid_map_cv/grid_map_cv.hpp"
+
+namespace grid_map
+{
 
 /*!
  * Uses OpenCV function to inpaint/fill holes in the input layer.
  */
 template<typename T>
-class InpaintFilter : public filters::FilterBase<T> {
-
- public:
+class InpaintFilter : public filters::FilterBase<T>
+{
+public:
   /*!
    * Constructor
    */
@@ -48,10 +50,9 @@ class InpaintFilter : public filters::FilterBase<T> {
    * @param mapIn grid map containing input layer
    * @param mapOut grid map containing mapIn and inpainted input layer.
    */
-  virtual bool update(const T& mapIn, T& mapOut);
+  virtual bool update(const T & mapIn, T & mapOut);
 
- private:
-
+private:
   //! Inpainting radius.
   double radius_;
 
@@ -62,4 +63,5 @@ class InpaintFilter : public filters::FilterBase<T> {
   std::string outputLayer_;
 };
 
-} /* namespace */
+}  // namespace grid_map
+#endif  // GRID_MAP_CV__INPAINTFILTER_HPP_

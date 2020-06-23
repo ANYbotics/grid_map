@@ -1,6 +1,7 @@
 <class_libraries>
-  <library path="lib/libgrid_map_cv">
-    <class name="gridMapCv/InpaintFilter" type="grid_map::InpaintFilter<grid_map::GridMap>" base_class_type="filters::FilterBase<grid_map::GridMap>" >
+  <library path="grid_map_cv">
+  <!-- "<" is replaced with "&lt;" & ">" is replaced with "&gt" -->
+    <class name="gridMapCv/InpaintFilter" type="grid_map::InpaintFilter&lt;grid_map::GridMap&gt;" base_class_type="filters::FilterBase&lt;grid_map::GridMap&gt;">
       <description>
         Use OpenCV to inpaint/fill holes in a layer.
       </description>
