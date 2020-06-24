@@ -9,7 +9,8 @@
 #include "grid_map_cv/GridMapCvProcessing.hpp"
 #include "grid_map_cv/GridMapCvConverter.hpp"
 
-namespace grid_map {
+namespace grid_map
+{
 
 GridMapCvProcessing::GridMapCvProcessing()
 {
@@ -19,39 +20,58 @@ GridMapCvProcessing::~GridMapCvProcessing()
 {
 }
 
-bool GridMapCvProcessing::changeResolution(const GridMap& gridMapSource,
-                             GridMap& gridMapResult,
-                             const double resolution,
-                             const int interpolationAlgorithm)
+bool GridMapCvProcessing::changeResolution(
+  const grid_map::GridMap & gridMapSource,
+  grid_map::GridMap & gridMapResult,
+  const double resolution,
+  const int interpolationAlgorithm)
 {
-  GridMap gridMapSourceCopy(gridMapSource);
+  grid_map::GridMap gridMapSourceCopy(gridMapSource);
   gridMapSourceCopy.convertToDefaultStartIndex();
   const double sizeFactor = gridMapSourceCopy.getResolution() / resolution;
   bool firstLayer = true;
-  for (const auto& layer : gridMapSourceCopy.getLayers()) {
+  for (const auto & layer : gridMapSourceCopy.getLayers()) {
     cv::Mat imageSource, imageResult;
     const float minValue = gridMapSourceCopy.get(layer).minCoeffOfFinites();
     const float maxValue = gridMapSourceCopy.get(layer).maxCoeffOfFinites();
     const bool hasNaN = gridMapSourceCopy.get(layer).hasNaN();
     bool result;
     if (hasNaN) {
-      result = GridMapCvConverter::toImage<unsigned short, 4>(gridMapSourceCopy, layer, CV_16UC4, minValue, maxValue, imageSource);
+      result = grid_map::GridMapCvConverter::toImage<uint16_t, 4>(
+        gridMapSourceCopy, layer, CV_16UC4,
+        minValue, maxValue, imageSource);
     } else {
-      result = GridMapCvConverter::toImage<unsigned short, 1>(gridMapSourceCopy, layer, CV_16UC1, minValue, maxValue, imageSource);
+      result = grid_map::GridMapCvConverter::toImage<uint16_t, 1>(
+        gridMapSourceCopy, layer, CV_16UC1,
+        minValue, maxValue, imageSource);
     }
-    if (!result) return false;
-    cv::resize(imageSource, imageResult, cv::Size(0.0, 0.0), sizeFactor, sizeFactor, interpolationAlgorithm);
+    if (!result) {return false;}
+    cv::resize(
+      imageSource, imageResult, cv::Size(
+        0.0,
+        0.0), sizeFactor, sizeFactor,
+      interpolationAlgorithm);
     if (firstLayer) {
-      if (!GridMapCvConverter::initializeFromImage(imageResult, resolution, gridMapResult, gridMapSourceCopy.getPosition()))
+      if (!GridMapCvConverter::initializeFromImage(
+          imageResult, resolution, gridMapResult,
+          gridMapSourceCopy.getPosition()))
+      {
         return false;
+      }
       firstLayer = false;
     }
     if (hasNaN) {
-      result = GridMapCvConverter::addLayerFromImage<unsigned short, 4>(imageResult, layer, gridMapResult, minValue, maxValue);
+      result = grid_map::GridMapCvConverter::addLayerFromImage<uint16_t, 4>(
+        imageResult, layer,
+        gridMapResult, minValue,
+        maxValue);
     } else {
-      result = GridMapCvConverter::addLayerFromImage<unsigned short, 1>(imageResult, layer, gridMapResult, minValue, maxValue);
+      result = grid_map::GridMapCvConverter::addLayerFromImage<uint16_t, 1>(
+        imageResult, layer,
+        gridMapResult, minValue,
+        maxValue);
     }
-    if (!result) return false;
+    if (!result) {return false;}
   }
   gridMapResult.setFrameId(gridMapSourceCopy.getFrameId());
   gridMapResult.setTimestamp(gridMapSourceCopy.getTimestamp());
@@ -59,4 +79,4 @@ bool GridMapCvProcessing::changeResolution(const GridMap& gridMapSource,
   return true;
 }
 
-} /* namespace */
+}  // namespace grid_map
