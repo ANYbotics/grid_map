@@ -217,7 +217,7 @@ void load_image(image<T> ** im, const char * name)
 
   /* read data */
   *im = new image<T>(width, height);
-  file.read(static_cast<char *>(imPtr((*im)), 0, 0), width * height * sizeof(T));
+  file.read(static_cast<char *>(imPtr(*im, 0, 0)), width * height * sizeof(T));
 }
 
 template<class T>
