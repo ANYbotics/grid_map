@@ -25,43 +25,43 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 
 namespace distance_transform
 {
-  typedef unsigned char uchar;
+typedef unsigned char uchar;
 
-  typedef struct { uchar r, g, b; } rgb;
+typedef struct { uchar r, g, b; } rgb;
 
-  inline bool operator == (const rgb & a, const rgb & b) {
-    return (a.r == b.r) && (a.g == b.g) && (a.b == b.b);
-  }
+inline bool operator == (const rgb & a, const rgb & b) {
+  return (a.r == b.r) && (a.g == b.g) && (a.b == b.b);
+}
 
-  template < class T >
-  inline T abs(const T & x) {return x > 0 ? x : -x;}
+template < class T >
+inline T abs(const T & x) {return x > 0 ? x : -x;}
 
-  template < class T >
-  inline int sign(const T & x) {return x >= 0 ? 1 : -1;}
+template < class T >
+inline int sign(const T & x) {return x >= 0 ? 1 : -1;}
 
-  template < class T >
-  inline T square(const T & x) {return x * x;}
+template < class T >
+inline T square(const T & x) {return x * x;}
 
-  template < class T >
-  inline T bound(const T & x, const T & min, const T & max)
-  {
-    return x < min ? min : (x > max ? max : x);
-  }
+template < class T >
+inline T bound(const T & x, const T & min, const T & max)
+{
+  return x < min ? min : (x > max ? max : x);
+}
 
-  template < class T >
-  inline bool check_bound(const T & x, const T & min, const T & max)
-  {
-    return (x < min) || (x > max);
-  }
+template < class T >
+inline bool check_bound(const T & x, const T & min, const T & max)
+{
+  return (x < min) || (x > max);
+}
 
-  inline int vlib_round(float x) {return (int)(x + 0.5F);}
+inline int vlib_round(float x) {return (int)(x + 0.5F);}
 
-  inline int vlib_round(double x) {return (int)(x + 0.5);}
+inline int vlib_round(double x) {return (int)(x + 0.5);}
 
-  inline double gaussian(double val, double sigma)
-  {
-    return exp(-square(val / sigma) / 2) / (sqrt(2 * M_PI) * sigma);
-  }
+inline double gaussian(double val, double sigma)
+{
+  return exp(-square(val / sigma) / 2) / (sqrt(2 * M_PI) * sigma);
+}
 
 }  // namespace distance_transform
 
