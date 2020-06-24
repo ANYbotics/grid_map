@@ -1,5 +1,5 @@
-#ifndef COSTMAP_2D_ROS_HPP_
-#define COSTMAP_2D_ROS_HPP_
+#ifndef TEST_COSTMAP_2D_ROS_HPP_
+#define TEST_COSTMAP_2D_ROS_HPP_
 
 /*****************************************************************************
 ** Includes
@@ -108,4 +108,4 @@ private:
  */
 void broadcastCostmap2DROSTestSuiteTransforms(TransformBroadcaster & broadcaster);
 
-#endif  // COSTMAP_2D_ROS_HPP_
+#endif  // TEST_COSTMAP_2D_ROS_HPP_

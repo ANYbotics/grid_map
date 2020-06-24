@@ -1,5 +1,5 @@
 /*
- * test_grid_map.cpp
+ * test_grid_map_costmap_2d.cpp
  *
  *  Created on: Feb 10, 2014
  *      Author: Péter Fankhauser

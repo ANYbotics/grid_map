@@ -1,5 +1,5 @@
 /*
- * Costmap2DConverterTest.cpp
+ * test_costmap_2d_converter.cpp
  *
  *  Created on: Nov 23, 2016
  *      Authors: Peter Fankhauser, Gabriel Hottiger

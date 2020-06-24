@@ -1,5 +1,5 @@
 /*
- * CostmapConverter.hpp
+ * costmap_2d_converter.hpp
  *
  *  Created on: Nov 23, 2016
  *      Author: Peter Fankhauser, ETH Zurich
@@ -8,8 +8,8 @@
  *              Gabriel Hottiger, ANYbotics
  */
 
-#ifndef GRID_MAP_COSTMAP_2D__COSTMAP2DCONVERTER_HPP_
-#define GRID_MAP_COSTMAP_2D__COSTMAP2DCONVERTER_HPP_
+#ifndef GRID_MAP_COSTMAP_2D__COSTMAP_2D_CONVERTER_HPP_
+#define GRID_MAP_COSTMAP_2D__COSTMAP_2D_CONVERTER_HPP_
 
 // STD
 #include <cstdint>
@@ -454,4 +454,4 @@ private:
 
 }  // namespace grid_map
 
-#endif  // GRID_MAP_COSTMAP_2D__COSTMAP2DCONVERTER_HPP_
+#endif  // GRID_MAP_COSTMAP_2D__COSTMAP_2D_CONVERTER_HPP_

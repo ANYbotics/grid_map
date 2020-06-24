@@ -14,7 +14,7 @@
 #include "tf2_ros/transform_broadcaster.h"
 #include "tf2/transform_datatypes.h"
 
-#include "costmap_2d_ros.hpp"
+#include "test_costmap_2d_ros.hpp"
 
 /*****************************************************************************
 ** Global rclcpp::Node
