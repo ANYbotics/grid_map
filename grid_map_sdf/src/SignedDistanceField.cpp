@@ -12,7 +12,7 @@
 #include <vector>
 
 #include "grid_map_sdf/SignedDistanceField.hpp"
-#include "grid_map_sdf/distance_transform/dt.h"
+#include "grid_map_sdf/distance_transform/dt.hpp"
 
 #include "grid_map_core/GridMap.hpp"
 

@@ -18,15 +18,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 
 /* distance transform */
 
-#ifndef GRID_MAP_SDF__DISTANCE_TRANSFORM__DT_H_
-#define GRID_MAP_SDF__DISTANCE_TRANSFORM__DT_H_
-
-#pragma once
+#ifndef GRID_MAP_SDF__DISTANCE_TRANSFORM__DT_HPP_
+#define GRID_MAP_SDF__DISTANCE_TRANSFORM__DT_HPP_
 
 #include <algorithm>
 
-#include "grid_map_sdf/distance_transform/image.h"
-#include "grid_map_sdf/distance_transform/imconv.h"
+#include "grid_map_sdf/distance_transform/image.hpp"
+#include "grid_map_sdf/distance_transform/imconv.hpp"
 
 namespace distance_transform
 {
@@ -123,4 +121,4 @@ namespace distance_transform
 
 }  // namespace distance_transform
 
-#endif  // GRID_MAP_SDF__DISTANCE_TRANSFORM__DT_H_
+#endif  // GRID_MAP_SDF__DISTANCE_TRANSFORM__DT_HPP_

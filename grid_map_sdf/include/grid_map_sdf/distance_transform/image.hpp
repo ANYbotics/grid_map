@@ -18,10 +18,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 
 /* a simple image class */
 
-#ifndef GRID_MAP_SDF__DISTANCE_TRANSFORM__IMAGE_H_
-#define GRID_MAP_SDF__DISTANCE_TRANSFORM__IMAGE_H_
-
-#pragma once
+#ifndef GRID_MAP_SDF__DISTANCE_TRANSFORM__IMAGE_HPP_
+#define GRID_MAP_SDF__DISTANCE_TRANSFORM__IMAGE_HPP_
 
 #include <cstring>
 
@@ -106,4 +104,4 @@ private:
 
 }  // namespace distance_transform
 
-#endif  // GRID_MAP_SDF__DISTANCE_TRANSFORM__IMAGE_H_
+#endif  // GRID_MAP_SDF__DISTANCE_TRANSFORM__IMAGE_HPP_

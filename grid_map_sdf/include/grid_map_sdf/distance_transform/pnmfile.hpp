@@ -18,18 +18,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 
 /* basic image I/O */
 
-#ifndef GRID_MAP_SDF__DISTANCE_TRANSFORM__PNMFILE_H_
-#define GRID_MAP_SDF__DISTANCE_TRANSFORM__PNMFILE_H_
-
-#pragma once
+#ifndef GRID_MAP_SDF__DISTANCE_TRANSFORM__PNMFILE_HPP_
+#define GRID_MAP_SDF__DISTANCE_TRANSFORM__PNMFILE_HPP_
 
 #include <cstdlib>
 #include <climits>
 #include <cstring>
 #include <fstream>
 
-#include "grid_map_sdf/distance_transform/image.h"
-#include "grid_map_sdf/distance_transform/misc.h"
+#include "grid_map_sdf/distance_transform/image.hpp"
+#include "grid_map_sdf/distance_transform/misc.hpp"
 
 namespace distance_transform
 {
@@ -232,4 +230,4 @@ namespace distance_transform
 
 }  // namespace distance_transform
 
-#endif  // GRID_MAP_SDF__DISTANCE_TRANSFORM__PNMFILE_H_
+#endif  // GRID_MAP_SDF__DISTANCE_TRANSFORM__PNMFILE_HP_
