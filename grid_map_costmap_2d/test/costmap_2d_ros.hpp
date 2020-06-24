@@ -1,22 +1,28 @@
-#pragma once
+#ifndef COSTMAP_2D_ROS_HPP_
+#define COSTMAP_2D_ROS_HPP_
 
 /*****************************************************************************
 ** Includes
 *****************************************************************************/
 
-#include <costmap_2d/costmap_2d_ros.h>
-#include <grid_map_core/grid_map_core.hpp>
-#include <grid_map_costmap_2d/grid_map_costmap_2d.hpp>
-#if ROS_VERSION_MINIMUM(1,14,0)
-#include <tf2_ros/transform_listener.h>
-#else
-#include <tf/transform_listener.h>
-#endif
-
 #include <atomic>
 #include <map>
 #include <string>
 #include <thread>
+#include <memory>
+#include <mutex>
+#include <chrono>
+
+#include "rclcpp/rclcpp.hpp"
+
+#include "tf2_ros/transform_listener.h"
+#include "geometry_msgs/msg/transform.hpp"
+#include "geometry_msgs/msg/vector3.hpp"
+#include "geometry_msgs/msg/quaternion.hpp"
+
+#include "nav2_costmap_2d/costmap_2d_ros.hpp"
+#include "grid_map_core/grid_map_core.hpp"
+#include "grid_map_costmap_2d/grid_map_costmap_2d.hpp"
 
 /*****************************************************************************
 ** Transforms
@@ -25,20 +31,28 @@
 /**
  * @brief Broadcast a set of transforms useful for various demos.
  */
-class TransformBroadcaster {
+class TransformBroadcaster
+{
 public:
-  TransformBroadcaster() : shutdownFlag_(false) {}
+  explicit TransformBroadcaster(std::shared_ptr<rclcpp::Node> & node)
+  : shutdownFlag_(false),
+    tfBroadcaster_(*node)
+  {}
   virtual ~TransformBroadcaster();
-  void add(const std::string& name, tf::Vector3 origin, const tf::Quaternion& orientation);
+  void add(
+    const std::string & name,
+    tf2::Vector3 origin,
+    const tf2::Quaternion & orientation);
 
   void startBroadCastingThread();
   void broadcast();
   void shutdown();
 
 private:
-  std::map<std::string, tf::Transform> transforms_;
+  std::map<std::string, geometry_msgs::msg::Transform> transforms_;
   std::thread broadcastingThread_;
   std::atomic<bool> shutdownFlag_;
+  tf2_ros::TransformBroadcaster tfBroadcaster_;
 };
 
 /**
@@ -51,24 +65,34 @@ private:
  * - second last stripe is filled with LETHAL_OBSTACLE cost
  * - last stripe is filled with NO_INFORMATION cost
  */
-class ROSCostmapServer {
+class ROSCostmapServer
+{
 public:
-  typedef costmap_2d::Costmap2DROS ROSCostmap;
+  typedef nav2_costmap_2d::Costmap2DROS ROSCostmap;
   typedef std::shared_ptr<ROSCostmap> ROSCostmapPtr;
 
-  ROSCostmapServer(const std::string& name, const std::string& baseLinkTransformName,
-                   const grid_map::Position& origin, const double& width, const double& height);
+  ROSCostmapServer(
+    const std::string & name,
+    const std::string & baseLinkTransformName,
+    const grid_map::Position & origin,
+    const int & width,
+    const int & height);
 
-  ROSCostmapPtr getROSCostmap() { return costmap_; };
+  ~ROSCostmapServer()
+  {
+    costmap_->deactivate();
+    costmap_->shutdown();
+  }
+
+  ROSCostmapPtr getROSCostmap()
+  {
+    return costmap_;
+  }
 
 private:
   ROSCostmapPtr costmap_;
-#if ROS_VERSION_MINIMUM(1,14,0)
   tf2_ros::Buffer tfBuffer_;
   tf2_ros::TransformListener tfListener_;
-#else
-  tf::TransformListener tfListener_;
-#endif
 };
 
 
@@ -82,5 +106,6 @@ private:
  *
  * @param[in] broadcaster : uninitialised broadcaster object
  */
-void broadcastCostmap2DROSTestSuiteTransforms(TransformBroadcaster& broadcaster);
+void broadcastCostmap2DROSTestSuiteTransforms(TransformBroadcaster & broadcaster);
 
+#endif  // COSTMAP_2D_ROS_HPP_

@@ -10,9 +10,9 @@
 #include <gtest/gtest.h>
 
 // Run all the tests that were declared with TEST()
-int main(int argc, char **argv)
+int main(int argc, char ** argv)
 {
   testing::InitGoogleTest(&argc, argv);
-  srand((int)time(0));
+  srand(static_cast<unsigned int>(time(nullptr)));
   return RUN_ALL_TESTS();
 }
