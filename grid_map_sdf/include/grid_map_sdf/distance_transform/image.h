@@ -29,7 +29,7 @@ namespace distance_transform
 {
 
   template < class T >
-class image {
+  class image {  // NOLINT
 public:
     /* create an image */
     image(const int width, const int height, const bool init = true);

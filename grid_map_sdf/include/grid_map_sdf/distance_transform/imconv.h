@@ -132,7 +132,8 @@ namespace distance_transform
     return output;
   }
 
-  static inline image < uchar > * imageLONGtoUCHAR(image < int64_t > *input, int64_t min, int64_t max) {
+  static inline image < uchar > * imageLONGtoUCHAR(
+    image < int64_t > *input, int64_t min, int64_t max) {
     int width = input->width();
     int height = input->height();
     image < uchar > *output = new image < uchar > (width, height, false);
