@@ -32,7 +32,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 namespace distance_transform
 {
 
-const int16 BUF_SIZE = 256;
+const int16_t BUF_SIZE = 256;
 
 class pnm_error {};
 
@@ -85,7 +85,8 @@ static void pnm_read(std::ifstream & file, char * buf)
   file.ignore();
 }
 
-static image < uchar > * loadPBM(const char * name) {
+static image<uchar> * loadPBM(const char * name)
+{
   char buf[BUF_SIZE];
 
   /* read header */
@@ -101,7 +102,7 @@ static image < uchar > * loadPBM(const char * name) {
   int height = atoi(buf);
 
   /* read data */
-  image < uchar > *im = new image < uchar > (width, height);
+  image<uchar> * im = new image<uchar>(width, height);
   for (int i = 0; i < height; i++) {
     read_packed(imPtr(im, 0, i), width, file);
   }
@@ -109,7 +110,7 @@ static image < uchar > * loadPBM(const char * name) {
   return im;
 }
 
-static void savePBM(image < uchar > * im, const char * name)
+static void savePBM(image<uchar> * im, const char * name)
 {
   int width = im->width();
   int height = im->height();
@@ -121,7 +122,8 @@ static void savePBM(image < uchar > * im, const char * name)
   }
 }
 
-static image < uchar > * loadPGM(const char * name) {
+static image<uchar> * loadPGM(const char * name)
+{
   char buf[BUF_SIZE];
 
   /* read header */
@@ -142,23 +144,24 @@ static image < uchar > * loadPGM(const char * name) {
   }
 
   /* read data */
-  image < uchar > *im = new image < uchar > (width, height);
-  file.read((char *)imPtr(im, 0, 0), width * height * sizeof(uchar));
+  image<uchar> * im = new image<uchar>(width, height);
+  file.read(static_cast<char *>(imPtr(im, 0, 0)), width * height * sizeof(uchar));
 
   return im;
 }
 
-static void savePGM(image < uchar > * im, const char * name)
+static void savePGM(image<uchar> * im, const char * name)
 {
   int width = im->width();
   int height = im->height();
   std::ofstream file(name, std::ios::out | std::ios::binary);
 
   file << "P5\n" << width << " " << height << "\n" << UCHAR_MAX << "\n";
-  file.write((char *)imPtr(im, 0, 0), width * height * sizeof(uchar));
+  file.write(static_cast<char *>(imPtr(im, 0, 0)), width * height * sizeof(uchar));
 }
 
-static image < rgb > * loadPPM(const char * name) {
+static image<rgb> * loadPPM(const char * name)
+{
   char buf[BUF_SIZE], doc[BUF_SIZE];
 
   /* read header */
@@ -179,24 +182,24 @@ static image < rgb > * loadPPM(const char * name) {
   }
 
   /* read data */
-  image < rgb > *im = new image < rgb > (width, height);
-  file.read((char *)imPtr(im, 0, 0), width * height * sizeof(rgb));
+  image<rgb> * im = new image<rgb>(width, height);
+  file.read(static_cast<char *>(imPtr(im, 0, 0)), width * height * sizeof(rgb));
 
   return im;
 }
 
-static void savePPM(image < rgb > * im, const char * name)
+static void savePPM(image<rgb> * im, const char * name)
 {
   int width = im->width();
   int height = im->height();
   std::ofstream file(name, std::ios::out | std::ios::binary);
 
   file << "P6\n" << width << " " << height << "\n" << UCHAR_MAX << "\n";
-  file.write((char *)imPtr(im, 0, 0), width * height * sizeof(rgb));
+  file.write(static_cast<char *>(imPtr(im, 0, 0)), width * height * sizeof(rgb));
 }
 
-template < class T >
-void load_image(image < T > ** im, const char * name)
+template<class T>
+void load_image(image<T> ** im, const char * name)
 {
   char buf[BUF_SIZE];
 
@@ -213,21 +216,21 @@ void load_image(image < T > ** im, const char * name)
   int height = atoi(buf);
 
   /* read data */
-  *im = new image < T > (width, height);
-  file.read((char *)imPtr((*im), 0, 0), width * height * sizeof(T));
+  *im = new image<T>(width, height);
+  file.read(static_cast<char *>(imPtr((*im)), 0, 0), width * height * sizeof(T));
 }
 
-template < class T >
-void save_image(image < T > * im, const char * name)
+template<class T>
+void save_image(image<T> * im, const char * name)
 {
   int width = im->width();
   int height = im->height();
   std::ofstream file(name, std::ios::out | std::ios::binary);
 
   file << "VLIB\n" << width << " " << height << "\n";
-  file.write((char *)imPtr(im, 0, 0), width * height * sizeof(T));
+  file.write(static_cast<char *>(imPtr(im, 0, 0)), width * height * sizeof(T));
 }
 
 }  // namespace distance_transform
 
-#endif  // GRID_MAP_SDF__DISTANCE_TRANSFORM__PNMFILE_HP_
+#endif  // GRID_MAP_SDF__DISTANCE_TRANSFORM__PNMFILE_HPP_

@@ -66,7 +66,7 @@ static float * dt(float * f, int n)
 }
 
 /* dt of 2d function using squared distance */
-static void dt(image < float > * im)
+static void dt(image<float> * im)
 {
   int width = im->width();
   int height = im->height();
@@ -100,11 +100,12 @@ static void dt(image < float > * im)
 }
 
 /* dt of binary image using squared distance */
-static image < float > * dt(image < uchar > *im, uchar on = 1) {
+static image<float> * dt(image<uchar> * im, uchar on = 1)
+{
   int width = im->width();
   int height = im->height();
 
-  image < float > *out = new image < float > (width, height, false);
+  image<float> * out = new image<float>(width, height, false);
   for (int y = 0; y < height; y++) {
     for (int x = 0; x < width; x++) {
       if (imRef(im, x, y) == on) {

@@ -26,8 +26,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 namespace distance_transform
 {
 
-template < class T >
-class image {  // NOLINT
+template<class T>
+class image    // NOLINT
+{
 public:
   /* create an image */
   image(const int width, const int height, const bool init = true);
@@ -39,7 +40,7 @@ public:
   void init(const T & val);
 
   /* copy an image */
-  image < T > *copy() const;
+  image<T> * copy() const;
 
   /* get the width of an image. */
   int width() const {return w;}
@@ -57,14 +58,15 @@ private:
   int w, h;
 };
 
-  /* use imRef to access image data. */
+/* use imRef to access image data. */
 #define imRef(im, x, y) (im->access[y][x])
 
-  /* use imPtr to get pointer to image data. */
+/* use imPtr to get pointer to image data. */
 #define imPtr(im, x, y) & (im->access[y][x])
 
-template < class T >
-image < T > ::image(const int width, const int height, const bool init) {
+template<class T>
+image<T>::image(const int width, const int height, const bool init)
+{
   w = width;
   h = height;
   data = new T[w * h];  // allocate space for image data
@@ -80,14 +82,16 @@ image < T > ::image(const int width, const int height, const bool init) {
   }
 }
 
-template < class T >
-image < T > ::~image() {
+template<class T>
+image<T>::~image()
+{
   delete[] data;
   delete[] access;
 }
 
-template < class T >
-void image < T > ::init(const T & val) {
+template<class T>
+void image<T>::init(const T & val)
+{
   T * ptr = imPtr(this, 0, 0);
   T * end = imPtr(this, w - 1, h - 1);
   while (ptr <= end) {
@@ -95,9 +99,10 @@ void image < T > ::init(const T & val) {
   }
 }
 
-template < class T >
-image < T > *image < T > ::copy() const {
-  image < T > *im = new image < T > (w, h, false);
+template<class T>
+image<T> * image<T>::copy() const
+{
+  image<T> * im = new image<T>(w, h, false);
   memcpy(im->data, data, w * h * sizeof(T));
   return im;
 }
