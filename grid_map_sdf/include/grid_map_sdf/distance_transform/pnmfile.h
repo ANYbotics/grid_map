@@ -18,6 +18,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 
 /* basic image I/O */
 
+#ifndef GRID_MAP_SDF__DISTANCE_TRANSFORM__PNMFILE_H_
+#define GRID_MAP_SDF__DISTANCE_TRANSFORM__PNMFILE_H_
+
 #pragma once
 
 #include <cstdlib>
@@ -25,13 +28,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 #include <cstring>
 #include <fstream>
 
-#include "image.h"
-#include "misc.h"
+#include "grid_map_sdf/distance_transform/image.h"
+#include "grid_map_sdf/distance_transform/misc.h"
 
 namespace distance_transform
 {
 
-  const short BUF_SIZE = 256;
+  const int16 BUF_SIZE = 256;
 
   class pnm_error {};
 
@@ -227,4 +230,6 @@ namespace distance_transform
     file.write((char *)imPtr(im, 0, 0), width * height * sizeof(T));
   }
 
-} // namespace
+}  // namespace distance_transform
+
+#endif  // GRID_MAP_SDF__DISTANCE_TRANSFORM__PNMFILE_H_

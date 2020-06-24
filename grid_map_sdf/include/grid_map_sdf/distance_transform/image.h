@@ -18,6 +18,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 
 /* a simple image class */
 
+#ifndef GRID_MAP_SDF__DISTANCE_TRANSFORM__IMAGE_H_
+#define GRID_MAP_SDF__DISTANCE_TRANSFORM__IMAGE_H_
+
 #pragma once
 
 #include <cstring>
@@ -26,7 +29,7 @@ namespace distance_transform
 {
 
   template < class T >
-  class image {
+class image {
 public:
     /* create an image */
     image(const int width, const int height, const bool init = true);
@@ -101,4 +104,6 @@ private:
     return im;
   }
 
-} // namespace
+}  // namespace distance_transform
+
+#endif  // GRID_MAP_SDF__DISTANCE_TRANSFORM__IMAGE_H_

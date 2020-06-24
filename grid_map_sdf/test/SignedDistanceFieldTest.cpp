@@ -6,14 +6,14 @@
  *	 Institute: ETH Zurich, ANYbotics
  */
 
-#include "grid_map_core/GridMap.hpp"
-#include "grid_map_sdf/SignedDistanceField.hpp"
-
 #include <gtest/gtest.h>
 #include <math.h>
 
-using namespace std;
-using namespace grid_map;
+#include "grid_map_core/GridMap.hpp"
+#include "grid_map_sdf/SignedDistanceField.hpp"
+
+using namespace std;  // NOLINT
+using namespace grid_map;  // NOLINT
 
 TEST(SignedDistanceField, EmptyMap)
 {
