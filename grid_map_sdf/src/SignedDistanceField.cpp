@@ -167,7 +167,7 @@ Vector3 SignedDistanceField::getDistanceGradientAt(const Position3 & position) c
   j = std::max(j, 1);
   j = std::min(j, size_.y() - 2);
   k = std::max(k, 1);
-  k = std::min(k, static_cast<int>(data_.size() - 2));
+  k = std::min(k, static_cast<int>(data_.size()) - 2);
   double dx = (data_[k](i - 1, j) - data_[k](i + 1, j)) / (2 * resolution_);
   double dy = (data_[k](i, j - 1) - data_[k](i, j + 1)) / (2 * resolution_);
   double dz = (data_[k + 1](i, j) - data_[k - 1](i, j)) / (2 * resolution_);
