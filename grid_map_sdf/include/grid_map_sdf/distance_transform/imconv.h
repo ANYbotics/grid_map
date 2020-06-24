@@ -32,26 +32,26 @@ namespace distance_transform
   const double GREEN_WEIGHT = 0.584;
   const double BLUE_WEIGHT = 0.114;
 
-  static image<uchar> *imageRGBtoGRAY(image<rgb> *input) {
+  static image < uchar > * imageRGBtoGRAY(image < rgb > *input) {
     int width = input->width();
     int height = input->height();
-    image<uchar> *output = new image<uchar>(width, height, false);
+    image < uchar > *output = new image < uchar > (width, height, false);
 
     for (int y = 0; y < height; y++) {
       for (int x = 0; x < width; x++) {
         imRef(output, x, y) = (uchar)
-    (imRef(input, x, y).r * RED_WEIGHT +
-     imRef(input, x, y).g * GREEN_WEIGHT +
-     imRef(input, x, y).b * BLUE_WEIGHT);
+          (imRef(input, x, y).r * RED_WEIGHT +
+          imRef(input, x, y).g * GREEN_WEIGHT +
+          imRef(input, x, y).b * BLUE_WEIGHT);
       }
     }
     return output;
   }
 
-  static image<rgb> *imageGRAYtoRGB(image<uchar> *input) {
+  static image < rgb > * imageGRAYtoRGB(image < uchar > *input) {
     int width = input->width();
     int height = input->height();
-    image<rgb> *output = new image<rgb>(width, height, false);
+    image < rgb > *output = new image < rgb > (width, height, false);
 
     for (int y = 0; y < height; y++) {
       for (int x = 0; x < width; x++) {
@@ -60,43 +60,45 @@ namespace distance_transform
         imRef(output, x, y).b = imRef(input, x, y);
       }
     }
-    return output;  
+    return output;
   }
 
-  static image<float> *imageUCHARtoFLOAT(image<uchar> *input) {
+  static image < float > * imageUCHARtoFLOAT(image < uchar > *input) {
     int width = input->width();
     int height = input->height();
-    image<float> *output = new image<float>(width, height, false);
+    image < float > *output = new image < float > (width, height, false);
 
     for (int y = 0; y < height; y++) {
       for (int x = 0; x < width; x++) {
         imRef(output, x, y) = imRef(input, x, y);
       }
     }
-    return output;  
+    return output;
   }
 
-  static image<float> *imageINTtoFLOAT(image<int> *input) {
+  static image < float > * imageINTtoFLOAT(image < int > *input) {
     int width = input->width();
     int height = input->height();
-    image<float> *output = new image<float>(width, height, false);
+    image < float > *output = new image < float > (width, height, false);
 
     for (int y = 0; y < height; y++) {
       for (int x = 0; x < width; x++) {
         imRef(output, x, y) = imRef(input, x, y);
       }
     }
-    return output;  
+    return output;
   }
 
-  static image<uchar> *imageFLOATtoUCHAR(image<float> *input, 
-                 float min, float max) {
+  static image < uchar > * imageFLOATtoUCHAR(
+    image < float > *input,
+    float min, float max) {
     int width = input->width();
     int height = input->height();
-    image<uchar> *output = new image<uchar>(width, height, false);
+    image < uchar > *output = new image < uchar > (width, height, false);
 
-    if (max == min)
+    if (max == min) {
       return output;
+    }
 
     float scale = UCHAR_MAX / (max - min);
     for (int y = 0; y < height; y++) {
@@ -108,32 +110,33 @@ namespace distance_transform
     return output;
   }
 
-  static image<uchar> *imageFLOATtoUCHAR(image<float> *input) {
+  static image < uchar > * imageFLOATtoUCHAR(image < float > *input) {
     float min, max;
     min_max(input, &min, &max);
     return imageFLOATtoUCHAR(input, min, max);
   }
 
-  static image<long> *imageUCHARtoLONG(image<uchar> *input) {
+  static image < long > * imageUCHARtoLONG(image < uchar > *input) {
     int width = input->width();
     int height = input->height();
-    image<long> *output = new image<long>(width, height, false);
+    image < long > *output = new image < long > (width, height, false);
 
     for (int y = 0; y < height; y++) {
       for (int x = 0; x < width; x++) {
         imRef(output, x, y) = imRef(input, x, y);
       }
     }
-    return output;  
+    return output;
   }
 
-  static image<uchar> *imageLONGtoUCHAR(image<long> *input, long min, long max) {
+  static image < uchar > * imageLONGtoUCHAR(image < long > *input, long min, long max) {
     int width = input->width();
     int height = input->height();
-    image<uchar> *output = new image<uchar>(width, height, false);
+    image < uchar > *output = new image < uchar > (width, height, false);
 
-    if (max == min)
+    if (max == min) {
       return output;
+    }
 
     float scale = UCHAR_MAX / (float)(max - min);
     for (int y = 0; y < height; y++) {
@@ -145,20 +148,22 @@ namespace distance_transform
     return output;
   }
 
-  static image<uchar> *imageLONGtoUCHAR(image<long> *input) {
+  static image < uchar > * imageLONGtoUCHAR(image < long > *input) {
     long min, max;
     min_max(input, &min, &max);
     return imageLONGtoUCHAR(input, min, max);
   }
 
-  static image<uchar> *imageSHORTtoUCHAR(image<short> *input, 
-            short min, short max) {
+  static image < uchar > * imageSHORTtoUCHAR(
+    image < short > *input,
+    short min, short max) {
     int width = input->width();
     int height = input->height();
-    image<uchar> *output = new image<uchar>(width, height, false);
+    image < uchar > *output = new image < uchar > (width, height, false);
 
-    if (max == min)
+    if (max == min) {
       return output;
+    }
 
     float scale = UCHAR_MAX / (float)(max - min);
     for (int y = 0; y < height; y++) {
@@ -170,7 +175,7 @@ namespace distance_transform
     return output;
   }
 
-  static image<uchar> *imageSHORTtoUCHAR(image<short> *input) {
+  static image < uchar > * imageSHORTtoUCHAR(image < short > *input) {
     short min, max;
     min_max(input, &min, &max);
     return imageSHORTtoUCHAR(input, min, max);
