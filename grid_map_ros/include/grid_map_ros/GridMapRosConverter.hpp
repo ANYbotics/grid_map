@@ -20,7 +20,7 @@
 #include <sensor_msgs/msg/point_cloud2.hpp>
 #include <sensor_msgs/msg/image.hpp>
 #include <sensor_msgs/image_encodings.hpp>
-#include <nav2_msgs/msg/costmap.hpp>
+#include <nav_msgs/msg/occupancy_grid.hpp>
 #include <nav_msgs/msg/grid_cells.hpp>
 #include <cv_bridge/cv_bridge.h>
 
@@ -116,28 +116,28 @@ public:
     sensor_msgs::msg::PointCloud2 & pointCloud);
 
   /*!
-   * Converts an Costmap message to a layer of a grid map.
-   * @param[in] Costmap the occupancy grid to be converted.
-   * @param[in] layer the layer to which the costmap will be converted.
+   * Converts an occupancy grid message to a layer of a grid map.
+   * @param[in] occupancyGrid the occupancy grid to be converted.
+   * @param[in] layer the layer to which the occupancy grid will be converted.
    * @param[out] gridMap the grid map to be populated.
    * @return true if successful.
    */
-  static bool fromCostmap(
-    const nav2_msgs::msg::Costmap & costmap,
+  static bool fromOccupancyGrid(
+    const nav_msgs::msg::OccupancyGrid & occupancyGrid,
     const std::string & layer, grid_map::GridMap & gridMap);
 
   /*!
-   * Converts a grid map object to a ROS Costmap message. Set the layer to be transformed
+   * Converts a grid map object to a ROS OccupancyGrid message. Set the layer to be transformed
    * as the cell data of the occupancy grid with `layer`, all other layers will be neglected.
    * @param[in] gridMap the grid map object.
    * @param[in] layer the layer that is transformed to the occupancy cell data.
    * @param[in] dataMin the minimum value of the grid map data (used to normalize the cell data in [min, max]).
    * @param[in] dataMax the maximum value of the grid map data (used to normalize the cell data in [min, max]).
-   * @param[out] Costmap the message to be populated.
+   * @param[out] occupancyGrid the message to be populated.
    */
-  static void toCostmap(
+  static void toOccupancyGrid(
     const grid_map::GridMap & gridMap, const std::string & layer,
-    float dataMin, float dataMax, nav2_msgs::msg::Costmap & costmap);
+    float dataMin, float dataMax, nav_msgs::msg::OccupancyGrid & occupancyGrid);
 
   /*!
    * Converts a grid map object to a ROS GridCells message. Set the layer to be transformed

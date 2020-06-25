@@ -248,35 +248,35 @@ void GridMapRosConverter::toPointCloud(
   }
 }
 
-bool GridMapRosConverter::fromCostmap(
-  const nav2_msgs::msg::Costmap & costmap,
+bool GridMapRosConverter::fromOccupancyGrid(
+  const nav_msgs::msg::OccupancyGrid & occupancyGrid,
   const std::string & layer, grid_map::GridMap & gridMap)
 {
-  const Size size(costmap.metadata.size_x, costmap.metadata.size_y);
-  const double resolution = costmap.metadata.resolution;
+  const Size size(occupancyGrid.info.width, occupancyGrid.info.height);
+  const double resolution = occupancyGrid.info.resolution;
   const Length length = resolution * size.cast<double>();
-  const string & frameId = costmap.header.frame_id;
-  Position position(costmap.metadata.origin.position.x, costmap.metadata.origin.position.y);
+  const string & frameId = occupancyGrid.header.frame_id;
+  Position position(occupancyGrid.info.origin.position.x, occupancyGrid.info.origin.position.y);
   // Different conventions of center of map.
   position += 0.5 * length.matrix();
 
-  const auto & orientation = costmap.metadata.origin.orientation;
+  const auto & orientation = occupancyGrid.info.origin.orientation;
   if (orientation.w != 1.0 && !(orientation.x == 0 && orientation.y == 0 &&
     orientation.z == 0 && orientation.w == 0))
   {
     RCLCPP_WARN(
       rclcpp::get_logger(
-        "fromcostmap"),
+        "fromOccupancyGrid"),
       "Conversion of occupancy grid: Grid maps do not support orientation.");
     RCLCPP_INFO(
-      rclcpp::get_logger("fromcostmap"),
-      "Orientation of occupancy grid: \n%s", costmap.metadata.origin.orientation);
+      rclcpp::get_logger("fromOccupancyGrid"),
+      "Orientation of occupancy grid: \n%s", occupancyGrid.info.origin.orientation);
     return false;
   }
 
-  if (size.prod() != costmap.data.size()) {
+  if (size.prod() != occupancyGrid.data.size()) {
     RCLCPP_WARN(
-      rclcpp::get_logger("fromcostmap"),
+      rclcpp::get_logger("fromOccupancyGrid"),
       "Conversion of occupancy grid: Size of data does not correspond to width * height.");
     return false;
   }
@@ -286,7 +286,7 @@ bool GridMapRosConverter::fromCostmap(
     (gridMap.getLength() != length).any() || gridMap.getPosition() != position ||
     gridMap.getFrameId() != frameId || !gridMap.getStartIndex().isZero())
   {
-    gridMap.setTimestamp(rclcpp::Time(costmap.header.stamp).nanoseconds());
+    gridMap.setTimestamp(rclcpp::Time(occupancyGrid.header.stamp).nanoseconds());
     gridMap.setFrameId(frameId);
     gridMap.setGeometry(length, resolution, position);
   }
@@ -294,10 +294,10 @@ bool GridMapRosConverter::fromCostmap(
   // Reverse iteration is required because of different conventions
   // between occupancy grid and grid map.
   grid_map::Matrix data(size(0), size(1));
-  for (std::vector<uint8_t>::const_reverse_iterator iterator = costmap.data.rbegin();
-    iterator != costmap.data.rend(); ++iterator)
+  for (std::vector<int8_t>::const_reverse_iterator iterator = occupancyGrid.data.rbegin();
+    iterator != occupancyGrid.data.rend(); ++iterator)
   {
-    size_t i = std::distance(costmap.data.rbegin(), iterator);
+    size_t i = std::distance(occupancyGrid.data.rbegin(), iterator);
     data(i) = *iterator != -1 ? *iterator : NAN;
   }
 
@@ -305,28 +305,28 @@ bool GridMapRosConverter::fromCostmap(
   return true;
 }
 
-void GridMapRosConverter::toCostmap(
+void GridMapRosConverter::toOccupancyGrid(
   const grid_map::GridMap & gridMap,
   const std::string & layer, float dataMin, float dataMax,
-  nav2_msgs::msg::Costmap & costmap)
+  nav_msgs::msg::OccupancyGrid & occupancyGrid)
 {
-  costmap.header.frame_id = gridMap.getFrameId();
-  costmap.header.stamp = rclcpp::Time(gridMap.getTimestamp());
+  occupancyGrid.header.frame_id = gridMap.getFrameId();
+  occupancyGrid.header.stamp = rclcpp::Time(gridMap.getTimestamp());
   // Same as header stamp as we do not load the map.
-  costmap.metadata.map_load_time = costmap.header.stamp;
-  costmap.metadata.resolution = gridMap.getResolution();
-  costmap.metadata.size_x = gridMap.getSize()(0);
-  costmap.metadata.size_y = gridMap.getSize()(1);
+  occupancyGrid.info.map_load_time = occupancyGrid.header.stamp;
+  occupancyGrid.info.resolution = gridMap.getResolution();
+  occupancyGrid.info.width = gridMap.getSize()(0);
+  occupancyGrid.info.height = gridMap.getSize()(1);
   Position position = gridMap.getPosition() - 0.5 * gridMap.getLength().matrix();
-  costmap.metadata.origin.position.x = position.x();
-  costmap.metadata.origin.position.y = position.y();
-  costmap.metadata.origin.position.z = 0.0;
-  costmap.metadata.origin.orientation.x = 0.0;
-  costmap.metadata.origin.orientation.y = 0.0;
-  costmap.metadata.origin.orientation.z = 0.0;
-  costmap.metadata.origin.orientation.w = 1.0;
+  occupancyGrid.info.origin.position.x = position.x();
+  occupancyGrid.info.origin.position.y = position.y();
+  occupancyGrid.info.origin.position.z = 0.0;
+  occupancyGrid.info.origin.orientation.x = 0.0;
+  occupancyGrid.info.origin.orientation.y = 0.0;
+  occupancyGrid.info.origin.orientation.z = 0.0;
+  occupancyGrid.info.origin.orientation.w = 1.0;
   size_t nCells = gridMap.getSize().prod();
-  costmap.data.resize(nCells);
+  occupancyGrid.data.resize(nCells);
 
   // Occupancy probabilities are in the range [0,100]. Unknown is -1.
   const float cellMin = 0;
@@ -342,7 +342,7 @@ void GridMapRosConverter::toCostmap(
     }
     size_t index = getLinearIndexFromIndex(iterator.getUnwrappedIndex(), gridMap.getSize(), false);
     // Reverse cell order because of different conventions between occupancy grid and grid map.
-    costmap.data[nCells - index - 1] = value;
+    occupancyGrid.data[nCells - index - 1] = value;
   }
 }
 

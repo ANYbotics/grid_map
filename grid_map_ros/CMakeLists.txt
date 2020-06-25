@@ -9,7 +9,7 @@ find_package(grid_map_core REQUIRED)
 find_package(grid_map_msgs REQUIRED)
 find_package(grid_map_cv REQUIRED)
 find_package(sensor_msgs REQUIRED)
-find_package(nav2_msgs REQUIRED)
+find_package(nav_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(cv_bridge REQUIRED)
@@ -24,7 +24,7 @@ set(dependencies
   grid_map_msgs
   grid_map_cv
   sensor_msgs
-  nav2_msgs
+  nav_msgs
   std_msgs
   geometry_msgs
   cv_bridge

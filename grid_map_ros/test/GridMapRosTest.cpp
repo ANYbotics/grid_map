@@ -15,7 +15,7 @@
 
 // ROS
 #include <cv_bridge/cv_bridge.h>
-#include <nav2_msgs/msg/costmap.hpp>
+#include <nav_msgs/msg/occupancy_grid.hpp>
 #include <sensor_msgs/image_encodings.hpp>
 
 // STD
@@ -122,79 +122,80 @@ TEST(OccupancyGridConversion, withMove)
   map.add("layer", 1.0);
 
   // Convert to OccupancyGrid msg.
-  nav2_msgs::msg::Costmap costmap;
-  GridMapRosConverter::toCostmap(map, "layer", 0.0, 1.0, costmap);
+  nav_msgs::msg::OccupancyGrid occupancyGrid;
+  GridMapRosConverter::toOccupancyGrid(map, "layer", 0.0, 1.0, occupancyGrid);
 
   // Expect the (0, 0) cell to have value 100.
-  EXPECT_DOUBLE_EQ(100.0, costmap.data[0]);
+  EXPECT_DOUBLE_EQ(100.0, occupancyGrid.data[0]);
 
   // Move the map, so the cell (0, 0) will move to unobserved space.
   map.move(grid_map::Position(-1.0, -1.0));
 
   // Convert again to OccupancyGrid msg.
-  nav2_msgs::msg::Costmap costmapNew;
-  GridMapRosConverter::toCostmap(map, "layer", 0.0, 1.0, costmapNew);
+  nav_msgs::msg::OccupancyGrid occupancyGridNew;
+  GridMapRosConverter::toOccupancyGrid(map, "layer", 0.0, 1.0, occupancyGridNew);
 
   // Now the (0, 0) cell should be unobserved (-1).
-  EXPECT_DOUBLE_EQ(-1.0, costmapNew.data[0]);
+  EXPECT_DOUBLE_EQ(-1.0, occupancyGridNew.data[0]);
 }
 
 TEST(OccupancyGridConversion, roundTrip)
 {
   // Create occupancy grid.
-  nav2_msgs::msg::Costmap costmap;
-  costmap.header.stamp = rclcpp::Time(5.0);
-  costmap.header.frame_id = "map";
-  costmap.metadata.resolution = 0.1;
-  costmap.metadata.size_x = 50;
-  costmap.metadata.size_y = 100;
-  costmap.metadata.origin.position.x = 3.0;
-  costmap.metadata.origin.position.y = 6.0;
-  costmap.metadata.origin.orientation.w = 1.0;
-  costmap.data.resize(costmap.metadata.size_x * costmap.metadata.size_y);
+  nav_msgs::msg::OccupancyGrid occupancyGrid;
+  occupancyGrid.header.stamp = rclcpp::Time(5.0);
+  occupancyGrid.header.frame_id = "map";
+  occupancyGrid.info.resolution = 0.1;
+  occupancyGrid.info.width = 50;
+  occupancyGrid.info.height = 100;
+  occupancyGrid.info.origin.position.x = 3.0;
+  occupancyGrid.info.origin.position.y = 6.0;
+  occupancyGrid.info.origin.orientation.w = 1.0;
+  occupancyGrid.data.resize(occupancyGrid.info.width * occupancyGrid.info.height);
 
-  for (auto & cell : costmap.data) {
-    cell = rand_r(static_cast<‘unsigned int*>(time(0))) % 102 - 1;  // [-1, 100]
+  unsigned int seed = time(0);
+  for (auto & cell : occupancyGrid.data) {
+    cell = rand_r(&seed) % 102 - 1;  // [-1, 100]
   }
 
   // Convert to grid map.
   GridMap gridMap;
-  GridMapRosConverter::fromCostmap(costmap, "layer", gridMap);
+  GridMapRosConverter::fromOccupancyGrid(occupancyGrid, "layer", gridMap);
 
   // Convert back to occupancy grid.
-  nav2_msgs::msg::Costmap costmapResult;
-  GridMapRosConverter::toCostmap(gridMap, "layer", -1.0, 100.0, costmapResult);
+  nav_msgs::msg::OccupancyGrid occupancyGridResult;
+  GridMapRosConverter::toOccupancyGrid(gridMap, "layer", -1.0, 100.0, occupancyGridResult);
 
   // Check map info.
-  EXPECT_EQ(costmap.header.stamp, costmapResult.header.stamp);
-  EXPECT_EQ(costmap.header.frame_id, costmapResult.header.frame_id);
-  EXPECT_EQ(costmap.metadata.size_x, costmapResult.metadata.size_x);
-  EXPECT_EQ(costmap.metadata.size_y, costmapResult.metadata.size_y);
+  EXPECT_EQ(occupancyGrid.header.stamp, occupancyGridResult.header.stamp);
+  EXPECT_EQ(occupancyGrid.header.frame_id, occupancyGridResult.header.frame_id);
+  EXPECT_EQ(occupancyGrid.info.width, occupancyGridResult.info.width);
+  EXPECT_EQ(occupancyGrid.info.height, occupancyGridResult.info.height);
   EXPECT_DOUBLE_EQ(
-    costmap.metadata.origin.position.x,
-    costmapResult.metadata.origin.position.x);
+    occupancyGrid.info.origin.position.x,
+    occupancyGridResult.info.origin.position.x);
   EXPECT_DOUBLE_EQ(
-    costmap.metadata.origin.position.x,
-    costmapResult.metadata.origin.position.x);
+    occupancyGrid.info.origin.position.x,
+    occupancyGridResult.info.origin.position.x);
   EXPECT_DOUBLE_EQ(
-    costmap.metadata.origin.orientation.x,
-    costmapResult.metadata.origin.orientation.x);
+    occupancyGrid.info.origin.orientation.x,
+    occupancyGridResult.info.origin.orientation.x);
   EXPECT_DOUBLE_EQ(
-    costmap.metadata.origin.orientation.y,
-    costmapResult.metadata.origin.orientation.y);
+    occupancyGrid.info.origin.orientation.y,
+    occupancyGridResult.info.origin.orientation.y);
   EXPECT_DOUBLE_EQ(
-    costmap.metadata.origin.orientation.z,
-    costmapResult.metadata.origin.orientation.z);
+    occupancyGrid.info.origin.orientation.z,
+    occupancyGridResult.info.origin.orientation.z);
   EXPECT_DOUBLE_EQ(
-    costmap.metadata.origin.orientation.w,
-    costmapResult.metadata.origin.orientation.w);
+    occupancyGrid.info.origin.orientation.w,
+    occupancyGridResult.info.origin.orientation.w);
 
   // Check map data.
-  for (std::vector<uint8_t>::iterator iterator = costmap.data.begin();
-    iterator != costmap.data.end(); ++iterator)
+  for (std::vector<int8_t>::iterator iterator = occupancyGrid.data.begin();
+    iterator != occupancyGrid.data.end(); ++iterator)
   {
-    size_t i = std::distance(costmap.data.begin(), iterator);
-    EXPECT_EQ(static_cast<int>(*iterator), static_cast<int>(costmapResult.data[i]));
+    size_t i = std::distance(occupancyGrid.data.begin(), iterator);
+    EXPECT_EQ(static_cast<int>(*iterator), static_cast<int>(occupancyGridResult.data[i]));
   }
 }
 
