@@ -271,7 +271,8 @@ using TranslationTableTestTypes = ::testing::Types<
   grid_map::Costmap2DDirectTranslationTable,
   grid_map::Costmap2DCenturyTranslationTable>;
 
-TYPED_TEST_CASE(TestCostmap2DConversion, TranslationTableTestTypes, );
+TYPED_TEST_CASE(
+  TestCostmap2DConversion, TranslationTableTestTypes, testing::internal::DefaultNameGenerator);
 
 TYPED_TEST(TestCostmap2DConversion, initializeFromCostmap2d)
 {
