@@ -338,11 +338,109 @@ void GridMapRosConverter::toOccupancyGrid(
     if (isnan(value)) {
       value = -1;
     } else {
-      value = cellMin + min(max(0.0f, value), 1.0f) * cellRange;
+      value = cellMin + min(max(0.0f, value), 1.0f) * cellRange;git
     }
     size_t index = getLinearIndexFromIndex(iterator.getUnwrappedIndex(), gridMap.getSize(), false);
     // Reverse cell order because of different conventions between occupancy grid and grid map.
     occupancyGrid.data[nCells - index - 1] = value;
+  }
+}
+
+bool GridMapRosConverter::fromCostmap(
+  const nav2_msgs::msg::Costmap & costmap,
+  const std::string & layer, grid_map::GridMap & gridMap)
+{
+  const Size size(costmap.metadata.size_x, costmap.metadata.size_y);
+  const double resolution = costmap.metadata.resolution;
+  const Length length = resolution * size.cast<double>();
+  const string & frameId = costmap.header.frame_id;
+  Position position(costmap.metadata.origin.position.x, costmap.metadata.origin.position.y);
+  // Different conventions of center of map.
+  position += 0.5 * length.matrix();
+
+  const auto & orientation = costmap.metadata.origin.orientation;
+  if (orientation.w != 1.0 && !(orientation.x == 0 && orientation.y == 0 &&
+    orientation.z == 0 && orientation.w == 0))
+  {
+    RCLCPP_WARN(
+      rclcpp::get_logger(
+        "fromcostmap"),
+      "Conversion of costmap: Grid maps do not support orientation.");
+    RCLCPP_INFO(
+      rclcpp::get_logger("fromcostmap"),
+      "Orientation of costmap: \n%s", costmap.metadata.origin.orientation);
+    return false;
+  }
+
+  if (size.prod() != costmap.data.size()) {
+    RCLCPP_WARN(
+      rclcpp::get_logger("fromcostmap"),
+      "Conversion of costmap: Size of data does not correspond to width * height.");
+    return false;
+  }
+
+  // TODO(needs_assignment): Split to `initializeFrom` and `from` as for Costmap2d.
+  if ((gridMap.getSize() != size).any() || gridMap.getResolution() != resolution ||
+    (gridMap.getLength() != length).any() || gridMap.getPosition() != position ||
+    gridMap.getFrameId() != frameId || !gridMap.getStartIndex().isZero())
+  {
+    gridMap.setTimestamp(rclcpp::Time(costmap.header.stamp).nanoseconds());
+    gridMap.setFrameId(frameId);
+    gridMap.setGeometry(length, resolution, position);
+  }
+
+  // Reverse iteration is required because of different conventions
+  // between costmap and grid map.
+  grid_map::Matrix data(size(0), size(1));
+  for (std::vector<uint8_t>::const_reverse_iterator iterator = costmap.data.rbegin();
+    iterator != costmap.data.rend(); ++iterator)
+  {
+    size_t i = std::distance(costmap.data.rbegin(), iterator);
+    data(i) = *iterator != -1 ? *iterator : NAN;
+  }
+
+  gridMap.add(layer, data);
+  return true;
+}
+
+void GridMapRosConverter::toCostmap(
+  const grid_map::GridMap & gridMap,
+  const std::string & layer, float dataMin, float dataMax,
+  nav2_msgs::msg::Costmap & costmap)
+{
+  costmap.header.frame_id = gridMap.getFrameId();
+  costmap.header.stamp = rclcpp::Time(gridMap.getTimestamp());
+  // Same as header stamp as we do not load the map.
+  costmap.metadata.map_load_time = costmap.header.stamp;
+  costmap.metadata.resolution = gridMap.getResolution();
+  costmap.metadata.size_x = gridMap.getSize()(0);
+  costmap.metadata.size_y = gridMap.getSize()(1);
+  Position position = gridMap.getPosition() - 0.5 * gridMap.getLength().matrix();
+  costmap.metadata.origin.position.x = position.x();
+  costmap.metadata.origin.position.y = position.y();
+  costmap.metadata.origin.position.z = 0.0;
+  costmap.metadata.origin.orientation.x = 0.0;
+  costmap.metadata.origin.orientation.y = 0.0;
+  costmap.metadata.origin.orientation.z = 0.0;
+  costmap.metadata.origin.orientation.w = 1.0;
+  size_t nCells = gridMap.getSize().prod();
+  costmap.data.resize(nCells);
+
+  // Occupancy probabilities are in the range [0,100]. Unknown is -1.
+  const float cellMin = 0;
+  const float cellMax = 100;
+  const float cellRange = cellMax - cellMin;
+
+  for (GridMapIterator iterator(gridMap); !iterator.isPastEnd(); ++iterator) {
+    float value = (gridMap.at(layer, *iterator) - dataMin) / (dataMax - dataMin);
+    if (isnan(value)) {
+      value = -1;
+    } else {
+      value = cellMin + min(max(0.0f, value), 1.0f) * cellRange;
+    }
+    size_t index = getLinearIndexFromIndex(iterator.getUnwrappedIndex(), gridMap.getSize(), false);
+    // Reverse cell order because of different conventions between occupancy grid and grid map.
+    costmap.data[nCells - index - 1] = value;
   }
 }
 

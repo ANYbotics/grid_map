@@ -16,6 +16,7 @@
 // ROS
 #include <cv_bridge/cv_bridge.h>
 #include <nav_msgs/msg/occupancy_grid.hpp>
+#include <nav2_msgs/msg/costmap.hpp>
 #include <sensor_msgs/image_encodings.hpp>
 
 // STD
@@ -196,6 +197,90 @@ TEST(OccupancyGridConversion, roundTrip)
   {
     size_t i = std::distance(occupancyGrid.data.begin(), iterator);
     EXPECT_EQ(static_cast<int>(*iterator), static_cast<int>(occupancyGridResult.data[i]));
+  }
+}
+
+TEST(CostmapConversion, withMove)
+{
+  grid_map::GridMap map;
+  map.setGeometry(grid_map::Length(8.0, 5.0), 0.5, grid_map::Position(0.0, 0.0));
+  map.add("layer", 1.0);
+
+  // Convert to Costmap msg.
+  nav2_msgs::msg::Costmap costmap;
+  GridMapRosConverter::toCostmap(map, "layer", 0.0, 1.0, costmap);
+
+  // Expect the (0, 0) cell to have value 100.
+  EXPECT_DOUBLE_EQ(100.0, costmap.data[0]);
+
+  // Move the map, so the cell (0, 0) will move to unobserved space.
+  map.move(grid_map::Position(-1.0, -1.0));
+
+  // Convert again to Costmap msg.
+  nav2_msgs::msg::Costmap costmapNew;
+  GridMapRosConverter::toCostmap(map, "layer", 0.0, 1.0, costmapNew);
+
+  // Now the (0, 0) cell should be unobserved (-1).
+  EXPECT_DOUBLE_EQ(-1.0, costmapNew.data[0]);
+}
+
+TEST(CostmapConversion, roundTrip)
+{
+  // Create Costmap grid.
+  nav2_msgs::msg::Costmap costmap;
+  costmap.header.stamp = rclcpp::Time(5.0);
+  costmap.header.frame_id = "map";
+  costmap.metadata.resolution = 0.1;
+  costmap.metadata.size_x = 50;
+  costmap.metadata.size_y = 100;
+  costmap.metadata.origin.position.x = 3.0;
+  costmap.metadata.origin.position.y = 6.0;
+  costmap.metadata.origin.orientation.w = 1.0;
+  costmap.data.resize(costmap.metadata.size_x * costmap.metadata.size_y);
+
+  unsigned int seed = time(0);
+  for (auto & cell : costmap.data) {
+    cell = rand_r(&seed) % 102 - 1;  // [-1, 100]
+  }
+
+  // Convert to grid map.
+  GridMap gridMap;
+  GridMapRosConverter::fromCostmap(costmap, "layer", gridMap);
+
+  // Convert back to costmap.
+  nav2_msgs::msg::Costmap costmapResult;
+  GridMapRosConverter::toCostmap(gridMap, "layer", -1.0, 100.0, costmapResult);
+
+  // Check map info.
+  EXPECT_EQ(costmap.header.stamp, costmapResult.header.stamp);
+  EXPECT_EQ(costmap.header.frame_id, costmapResult.header.frame_id);
+  EXPECT_EQ(costmap.metadata.size_x, costmapResult.metadata.size_x);
+  EXPECT_EQ(costmap.metadata.size_y, costmapResult.metadata.size_y);
+  EXPECT_DOUBLE_EQ(
+    costmap.metadata.origin.position.x,
+    costmapResult.metadata.origin.position.x);
+  EXPECT_DOUBLE_EQ(
+    costmap.metadata.origin.position.x,
+    costmapResult.metadata.origin.position.x);
+  EXPECT_DOUBLE_EQ(
+    costmap.metadata.origin.orientation.x,
+    costmapResult.metadata.origin.orientation.x);
+  EXPECT_DOUBLE_EQ(
+    costmap.metadata.origin.orientation.y,
+    costmapResult.metadata.origin.orientation.y);
+  EXPECT_DOUBLE_EQ(
+    costmap.metadata.origin.orientation.z,
+    costmapResult.metadata.origin.orientation.z);
+  EXPECT_DOUBLE_EQ(
+    costmap.metadata.origin.orientation.w,
+    costmapResult.metadata.origin.orientation.w);
+
+  // Check map data.
+  for (std::vector<uint8_t>::iterator iterator = costmap.data.begin();
+    iterator != costmap.data.end(); ++iterator)
+  {
+    size_t i = std::distance(costmap.data.begin(), iterator);
+    EXPECT_EQ(static_cast<int>(*iterator), static_cast<int>(costmapResult.data[i]));
   }
 }
 

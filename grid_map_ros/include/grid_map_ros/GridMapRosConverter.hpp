@@ -22,6 +22,7 @@
 #include <sensor_msgs/image_encodings.hpp>
 #include <nav_msgs/msg/occupancy_grid.hpp>
 #include <nav_msgs/msg/grid_cells.hpp>
+#include <nav2_msgs/msg/costmap.hpp>
 #include <cv_bridge/cv_bridge.h>
 
 // STL
@@ -138,6 +139,30 @@ public:
   static void toOccupancyGrid(
     const grid_map::GridMap & gridMap, const std::string & layer,
     float dataMin, float dataMax, nav_msgs::msg::OccupancyGrid & occupancyGrid);
+
+  /*!
+   * Converts an Costmap message to a layer of a grid map.
+   * @param[in] Costmap the occupancy grid to be converted.
+   * @param[in] layer the layer to which the costmap will be converted.
+   * @param[out] gridMap the grid map to be populated.
+   * @return true if successful.
+   */
+  static bool fromCostmap(
+    const nav2_msgs::msg::Costmap & costmap,
+    const std::string & layer, grid_map::GridMap & gridMap);
+
+  /*!
+   * Converts a grid map object to a ROS Costmap message. Set the layer to be transformed
+   * as the cell data of the occupancy grid with `layer`, all other layers will be neglected.
+   * @param[in] gridMap the grid map object.
+   * @param[in] layer the layer that is transformed to the occupancy cell data.
+   * @param[in] dataMin the minimum value of the grid map data (used to normalize the cell data in [min, max]).
+   * @param[in] dataMax the maximum value of the grid map data (used to normalize the cell data in [min, max]).
+   * @param[out] Costmap the message to be populated.
+   */
+  static void toCostmap(
+    const grid_map::GridMap & gridMap, const std::string & layer,
+    float dataMin, float dataMax, nav2_msgs::msg::Costmap & costmap);
 
   /*!
    * Converts a grid map object to a ROS GridCells message. Set the layer to be transformed
