@@ -6,35 +6,38 @@
  *	 Institute: ETH Zurich, ANYbotics
  */
 
-#pragma once
+#ifndef GRID_MAP_ROS__GRIDMAPROSCONVERTER_HPP_
+#define GRID_MAP_ROS__GRIDMAPROSCONVERTER_HPP_
 
 #include <grid_map_core/grid_map_core.hpp>
-#include <grid_map_msgs/GridMap.h>
-
-// STL
-#include <vector>
-#include <unordered_map>
+#include <grid_map_msgs/msg/grid_map.hpp>
 
 // Eigen
 #include <Eigen/Core>
 
 // ROS
-#include <ros/ros.h>
-#include <sensor_msgs/PointCloud2.h>
-#include <sensor_msgs/Image.h>
-#include <sensor_msgs/image_encodings.h>
-#include <nav_msgs/OccupancyGrid.h>
-#include <nav_msgs/GridCells.h>
+#include <rclcpp/rclcpp.hpp>
+#include <sensor_msgs/msg/point_cloud2.hpp>
+#include <sensor_msgs/msg/image.hpp>
+#include <sensor_msgs/image_encodings.hpp>
+#include <nav2_msgs/msg/costmap.hpp>
+#include <nav_msgs/msg/grid_cells.hpp>
 #include <cv_bridge/cv_bridge.h>
 
-namespace grid_map {
+// STL
+#include <vector>
+#include <unordered_map>
+#include <string>
+
+namespace grid_map
+{
 
 /*!
  * ROS interface for the Grid Map library.
  */
 class GridMapRosConverter
 {
- public:
+public:
   /*!
    * Default constructor.
    */
@@ -54,7 +57,10 @@ class GridMapRosConverter
    * @param[out] gridMap the grid map object to be initialized.
    * @return true if successful, false otherwise.
    */
-  static bool fromMessage(const grid_map_msgs::GridMap& message, grid_map::GridMap& gridMap, const std::vector<std::string>& layers, bool copyBasicLayers = true, bool copyAllNonBasicLayers = true);
+  static bool fromMessage(
+    const grid_map_msgs::msg::GridMap & message, grid_map::GridMap & gridMap,
+    const std::vector<std::string> & layers, bool copyBasicLayers = true,
+    bool copyAllNonBasicLayers = true);
 
   /*!
    * Converts a ROS grid map message to a grid map object.
@@ -62,14 +68,14 @@ class GridMapRosConverter
    * @param[out] gridMap the grid map object to be initialized.
    * @return true if successful, false otherwise.
    */
-  static bool fromMessage(const grid_map_msgs::GridMap& message, grid_map::GridMap& gridMap);
+  static bool fromMessage(const grid_map_msgs::msg::GridMap & message, grid_map::GridMap & gridMap);
 
   /*!
    * Converts all layers of a grid map object to a ROS grid map message.
    * @param[in] gridMap the grid map object.
    * @param[out] message the grid map message to be populated.
    */
-  static void toMessage(const grid_map::GridMap& gridMap, grid_map_msgs::GridMap& message);
+  static void toMessage(const grid_map::GridMap & gridMap, grid_map_msgs::msg::GridMap & message);
 
   /*!
    * Converts requested layers of a grid map object to a ROS grid map message.
@@ -77,8 +83,9 @@ class GridMapRosConverter
    * @param[in] layers the layers to be added to the message.
    * @param[out] message the grid map message to be populated.
    */
-  static void toMessage(const grid_map::GridMap& gridMap, const std::vector<std::string>& layers,
-                        grid_map_msgs::GridMap& message);
+  static void toMessage(
+    const grid_map::GridMap & gridMap, const std::vector<std::string> & layers,
+    grid_map_msgs::msg::GridMap & message);
 
   /*!
    * Converts a grid map object to a ROS PointCloud2 message. Set the layer to be transformed
@@ -88,9 +95,10 @@ class GridMapRosConverter
    * @param[in] pointLayer the type that is transformed to points.
    * @param[out] pointCloud the message to be populated.
    */
-  static void toPointCloud(const grid_map::GridMap& gridMap,
-                           const std::string& pointLayer,
-                           sensor_msgs::PointCloud2& pointCloud);
+  static void toPointCloud(
+    const grid_map::GridMap & gridMap,
+    const std::string & pointLayer,
+    sensor_msgs::msg::PointCloud2 & pointCloud);
 
   /*!
    * Converts a grid map object to a ROS PointCloud2 message. Set the layer to be transformed
@@ -101,32 +109,35 @@ class GridMapRosConverter
    * @param[in] pointLayer the layer that is transformed to points.
    * @param[out] pointCloud the message to be populated.
    */
-  static void toPointCloud(const grid_map::GridMap& gridMap,
-                           const std::vector<std::string>& layers,
-                           const std::string& pointLayer,
-                           sensor_msgs::PointCloud2& pointCloud);
+  static void toPointCloud(
+    const grid_map::GridMap & gridMap,
+    const std::vector<std::string> & layers,
+    const std::string & pointLayer,
+    sensor_msgs::msg::PointCloud2 & pointCloud);
 
   /*!
-   * Converts an occupancy grid message to a layer of a grid map.
-   * @param[in] occupancyGrid the occupancy grid to be converted.
-   * @param[in] layer the layer to which the occupancy grid will be converted.
+   * Converts an Costmap message to a layer of a grid map.
+   * @param[in] Costmap the occupancy grid to be converted.
+   * @param[in] layer the layer to which the costmap will be converted.
    * @param[out] gridMap the grid map to be populated.
    * @return true if successful.
    */
-  static bool fromOccupancyGrid(const nav_msgs::OccupancyGrid& occupancyGrid,
-                                const std::string& layer, grid_map::GridMap& gridMap);
+  static bool fromCostmap(
+    const nav2_msgs::msg::Costmap & costmap,
+    const std::string & layer, grid_map::GridMap & gridMap);
 
   /*!
-   * Converts a grid map object to a ROS OccupancyGrid message. Set the layer to be transformed
+   * Converts a grid map object to a ROS Costmap message. Set the layer to be transformed
    * as the cell data of the occupancy grid with `layer`, all other layers will be neglected.
    * @param[in] gridMap the grid map object.
    * @param[in] layer the layer that is transformed to the occupancy cell data.
    * @param[in] dataMin the minimum value of the grid map data (used to normalize the cell data in [min, max]).
    * @param[in] dataMax the maximum value of the grid map data (used to normalize the cell data in [min, max]).
-   * @param[out] occupancyGrid the message to be populated.
+   * @param[out] Costmap the message to be populated.
    */
-  static void toOccupancyGrid(const grid_map::GridMap& gridMap, const std::string& layer,
-                              float dataMin, float dataMax, nav_msgs::OccupancyGrid& occupancyGrid);
+  static void toCostmap(
+    const grid_map::GridMap & gridMap, const std::string & layer,
+    float dataMin, float dataMax, nav2_msgs::msg::Costmap & costmap);
 
   /*!
    * Converts a grid map object to a ROS GridCells message. Set the layer to be transformed
@@ -138,9 +149,10 @@ class GridMapRosConverter
    * @param[in] upperThreshold the upper threshold.
    * @param[out] gridCells the message to be populated.
    */
-  static void toGridCells(const grid_map::GridMap& gridMap, const std::string& layer,
-                          float lowerThreshold, float upperThreshold,
-                          nav_msgs::GridCells& gridCells);
+  static void toGridCells(
+    const grid_map::GridMap & gridMap, const std::string & layer,
+    float lowerThreshold, float upperThreshold,
+    nav_msgs::msg::GridCells & gridCells);
 
   /*!
    * Initializes the geometry of a grid map from an image messages. This changes
@@ -151,9 +163,10 @@ class GridMapRosConverter
    * @param[in](optional) position the position of the grid map.
    * @return true if successful, false otherwise.
    */
-  static bool initializeFromImage(const sensor_msgs::Image& image, const double resolution,
-                                  grid_map::GridMap& gridMap,
-                                  const grid_map::Position& position = grid_map::Position::Zero());
+  static bool initializeFromImage(
+    const sensor_msgs::msg::Image & image, const double resolution,
+    grid_map::GridMap & gridMap,
+    const grid_map::Position & position = grid_map::Position::Zero());
 
   /*!
    * Adds a layer with data from image.
@@ -167,9 +180,10 @@ class GridMapRosConverter
    * cells in the grid map are marked as empty.
    * @return true if successful, false otherwise.
    */
-  static bool addLayerFromImage(const sensor_msgs::Image& image, const std::string& layer,
-                                grid_map::GridMap& gridMap, const float lowerValue = 0.0,
-                                const float upperValue = 1.0, const double alphaThreshold = 0.5);
+  static bool addLayerFromImage(
+    const sensor_msgs::msg::Image & image, const std::string & layer,
+    grid_map::GridMap & gridMap, const float lowerValue = 0.0,
+    const float upperValue = 1.0, const double alphaThreshold = 0.5);
 
   /*!
    * Adds a color layer with data from an image.
@@ -178,8 +192,9 @@ class GridMapRosConverter
    * @param[out] gridMap the grid map to be populated.
    * @return true if successful, false otherwise.
    */
-  static bool addColorLayerFromImage(const sensor_msgs::Image& image, const std::string& layer,
-                                     grid_map::GridMap& gridMap);
+  static bool addColorLayerFromImage(
+    const sensor_msgs::msg::Image & image, const std::string & layer,
+    grid_map::GridMap & gridMap);
 
   /*!
    * Creates an image message from a grid map layer.
@@ -191,8 +206,9 @@ class GridMapRosConverter
    * @param[out] image the message to be populated.
    * @return true if successful, false otherwise.
    */
-  static bool toImage(const grid_map::GridMap& gridMap, const std::string& layer,
-                      const std::string encoding, sensor_msgs::Image& image);
+  static bool toImage(
+    const grid_map::GridMap & gridMap, const std::string & layer,
+    const std::string encoding, sensor_msgs::msg::Image & image);
 
   /*!
    * Creates an image message from a grid map layer.
@@ -204,9 +220,10 @@ class GridMapRosConverter
    * @param[out] image the message to be populated.
    * @return true if successful, false otherwise.
    */
-  static bool toImage(const grid_map::GridMap& gridMap, const std::string& layer,
-                      const std::string encoding, const float lowerValue, const float upperValue,
-                      sensor_msgs::Image& image);
+  static bool toImage(
+    const grid_map::GridMap & gridMap, const std::string & layer,
+    const std::string encoding, const float lowerValue, const float upperValue,
+    sensor_msgs::msg::Image & image);
 
   /*!
    * Creates a cv image from a grid map layer.
@@ -218,8 +235,9 @@ class GridMapRosConverter
    * @param[out] cvImage the to be populated.
    * @return true if successful, false otherwise.
    */
-  static bool toCvImage(const grid_map::GridMap& gridMap, const std::string& layer,
-                        const std::string encoding, cv_bridge::CvImage& cvImage);
+  static bool toCvImage(
+    const grid_map::GridMap & gridMap, const std::string & layer,
+    const std::string encoding, cv_bridge::CvImage & cvImage);
 
 /*!
  * Creates a cv image from a grid map layer.
@@ -231,9 +249,10 @@ class GridMapRosConverter
  * @param[out] cvImage to be populated.
  * @return true if successful, false otherwise.
  */
-  static bool toCvImage(const grid_map::GridMap& gridMap, const std::string& layer,
-                        const std::string encoding, const float lowerValue,
-                        const float upperValue, cv_bridge::CvImage& cvImage);
+  static bool toCvImage(
+    const grid_map::GridMap & gridMap, const std::string & layer,
+    const std::string encoding, const float lowerValue,
+    const float upperValue, cv_bridge::CvImage & cvImage);
 
   /*!
    * Saves a grid map into a ROS bag. The timestamp of the grid map
@@ -245,8 +264,9 @@ class GridMapRosConverter
    * @param[in] topic the name of the topic in the ROS bag.
    * @return true if successful, false otherwise.
    */
-  static bool saveToBag(const grid_map::GridMap& gridMap, const std::string& pathToBag,
-                        const std::string& topic);
+  static bool saveToBag(
+    const grid_map::GridMap & gridMap, const std::string & pathToBag,
+    const std::string & topic);
 
   /*!
    * Loads a GridMap from a ROS bag.
@@ -255,9 +275,10 @@ class GridMapRosConverter
    * @param[out] gridMap the grid map object to be initialized.
    * @return true if successful, false otherwise.
    */
-  static bool loadFromBag(const std::string& pathToBag, const std::string& topic,
-                          grid_map::GridMap& gridMap);
-
+  static bool loadFromBag(
+    const std::string & pathToBag, const std::string & topic,
+    grid_map::GridMap & gridMap);
 };
 
-} /* namespace */
+}  // namespace grid_map
+#endif  // GRID_MAP_ROS__GRIDMAPROSCONVERTER_HPP_
