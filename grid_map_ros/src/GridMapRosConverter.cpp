@@ -396,7 +396,7 @@ bool GridMapRosConverter::fromCostmap(
     iterator != costmap.data.rend(); ++iterator)
   {
     size_t i = std::distance(costmap.data.rbegin(), iterator);
-    data(i) = *iterator != -1 ? *iterator : NAN;
+    data(i) = *iterator != 255 ? *iterator : NAN;
   }
 
   gridMap.add(layer, data);
@@ -426,20 +426,20 @@ void GridMapRosConverter::toCostmap(
   size_t nCells = gridMap.getSize().prod();
   costmap.data.resize(nCells);
 
-  // Occupancy probabilities are in the range [0,100]. Unknown is -1.
+  // Costmap cell values are in the range [0,254], 255 is unknown space.
   const float cellMin = 0;
-  const float cellMax = 100;
+  const float cellMax = 254;
   const float cellRange = cellMax - cellMin;
 
   for (GridMapIterator iterator(gridMap); !iterator.isPastEnd(); ++iterator) {
     float value = (gridMap.at(layer, *iterator) - dataMin) / (dataMax - dataMin);
     if (isnan(value)) {
-      value = -1;
+      value = 255;
     } else {
       value = cellMin + min(max(0.0f, value), 1.0f) * cellRange;
     }
     size_t index = getLinearIndexFromIndex(iterator.getUnwrappedIndex(), gridMap.getSize(), false);
-    // Reverse cell order because of different conventions between occupancy grid and grid map.
+    // Reverse cell order because of different conventions between Costmap and grid map.
     costmap.data[nCells - index - 1] = value;
   }
 }

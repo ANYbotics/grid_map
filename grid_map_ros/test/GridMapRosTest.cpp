@@ -58,6 +58,7 @@ TEST(RosMessageConversion, roundTrip)
   EXPECT_TRUE((mapIn.getSize() == mapOut.getSize()).all());
 }
 
+
 TEST(RosbagHandling, saveLoad)
 {
   string layer = "layer";
@@ -210,8 +211,8 @@ TEST(CostmapConversion, withMove)
   nav2_msgs::msg::Costmap costmap;
   GridMapRosConverter::toCostmap(map, "layer", 0.0, 1.0, costmap);
 
-  // Expect the (0, 0) cell to have value 100.
-  EXPECT_DOUBLE_EQ(100.0, costmap.data[0]);
+  // Expect the (0, 0) cell to have value 254.
+  EXPECT_EQ(254, costmap.data[0]);
 
   // Move the map, so the cell (0, 0) will move to unobserved space.
   map.move(grid_map::Position(-1.0, -1.0));
@@ -220,8 +221,8 @@ TEST(CostmapConversion, withMove)
   nav2_msgs::msg::Costmap costmapNew;
   GridMapRosConverter::toCostmap(map, "layer", 0.0, 1.0, costmapNew);
 
-  // Now the (0, 0) cell should be unobserved (-1).
-  EXPECT_DOUBLE_EQ(-1.0, costmapNew.data[0]);
+  // Now the (0, 0) cell should be unobserved (255).
+  EXPECT_EQ(255, costmapNew.data[0]);
 }
 
 TEST(CostmapConversion, roundTrip)
@@ -240,7 +241,7 @@ TEST(CostmapConversion, roundTrip)
 
   unsigned int seed = time(0);
   for (auto & cell : costmap.data) {
-    cell = rand_r(&seed) % 102 - 1;  // [-1, 100]
+    cell = rand_r(&seed) % 256;  // [0, 255]
   }
 
   // Convert to grid map.
@@ -249,7 +250,7 @@ TEST(CostmapConversion, roundTrip)
 
   // Convert back to costmap.
   nav2_msgs::msg::Costmap costmapResult;
-  GridMapRosConverter::toCostmap(gridMap, "layer", -1.0, 100.0, costmapResult);
+  GridMapRosConverter::toCostmap(gridMap, "layer", 0, 254.0, costmapResult);
 
   // Check map info.
   EXPECT_EQ(costmap.header.stamp, costmapResult.header.stamp);
@@ -280,7 +281,7 @@ TEST(CostmapConversion, roundTrip)
     iterator != costmap.data.end(); ++iterator)
   {
     size_t i = std::distance(costmap.data.begin(), iterator);
-    EXPECT_EQ(static_cast<int>(*iterator), static_cast<int>(costmapResult.data[i]));
+    EXPECT_EQ(*iterator, costmapResult.data[i]);
   }
 }
 
