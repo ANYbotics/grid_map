@@ -6,7 +6,8 @@
  *	 Institute: University of Zürich, Robotics and Perception Group
  */
 
-#pragma once
+#ifndef GRID_MAP_OCTOMAP__GRIDMAPOCTOMAPCONVERTER_HPP_
+#define GRID_MAP_OCTOMAP__GRIDMAPOCTOMAPCONVERTER_HPP_
 
 #include <grid_map_core/grid_map_core.hpp>
 
@@ -16,17 +17,19 @@
 // STD
 #include <iostream>
 #include <vector>
+#include <string>
 #include <algorithm>
 #include <cmath>
 
-namespace grid_map {
+namespace grid_map
+{
 
 /*!
  * Conversions between grid maps and Octomap types.
  */
 class GridMapOctomapConverter
 {
- public:
+public:
   /*!
    * Default constructor.
    */
@@ -51,12 +54,13 @@ class GridMapOctomapConverter
    * @param[in] maxPoint (optional) maximum coordinate for bounding box.
    * @return true if successful, false otherwise.
    */
-  static bool fromOctomap(const octomap::OcTree& octomap,
-                          const std::string& layer,
-                          grid_map::GridMap& gridMap,
-                          const grid_map::Position3* minPoint = nullptr,
-                          const grid_map::Position3* maxPoint = nullptr);
-
+  static bool fromOctomap(
+    const octomap::OcTree & octomap,
+    const std::string & layer,
+    grid_map::GridMap & gridMap,
+    const grid_map::Position3 * minPoint = nullptr,
+    const grid_map::Position3 * maxPoint = nullptr);
 };
 
-} /* namespace */
+}  // namespace grid_map
+#endif  // GRID_MAP_OCTOMAP__GRIDMAPOCTOMAPCONVERTER_HPP_

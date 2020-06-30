@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package format="2">
   <name>grid_map_octomap</name>
-  <version>1.6.2</version>
+  <version>2.0.0</version>
   <description>Conversions between grid maps and OctoMap types.</description>
   <maintainer email="mwulf@anybotics.com">Maximilian Wulf</maintainer>
   <maintainer email="ynava@anybotics.com">Yoshua Nava</maintainer>
@@ -10,7 +10,18 @@
   <url type="bugtracker">http://github.com/anybotics/grid_map/issues</url>
   <author email="jeffdelmerico@ifi.uzh.ch">Jeff Delmerico</author>
   <author email="pfankhauser@anybotics.com">Péter Fankhauser</author>
-  <buildtool_depend>catkin</buildtool_depend>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <build_depend>grid_map_cmake_helpers</build_depend>
+
   <depend>grid_map_core</depend>
   <depend>octomap</depend>
+
+  <test_depend>ament_cmake_gtest</test_depend>
+  <test_depend>ament_lint_common</test_depend>
+  <test_depend>ament_lint_auto</test_depend>
+  
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
 </package>
