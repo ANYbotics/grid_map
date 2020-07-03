@@ -28,10 +28,6 @@ ament_target_dependencies(${PROJECT_NAME}
   ${dependencies}
 )
 
-# add_dependencies(${PROJECT_NAME}
-#   ${dependencies}
-# )
-
 #############
 ## Install ##
 #############
