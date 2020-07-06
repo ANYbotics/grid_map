@@ -21,15 +21,13 @@ jobs:
             mkdir -p $UNDERLAY_WS/src && cp $OVERLAY_WS/src/grid_map/tools/ros2_dependencies.repos \
               $UNDERLAY_WS/ros2_dependencies.repos
             cd $UNDERLAY_WS && vcs import src < ros2_dependencies.repos
-            touch src/OctoMap/COLCON_IGNORE
-            cd src/OctoMap/octomap/octomap/ && mkdir build && cd build && cmake .. && make && make install 
             cp $UNDERLAY_WS/src/ros-planning/navigation2/tools/ros2_dependencies.repos \
               $UNDERLAY_WS/ros2_dependencies.repos
-            cd $UNDERLAY_WS && vcs import src < ros2_dependencies.repos
-            rosdep install -y --ignore-src --skip-keys "slam_toolbox" --from-paths src
-            colcon build --packages-up-to nav2_costmap_2d
+            vcs import src < ros2_dependencies.repos
+            rosdep install -y --ignore-src --from-paths src
+            colcon build --symlink-install --packages-up-to nav2_costmap_2d
             source $UNDERLAY_WS/install/local_setup.bash
-            cd $OVERLAY_WS && rosdep install -y --ignore-src --skip-keys "octomap" --from-paths src
+            cd $OVERLAY_WS && rosdep install -y --ignore-src --from-paths src
       - run:
           name: Debug Build
           command: |
