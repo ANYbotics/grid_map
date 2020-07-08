@@ -35,6 +35,20 @@ void PointcloudProcessor::loadParameters(const std::string& filename)
   params_->loadParameters(filename);
 }
 
+void PointcloudProcessor::loadRosParameters(const ros::NodeHandle& nh)
+{
+  std::string folder_path, pcd_filename, map_rosbag_topic, output_grid_map, map_frame, map_layer_name, prefix;
+  bool set_verbosity_to_debug;
+
+  nh.param<std::string>("folder_path", folder_path, "");
+  nh.param<std::string>("pcd_filename", pcd_filename, "");
+  nh.param<std::string>("map_rosbag_topic", map_rosbag_topic, "");
+  nh.param<std::string>("output_grid_map", output_grid_map, "");
+  nh.param<std::string>("map_frame", map_frame, "");
+  
+
+}
+
 Pointcloud::Ptr PointcloudProcessor::removeOutliersFromInputCloud(
     Pointcloud::ConstPtr inputCloud) const
 {

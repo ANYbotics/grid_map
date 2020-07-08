@@ -10,6 +10,7 @@
 
 #include "grid_map_pcl/helpers.hpp"
 #include "grid_map_pcl/PclLoaderParameters.hpp"
+#include <ros/ros.h>
 #include <string>
 
 namespace grid_map {
@@ -28,6 +29,13 @@ class PointcloudProcessor
    * @param[in] full path to the config file with parameters
    */
   void loadParameters(const std::string& filename);
+
+  /*!
+   * Load parameters for the point cloud processing using rosparam
+   * @param[in] ros node handle
+  */
+
+  void loadRosParameters(const ros::NodeHandle& nh);
 
   /*!
    * Remove outliers from the point cloud. Function is based on
