@@ -24,7 +24,7 @@ jobs:
             cp $UNDERLAY_WS/src/ros-planning/navigation2/tools/ros2_dependencies.repos \
               $UNDERLAY_WS/ros2_dependencies.repos
             vcs import src < ros2_dependencies.repos
-            rosdep install -y --ignore-src --from-paths src
+            rosdep install -y --ignore-src --skip-keys "slam_toolbox" --from-paths src
             colcon build --symlink-install --packages-up-to nav2_costmap_2d
             source $UNDERLAY_WS/install/local_setup.bash
             cd $OVERLAY_WS && rosdep install -y --ignore-src --from-paths src

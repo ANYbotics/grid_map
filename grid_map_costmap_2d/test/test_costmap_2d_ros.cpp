@@ -70,8 +70,7 @@ ROSCostmapServer::ROSCostmapServer(
   //  - creates a publisher for an occupancy grid
 
   costmap_ = std::make_shared<ROSCostmap>(name);
-  costmap_->set_parameter(rclcpp::Parameter{"plugin_names", std::vector<std::string>()});
-  costmap_->set_parameter(rclcpp::Parameter{"plugin_types", std::vector<std::string>()});
+  costmap_->set_parameter(rclcpp::Parameter{"plugins", std::vector<std::string>()});
   costmap_->set_parameter(rclcpp::Parameter{"robot_base_frame", baseLinkTransformName});
   costmap_->set_parameter(rclcpp::Parameter{"origin_x", origin.x()});
   costmap_->set_parameter(rclcpp::Parameter{"origin_y", origin.y()});

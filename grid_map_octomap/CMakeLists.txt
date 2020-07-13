@@ -1,68 +1,31 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.5)
 project(grid_map_octomap)
 
-set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
+## Find ament_cmake macros and libraries
+find_package(ament_cmake REQUIRED)
+find_package(grid_map_cmake_helpers REQUIRED)
+find_package(grid_map_core REQUIRED)
+find_package(OCTOMAP REQUIRED)
 
-## Find catkin macros and libraries
-find_package(catkin REQUIRED COMPONENTS
-  grid_map_core
-)
-find_package(octomap REQUIRED)
 message(STATUS "Found Octomap (version ${octomap_VERSION}): ${OCTOMAP_INCLUDE_DIRS}")
-
-###################################
-## catkin specific configuration ##
-###################################
-## The catkin_package macro generates cmake config files for your package
-## Declare things to be passed to dependent projects
-## INCLUDE_DIRS: uncomment this if you package contains header files
-## LIBRARIES: libraries you create in this project that dependent projects also need
-## CATKIN_DEPENDS: catkin_packages dependent projects also need
-## DEPENDS: system dependencies of this project that dependent projects also need
-catkin_package(
-  INCLUDE_DIRS
-    include
-    ${OCTOMAP_INCLUDE_DIRS}
-  LIBRARIES
-    ${PROJECT_NAME}
-    ${OCTOMAP_LIBRARIES}
-  CATKIN_DEPENDS
-    grid_map_core
-  DEPENDS
-)
 
 ###########
 ## Build ##
 ###########
+include_directories(include)
 
-## Specify additional locations of header files
-if(${octomap_VERSION} VERSION_LESS 1.8) # ROS Indigo and Jade.
-  add_definitions(-DOCTOMAP_VERSION_BEFORE_ROS_KINETIC)
-  include_directories(
-    include
-    ${catkin_INCLUDE_DIRS}
-    ${OCTOMAP_INCLUDE_DIR}
-  )
-else() # ROS Kinetic and above.
-  include_directories(
-    include
-    ${catkin_INCLUDE_DIRS}
-    ${OCTOMAP_INCLUDE_DIRS}
-  )
-endif()
+set( dependencies
+  grid_map_core
+  OCTOMAP
+)
 
 ## Declare a cpp library
 add_library(${PROJECT_NAME}
   src/GridMapOctomapConverter.cpp
 )
 
-target_link_libraries(${PROJECT_NAME}
-  ${catkin_LIBRARIES}
-  ${OCTOMAP_LIBRARIES}
-)
-
-add_dependencies(${PROJECT_NAME}
-  ${catkin_EXPORTED_TARGETS}
+ament_target_dependencies(${PROJECT_NAME}
+  ${dependencies}
 )
 
 #############
@@ -72,15 +35,15 @@ add_dependencies(${PROJECT_NAME}
 # Mark executables and/or libraries for installation
 install(
   TARGETS ${PROJECT_NAME}
-  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION lib/${PROJECT_NAME}
 )
 
 # Mark cpp header files for installation
 install(
   DIRECTORY include/${PROJECT_NAME}/
-  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+  DESTINATION include/${PROJECT_NAME}
   FILES_MATCHING PATTERN "*.hpp"
 )
 
@@ -88,10 +51,35 @@ install(
 ## Testing ##
 #############
 
-if(CATKIN_ENABLE_TESTING)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
-  # Add gtest based cpp test target and link libraries
-  catkin_add_gtest(${PROJECT_NAME}-test
+if(BUILD_TESTING)
+  # Linting is setup this way to add a filter
+  # to ament_cpplint to ignore the lack of
+  # copyright messages at the top of files.
+  # Copyright messages are being checked for by both
+  # ament_cmake_cpplint & ament_cmake_copyright.
+
+  find_package(ament_lint_auto REQUIRED)
+  find_package(ament_lint_auto QUIET)
+  if(ament_lint_auto_FOUND)
+    # exclude copyright checks
+    list(APPEND AMENT_LINT_AUTO_EXCLUDE
+      ament_cmake_cpplint
+      ament_cmake_copyright
+    )
+    ament_lint_auto_find_test_dependencies()
+
+    # run cpplint without copyright filter
+    find_package(ament_cmake_cpplint)
+    ament_cpplint(
+      FILTERS -legal/copyright
+    )
+  endif()
+  ament_lint_auto_find_test_dependencies()
+
+  find_package(ament_cmake_gtest REQUIRED)
+
+  ## Add gtest based cpp test target and link libraries
+  ament_add_gtest(${PROJECT_NAME}-test
     test/test_grid_map_octomap.cpp
     test/OctomapConverterTest.cpp
   )
@@ -103,3 +91,11 @@ if(TARGET ${PROJECT_NAME}-test)
     ${OCTOMAP_LIBRARIES}
   )
 endif()
+
+ament_export_dependencies(${dependencies})
+ament_export_include_directories(include ${OCTOMAP_INCLUDE_DIRS})
+ament_export_libraries(
+  ${PROJECT_NAME}
+  ${OCTOMAP_LIBRARIES}
+)
+ament_package()
