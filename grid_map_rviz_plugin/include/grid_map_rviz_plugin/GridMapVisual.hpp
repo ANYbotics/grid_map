@@ -6,7 +6,8 @@
  *  Institute: ETH Zurich, ANYbotics
  */
 
-#pragma once
+#ifndef GRID_MAP_RVIZ_PLUGIN__GRIDMAPVISUAL_HPP_
+#define GRID_MAP_RVIZ_PLUGIN__GRIDMAPVISUAL_HPP_
 
 #include <OGRE/OgreMaterial.h>
 #include <OGRE/OgreSharedPtr.h>
@@ -14,47 +15,54 @@
 #include <grid_map_msgs/GridMap.h>
 #include <grid_map_core/GridMap.hpp>
 
-namespace Ogre {
+#include <string>
+#include <vector>
+
+namespace Ogre
+{
 class Vector3;
 class Quaternion;
 class ManualObject;
 class ColourValue;
 }
 
-namespace rviz {
+namespace rviz
+{
 class BillboardLine;
 }
 
-namespace grid_map_rviz_plugin {
+namespace grid_map_rviz_plugin
+{
 
 // Visualizes a single grid_map_msgs::GridMap message.
 class GridMapVisual
 {
- public:
-  GridMapVisual(Ogre::SceneManager* sceneManager, Ogre::SceneNode* parentNode);
+public:
+  GridMapVisual(Ogre::SceneManager * sceneManager, Ogre::SceneNode * parentNode);
   virtual ~GridMapVisual();
 
   // Copy the grid map data to map_.
-  void setMessage(const grid_map_msgs::GridMap::ConstPtr& msg);
+  void setMessage(const grid_map_msgs::GridMap::ConstPtr & msg);
   // Compute the visualization of map_.
-  void computeVisualization(float alpha, bool showGridLines, bool flatTerrain, std::string heightLayer, bool flatColor,
-                            bool noColor, Ogre::ColourValue meshColor, bool mapLayerColor, std::string colorLayer,
-                            bool useRainbow, bool invertRainbow, Ogre::ColourValue minColor, Ogre::ColourValue maxColor,
-                            bool autocomputeIntensity, float minIntensity, float maxIntensity);
+  void computeVisualization(
+    float alpha, bool showGridLines, bool flatTerrain, std::string heightLayer, bool flatColor,
+    bool noColor, Ogre::ColourValue meshColor, bool mapLayerColor, std::string colorLayer,
+    bool useRainbow, bool invertRainbow, Ogre::ColourValue minColor, Ogre::ColourValue maxColor,
+    bool autocomputeIntensity, float minIntensity, float maxIntensity);
 
   // Set the coordinate frame pose.
-  void setFramePosition(const Ogre::Vector3& position);
-  void setFrameOrientation(const Ogre::Quaternion& orientation);
+  void setFramePosition(const Ogre::Vector3 & position);
+  void setFrameOrientation(const Ogre::Quaternion & orientation);
 
   // Get grid map layer names.
   std::vector<std::string> getLayerNames();
 
- private:
-  Ogre::SceneNode* frameNode_;
-  Ogre::SceneManager* sceneManager_;
+private:
+  Ogre::SceneNode * frameNode_;
+  Ogre::SceneManager * sceneManager_;
 
   // ManualObject for mesh display.
-  Ogre::ManualObject* manualObject_;
+  Ogre::ManualObject * manualObject_;
   Ogre::MaterialPtr material_;
   std::string materialName_;
 
@@ -66,10 +74,12 @@ class GridMapVisual
   bool haveMap_;
 
   // Helper methods.
-  void normalizeIntensity(float& intensity, float minIntensity, float maxIntensity);
+  void normalizeIntensity(float & intensity, float minIntensity, float maxIntensity);
   Ogre::ColourValue getRainbowColor(float intensity);
-  Ogre::ColourValue getInterpolatedColor(float intensity, Ogre::ColourValue minColor,
-                                         Ogre::ColourValue maxColor);
+  Ogre::ColourValue getInterpolatedColor(
+    float intensity, Ogre::ColourValue minColor,
+    Ogre::ColourValue maxColor);
 };
 
-}  // namespace
+}  // namespace grid_map_rviz_plugin
+#endif  // GRID_MAP_RVIZ_PLUGIN__GRIDMAPVISUAL_HPP_
