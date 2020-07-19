@@ -6,13 +6,15 @@
  *   Institute: ETH Zurich, ANYbotics
  */
 
-#pragma once
+#ifndef GRID_MAP_FILTERS__BUFFERNORMALIZERFILTER_HPP_
+#define GRID_MAP_FILTERS__BUFFERNORMALIZERFILTER_HPP_
 
 #include <filters/filter_base.h>
 
 #include <string>
 
-namespace grid_map {
+namespace grid_map
+{
 
 /*!
  * Normalizes the buffer of a map such that it has default (zero) start index.
@@ -20,8 +22,7 @@ namespace grid_map {
 template<typename T>
 class BufferNormalizerFilter : public filters::FilterBase<T>
 {
-
- public:
+public:
   /*!
    * Constructor
    */
@@ -42,7 +43,8 @@ class BufferNormalizerFilter : public filters::FilterBase<T>
    * @param mapIn the input map before normalization.
    * @param mapOut the normalized map.
    */
-  virtual bool update(const T& mapIn, T& mapOut);
+  virtual bool update(const T & mapIn, T & mapOut);
 };
 
-} /* namespace */
+}  // namespace grid_map
+#endif  // GRID_MAP_FILTERS__BUFFERNORMALIZERFILTER_HPP_

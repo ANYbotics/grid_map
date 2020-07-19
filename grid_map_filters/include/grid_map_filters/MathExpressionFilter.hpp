@@ -6,15 +6,17 @@
  *   Institute: ETH Zurich, ANYbotics
  */
 
-#pragma once
-
-#include "EigenLab/EigenLab.h"
+#ifndef GRID_MAP_FILTERS__MATHEXPRESSIONFILTER_HPP_
+#define GRID_MAP_FILTERS__MATHEXPRESSIONFILTER_HPP_
 
 #include <filters/filter_base.h>
 
 #include <string>
 
-namespace grid_map {
+#include "EigenLab/EigenLab.h"
+
+namespace grid_map
+{
 
 /*!
  * Parses and evaluates a mathematical matrix expression with layers of a grid map.
@@ -22,8 +24,7 @@ namespace grid_map {
 template<typename T>
 class MathExpressionFilter : public filters::FilterBase<T>
 {
-
- public:
+public:
   /*!
    * Constructor
    */
@@ -44,9 +45,9 @@ class MathExpressionFilter : public filters::FilterBase<T>
    * @param mapIn gridMap with the different layers to take the min.
    * @param mapOut gridMap with an additional layer containing the sum.
    */
-  virtual bool update(const T& mapIn, T& mapOut);
+  virtual bool update(const T & mapIn, T & mapOut);
 
- private:
+private:
   //! EigenLab parser.
   EigenLab::Parser<Eigen::MatrixXf> parser_;
 
@@ -57,4 +58,5 @@ class MathExpressionFilter : public filters::FilterBase<T>
   std::string outputLayer_;
 };
 
-} /* namespace */
+}  // namespace grid_map
+#endif  // GRID_MAP_FILTERS__MATHEXPRESSIONFILTER_HPP_

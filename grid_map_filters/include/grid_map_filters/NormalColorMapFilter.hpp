@@ -6,14 +6,16 @@
  *   Institute: ETH Zurich, ANYbotics
  */
 
-#pragma once
+#ifndef GRID_MAP_FILTERS__NORMALCOLORMAPFILTER_HPP_
+#define GRID_MAP_FILTERS__NORMALCOLORMAPFILTER_HPP_
 
 #include <filters/filter_base.h>
 
 #include <Eigen/Core>
 #include <string>
 
-namespace grid_map {
+namespace grid_map
+{
 
 /*!
  * Compute a new color layer based on normal vectors layers.
@@ -21,8 +23,7 @@ namespace grid_map {
 template<typename T>
 class NormalColorMapFilter : public filters::FilterBase<T>
 {
-
- public:
+public:
   /*!
    * Constructor
    */
@@ -43,9 +44,9 @@ class NormalColorMapFilter : public filters::FilterBase<T>
    * @param mapIn grid map containing the layers of the normal vectors.
    * @param mapOut grid map containing mapIn and the new color layer.
    */
-  virtual bool update(const T& mapIn, T& mapOut);
+  virtual bool update(const T & mapIn, T & mapOut);
 
- private:
+private:
   //! Input layers prefix.
   std::string inputLayersPrefix_;
 
@@ -53,4 +54,5 @@ class NormalColorMapFilter : public filters::FilterBase<T>
   std::string outputLayer_;
 };
 
-} /* namespace */
+}  // namespace grid_map
+#endif  // GRID_MAP_FILTERS__NORMALCOLORMAPFILTER_HPP_

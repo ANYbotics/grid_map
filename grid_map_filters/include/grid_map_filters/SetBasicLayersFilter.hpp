@@ -6,14 +6,16 @@
  *   Institute: ETH Zurich, ANYbotics
  */
 
-#pragma once
+#ifndef GRID_MAP_FILTERS__SETBASICLAYERSFILTER_HPP_
+#define GRID_MAP_FILTERS__SETBASICLAYERSFILTER_HPP_
 
 #include <filters/filter_base.h>
 
 #include <vector>
 #include <string>
 
-namespace grid_map {
+namespace grid_map
+{
 
 /*!
  * Set specified layers of a grid map as basic layers.
@@ -21,7 +23,7 @@ namespace grid_map {
 template<typename T>
 class SetBasicLayersFilter : public filters::FilterBase<T>
 {
- public:
+public:
   /*!
    * Constructor
    */
@@ -42,12 +44,12 @@ class SetBasicLayersFilter : public filters::FilterBase<T>
    * @param mapIn input grid map.
    * @param mapOut output grid map with basic layers set.
    */
-  virtual bool update(const T& mapIn, T& mapOut);
+  virtual bool update(const T & mapIn, T & mapOut);
 
- private:
+private:
   //! List of layers that should be set as basic layers.
   std::vector<std::string> layers_;
-
 };
 
-} /* namespace */
+}  // namespace grid_map
+#endif  // GRID_MAP_FILTERS__SETBASICLAYERSFILTER_HPP_

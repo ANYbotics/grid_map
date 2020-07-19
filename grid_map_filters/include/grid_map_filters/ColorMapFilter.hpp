@@ -6,7 +6,8 @@
  *   Institute: ETH Zurich, ANYbotics
  */
 
-#pragma once
+#ifndef GRID_MAP_FILTERS__COLORMAPFILTER_HPP_
+#define GRID_MAP_FILTERS__COLORMAPFILTER_HPP_
 
 #include <grid_map_core/TypeDefs.hpp>
 #include <filters/filter_base.h>
@@ -14,7 +15,8 @@
 #include <Eigen/Core>
 #include <string>
 
-namespace grid_map {
+namespace grid_map
+{
 
 /*!
  * Creates a new color layer with the color mapped between min. and max. value.
@@ -22,8 +24,7 @@ namespace grid_map {
 template<typename T>
 class ColorMapFilter : public filters::FilterBase<T>
 {
-
- public:
+public:
   /*!
    * Constructor
    */
@@ -44,9 +45,9 @@ class ColorMapFilter : public filters::FilterBase<T>
    * @param mapIn grid map to add the new layer.
    * @param mapOut grid map the grid map with the new color layer.
    */
-  virtual bool update(const T& mapIn, T& mapOut);
+  virtual bool update(const T & mapIn, T & mapOut);
 
- private:
+private:
   //! Min./max. colors.
   Eigen::Vector3f minColor_, maxColor_;
 
@@ -60,4 +61,5 @@ class ColorMapFilter : public filters::FilterBase<T>
   std::string outputLayer_;
 };
 
-} /* namespace */
+}  // namespace grid_map
+#endif  // GRID_MAP_FILTERS__COLORMAPFILTER_HPP_

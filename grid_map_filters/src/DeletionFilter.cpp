@@ -11,9 +11,12 @@
 #include <grid_map_core/GridMap.hpp>
 #include <pluginlib/class_list_macros.h>
 
+#include <string>
+
 using namespace filters;
 
-namespace grid_map {
+namespace grid_map
+{
 
 template<typename T>
 DeletionFilter<T>::DeletionFilter()
@@ -38,15 +41,16 @@ bool DeletionFilter<T>::configure()
 }
 
 template<typename T>
-bool DeletionFilter<T>::update(const T& mapIn, T& mapOut)
+bool DeletionFilter<T>::update(const T & mapIn, T & mapOut)
 {
   mapOut = mapIn;
 
-  for (const auto& layer : layers_) {
+  for (const auto & layer : layers_) {
     // Check if layer exists.
     if (!mapOut.exists(layer)) {
-      ROS_ERROR("Check your deletion layers! Type %s does not exist.",
-                layer.c_str());
+      ROS_ERROR(
+        "Check your deletion layers! Type %s does not exist.",
+        layer.c_str());
       continue;
     }
 
@@ -58,6 +62,8 @@ bool DeletionFilter<T>::update(const T& mapIn, T& mapOut)
   return true;
 }
 
-} /* namespace */
+}  // namespace grid_map
 
-PLUGINLIB_EXPORT_CLASS(grid_map::DeletionFilter<grid_map::GridMap>, filters::FilterBase<grid_map::GridMap>)
+PLUGINLIB_EXPORT_CLASS(
+  grid_map::DeletionFilter<grid_map::GridMap>,
+  filters::FilterBase<grid_map::GridMap>)

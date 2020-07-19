@@ -13,9 +13,12 @@
 
 #include <Eigen/Dense>
 
+#include <string>
+
 using namespace filters;
 
-namespace grid_map {
+namespace grid_map
+{
 
 template<typename T>
 NormalColorMapFilter<T>::NormalColorMapFilter()
@@ -30,13 +33,13 @@ NormalColorMapFilter<T>::~NormalColorMapFilter()
 template<typename T>
 bool NormalColorMapFilter<T>::configure()
 {
-  if (!FilterBase < T > ::getParam(std::string("input_layers_prefix"), inputLayersPrefix_)) {
+  if (!FilterBase<T>::getParam(std::string("input_layers_prefix"), inputLayersPrefix_)) {
     ROS_ERROR("Normal color map filter did not find parameter `input_layers_prefix`.");
     return false;
   }
   ROS_DEBUG("Normal color map filter input layers prefix is = %s.", inputLayersPrefix_.c_str());
 
-  if (!FilterBase < T > ::getParam(std::string("output_layer"), outputLayer_)) {
+  if (!FilterBase<T>::getParam(std::string("output_layer"), outputLayer_)) {
     ROS_ERROR("Normal color map filter did not find parameter `output_layer`.");
     return false;
   }
@@ -45,15 +48,15 @@ bool NormalColorMapFilter<T>::configure()
 }
 
 template<typename T>
-bool NormalColorMapFilter<T>::update(const T& mapIn, T& mapOut)
+bool NormalColorMapFilter<T>::update(const T & mapIn, T & mapOut)
 {
-  const auto& normalX = mapIn[inputLayersPrefix_ + "x"];
-  const auto& normalY = mapIn[inputLayersPrefix_ + "y"];
-  const auto& normalZ = mapIn[inputLayersPrefix_ + "z"];
+  const auto & normalX = mapIn[inputLayersPrefix_ + "x"];
+  const auto & normalY = mapIn[inputLayersPrefix_ + "y"];
+  const auto & normalZ = mapIn[inputLayersPrefix_ + "z"];
 
   mapOut = mapIn;
   mapOut.add(outputLayer_);
-  auto& color = mapOut[outputLayer_];
+  auto & color = mapOut[outputLayer_];
 
   // X: -1 to +1 : Red: 0 to 255
   // Y: -1 to +1 : Green: 0 to 255
@@ -62,14 +65,16 @@ bool NormalColorMapFilter<T>::update(const T& mapIn, T& mapOut)
   // For each cell in map.
   for (size_t i = 0; i < color.size(); ++i) {
     const Eigen::Vector3f colorVector((normalX(i) + 1.0) / 2.0,
-                                      (normalY(i) + 1.0) / 2.0,
-                                      (normalZ(i) / 2.0) + 0.5);
+      (normalY(i) + 1.0) / 2.0,
+      (normalZ(i) / 2.0) + 0.5);
     colorVectorToValue(colorVector, color(i));
   }
 
   return true;
 }
 
-} /* namespace */
+}  // namespace grid_map
 
-PLUGINLIB_EXPORT_CLASS(grid_map::NormalColorMapFilter<grid_map::GridMap>, filters::FilterBase<grid_map::GridMap>)
+PLUGINLIB_EXPORT_CLASS(
+  grid_map::NormalColorMapFilter<grid_map::GridMap>,
+  filters::FilterBase<grid_map::GridMap>)

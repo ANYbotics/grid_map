@@ -13,14 +13,19 @@
 
 #include <Eigen/Dense>
 
+#include <string>
+#include <vector>
+#include <algorithm>
+
 using namespace filters;
 
-namespace grid_map {
+namespace grid_map
+{
 
 template<typename T>
 ColorMapFilter<T>::ColorMapFilter()
-    : min_(0.0),
-      max_(1.0)
+: min_(0.0),
+  max_(1.0)
 {
 }
 
@@ -79,19 +84,19 @@ bool ColorMapFilter<T>::configure()
 }
 
 template<typename T>
-bool ColorMapFilter<T>::update(const T& mapIn, T& mapOut)
+bool ColorMapFilter<T>::update(const T & mapIn, T & mapOut)
 {
   mapOut = mapIn;
-  auto& input = mapIn[inputLayer_];
+  auto & input = mapIn[inputLayer_];
   mapOut.add(outputLayer_);
-  auto& output = mapOut[outputLayer_];
+  auto & output = mapOut[outputLayer_];
 
   const double range = max_ - min_;
   const Eigen::Vector3f colorRange = maxColor_ - minColor_;
 
   // For each cell in map.
   for (size_t i = 0; i < output.size(); ++i) {
-    if (!std::isfinite(input(i))) continue;
+    if (!std::isfinite(input(i))) {continue;}
     const double value = std::min<float>(std::max<float>(input(i), min_), max_);
     const double factor = (value - min_) / range;
     const Eigen::Vector3f color = minColor_ + factor * colorRange;
@@ -101,6 +106,8 @@ bool ColorMapFilter<T>::update(const T& mapIn, T& mapOut)
   return true;
 }
 
-} /* namespace */
+}  // namespace grid_map
 
-PLUGINLIB_EXPORT_CLASS(grid_map::ColorMapFilter<grid_map::GridMap>, filters::FilterBase<grid_map::GridMap>)
+PLUGINLIB_EXPORT_CLASS(
+  grid_map::ColorMapFilter<grid_map::GridMap>,
+  filters::FilterBase<grid_map::GridMap>)

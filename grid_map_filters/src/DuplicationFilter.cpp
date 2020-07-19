@@ -11,9 +11,12 @@
 #include <grid_map_core/GridMap.hpp>
 #include <pluginlib/class_list_macros.h>
 
+#include <string>
+
 using namespace filters;
 
-namespace grid_map {
+namespace grid_map
+{
 
 template<typename T>
 DuplicationFilter<T>::DuplicationFilter()
@@ -42,13 +45,15 @@ bool DuplicationFilter<T>::configure()
 }
 
 template<typename T>
-bool DuplicationFilter<T>::update(const T& mapIn, T& mapOut)
+bool DuplicationFilter<T>::update(const T & mapIn, T & mapOut)
 {
   mapOut = mapIn;
   mapOut.add(outputLayer_, mapIn[inputLayer_]);
   return true;
 }
 
-} /* namespace */
+}  // namespace grid_map
 
-PLUGINLIB_EXPORT_CLASS(grid_map::DuplicationFilter<grid_map::GridMap>, filters::FilterBase<grid_map::GridMap>)
+PLUGINLIB_EXPORT_CLASS(
+  grid_map::DuplicationFilter<grid_map::GridMap>,
+  filters::FilterBase<grid_map::GridMap>)

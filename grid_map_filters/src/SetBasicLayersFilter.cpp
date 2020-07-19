@@ -11,9 +11,13 @@
 #include <grid_map_core/GridMap.hpp>
 #include <pluginlib/class_list_macros.h>
 
+#include <string>
+#include <vector>
+
 using namespace filters;
 
-namespace grid_map {
+namespace grid_map
+{
 
 template<typename T>
 SetBasicLayersFilter<T>::SetBasicLayersFilter()
@@ -37,12 +41,12 @@ bool SetBasicLayersFilter<T>::configure()
 }
 
 template<typename T>
-bool SetBasicLayersFilter<T>::update(const T& mapIn, T& mapOut)
+bool SetBasicLayersFilter<T>::update(const T & mapIn, T & mapOut)
 {
   mapOut = mapIn;
   std::vector<std::string> layersChecked;
 
-  for (const auto& layer : layers_) {
+  for (const auto & layer : layers_) {
     if (!mapOut.exists(layer)) {
       ROS_WARN("Layer `%s` does not exist and is not set as basic layer.", layer.c_str());
       continue;
@@ -54,6 +58,8 @@ bool SetBasicLayersFilter<T>::update(const T& mapIn, T& mapOut)
   return true;
 }
 
-} /* namespace */
+}  // namespace grid_map
 
-PLUGINLIB_EXPORT_CLASS(grid_map::SetBasicLayersFilter<grid_map::GridMap>, filters::FilterBase<grid_map::GridMap>)
+PLUGINLIB_EXPORT_CLASS(
+  grid_map::SetBasicLayersFilter<grid_map::GridMap>,
+  filters::FilterBase<grid_map::GridMap>)

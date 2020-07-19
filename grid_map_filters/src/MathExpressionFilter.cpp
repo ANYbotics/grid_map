@@ -11,9 +11,12 @@
 #include <grid_map_core/grid_map_core.hpp>
 #include <pluginlib/class_list_macros.h>
 
+#include <string>
+
 using namespace filters;
 
-namespace grid_map {
+namespace grid_map
+{
 
 template<typename T>
 MathExpressionFilter<T>::MathExpressionFilter()
@@ -38,16 +41,16 @@ bool MathExpressionFilter<T>::configure()
     return false;
   }
 
-  // TODO Can we make caching work with changing shared variable?
+  // TODO(needs_assignment): Can we make caching work with changing shared variable?
 //  parser_.setCacheExpressions(true);
   return true;
 }
 
 template<typename T>
-bool MathExpressionFilter<T>::update(const T& mapIn, T& mapOut)
+bool MathExpressionFilter<T>::update(const T & mapIn, T & mapOut)
 {
   mapOut = mapIn;
-  for (const auto& layer : mapOut.getLayers()) {
+  for (const auto & layer : mapOut.getLayers()) {
     parser_.var(layer).setShared(mapOut[layer]);
   }
   EigenLab::Value<Eigen::MatrixXf> result(parser_.eval(expression_));
@@ -55,6 +58,8 @@ bool MathExpressionFilter<T>::update(const T& mapIn, T& mapOut)
   return true;
 }
 
-} /* namespace */
+}  // namespace grid_map
 
-PLUGINLIB_EXPORT_CLASS(grid_map::MathExpressionFilter<grid_map::GridMap>, filters::FilterBase<grid_map::GridMap>)
+PLUGINLIB_EXPORT_CLASS(
+  grid_map::MathExpressionFilter<grid_map::GridMap>,
+  filters::FilterBase<grid_map::GridMap>)

@@ -6,22 +6,24 @@
  *   Institute: ETH Zurich, ANYbotics
  */
 
-#pragma once
+#ifndef GRID_MAP_FILTERS__MEANINRADIUSFILTER_HPP_
+#define GRID_MAP_FILTERS__MEANINRADIUSFILTER_HPP_
 
 #include <filters/filter_base.h>
 
 #include <vector>
 #include <string>
 
-namespace grid_map {
+namespace grid_map
+{
 
 /*!
  * Filter class to find the mean of the values inside a radius.
  */
 template<typename T>
-class MeanInRadiusFilter : public filters::FilterBase<T> {
-
- public:
+class MeanInRadiusFilter : public filters::FilterBase<T>
+{
+public:
   /*!
    * Constructor
    */
@@ -43,9 +45,9 @@ class MeanInRadiusFilter : public filters::FilterBase<T> {
    * @param mapIn grid map containing the input layer.
    * @param mapOut grid map containing the layers of the input map and the new layer.
    */
-  virtual bool update(const T& mapIn, T& mapOut);
+  virtual bool update(const T & mapIn, T & mapOut);
 
- private:
+private:
   //! Radius to take the mean from.
   double radius_;
 
@@ -56,4 +58,5 @@ class MeanInRadiusFilter : public filters::FilterBase<T> {
   std::string outputLayer_;
 };
 
-} /* namespace */
+}  // namespace grid_map
+#endif  // GRID_MAP_FILTERS__MEANINRADIUSFILTER_HPP_
