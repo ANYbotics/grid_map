@@ -1,4 +1,4 @@
-<library path="lib/libgrid_map_rviz_plugin">
+<library path="grid_map_rviz_plugin">
   <class name="grid_map_rviz_plugin/GridMap"
          type="grid_map_rviz_plugin::GridMapDisplay"
          base_class_type="rviz::Display">

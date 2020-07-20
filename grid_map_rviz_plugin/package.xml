@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
-<package>
+<package format="3">
   <name>grid_map_rviz_plugin</name>
-  <version>1.6.2</version>
+  <version>2.0.0</version>
   <description>RViz plugin for displaying grid map messages.</description>
   <maintainer email="mwulf@anybotics.com">Maximilian Wulf</maintainer>
   <maintainer email="ynava@anybotics.com">Yoshua Nava</maintainer>
@@ -9,7 +9,9 @@
   <author email="philipp.kruesi@mavt.ethz.ch">Philipp Krüsi</author>
   <author>Péter Fankhauser</author>
 
-  <buildtool_depend>catkin</buildtool_depend>
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <build_depend>grid_map_cmake_helpers</build_depend>
+
   <build_depend>qtbase5-dev</build_depend>
   <build_depend>rviz</build_depend>
   <build_depend>grid_map_ros</build_depend>
@@ -20,7 +22,12 @@
   <run_depend>rviz</run_depend>
   <run_depend>grid_map_ros</run_depend>
   <run_depend>grid_map_msgs</run_depend>
+
+  <test_depend>ament_lint_auto</test_depend>
+  <test_depend>ament_lint_common</test_depend>
+
   <export>
-      <rviz plugin="${prefix}/plugin_description.xml"/>
+    <build_type>ament_cmake</build_type>
+    <rviz plugin="${prefix}/plugin_description.xml"/>
   </export>
 </package>
