@@ -9,7 +9,7 @@
 #include <grid_map_loader/GridMapLoader.hpp>
 #include <ros/ros.h>
 
-int main(int argc, char** argv)
+int main(int argc, char ** argv)
 {
   ros::init(argc, argv, "grid_map_loader");
   ros::NodeHandle nodeHandle("~");

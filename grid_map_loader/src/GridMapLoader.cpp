@@ -10,16 +10,17 @@
 #include <grid_map_loader/GridMapLoader.hpp>
 #include <grid_map_msgs/GridMap.h>
 
-using namespace grid_map;
+#include <string>
 
-namespace grid_map_loader {
+namespace grid_map_loader
+{
 
 GridMapLoader::GridMapLoader(ros::NodeHandle nodeHandle)
-    : nodeHandle_(nodeHandle)
+: nodeHandle_(nodeHandle)
 {
   readParameters();
   publisher_ = nodeHandle_.advertise<grid_map_msgs::GridMap>(publishTopic_, 1, true);
-  if (!load()) return;
+  if (!load()) {return;}
   publish();
   ros::requestShutdown();
 }
@@ -42,15 +43,15 @@ bool GridMapLoader::readParameters()
 bool GridMapLoader::load()
 {
   ROS_INFO_STREAM("Loading grid map from path " << filePath_ << ".");
-  return GridMapRosConverter::loadFromBag(filePath_, bagTopic_, map_);
+  return grid_map::GridMapRosConverter::loadFromBag(filePath_, bagTopic_, map_);
 }
 
 void GridMapLoader::publish()
 {
-  grid_map_msgs::GridMap message;
+  grid_map::grid_map_msgs::GridMap message;
   grid_map::GridMapRosConverter::toMessage(map_, message);
   publisher_.publish(message);
   duration_.sleep();
 }
 
-} /* namespace */
+}  // namespace grid_map_loader
