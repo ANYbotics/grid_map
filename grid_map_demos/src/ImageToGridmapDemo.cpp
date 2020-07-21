@@ -6,18 +6,22 @@
  *	 Institute: ETH Zurich, ANYbotics
  */
 
+#include <string>
+
 #include "grid_map_demos/ImageToGridmapDemo.hpp"
 
-namespace grid_map_demos {
+namespace grid_map_demos
+{
 
-ImageToGridmapDemo::ImageToGridmapDemo(ros::NodeHandle& nodeHandle)
-    : nodeHandle_(nodeHandle),
-      map_(grid_map::GridMap({"elevation"})),
-      mapInitialized_(false)
+ImageToGridmapDemo::ImageToGridmapDemo(ros::NodeHandle & nodeHandle)
+: nodeHandle_(nodeHandle),
+  map_(grid_map::GridMap({"elevation"})),
+  mapInitialized_(false)
 {
   readParameters();
   map_.setBasicLayers({"elevation"});
-  imageSubscriber_ = nodeHandle_.subscribe(imageTopic_, 1, &ImageToGridmapDemo::imageCallback, this);
+  imageSubscriber_ =
+    nodeHandle_.subscribe(imageTopic_, 1, &ImageToGridmapDemo::imageCallback, this);
   gridMapPublisher_ = nodeHandle_.advertise<grid_map_msgs::GridMap>("grid_map", 1, true);
 }
 
@@ -34,12 +38,13 @@ bool ImageToGridmapDemo::readParameters()
   return true;
 }
 
-void ImageToGridmapDemo::imageCallback(const sensor_msgs::Image& msg)
+void ImageToGridmapDemo::imageCallback(const sensor_msgs::Image & msg)
 {
   if (!mapInitialized_) {
     grid_map::GridMapRosConverter::initializeFromImage(msg, resolution_, map_);
-    ROS_INFO("Initialized map with size %f x %f m (%i x %i cells).", map_.getLength().x(),
-             map_.getLength().y(), map_.getSize()(0), map_.getSize()(1));
+    ROS_INFO(
+      "Initialized map with size %f x %f m (%i x %i cells).", map_.getLength().x(),
+      map_.getLength().y(), map_.getSize()(0), map_.getSize()(1));
     mapInitialized_ = true;
   }
   grid_map::GridMapRosConverter::addLayerFromImage(msg, "elevation", map_, minHeight_, maxHeight_);
@@ -51,4 +56,4 @@ void ImageToGridmapDemo::imageCallback(const sensor_msgs::Image& msg)
   gridMapPublisher_.publish(mapMessage);
 }
 
-} /* namespace */
+}  // namespace grid_map_demos

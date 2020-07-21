@@ -6,7 +6,8 @@
  *   Institute: University of Zürich, Robotics and Perception Group
  */
 
-#pragma once
+#ifndef GRID_MAP_DEMOS__OCTOMAPTOGRIDMAPDEMO_HPP_
+#define GRID_MAP_DEMOS__OCTOMAPTOGRIDMAPDEMO_HPP_
 
 // ROS
 #include <ros/ros.h>
@@ -15,7 +16,8 @@
 
 #include <string>
 
-namespace grid_map_demos {
+namespace grid_map_demos
+{
 
 /*!
  * Receives a volumetric OctoMap and converts it to a grid map with an elevation layer.
@@ -23,13 +25,12 @@ namespace grid_map_demos {
  */
 class OctomapToGridmapDemo
 {
- public:
-
+public:
   /*!
    * Constructor.
    * @param nodeHandle the ROS node handle.
    */
-  OctomapToGridmapDemo(ros::NodeHandle& nodeHandle);
+  OctomapToGridmapDemo(ros::NodeHandle & nodeHandle);
 
   /*!
    * Destructor.
@@ -44,10 +45,9 @@ class OctomapToGridmapDemo
 
   void convertAndPublishMap();
 
- private:
-
+private:
   //! ROS nodehandle.
-  ros::NodeHandle& nodeHandle_;
+  ros::NodeHandle & nodeHandle_;
 
   //! Grid map publisher.
   ros::Publisher gridMapPublisher_;
@@ -73,4 +73,5 @@ class OctomapToGridmapDemo
   float maxZ_;
 };
 
-} /* namespace */
+}  // namespace grid_map_demos
+#endif  // GRID_MAP_DEMOS__OCTOMAPTOGRIDMAPDEMO_HPP_

@@ -10,18 +10,15 @@
 
 #include <ros/ros.h>
 
-int main(int argc, char** argv)
+int main(int argc, char ** argv)
 {
   ros::init(argc, argv, "grid_map_filters_demo");
   ros::NodeHandle nodeHandle("~");
   bool success;
   grid_map_demos::FiltersDemo filtersDemo(nodeHandle, success);
-  if (success) ros::spin();
+  if (success) {ros::spin();}
   return 0;
 }
-
-
-
 
 
 ///*

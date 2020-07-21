@@ -9,7 +9,7 @@
 #include <ros/ros.h>
 #include "grid_map_demos/IteratorsDemo.hpp"
 
-int main(int argc, char** argv)
+int main(int argc, char ** argv)
 {
   ros::init(argc, argv, "grid_map_iterators_demo");
 

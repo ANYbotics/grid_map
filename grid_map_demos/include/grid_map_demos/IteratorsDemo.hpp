@@ -7,27 +7,28 @@
  *
  */
 
-#pragma once
+#ifndef GRID_MAP_DEMOS__ITERATORSDEMO_HPP_
+#define GRID_MAP_DEMOS__ITERATORSDEMO_HPP_
 
 #include <grid_map_ros/grid_map_ros.hpp>
 
 // ROS
 #include <ros/ros.h>
 
-namespace grid_map_demos {
+namespace grid_map_demos
+{
 
 /*!
  * Visualizes a grid map by publishing different topics that can be viewed in Rviz.
  */
 class IteratorsDemo
 {
- public:
-
+public:
   /*!
    * Constructor.
    * @param nodeHandle the ROS node handle.
    */
-  IteratorsDemo(ros::NodeHandle& nodeHandle);
+  IteratorsDemo(ros::NodeHandle & nodeHandle);
 
   /*!
    * Destructor.
@@ -51,10 +52,9 @@ class IteratorsDemo
    */
   void publish();
 
- private:
-
+private:
   //! ROS nodehandle.
-  ros::NodeHandle& nodeHandle_;
+  ros::NodeHandle & nodeHandle_;
 
   //! Grid map publisher.
   ros::Publisher gridMapPublisher_;
@@ -66,4 +66,5 @@ class IteratorsDemo
   grid_map::GridMap map_;
 };
 
-} /* namespace */
+}  // namespace grid_map_demos
+#endif  // GRID_MAP_DEMOS__ITERATORSDEMO_HPP_

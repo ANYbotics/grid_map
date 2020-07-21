@@ -6,18 +6,23 @@
  *      Institute: ETH Zurich, Robotic Systems Lab
  */
 
-#pragma once
+#ifndef GRID_MAP_DEMOS__INTERPOLATIONDEMO_HPP_
+#define GRID_MAP_DEMOS__INTERPOLATIONDEMO_HPP_
 
-#include "grid_map_core/GridMap.hpp"
-#include "grid_map_core/TypeDefs.hpp"
+#include <ros/ros.h>
 
 #include <functional>
 #include <map>
 #include <string>
 #include <chrono>
-#include <ros/ros.h>
+#include <utility>
 
-namespace grid_map_demos {
+#include "grid_map_core/GridMap.hpp"
+#include "grid_map_core/TypeDefs.hpp"
+
+
+namespace grid_map_demos
+{
 
 /*
  * This demo visualizes the quality of function approximation
@@ -50,7 +55,8 @@ namespace grid_map_demos {
  * Different analytical functions used
  * to evaluate the quality of interpolation approximation.
  */
-enum class Worlds: int {
+enum class Worlds: int
+{
   Poly,
   GaussMixture,
   Tanh,
@@ -65,7 +71,8 @@ struct AnalyticalFunctions
   std::function<double(double, double)> f_;
 };
 
-struct Error {
+struct Error
+{
   double meanSquare_ = 0.0;
   double meanAbs_ = 0.0;
   double max_ = 0.0;
@@ -74,21 +81,22 @@ struct Error {
 /*
  * Create map geometry and allocate memory
  */
-grid_map::GridMap createMap(const grid_map::Length &length, double resolution,
-                            const grid_map::Position &pos);
+grid_map::GridMap createMap(
+  const grid_map::Length & length, double resolution,
+  const grid_map::Position & pos);
 
 /*
  * Fill grid map with values computed from analytical function
  */
-void fillGridMap(grid_map::GridMap *map, const AnalyticalFunctions &functions);
+void fillGridMap(grid_map::GridMap * map, const AnalyticalFunctions & functions);
 
 /*
  * Create various analytical functions
  */
-AnalyticalFunctions createPolyWorld(grid_map::GridMap *map);
-AnalyticalFunctions createSineWorld(grid_map::GridMap *map);
-AnalyticalFunctions createTanhWorld(grid_map::GridMap *map);
-AnalyticalFunctions createGaussianWorld(grid_map::GridMap *map);
+AnalyticalFunctions createPolyWorld(grid_map::GridMap * map);
+AnalyticalFunctions createSineWorld(grid_map::GridMap * map);
+AnalyticalFunctions createTanhWorld(grid_map::GridMap * map);
+AnalyticalFunctions createGaussianWorld(grid_map::GridMap * map);
 
 
 /*
@@ -96,39 +104,44 @@ AnalyticalFunctions createGaussianWorld(grid_map::GridMap *map);
  * and create sparse grid map with data points that are used for the
  * interpolation.
  */
-AnalyticalFunctions createWorld(Worlds world, double highResolution, double lowResolution,
-                                double length, double width,
-                                grid_map::GridMap *groundTruthHighRes,
-                                grid_map::GridMap *groundTruthLowRes);
+AnalyticalFunctions createWorld(
+  Worlds world, double highResolution, double lowResolution,
+  double length, double width,
+  grid_map::GridMap * groundTruthHighRes,
+  grid_map::GridMap * groundTruthLowRes);
 
 /*
  * Allocate memory and set geometry for the interpolated grid map
  */
-grid_map::GridMap createInterpolatedMapFromDataMap(const grid_map::GridMap &dataMap, double desiredResolution);
+grid_map::GridMap createInterpolatedMapFromDataMap(
+  const grid_map::GridMap & dataMap,
+  double desiredResolution);
 
 /*
  * Compute the interpolated values
  */
-void interpolateInputMap(const grid_map::GridMap &dataMap,
-                                      grid_map::InterpolationMethods interpolationMethod, grid_map::GridMap *inteprolatedMap);
+void interpolateInputMap(
+  const grid_map::GridMap & dataMap,
+  grid_map::InterpolationMethods interpolationMethod, grid_map::GridMap * inteprolatedMap);
 
 /*
  * Compute error measures between the ground truth and the interpolated map
  */
-Error computeInterpolationError(const AnalyticalFunctions &groundTruth,
-                                          const grid_map::GridMap &map);
+Error computeInterpolationError(
+  const AnalyticalFunctions & groundTruth,
+  const grid_map::GridMap & map);
 
 static const std::map<std::string, Worlds> worlds = {
-    { "Sine",  Worlds::Sine },
-    { "Poly",  Worlds::Poly },
-    { "Gauss", Worlds::GaussMixture },
-    { "Tanh",  Worlds::Tanh } };
+  {"Sine", Worlds::Sine},
+  {"Poly", Worlds::Poly},
+  {"Gauss", Worlds::GaussMixture},
+  {"Tanh", Worlds::Tanh}};
 
 static const std::map<std::string, grid_map::InterpolationMethods> interpolationMethods = {
-    { "Nearest",              grid_map::InterpolationMethods::INTER_NEAREST},
-    { "Linear",               grid_map::InterpolationMethods::INTER_LINEAR },
-    { "Cubic_convolution",    grid_map::InterpolationMethods::INTER_CUBIC_CONVOLUTION },
-    { "Cubic",                grid_map::InterpolationMethods::INTER_CUBIC } };
+  {"Nearest", grid_map::InterpolationMethods::INTER_NEAREST},
+  {"Linear", grid_map::InterpolationMethods::INTER_LINEAR},
+  {"Cubic_convolution", grid_map::InterpolationMethods::INTER_CUBIC_CONVOLUTION},
+  {"Cubic", grid_map::InterpolationMethods::INTER_CUBIC}};
 
 /*
  * Class that actually runs the demo
@@ -138,25 +151,27 @@ static const std::map<std::string, grid_map::InterpolationMethods> interpolation
  */
 class InterpolationDemo
 {
+public:
+  InterpolationDemo(ros::NodeHandle * nh);
 
- public:
-  InterpolationDemo(ros::NodeHandle *nh);
-
- private:
+private:
   using clk = std::chrono::steady_clock;
   using ErrorAndDuration = std::pair<Error, double>;
-  struct Statistic {
+  struct Statistic
+  {
     Error error_;
     std::string world_;
     std::string interpolationMethod_;
     double duration_ = 0.0;
   };
-  using Statistics = std::map<std::string, std::map<std::string, Statistic> >;
+  using Statistics = std::map<std::string, std::map<std::string, Statistic>>;
 
   void runDemo();
-  ErrorAndDuration interpolateAndComputeError(const std::string world, const std::string &method) const;
+  ErrorAndDuration interpolateAndComputeError(
+    const std::string world,
+    const std::string & method) const;
   Statistics computeStatistics() const;
-  void printStatistics(const Statistics &stats) const;
+  void printStatistics(const Statistics & stats) const;
   void publishGridMaps() const;
 
   ros::Publisher groundTruthMapPub_;
@@ -169,13 +184,13 @@ class InterpolationDemo
 
   std::string world_;
   std::string interpolationMethod_;
-  double groundTruthResolution_ = 0.02; // resolution in which ground truth is displayed in rviz
-  double dataResolution_ = 0.1; // resolution of the data points for the interpolating algorithm
-  double interpolatedResolution_ = 0.02; // resolution requested for the interpolated map
+  double groundTruthResolution_ = 0.02;  // resolution in which ground truth is displayed in rviz
+  double dataResolution_ = 0.1;  // resolution of the data points for the interpolating algorithm
+  double interpolatedResolution_ = 0.02;  // resolution requested for the interpolated map
   AnalyticalFunctions groundTruth_;
   double worldWidth_ = 4.0;
   double worldLength_ = 4.0;
-
 };
 
-} /* namespace grid_map_demos */
+}  // namespace grid_map_demos
+#endif  // GRID_MAP_DEMOS__INTERPOLATIONDEMO_HPP_

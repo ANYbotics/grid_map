@@ -7,7 +7,7 @@
 
 using namespace grid_map;
 
-int main(int argc, char** argv)
+int main(int argc, char ** argv)
 {
   // Initialize node and publisher.
   ros::init(argc, argv, "grid_map_tutorial_demo");
@@ -18,7 +18,9 @@ int main(int argc, char** argv)
   GridMap map({"elevation", "normal_x", "normal_y", "normal_z"});
   map.setFrameId("map");
   map.setGeometry(Length(1.2, 2.0), 0.03, Position(0.0, -0.1));
-  ROS_INFO("Created map with size %f x %f m (%i x %i cells).\n The center of the map is located at (%f, %f) in the %s frame.",
+  ROS_INFO(
+    "Created map with size %f x %f m (%i x %i cells).\n"
+    " The center of the map is located at (%f, %f) in the %s frame.",
     map.getLength().x(), map.getLength().y(),
     map.getSize()(0), map.getSize()(1),
     map.getPosition().x(), map.getPosition().y(), map.getFrameId().c_str());
@@ -32,9 +34,11 @@ int main(int argc, char** argv)
     for (GridMapIterator it(map); !it.isPastEnd(); ++it) {
       Position position;
       map.getPosition(*it, position);
-      map.at("elevation", *it) = -0.04 + 0.2 * std::sin(3.0 * time.toSec() + 5.0 * position.y()) * position.x();
+      map.at(
+        "elevation",
+        *it) = -0.04 + 0.2 * std::sin(3.0 * time.toSec() + 5.0 * position.y()) * position.x();
       Eigen::Vector3d normal(-0.2 * std::sin(3.0 * time.toSec() + 5.0 * position.y()),
-                             -position.x() * std::cos(3.0 * time.toSec() + 5.0 * position.y()), 1.0);
+        -position.x() * std::cos(3.0 * time.toSec() + 5.0 * position.y()), 1.0);
       normal.normalize();
       map.at("normal_x", *it) = normal.x();
       map.at("normal_y", *it) = normal.y();
@@ -48,8 +52,9 @@ int main(int argc, char** argv)
     // Adding outliers (accessing cell by position).
     for (unsigned int i = 0; i < 500; ++i) {
       Position randomPosition = Position::Random();
-      if (map.isInside(randomPosition))
+      if (map.isInside(randomPosition)) {
         map.atPosition("elevation_noisy", randomPosition) = std::numeric_limits<float>::infinity();
+      }
     }
 
     // Filter values for submap (iterators).
@@ -58,7 +63,8 @@ int main(int argc, char** argv)
     boundPositionToRange(topLeftCorner, map.getLength(), map.getPosition());
     Index startIndex;
     map.getIndex(topLeftCorner, startIndex);
-    ROS_INFO_ONCE("Top left corner was limited from (1.0, 0.2) to (%f, %f) and corresponds to index (%i, %i).",
+    ROS_INFO_ONCE(
+      "Top left corner was limited from (1.0, 0.2) to (%f, %f) and corresponds to index (%i, %i).",
       topLeftCorner.x(), topLeftCorner.y(), startIndex(0), startIndex(1));
 
     Size size = (Length(1.2, 0.8) / map.getResolution()).cast<int>();
@@ -71,8 +77,10 @@ int main(int argc, char** argv)
       double sumOfWeights = 0.0;
 
       // Compute weighted mean.
-      for (CircleIterator circleIt(map, currentPosition, radius); !circleIt.isPastEnd(); ++circleIt) {
-        if (!map.isValid(*circleIt, "elevation_noisy")) continue;
+      for (CircleIterator circleIt(map, currentPosition, radius); !circleIt.isPastEnd();
+        ++circleIt)
+      {
+        if (!map.isValid(*circleIt, "elevation_noisy")) {continue;}
         Position currentPositionInCircle;
         map.getPosition(*circleIt, currentPositionInCircle);
 

@@ -4,7 +4,7 @@
 using namespace grid_map;
 using namespace ros;
 
-int main(int argc, char** argv)
+int main(int argc, char ** argv)
 {
   // Initialize node and publisher.
   init(argc, argv, "move_demo");
@@ -15,7 +15,9 @@ int main(int argc, char** argv)
   GridMap map({"layer"});
   map.setFrameId("map");
   map.setGeometry(Length(0.7, 0.7), 0.01, Position(0.0, 0.0));
-  ROS_INFO("Created map with size %f x %f m (%i x %i cells).\n The center of the map is located at (%f, %f) in the %s frame.",
+  ROS_INFO(
+    "Created map with size %f x %f m (%i x %i cells).\n"
+    " The center of the map is located at (%f, %f) in the %s frame.",
     map.getLength().x(), map.getLength().y(),
     map.getSize()(0), map.getSize()(1),
     map.getPosition().x(), map.getPosition().y(), map.getFrameId().c_str());
@@ -23,7 +25,6 @@ int main(int argc, char** argv)
 
   bool useMoveMethod = true;
   while (nh.ok()) {
-
     if (useMoveMethod) {
       ROS_INFO("Using the `move(...)` method.");
     } else {
@@ -55,8 +56,9 @@ int main(int argc, char** argv)
       grid_map_msgs::GridMap message;
       GridMapRosConverter::toMessage(tempMap, message);
       publisher.publish(message);
-      ROS_DEBUG("Grid map (duration %f) published with new position [%f, %f].",
-                duration.toSec(), tempMap.getPosition().x(), tempMap.getPosition().y());
+      ROS_DEBUG(
+        "Grid map (duration %f) published with new position [%f, %f].",
+        duration.toSec(), tempMap.getPosition().x(), tempMap.getPosition().y());
       rate.sleep();
     }
 

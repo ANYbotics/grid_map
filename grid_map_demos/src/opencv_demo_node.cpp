@@ -7,7 +7,7 @@
 using namespace grid_map;
 using namespace ros;
 
-int main(int argc, char** argv)
+int main(int argc, char ** argv)
 {
   // Initialize node and publisher.
   init(argc, argv, "opencv_demo");
@@ -19,25 +19,26 @@ int main(int argc, char** argv)
   GridMap map({"original", "elevation"});
   map.setFrameId("map");
   map.setGeometry(Length(1.2, 2.0), 0.01);
-  ROS_INFO("Created map with size %f x %f m (%i x %i cells).",
+  ROS_INFO(
+    "Created map with size %f x %f m (%i x %i cells).",
     map.getLength().x(), map.getLength().y(),
     map.getSize()(0), map.getSize()(1));
 
   // Add data.
-  if (!useTransparency) map["original"].setZero();
+  if (!useTransparency) {map["original"].setZero();}
   grid_map::Polygon polygon;
   polygon.setFrameId(map.getFrameId());
-  polygon.addVertex(Position( 0.480,  0.000));
-  polygon.addVertex(Position( 0.164,  0.155));
-  polygon.addVertex(Position( 0.116,  0.500));
-  polygon.addVertex(Position(-0.133,  0.250));
-  polygon.addVertex(Position(-0.480,  0.399));
-  polygon.addVertex(Position(-0.316,  0.000));
+  polygon.addVertex(Position(0.480, 0.000));
+  polygon.addVertex(Position(0.164, 0.155));
+  polygon.addVertex(Position(0.116, 0.500));
+  polygon.addVertex(Position(-0.133, 0.250));
+  polygon.addVertex(Position(-0.480, 0.399));
+  polygon.addVertex(Position(-0.316, 0.000));
   polygon.addVertex(Position(-0.480, -0.399));
   polygon.addVertex(Position(-0.133, -0.250));
-  polygon.addVertex(Position( 0.116, -0.500));
-  polygon.addVertex(Position( 0.164, -0.155));
-  polygon.addVertex(Position( 0.480,  0.000));
+  polygon.addVertex(Position(0.116, -0.500));
+  polygon.addVertex(Position(0.164, -0.155));
+  polygon.addVertex(Position(0.480, 0.000));
 
   for (grid_map::PolygonIterator iterator(map, polygon); !iterator.isPastEnd(); ++iterator) {
     map.at("original", *iterator) = 0.3;
@@ -48,9 +49,13 @@ int main(int argc, char** argv)
   if (useTransparency) {
     // Note: The template parameters have to be set based on your encoding
     // of the image. For 8-bit images use `unsigned char`.
-    GridMapCvConverter::toImage<unsigned short, 4>(map, "original", CV_16UC4, 0.0, 0.3, originalImage);
+    GridMapCvConverter::toImage<unsigned int16_t, 4>(
+      map, "original", CV_16UC4, 0.0, 0.3,
+      originalImage);
   } else {
-    GridMapCvConverter::toImage<unsigned short, 1>(map, "original", CV_16UC1, 0.0, 0.3, originalImage);
+    GridMapCvConverter::toImage<unsigned int16_t, 1>(
+      map, "original", CV_16UC1, 0.0, 0.3,
+      originalImage);
   }
 
   // Create OpenCV window.
@@ -58,12 +63,11 @@ int main(int argc, char** argv)
 
   // Work with copy of image in a loop.
   while (nodeHandle.ok()) {
-
     // Initialize.
     ros::Time time = ros::Time::now();
     map.setTimestamp(time.toNSec());
     cv::Mat modifiedImage;
-    int blurRadius = 200 - abs((int)(200.0 * sin(time.toSec())));
+    int blurRadius = 200 - abs(static_cast<int>(200.0 * sin(time.toSec())));
     blurRadius = blurRadius - (blurRadius % 2) + 1;
 
     // Apply Gaussian blur.
@@ -75,9 +79,13 @@ int main(int argc, char** argv)
 
     // Convert resulting image to a grid map.
     if (useTransparency) {
-      GridMapCvConverter::addLayerFromImage<unsigned short, 4>(modifiedImage, "elevation", map, 0.0, 0.3, 0.3);
+      GridMapCvConverter::addLayerFromImage<unsigned int16_t, 4>(
+        modifiedImage, "elevation", map, 0.0,
+        0.3, 0.3);
     } else {
-      GridMapCvConverter::addLayerFromImage<unsigned short, 1>(modifiedImage, "elevation", map, 0.0, 0.3);
+      GridMapCvConverter::addLayerFromImage<unsigned int16_t, 1>(
+        modifiedImage, "elevation", map, 0.0,
+        0.3);
     }
 
     // Publish grid map.

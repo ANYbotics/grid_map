@@ -5,10 +5,10 @@
  *      Author: jelavice
  */
 
-#include "grid_map_demos/InterpolationDemo.hpp"
 #include <ros/ros.h>
+#include "grid_map_demos/InterpolationDemo.hpp"
 
-int main(int argc, char** argv)
+int main(int argc, char ** argv)
 {
   ros::init(argc, argv, "grid_map_interpolation_demo");
   ros::NodeHandle nodeHandle("~");

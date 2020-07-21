@@ -11,15 +11,19 @@
 // ROS
 #include <geometry_msgs/PolygonStamped.h>
 
+#include <string>
+#include <vector>
+
 using namespace std;
 using namespace ros;
 using namespace grid_map;
 
-namespace grid_map_demos {
+namespace grid_map_demos
+{
 
-IteratorsDemo::IteratorsDemo(ros::NodeHandle& nodeHandle)
-    : nodeHandle_(nodeHandle),
-      map_(vector<string>({"type"}))
+IteratorsDemo::IteratorsDemo(ros::NodeHandle & nodeHandle)
+: nodeHandle_(nodeHandle),
+  map_(vector<string>({"type"}))
 {
   ROS_INFO("Grid map iterators demo node started.");
   gridMapPublisher_ = nodeHandle_.advertise<grid_map_msgs::GridMap>("grid_map", 1, true);
@@ -54,7 +58,7 @@ void IteratorsDemo::demoGridMapIterator()
   // Note: In this example we locally store a reference to the map data
   // for improved performance. See `iterator_benchmark.cpp` and the
   // README.md for a comparison and more information.
-  grid_map::Matrix& data = map_["type"];
+  grid_map::Matrix & data = map_["type"];
   for (grid_map::GridMapIterator iterator(map_); !iterator.isPastEnd(); ++iterator) {
     const int i = iterator.getLinearIndex();
     data(i) = 1.0;
@@ -77,7 +81,8 @@ void IteratorsDemo::demoSubmapIterator()
   Index submapBufferSize(12, 7);
 
   for (grid_map::SubmapIterator iterator(map_, submapStartIndex, submapBufferSize);
-      !iterator.isPastEnd(); ++iterator) {
+    !iterator.isPastEnd(); ++iterator)
+  {
     map_.at("type", *iterator) = 1.0;
     publish();
     ros::Duration duration(0.02);
@@ -98,7 +103,8 @@ void IteratorsDemo::demoCircleIterator()
   double radius = 0.4;
 
   for (grid_map::CircleIterator iterator(map_, center, radius);
-      !iterator.isPastEnd(); ++iterator) {
+    !iterator.isPastEnd(); ++iterator)
+  {
     map_.at("type", *iterator) = 1.0;
     publish();
     ros::Duration duration(0.02);
@@ -119,7 +125,8 @@ void IteratorsDemo::demoEllipseIterator()
   Length length(0.45, 0.9);
 
   for (grid_map::EllipseIterator iterator(map_, center, length, M_PI_4);
-      !iterator.isPastEnd(); ++iterator) {
+    !iterator.isPastEnd(); ++iterator)
+  {
     map_.at("type", *iterator) = 1.0;
     publish();
     ros::Duration duration(0.02);
@@ -140,7 +147,8 @@ void IteratorsDemo::demoSpiralIterator()
   double radius = 0.4;
 
   for (grid_map::SpiralIterator iterator(map_, center, radius);
-      !iterator.isPastEnd(); ++iterator) {
+    !iterator.isPastEnd(); ++iterator)
+  {
     map_.at("type", *iterator) = 1.0;
     publish();
     ros::Duration duration(0.02);
@@ -161,7 +169,8 @@ void IteratorsDemo::demoLineIterator()
   Index end(2, 13);
 
   for (grid_map::LineIterator iterator(map_, start, end);
-      !iterator.isPastEnd(); ++iterator) {
+    !iterator.isPastEnd(); ++iterator)
+  {
     map_.at("type", *iterator) = 1.0;
     publish();
     ros::Duration duration(0.02);
@@ -176,29 +185,30 @@ void IteratorsDemo::demoPolygonIterator(const bool prepareForOtherDemos)
 {
   ROS_INFO("Running polygon iterator demo.");
   map_.clearAll();
-  if (prepareForOtherDemos) map_["type"].setZero();
+  if (prepareForOtherDemos) {map_["type"].setZero();}
   publish();
 
   grid_map::Polygon polygon;
   polygon.setFrameId(map_.getFrameId());
-  polygon.addVertex(Position( 0.480,  0.000));
-  polygon.addVertex(Position( 0.164,  0.155));
-  polygon.addVertex(Position( 0.116,  0.500));
-  polygon.addVertex(Position(-0.133,  0.250));
-  polygon.addVertex(Position(-0.480,  0.399));
-  polygon.addVertex(Position(-0.316,  0.000));
+  polygon.addVertex(Position(0.480, 0.000));
+  polygon.addVertex(Position(0.164, 0.155));
+  polygon.addVertex(Position(0.116, 0.500));
+  polygon.addVertex(Position(-0.133, 0.250));
+  polygon.addVertex(Position(-0.480, 0.399));
+  polygon.addVertex(Position(-0.316, 0.000));
   polygon.addVertex(Position(-0.480, -0.399));
   polygon.addVertex(Position(-0.133, -0.250));
-  polygon.addVertex(Position( 0.116, -0.500));
-  polygon.addVertex(Position( 0.164, -0.155));
-  polygon.addVertex(Position( 0.480,  0.000));
+  polygon.addVertex(Position(0.116, -0.500));
+  polygon.addVertex(Position(0.164, -0.155));
+  polygon.addVertex(Position(0.480, 0.000));
 
   geometry_msgs::PolygonStamped message;
   grid_map::PolygonRosConverter::toMessage(polygon, message);
   polygonPublisher_.publish(message);
 
   for (grid_map::PolygonIterator iterator(map_, polygon);
-      !iterator.isPastEnd(); ++iterator) {
+    !iterator.isPastEnd(); ++iterator)
+  {
     map_.at("type", *iterator) = 1.0;
     if (!prepareForOtherDemos) {
       publish();
@@ -219,23 +229,26 @@ void IteratorsDemo::demoSlidingWindowIterator()
   demoPolygonIterator(true);
   publish();
   const size_t windowSize = 3;
-  const grid_map::SlidingWindowIterator::EdgeHandling edgeHandling = grid_map::SlidingWindowIterator::EdgeHandling::CROP;
+  const grid_map::SlidingWindowIterator::EdgeHandling edgeHandling =
+    grid_map::SlidingWindowIterator::EdgeHandling::CROP;
   map_.add("copy", map_["type"]);
 
   for (grid_map::SlidingWindowIterator iterator(map_, "copy", edgeHandling, windowSize);
-      !iterator.isPastEnd(); ++iterator) {
-    map_.at("type", *iterator) = iterator.getData().meanOfFinites(); // Blurring.
+    !iterator.isPastEnd(); ++iterator)
+  {
+    map_.at("type", *iterator) = iterator.getData().meanOfFinites();  // Blurring.
     publish();
 
     // Visualize sliding window as polygon.
     grid_map::Polygon polygon;
     Position center;
     map_.getPosition(*iterator, center);
-    const Length windowHalfLength(Length::Constant(0.5 * (double) windowSize * map_.getResolution()));
-    polygon.addVertex(center + (Eigen::Array2d(-1.0,-1.0) * windowHalfLength).matrix());
+    const Length windowHalfLength(Length::Constant(
+        0.5 * static_cast<double>(windowSize) * map_.getResolution()));
+    polygon.addVertex(center + (Eigen::Array2d(-1.0, -1.0) * windowHalfLength).matrix());
     polygon.addVertex(center + (Eigen::Array2d(-1.0, 1.0) * windowHalfLength).matrix());
-    polygon.addVertex(center + (Eigen::Array2d( 1.0, 1.0) * windowHalfLength).matrix());
-    polygon.addVertex(center + (Eigen::Array2d( 1.0,-1.0) * windowHalfLength).matrix());
+    polygon.addVertex(center + (Eigen::Array2d(1.0, 1.0) * windowHalfLength).matrix());
+    polygon.addVertex(center + (Eigen::Array2d(1.0, -1.0) * windowHalfLength).matrix());
     polygon.setFrameId(map_.getFrameId());
     geometry_msgs::PolygonStamped message;
     grid_map::PolygonRosConverter::toMessage(polygon, message);
@@ -255,4 +268,4 @@ void IteratorsDemo::publish()
   ROS_DEBUG("Grid map (timestamp %f) published.", message.info.header.stamp.toSec());
 }
 
-} /* namespace */
+}  // namespace grid_map_demos

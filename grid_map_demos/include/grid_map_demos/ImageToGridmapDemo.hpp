@@ -7,7 +7,8 @@
  *
  */
 
-#pragma once
+#ifndef GRID_MAP_DEMOS__IMAGETOGRIDMAPDEMO_HPP_
+#define GRID_MAP_DEMOS__IMAGETOGRIDMAPDEMO_HPP_
 
 // ROS
 #include <ros/ros.h>
@@ -17,7 +18,8 @@
 
 #include <string>
 
-namespace grid_map_demos {
+namespace grid_map_demos
+{
 
 /*!
  * Loads an image and saves it as layer 'elevation' of a grid map.
@@ -25,13 +27,12 @@ namespace grid_map_demos {
  */
 class ImageToGridmapDemo
 {
- public:
-
+public:
   /*!
    * Constructor.
    * @param nodeHandle the ROS node handle.
    */
-  ImageToGridmapDemo(ros::NodeHandle& nodeHandle);
+  ImageToGridmapDemo(ros::NodeHandle & nodeHandle);
 
   /*!
    * Destructor.
@@ -44,12 +45,11 @@ class ImageToGridmapDemo
   */
   bool readParameters();
 
-  void imageCallback(const sensor_msgs::Image& msg);
+  void imageCallback(const sensor_msgs::Image & msg);
 
- private:
-
+private:
   //! ROS nodehandle.
-  ros::NodeHandle& nodeHandle_;
+  ros::NodeHandle & nodeHandle_;
 
   //! Grid map publisher.
   ros::Publisher gridMapPublisher_;
@@ -79,4 +79,5 @@ class ImageToGridmapDemo
   bool mapInitialized_;
 };
 
-} /* namespace */
+}  // namespace grid_map_demos
+#endif  // GRID_MAP_DEMOS__IMAGETOGRIDMAPDEMO_HPP_

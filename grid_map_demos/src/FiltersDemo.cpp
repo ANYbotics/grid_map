@@ -7,15 +7,18 @@
  *
  */
 
+#include <string>
+
 #include "grid_map_demos/FiltersDemo.hpp"
 
 using namespace grid_map;
 
-namespace grid_map_demos {
+namespace grid_map_demos
+{
 
-FiltersDemo::FiltersDemo(ros::NodeHandle& nodeHandle, bool& success)
-    : nodeHandle_(nodeHandle),
-      filterChain_("grid_map::GridMap")
+FiltersDemo::FiltersDemo(ros::NodeHandle & nodeHandle, bool & success)
+: nodeHandle_(nodeHandle),
+  filterChain_("grid_map::GridMap")
 {
   if (!readParameters()) {
     success = false;
@@ -46,11 +49,13 @@ bool FiltersDemo::readParameters()
     return false;
   }
   nodeHandle_.param("output_topic", outputTopic_, std::string("output"));
-  nodeHandle_.param("filter_chain_parameter_name", filterChainParametersName_, std::string("grid_map_filters"));
+  nodeHandle_.param(
+    "filter_chain_parameter_name", filterChainParametersName_,
+    std::string("grid_map_filters"));
   return true;
 }
 
-void FiltersDemo::callback(const grid_map_msgs::GridMap& message)
+void FiltersDemo::callback(const grid_map_msgs::GridMap & message)
 {
   // Convert message to map.
   GridMap inputMap;
@@ -70,4 +75,4 @@ void FiltersDemo::callback(const grid_map_msgs::GridMap& message)
   publisher_.publish(outputMessage);
 }
 
-} /* namespace */
+}  // namespace grid_map_demos

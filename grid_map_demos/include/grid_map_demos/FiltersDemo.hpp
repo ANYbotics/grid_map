@@ -7,7 +7,8 @@
  *
  */
 
-#pragma once
+#ifndef GRID_MAP_DEMOS__FILTERSDEMO_HPP_
+#define GRID_MAP_DEMOS__FILTERSDEMO_HPP_
 
 #include <grid_map_ros/grid_map_ros.hpp>
 
@@ -15,7 +16,8 @@
 #include <ros/ros.h>
 #include <string>
 
-namespace grid_map_demos {
+namespace grid_map_demos
+{
 
 /*!
  * Applies a chain of grid map filters to a topic and
@@ -23,14 +25,13 @@ namespace grid_map_demos {
  */
 class FiltersDemo
 {
- public:
-
+public:
   /*!
    * Constructor.
    * @param nodeHandle the ROS node handle.
    * @param success signalizes if filter is configured ok or not.
    */
-  FiltersDemo(ros::NodeHandle& nodeHandle, bool& success);
+  FiltersDemo(ros::NodeHandle & nodeHandle, bool & success);
 
   /*!
    * Destructor.
@@ -47,12 +48,11 @@ class FiltersDemo
    * Callback method for the incoming grid map message.
    * @param message the incoming message.
    */
-  void callback(const grid_map_msgs::GridMap& message);
+  void callback(const grid_map_msgs::GridMap & message);
 
- private:
-
+private:
   //! ROS nodehandle.
-  ros::NodeHandle& nodeHandle_;
+  ros::NodeHandle & nodeHandle_;
 
   //! Name of the input grid map topic.
   std::string inputTopic_;
@@ -73,4 +73,5 @@ class FiltersDemo
   std::string filterChainParametersName_;
 };
 
-} /* namespace */
+}  // namespace grid_map_demos
+#endif  // GRID_MAP_DEMOS__FILTERSDEMO_HPP_
