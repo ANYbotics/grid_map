@@ -6,9 +6,9 @@
  *      Institute: ETH Zurich, Robotic Systems Lab
  */
 
-#include <cstdlib>
-
 #include <gtest/gtest.h>
+
+#include <cstdlib>
 
 #include "grid_map_pcl/PointcloudProcessor.hpp"
 
@@ -16,8 +16,10 @@
 #include "test_helpers.hpp"
 
 
-namespace grid_map {
-namespace grid_map_pcl_test {
+namespace grid_map
+{
+namespace grid_map_pcl_test
+{
 
 TEST(PointcloudProcessorTest, ExtractClusters)
 {
@@ -29,8 +31,9 @@ TEST(PointcloudProcessorTest, ExtractClusters)
   for (unsigned int i = 0; i < numTests; ++i) {
     double minZ, stdDevZ;
     int nBlobs;
-    auto cloud = grid_map_pcl_test::PointcloudCreator::createNBlobsAboveEachOther(&minZ, &stdDevZ,
-                                                                                  &nBlobs);
+    auto cloud = grid_map_pcl_test::PointcloudCreator::createNBlobsAboveEachOther(
+      &minZ, &stdDevZ,
+      &nBlobs);
     grid_map::grid_map_pcl::PointcloudProcessor pointcloudProcessor;
     pointcloudProcessor.loadParameters(grid_map_pcl_test::getConfigFilePath());
     auto clusters = pointcloudProcessor.extractClusterCloudsFromPointcloud(cloud);
@@ -40,8 +43,7 @@ TEST(PointcloudProcessorTest, ExtractClusters)
   if (::testing::Test::HasFailure()) {
     std::cout << "\n Test ExtractClusters failed with seed: " << seed << std::endl;
   }
-
 }
 
-} /*namespace grid_map_pcl_test */
-} /*namesapce grid_map */
+}  // namespace grid_map_pcl_test
+}  // namespace grid_map
