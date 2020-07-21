@@ -11,11 +11,16 @@
 
 #include <sensor_msgs/PointCloud2.h>
 
-namespace grid_map_visualization {
+#include <string>
 
-FlatPointCloudVisualization::FlatPointCloudVisualization(ros::NodeHandle& nodeHandle, const std::string& name)
-    : VisualizationBase(nodeHandle, name),
-      height_(0.0)
+namespace grid_map_visualization
+{
+
+FlatPointCloudVisualization::FlatPointCloudVisualization(
+  ros::NodeHandle & nodeHandle,
+  const std::string & name)
+: VisualizationBase(nodeHandle, name),
+  height_(0.0)
 {
 }
 
@@ -23,13 +28,16 @@ FlatPointCloudVisualization::~FlatPointCloudVisualization()
 {
 }
 
-bool FlatPointCloudVisualization::readParameters(XmlRpc::XmlRpcValue& config)
+bool FlatPointCloudVisualization::readParameters(XmlRpc::XmlRpcValue & config)
 {
   VisualizationBase::readParameters(config);
 
   height_ = 0.0;
   if (!getParam("height", height_)) {
-    ROS_INFO("FlatPointCloudVisualization with name '%s' did not find a 'height' parameter. Using default.", name_.c_str());
+    ROS_INFO(
+      "FlatPointCloudVisualization with name '%s' "
+      "did not find a 'height' parameter. Using default.",
+      name_.c_str());
   }
 
   return true;
@@ -41,9 +49,9 @@ bool FlatPointCloudVisualization::initialize()
   return true;
 }
 
-bool FlatPointCloudVisualization::visualize(const grid_map::GridMap& map)
+bool FlatPointCloudVisualization::visualize(const grid_map::GridMap & map)
 {
-  if (!isActive()) return true;
+  if (!isActive()) {return true;}
   sensor_msgs::PointCloud2 pointCloud;
 
   grid_map::GridMap mapCopy(map);
@@ -54,4 +62,4 @@ bool FlatPointCloudVisualization::visualize(const grid_map::GridMap& map)
   return true;
 }
 
-} /* namespace */
+}  // namespace grid_map_visualization

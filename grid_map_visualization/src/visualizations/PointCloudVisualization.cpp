@@ -11,10 +11,15 @@
 
 #include <sensor_msgs/PointCloud2.h>
 
-namespace grid_map_visualization {
+#include <string>
 
-PointCloudVisualization::PointCloudVisualization(ros::NodeHandle& nodeHandle, const std::string& name)
-    : VisualizationBase(nodeHandle, name)
+namespace grid_map_visualization
+{
+
+PointCloudVisualization::PointCloudVisualization(
+  ros::NodeHandle & nodeHandle,
+  const std::string & name)
+: VisualizationBase(nodeHandle, name)
 {
 }
 
@@ -22,11 +27,13 @@ PointCloudVisualization::~PointCloudVisualization()
 {
 }
 
-bool PointCloudVisualization::readParameters(XmlRpc::XmlRpcValue& config)
+bool PointCloudVisualization::readParameters(XmlRpc::XmlRpcValue & config)
 {
   VisualizationBase::readParameters(config);
   if (!getParam("layer", layer_)) {
-    ROS_ERROR("PointCloudVisualization with name '%s' did not find a 'layer' parameter.", name_.c_str());
+    ROS_ERROR(
+      "PointCloudVisualization with name '%s' did not find a 'layer' parameter.",
+      name_.c_str());
     return false;
   }
   return true;
@@ -38,11 +45,13 @@ bool PointCloudVisualization::initialize()
   return true;
 }
 
-bool PointCloudVisualization::visualize(const grid_map::GridMap& map)
+bool PointCloudVisualization::visualize(const grid_map::GridMap & map)
 {
-  if (!isActive()) return true;
+  if (!isActive()) {return true;}
   if (!map.exists(layer_)) {
-    ROS_WARN_STREAM("PointCloudVisualization::visualize: No grid map layer with name '" << layer_ << "' found.");
+    ROS_WARN_STREAM(
+      "PointCloudVisualization::visualize: No grid map layer with name '" << layer_ <<
+        "' found.");
     return false;
   }
   sensor_msgs::PointCloud2 pointCloud;
@@ -51,4 +60,4 @@ bool PointCloudVisualization::visualize(const grid_map::GridMap& map)
   return true;
 }
 
-} /* namespace */
+}  // namespace grid_map_visualization

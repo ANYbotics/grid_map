@@ -7,7 +7,8 @@
  *
  */
 
-#pragma once
+#ifndef GRID_MAP_VISUALIZATION__GRIDMAPVISUALIZATION_HPP_
+#define GRID_MAP_VISUALIZATION__GRIDMAPVISUALIZATION_HPP_
 
 #include <grid_map_msgs/GridMap.h>
 #include <grid_map_visualization/visualizations/VisualizationFactory.hpp>
@@ -20,23 +21,24 @@
 #include <ros/ros.h>
 
 // STD
+#include <string>
 #include <vector>
 #include <memory>
 
-namespace grid_map_visualization {
+namespace grid_map_visualization
+{
 
 /*!
  * Visualizes a grid map by publishing different topics that can be viewed in Rviz.
  */
 class GridMapVisualization
 {
- public:
-
+public:
   /*!
    * Constructor.
    * @param nodeHandle the ROS node handle.
    */
-  GridMapVisualization(ros::NodeHandle& nodeHandle, const std::string& parameterName);
+  GridMapVisualization(ros::NodeHandle & nodeHandle, const std::string & parameterName);
 
   /*!
    * Destructor.
@@ -47,10 +49,9 @@ class GridMapVisualization
    * Callback function for the grid map.
    * @param message the grid map message to be visualized.
    */
-  void callback(const grid_map_msgs::GridMap& message);
+  void callback(const grid_map_msgs::GridMap & message);
 
- private:
-
+private:
   /*!
    * Read parameters from ROS.
    * @return true if successful.
@@ -69,10 +70,10 @@ class GridMapVisualization
    * grid map to safe bandwidth.
    * @param timerEvent the timer event.
    */
-  void updateSubscriptionCallback(const ros::TimerEvent& timerEvent);
+  void updateSubscriptionCallback(const ros::TimerEvent & timerEvent);
 
   //! ROS nodehandle.
-  ros::NodeHandle& nodeHandle_;
+  ros::NodeHandle & nodeHandle_;
 
   //! Parameter name of the visualizer configuration list.
   std::string visualizationsParameter_;
@@ -99,4 +100,5 @@ class GridMapVisualization
   bool isSubscribed_;
 };
 
-} /* namespace */
+}  // namespace grid_map_visualization
+#endif  // GRID_MAP_VISUALIZATION__GRIDMAPVISUALIZATION_HPP_

@@ -6,7 +6,8 @@
  *   Institute: ETH Zurich, ANYbotics
  */
 
-#pragma once
+#ifndef GRID_MAP_VISUALIZATION__VISUALIZATIONS__POINTCLOUDVISUALIZATION_HPP_
+#define GRID_MAP_VISUALIZATION__VISUALIZATIONS__POINTCLOUDVISUALIZATION_HPP_
 
 #include <grid_map_visualization/visualizations/VisualizationBase.hpp>
 #include <grid_map_core/GridMap.hpp>
@@ -14,21 +15,23 @@
 // ROS
 #include <ros/ros.h>
 
-namespace grid_map_visualization {
+#include <string>
+
+namespace grid_map_visualization
+{
 
 /*!
  * Visualization of the grid map as a point cloud.
  */
 class PointCloudVisualization : public VisualizationBase
 {
- public:
-
+public:
   /*!
    * Constructor.
    * @param nodeHandle the ROS node handle.
    * @param name the name of the visualization.
    */
-  PointCloudVisualization(ros::NodeHandle& nodeHandle, const std::string& name);
+  PointCloudVisualization(ros::NodeHandle & nodeHandle, const std::string & name);
 
   /*!
    * Destructor.
@@ -40,7 +43,7 @@ class PointCloudVisualization : public VisualizationBase
    * @param config the parameters as XML.
    * @return true if successful.
    */
-  bool readParameters(XmlRpc::XmlRpcValue& config);
+  bool readParameters(XmlRpc::XmlRpcValue & config);
 
   /*!
    * Initialization.
@@ -52,11 +55,12 @@ class PointCloudVisualization : public VisualizationBase
    * @param map the grid map to visualize.
    * @return true if successful.
    */
-  bool visualize(const grid_map::GridMap& map);
+  bool visualize(const grid_map::GridMap & map);
 
- private:
+private:
   //! Type that is transformed to points.
   std::string layer_;
 };
 
-} /* namespace */
+}  // namespace grid_map_visualization
+#endif  // GRID_MAP_VISUALIZATION__VISUALIZATIONS__POINTCLOUDVISUALIZATION_HPP_

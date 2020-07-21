@@ -6,27 +6,32 @@
  *   Institute: ETH Zurich, ANYbotics
  */
 
-#pragma once
+#ifndef GRID_MAP_VISUALIZATION__VISUALIZATIONS__VISUALIZATIONFACTORY_HPP_
+#define GRID_MAP_VISUALIZATION__VISUALIZATIONS__VISUALIZATIONFACTORY_HPP_
 
 #include <grid_map_visualization/visualizations/VisualizationBase.hpp>
 #include <vector>
 #include <string>
 #include <memory>
 
-namespace grid_map_visualization {
+namespace grid_map_visualization
+{
 
 class VisualizationFactory
 {
- public:
-  VisualizationFactory(ros::NodeHandle& nodeHandle);
+public:
+  explicit VisualizationFactory(ros::NodeHandle & nodeHandle);
   virtual ~VisualizationFactory();
 
-  bool isValidType(const std::string& type);
-  std::shared_ptr<VisualizationBase> getInstance(const std::string& type, const std::string& name);
+  bool isValidType(const std::string & type);
+  std::shared_ptr<VisualizationBase> getInstance(
+    const std::string & type,
+    const std::string & name);
 
- private:
-  ros::NodeHandle& nodeHandle_;
+private:
+  ros::NodeHandle & nodeHandle_;
   std::vector<std::string> types_;
 };
 
-} /* namespace */
+}  // namespace grid_map_visualization
+#endif  // GRID_MAP_VISUALIZATION__VISUALIZATIONS__VISUALIZATIONFACTORY_HPP_

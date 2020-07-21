@@ -6,7 +6,8 @@
  *   Institute: ETH Zurich, ANYbotics
  */
 
-#pragma once
+#ifndef GRID_MAP_VISUALIZATION__VISUALIZATIONS__VECTORVISUALIZATION_HPP_
+#define GRID_MAP_VISUALIZATION__VISUALIZATIONS__VECTORVISUALIZATION_HPP_
 
 #include <grid_map_visualization/visualizations/VisualizationBase.hpp>
 #include <grid_map_core/GridMap.hpp>
@@ -17,23 +18,24 @@
 #include <std_msgs/ColorRGBA.h>
 
 // STD
+#include <string>
 #include <vector>
 
-namespace grid_map_visualization {
+namespace grid_map_visualization
+{
 
 /*!
  * Visualization a combination of three layers of the grid map as a vector field.
  */
 class VectorVisualization : public VisualizationBase
 {
- public:
-
+public:
   /*!
    * Constructor.
    * @param nodeHandle the ROS node handle.
    * @param name the name of the visualization.
    */
-  VectorVisualization(ros::NodeHandle& nodeHandle, const std::string& name);
+  VectorVisualization(ros::NodeHandle & nodeHandle, const std::string & name);
 
   /*!
    * Destructor.
@@ -45,7 +47,7 @@ class VectorVisualization : public VisualizationBase
    * @param config the parameters as XML.
    * @return true if successful.
    */
-  bool readParameters(XmlRpc::XmlRpcValue& config);
+  bool readParameters(XmlRpc::XmlRpcValue & config);
 
   /*!
    * Initialization.
@@ -57,10 +59,9 @@ class VectorVisualization : public VisualizationBase
    * @param map the grid map to visualize.
    * @return true if successful.
    */
-  bool visualize(const grid_map::GridMap& map);
+  bool visualize(const grid_map::GridMap & map);
 
- private:
-
+private:
   //! Marker to be published.
   visualization_msgs::Marker marker_;
 
@@ -80,4 +81,5 @@ class VectorVisualization : public VisualizationBase
   std_msgs::ColorRGBA color_;
 };
 
-} /* namespace */
+}  // namespace grid_map_visualization
+#endif  // GRID_MAP_VISUALIZATION__VISUALIZATIONS__VECTORVISUALIZATION_HPP_
