@@ -5,6 +5,7 @@ project(grid_map_ros)
 find_package(ament_cmake REQUIRED)
 find_package(grid_map_cmake_helpers REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(rcutils REQUIRED)
 find_package(grid_map_core REQUIRED)
 find_package(grid_map_msgs REQUIRED)
 find_package(grid_map_cv REQUIRED)
@@ -15,12 +16,12 @@ find_package(std_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(cv_bridge REQUIRED)
 find_package(rosbag2_cpp REQUIRED)
-find_package(rosbag2_converter_default_plugins REQUIRED)
 find_package(tf2 REQUIRED)
 find_package(visualization_msgs REQUIRED)
 
 set(dependencies
   rclcpp
+  rcutils
   grid_map_core
   grid_map_msgs
   grid_map_cv
@@ -31,7 +32,6 @@ set(dependencies
   geometry_msgs
   cv_bridge
   rosbag2_cpp
-  rosbag2_converter_default_plugins
   tf2
   visualization_msgs
 )

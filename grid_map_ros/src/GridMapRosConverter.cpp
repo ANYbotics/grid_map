@@ -11,10 +11,12 @@
 #include <geometry_msgs/msg/point.hpp>
 #include <geometry_msgs/msg/quaternion.hpp>
 #include <rosbag2_cpp/writer.hpp>
+#include <rosbag2_cpp/writers/sequential_writer.hpp>
 #include <rosbag2_cpp/reader.hpp>
-#include <rosbag2_cpp/typesupport_helpers.hpp>
-#include <rosbag2_cpp/serialization_format_converter_factory.hpp>
-#include <pluginlib/class_loader.hpp>
+#include <rosbag2_cpp/readers/sequential_reader.hpp>
+#include <rclcpp/serialization.hpp>
+#include <rclcpp/serialized_message.hpp>
+#include <rcutils/time.h>
 
 #include <grid_map_cv/grid_map_cv.hpp>
 #include <grid_map_msgs/msg/grid_map.hpp>
@@ -657,59 +659,42 @@ bool GridMapRosConverter::saveToBag(
   const grid_map::GridMap & gridMap, const std::string & pathToBag,
   const std::string & topic)
 {
-  uint64_t time = gridMap.getTimestamp();
+  grid_map_msgs::msg::GridMap message;
+  toMessage(gridMap, message);
 
-  if (!time) {
-    rclcpp::Clock clock;
-    time = clock.now().nanoseconds();
+  rclcpp::SerializedMessage serialized_msg;
+  rclcpp::Serialization<grid_map_msgs::msg::GridMap> serialization;
+  serialization.serialize_message(&message, &serialized_msg);
+
+  rosbag2_cpp::StorageOptions storage_options;
+  storage_options.uri = pathToBag;
+  storage_options.storage_id = "sqlite3";
+
+  rosbag2_cpp::ConverterOptions converter_options;
+  converter_options.input_serialization_format = "cdr";
+  converter_options.output_serialization_format = "cdr";
+
+  rosbag2_cpp::Writer writer(std::make_unique<rosbag2_cpp::writers::SequentialWriter>());
+  writer.open(storage_options, converter_options);
+
+  rosbag2_storage::TopicMetadata tm;
+  tm.name = topic;
+  tm.type = "grid_map_msgs/msg/GridMap";
+  tm.serialization_format = "cdr";
+  writer.create_topic(tm);
+
+  auto bag_message = std::make_shared<rosbag2_storage::SerializedBagMessage>();
+
+  auto ret = rcutils_system_time_now(&bag_message->time_stamp);
+  if (ret != RCL_RET_OK) {
+    RCLCPP_ERROR(rclcpp::get_logger("saveToBag"), "couldn't assign time rosbag message");
   }
 
-  std::unique_ptr<rosbag2_cpp::SerializationFormatConverterFactory> factory;
-  std::unique_ptr<rosbag2_cpp::converter_interfaces::SerializationFormatSerializer> cdr_serializer;
-  std::shared_ptr<rcpputils::SharedLibrary> introspection_typesupport_library;
-  std::shared_ptr<rcpputils::SharedLibrary> rosidl_typesupport_library;
-  std::shared_ptr<rosbag2_cpp::rosbag2_introspection_message_t> msg_to_write;
-  // std::unique_ptr<MemoryManagement> memory_management;  // Not sure if that is completely needed
-  const rosidl_message_type_support_t * rosidl_type_support;
-  const rosidl_message_type_support_t * introspection_type_support;
-  auto serialized_message = std::make_shared<rosbag2_storage::SerializedBagMessage>();
+  bag_message->topic_name = tm.name;
+  bag_message->serialized_data = std::shared_ptr<rcutils_uint8_array_t>(
+    &serialized_msg.get_rcl_serialized_message(), [](rcutils_uint8_array_t * /* data */) {});
 
-  factory = std::make_unique<rosbag2_cpp::SerializationFormatConverterFactory>();
-  cdr_serializer = factory->load_serializer("cdr");
-
-  introspection_typesupport_library = rosbag2_cpp::get_typesupport_library(
-    "grid_map_msgs/GridMap", "rosidl_typesupport_introspection_cpp");
-  introspection_type_support = rosbag2_cpp::get_typesupport_handle(
-    "grid_map_msgs/GridMap", "rosidl_typesupport_introspection_cpp",
-    introspection_typesupport_library);
-
-  rcutils_allocator_t allocator = rcutils_get_default_allocator();
-
-  msg_to_write =
-    rosbag2_cpp::allocate_introspection_message(introspection_type_support, &allocator);
-  rosbag2_cpp::introspection_message_set_topic_name(msg_to_write.get(), topic.c_str());
-  // msg_to_write->time_stamp = 1;  // TODO(marwan99): add corect time val
-
-  auto ros_message = reinterpret_cast<grid_map_msgs::msg::GridMap *>(msg_to_write->message);
-  toMessage(gridMap, *ros_message);
-
-  rosidl_typesupport_library = rosbag2_cpp::get_typesupport_library(
-    "grid_map_msgs/GridMap", "rosidl_typesupport_cpp");
-  rosidl_type_support = rosbag2_cpp::get_typesupport_handle(
-    "grid_map_msgs/GridMap", "rosidl_typesupport_cpp", rosidl_typesupport_library);
-
-  // memory_management = std::make_unique<MemoryManagement>();
-  // serialized_message->serialized_data = memory_management->make_initialized_message();
-
-  cdr_serializer->serialize(msg_to_write, rosidl_type_support, serialized_message);
-
-  rosbag2_cpp::StorageOptions storage_options = rosbag2_cpp::StorageOptions{};
-  storage_options.uri = pathToBag;
-
-  std::unique_ptr<rosbag2_cpp::Writer> bag;
-  bag->open(storage_options, {"rmw_format", "rmw_format"});
-  bag->create_topic({topic, "grid_map_msgs/GridMap", "", ""});
-  bag->write(serialized_message);
+  writer.write(bag_message);
   return true;
 }
 
@@ -717,44 +702,29 @@ bool GridMapRosConverter::loadFromBag(
   const std::string & pathToBag, const std::string & topic,
   grid_map::GridMap & gridMap)
 {
-  std::unique_ptr<rosbag2_cpp::SerializationFormatConverterFactory> factory;
-  std::unique_ptr<rosbag2_cpp::converter_interfaces::SerializationFormatDeserializer>
-  cdr_deserializer_;
-  std::shared_ptr<rcpputils::SharedLibrary> introspection_typesupport_library;
-  std::shared_ptr<rcpputils::SharedLibrary> rosidl_typesupport_library;
-  std::shared_ptr<rosbag2_cpp::rosbag2_introspection_message_t> read_msg;
-  const rosidl_message_type_support_t * rosidl_type_support;
-  const rosidl_message_type_support_t * introspection_type_support;
-  auto serialized_message = std::make_shared<rosbag2_storage::SerializedBagMessage>();
-
-  rosidl_typesupport_library = rosbag2_cpp::get_typesupport_library(
-    "grid_map_msgs/GridMap", "rosidl_typesupport_cpp");
-  rosidl_type_support = rosbag2_cpp::get_typesupport_handle(
-    "grid_map_msgs/GridMap", "rosidl_typesupport_cpp", rosidl_typesupport_library);
-
-  rcutils_allocator_t allocator = rcutils_get_default_allocator();
-
-  read_msg = rosbag2_cpp::allocate_introspection_message(introspection_type_support, &allocator);
-  rosbag2_cpp::introspection_message_set_topic_name(read_msg.get(), topic.c_str());
-
-  std::unique_ptr<rosbag2_cpp::Reader> bag;
-  rosbag2_cpp::StorageOptions storage_options = rosbag2_cpp::StorageOptions{};
-  rosbag2_storage::StorageFilter storage_filter;
-
+  rosbag2_cpp::StorageOptions storage_options;
   storage_options.uri = pathToBag;
-  storage_filter.topics.push_back(topic);
+  storage_options.storage_id = "sqlite3";
 
-  bag->open(storage_options, {"", "rmw_format"});
-  bag->set_filter(storage_filter);
+  rosbag2_cpp::ConverterOptions converter_options;
+  converter_options.input_serialization_format = "cdr";
+  converter_options.output_serialization_format = "cdr";
+
+  rosbag2_cpp::Reader reader(std::make_unique<rosbag2_cpp::readers::SequentialReader>());
+  reader.open(storage_options, converter_options);
 
   bool isDataFound = false;
-  while (bag->has_next()) {
-    serialized_message = bag->read_next();
-    cdr_deserializer_->deserialize(serialized_message, rosidl_type_support, read_msg);
-    grid_map_msgs::msg::GridMap * message =
-      static_cast<grid_map_msgs::msg::GridMap *>(read_msg->message);
-    if (message != NULL) {
-      fromMessage(*message, gridMap);
+
+  grid_map_msgs::msg::GridMap extracted_gridmap_msg;
+  rclcpp::Serialization<grid_map_msgs::msg::GridMap> serialization;
+
+  while (reader.has_next()) {
+    auto bag_message = reader.read_next();
+
+    if (bag_message->serialized_data != NULL) {
+      rclcpp::SerializedMessage extracted_serialized_msg(*bag_message->serialized_data);
+      serialization.deserialize_message(&extracted_serialized_msg, &extracted_gridmap_msg);
+      fromMessage(extracted_gridmap_msg, gridMap);
       isDataFound = true;
     } else {
       RCLCPP_WARN(rclcpp::get_logger("loadFromBag"), "Unable to load data from ROS bag.");

@@ -18,6 +18,7 @@
 #include <nav_msgs/msg/occupancy_grid.hpp>
 #include <nav2_msgs/msg/costmap.hpp>
 #include <sensor_msgs/image_encodings.hpp>
+#include <rcpputils/filesystem_helper.hpp>
 
 // STD
 #include <string>
@@ -76,14 +77,20 @@ TEST(RosbagHandling, saveLoad)
 
   EXPECT_FALSE(gridMapOut.exists(layer));
 
+  // Cleaning incase the previos bag was not removed
+  rcpputils::fs::path dir(pathToBag);
+  rcpputils::fs::remove_all(dir);
+
   EXPECT_TRUE(GridMapRosConverter::saveToBag(gridMapIn, pathToBag, topic));
   EXPECT_TRUE(GridMapRosConverter::loadFromBag(pathToBag, topic, gridMapOut));
-
   EXPECT_TRUE(gridMapOut.exists(layer));
 
   for (GridMapIterator iterator(gridMapIn); !iterator.isPastEnd(); ++iterator) {
     EXPECT_DOUBLE_EQ(gridMapIn.at(layer, *iterator), gridMapOut.at(layer, *iterator));
   }
+
+  // Removing the created bag
+  rcpputils::fs::remove_all(dir);
 }
 
 TEST(RosbagHandling, saveLoadWithTime)
@@ -107,6 +114,10 @@ TEST(RosbagHandling, saveLoadWithTime)
   rclcpp::Clock clock;
   gridMapIn.setTimestamp(clock.now().nanoseconds());
 
+  // Cleaning incase the previos bag was not removed
+  rcpputils::fs::path dir(pathToBag);
+  rcpputils::fs::remove_all(dir);
+
   EXPECT_TRUE(GridMapRosConverter::saveToBag(gridMapIn, pathToBag, topic));
   EXPECT_TRUE(GridMapRosConverter::loadFromBag(pathToBag, topic, gridMapOut));
 
@@ -115,6 +126,9 @@ TEST(RosbagHandling, saveLoadWithTime)
   for (GridMapIterator iterator(gridMapIn); !iterator.isPastEnd(); ++iterator) {
     EXPECT_DOUBLE_EQ(gridMapIn.at(layer, *iterator), gridMapOut.at(layer, *iterator));
   }
+
+  // Removing the created bag
+  rcpputils::fs::remove_all(dir);
 }
 
 TEST(OccupancyGridConversion, withMove)

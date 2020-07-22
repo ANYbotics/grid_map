@@ -14,6 +14,7 @@
   <build_depend>grid_map_cmake_helpers</build_depend>
 
   <depend>rclcpp</depend>
+  <depend>rcutils</depend>
   <depend>grid_map_core</depend>
   <depend>grid_map_msgs</depend>
   <depend>grid_map_cv</depend>
@@ -24,7 +25,6 @@
   <depend>geometry_msgs</depend>
   <depend>cv_bridge</depend>
   <depend>rosbag2_cpp</depend>
-  <depend>rosbag2_converter_default_plugins</depend>
   <depend>tf2</depend>
   <depend>visualization_msgs</depend>
 
