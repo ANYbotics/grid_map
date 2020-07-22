@@ -110,7 +110,7 @@ TEST(RosbagHandling, saveLoadWithTime)
 
   EXPECT_FALSE(gridMapOut.exists(layer));
 
-  // TODO(needs_assignment) Do other time than now.
+  // TODO(needs_assignment): Do other time than now.
   rclcpp::Clock clock;
   gridMapIn.setTimestamp(clock.now().nanoseconds());
 
