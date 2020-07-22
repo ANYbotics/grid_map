@@ -3,3 +3,8 @@ repositories:
     type: git
     url: https://github.com/ros-planning/navigation2.git
     version: master
+
+  ros2/rcpputils:
+    type: git
+    url: https://github.com/ros2/rcpputils.git
+    version: foxy
