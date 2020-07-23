@@ -19,6 +19,8 @@ find_package(rosbag2_cpp REQUIRED)
 find_package(tf2 REQUIRED)
 find_package(visualization_msgs REQUIRED)
 
+grid_map_package()
+
 set(dependencies
   rclcpp
   rcutils
