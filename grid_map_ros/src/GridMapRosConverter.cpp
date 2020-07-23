@@ -276,7 +276,7 @@ bool GridMapRosConverter::fromOccupancyGrid(
     return false;
   }
 
-  if (size.prod() != occupancyGrid.data.size()) {
+  if (static_cast<uint64_t>(size.prod()) != occupancyGrid.data.size()) {
     RCLCPP_WARN(
       rclcpp::get_logger("fromOccupancyGrid"),
       "Conversion of occupancy grid: Size of data does not correspond to width * height.");
@@ -374,7 +374,7 @@ bool GridMapRosConverter::fromCostmap(
     return false;
   }
 
-  if (size.prod() != costmap.data.size()) {
+  if (static_cast<uint64_t>(size.prod()) != costmap.data.size()) {
     RCLCPP_WARN(
       rclcpp::get_logger("fromcostmap"),
       "Conversion of costmap: Size of data does not correspond to width * height.");
