@@ -77,7 +77,7 @@ TEST(RosbagHandling, saveLoad)
 
   EXPECT_FALSE(gridMapOut.exists(layer));
 
-  // Cleaning incase the previos bag was not removed
+  // Cleaning in case the previous bag was not removed
   rcpputils::fs::path dir(pathToBag);
   rcpputils::fs::remove_all(dir);
 
@@ -114,7 +114,7 @@ TEST(RosbagHandling, saveLoadWithTime)
   rclcpp::Clock clock;
   gridMapIn.setTimestamp(clock.now().nanoseconds());
 
-  // Cleaning incase the previos bag was not removed
+  // Cleaning in case the previous bag was not removed
   rcpputils::fs::path dir(pathToBag);
   rcpputils::fs::remove_all(dir);
 

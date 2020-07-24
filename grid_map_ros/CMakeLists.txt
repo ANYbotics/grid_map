@@ -3,39 +3,39 @@ project(grid_map_ros)
 
 ## Find catkin macros and libraries
 find_package(ament_cmake REQUIRED)
+find_package(cv_bridge REQUIRED)
+find_package(geometry_msgs REQUIRED)
 find_package(grid_map_cmake_helpers REQUIRED)
+find_package(grid_map_core REQUIRED)
+find_package(grid_map_cv REQUIRED)
+find_package(grid_map_msgs REQUIRED)
+find_package(nav2_msgs REQUIRED)
+find_package(nav_msgs REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rcutils REQUIRED)
-find_package(grid_map_core REQUIRED)
-find_package(grid_map_msgs REQUIRED)
-find_package(grid_map_cv REQUIRED)
-find_package(sensor_msgs REQUIRED)
-find_package(nav_msgs REQUIRED)
-find_package(nav2_msgs REQUIRED)
-find_package(std_msgs REQUIRED)
-find_package(geometry_msgs REQUIRED)
-find_package(cv_bridge REQUIRED)
 find_package(rosbag2_cpp REQUIRED)
+find_package(sensor_msgs REQUIRED)
+find_package(std_msgs REQUIRED)
 find_package(tf2 REQUIRED)
 find_package(visualization_msgs REQUIRED)
 
 grid_map_package()
 
 set(dependencies
-  rclcpp
-  rcutils
-  grid_map_core
-  grid_map_msgs
-  grid_map_cv
-  sensor_msgs
-  nav_msgs
-  nav2_msgs
-  std_msgs
-  geometry_msgs
   cv_bridge
+  geometry_msgs
+  grid_map_core
+  grid_map_cv
+  grid_map_msgs
+  nav2_msgs
+  nav_msgs
+  rcutils
   rosbag2_cpp
+  sensor_msgs
+  std_msgs
   tf2
   visualization_msgs
+  rclcpp
 )
 
 ###########
