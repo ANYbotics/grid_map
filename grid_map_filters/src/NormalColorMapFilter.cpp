@@ -9,13 +9,11 @@
 #include <grid_map_filters/NormalColorMapFilter.hpp>
 
 #include <grid_map_core/grid_map_core.hpp>
-#include <pluginlib/class_list_macros.h>
+#include <pluginlib/class_list_macros.hpp>
 
 #include <Eigen/Dense>
 
 #include <string>
-
-using namespace filters;
 
 namespace grid_map
 {
@@ -33,17 +31,25 @@ NormalColorMapFilter<T>::~NormalColorMapFilter()
 template<typename T>
 bool NormalColorMapFilter<T>::configure()
 {
-  if (!FilterBase<T>::getParam(std::string("input_layers_prefix"), inputLayersPrefix_)) {
-    ROS_ERROR("Normal color map filter did not find parameter `input_layers_prefix`.");
+  if (!filters::FilterBase<T>::getParam(std::string("input_layers_prefix"), inputLayersPrefix_)) {
+    RCLCPP_ERROR(
+      this->logging_interface_->get_logger(),
+      "Normal color map filter did not find parameter `input_layers_prefix`.");
     return false;
   }
-  ROS_DEBUG("Normal color map filter input layers prefix is = %s.", inputLayersPrefix_.c_str());
+  RCLCPP_DEBUG(
+    this->logging_interface_->get_logger(), "Normal color map filter input layers prefix is = %s.",
+    inputLayersPrefix_.c_str());
 
-  if (!FilterBase<T>::getParam(std::string("output_layer"), outputLayer_)) {
-    ROS_ERROR("Normal color map filter did not find parameter `output_layer`.");
+  if (!filters::FilterBase<T>::getParam(std::string("output_layer"), outputLayer_)) {
+    RCLCPP_ERROR(
+      this->logging_interface_->get_logger(),
+      "Normal color map filter did not find parameter `output_layer`.");
     return false;
   }
-  ROS_DEBUG("Normal color map filter output_layer = %s.", outputLayer_.c_str());
+  RCLCPP_DEBUG(
+    this->logging_interface_->get_logger(), "Normal color map filter output_layer = %s.",
+    outputLayer_.c_str());
   return true;
 }
 
@@ -63,7 +69,7 @@ bool NormalColorMapFilter<T>::update(const T & mapIn, T & mapOut)
   // Z:  0 to  1 : Blue: 128 to 255
 
   // For each cell in map.
-  for (size_t i = 0; i < color.size(); ++i) {
+  for (int64_t i = 0; i < color.size(); ++i) {
     const Eigen::Vector3f colorVector((normalX(i) + 1.0) / 2.0,
       (normalY(i) + 1.0) / 2.0,
       (normalZ(i) / 2.0) + 0.5);

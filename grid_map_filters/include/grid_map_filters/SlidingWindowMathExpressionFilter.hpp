@@ -13,7 +13,7 @@
 
 #include <grid_map_core/grid_map_core.hpp>
 
-#include <filters/filter_base.h>
+#include <filters/filter_base.hpp>
 
 #include <string>
 
@@ -42,14 +42,14 @@ public:
   /*!
    * Configures the filter from parameters on the parameter server.
    */
-  virtual bool configure();
+  bool configure() override;
 
   /*!
    * Takes the minimum out of different layers of a grid map.
    * @param mapIn gridMap with the different layers to take the min.
    * @param mapOut gridMap with an additional layer containing the sum.
    */
-  virtual bool update(const T & mapIn, T & mapOut);
+  bool update(const T & mapIn, T & mapOut) override;
 
 private:
   //! Input layer name.

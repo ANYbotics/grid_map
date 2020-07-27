@@ -9,9 +9,7 @@
 #include "grid_map_filters/BufferNormalizerFilter.hpp"
 
 #include <grid_map_core/GridMap.hpp>
-#include <pluginlib/class_list_macros.h>
-
-using namespace filters;
+#include <pluginlib/class_list_macros.hpp>
 
 namespace grid_map
 {

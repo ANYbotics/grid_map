@@ -9,11 +9,9 @@
 #include "grid_map_filters/DuplicationFilter.hpp"
 
 #include <grid_map_core/GridMap.hpp>
-#include <pluginlib/class_list_macros.h>
+#include <pluginlib/class_list_macros.hpp>
 
 #include <string>
-
-using namespace filters;
 
 namespace grid_map
 {
@@ -31,13 +29,17 @@ DuplicationFilter<T>::~DuplicationFilter()
 template<typename T>
 bool DuplicationFilter<T>::configure()
 {
-  if (!FilterBase<T>::getParam(std::string("input_layer"), inputLayer_)) {
-    ROS_ERROR("DuplicationFilter did not find parameter 'input_layer'.");
+  if (!filters::FilterBase<T>::getParam(std::string("input_layer"), inputLayer_)) {
+    RCLCPP_ERROR(
+      this->logging_interface_->get_logger(),
+      "DuplicationFilter did not find parameter 'input_layer'.");
     return false;
   }
 
-  if (!FilterBase<T>::getParam(std::string("output_layer"), outputLayer_)) {
-    ROS_ERROR("DuplicationFilter did not find parameter 'output_layer'.");
+  if (!filters::FilterBase<T>::getParam(std::string("output_layer"), outputLayer_)) {
+    RCLCPP_ERROR(
+      this->logging_interface_->get_logger(),
+      "DuplicationFilter did not find parameter 'output_layer'.");
     return false;
   }
 

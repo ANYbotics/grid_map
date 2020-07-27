@@ -6,7 +6,7 @@
  *   Institute: ETH Zurich, ANYbotics
  */
 
-#include <pluginlib/class_list_macros.h>
+#include <pluginlib/class_list_macros.hpp>
 #include <Eigen/Dense>
 
 #include <tbb/task_scheduler_init.h>
@@ -38,7 +38,9 @@ bool NormalVectorsFilter<T>::configure()
   // Read which algorithm is chosen: area or raster.
   std::string algorithm;
   if (!filters::FilterBase<T>::getParam(std::string("algorithm"), algorithm)) {
-    ROS_WARN("Could not find the parameter: `algorithm`. Setting to default value: 'area'.");
+    RCLCPP_WARN(
+      this->logging_interface_->get_logger(),
+      "Could not find the parameter: `algorithm`. Setting to default value: 'area'.");
     // Default value.
     algorithm = "area";
   }
@@ -49,13 +51,19 @@ bool NormalVectorsFilter<T>::configure()
     // Read radius, if found, its value will be used for area method.
     // If radius parameter is not found, raster method will be used.
     if (!filters::FilterBase<T>::getParam(std::string("radius"), estimationRadius_)) {
-      ROS_WARN("Could not find the parameter: `radius`. Switching to raster method.");
+      RCLCPP_WARN(
+        this->logging_interface_->get_logger(),
+        "Could not find the parameter: `radius`. Switching to raster method.");
       algorithm = "raster";
     }
-    ROS_DEBUG("Normal vectors estimation radius = %f", estimationRadius_);
+    RCLCPP_DEBUG(
+      this->logging_interface_->get_logger(), "Normal vectors estimation radius = %f",
+      estimationRadius_);
     // If radius not positive switch to raster method.
     if (estimationRadius_ <= 0) {
-      ROS_WARN("Parameter `radius` is not positive. Switching to raster method.");
+      RCLCPP_WARN(
+        this->logging_interface_->get_logger(),
+        "Parameter `radius` is not positive. Switching to raster method.");
       algorithm = "raster";
     }
   }
@@ -66,22 +74,26 @@ bool NormalVectorsFilter<T>::configure()
       std::string("parallelization_enabled"),
       parallelizationEnabled_))
   {
-    ROS_WARN(
+    RCLCPP_WARN(
+      this->logging_interface_->get_logger(),
       "Could not find the parameter:"
       " `parallelization_enabled`. Setting to default value: 'false'.");
     parallelizationEnabled_ = false;
   }
-  ROS_DEBUG("Parallelization_enabled = %d", parallelizationEnabled_);
+  RCLCPP_DEBUG(
+    this->logging_interface_->get_logger(), "Parallelization_enabled = %d",
+    parallelizationEnabled_);
 
   // Read thread_number to set the number of threads to be used if parallelization is enebled,
   // if parameter is not found an error is thrown and the default is to set it to automatic.
   if (!filters::FilterBase<T>::getParam(std::string("thread_number"), threadCount_)) {
-    ROS_WARN(
+    RCLCPP_WARN(
+      this->logging_interface_->get_logger(),
       "Could not find the parameter:"
       " `thread_number`. Setting to default value: 'automatic'.");
     threadCount_ = tbb::task_scheduler_init::automatic;
   }
-  ROS_DEBUG("Thread_number = %d", threadCount_);
+  RCLCPP_DEBUG(this->logging_interface_->get_logger(), "Thread_number = %d", threadCount_);
 
   // Set wanted method looking at algorithm and parallelization_enabled parameters.
   // parallelization_enabled is used to select whether to use parallelization or not.
@@ -89,21 +101,23 @@ bool NormalVectorsFilter<T>::configure()
     // If parallelizationEnabled_=true, use the parallel method, otherwise serial.
     if (parallelizationEnabled_) {
       method_ = Method::RasterParallel;
-      ROS_DEBUG("Method RasterParallel");
+      RCLCPP_DEBUG(this->logging_interface_->get_logger(), "Method RasterParallel");
     } else {
       method_ = Method::RasterSerial;
-      ROS_DEBUG("Method RasterSerial");
+      RCLCPP_DEBUG(this->logging_interface_->get_logger(), "Method RasterSerial");
     }
   } else {
     // If parallelizationEnabled_=true, use the parallel method, otherwise serial.
     if (parallelizationEnabled_) {
       method_ = Method::AreaParallel;
-      ROS_DEBUG("Method AreaParallel");
+      RCLCPP_DEBUG(this->logging_interface_->get_logger(), "Method AreaParallel");
     } else {
       method_ = Method::AreaSerial;
-      ROS_DEBUG("Method AreaSerial");
+      RCLCPP_DEBUG(this->logging_interface_->get_logger(), "Method AreaSerial");
     }
-    ROS_DEBUG("estimationRadius_ = %f", estimationRadius_);
+    RCLCPP_DEBUG(
+      this->logging_interface_->get_logger(), "estimationRadius_ = %f",
+      estimationRadius_);
   }
 
   // Read normal_vector_positive_axis, to define normal vector positive direction.
@@ -112,7 +126,9 @@ bool NormalVectorsFilter<T>::configure()
       std::string("normal_vector_positive_axis"),
       normalVectorPositiveAxis))
   {
-    ROS_ERROR("Normal vectors filter did not find parameter `normal_vector_positive_axis`.");
+    RCLCPP_ERROR(
+      this->logging_interface_->get_logger(),
+      "Normal vectors filter did not find parameter `normal_vector_positive_axis`.");
     return false;
   }
   if (normalVectorPositiveAxis == "z") {
@@ -122,7 +138,8 @@ bool NormalVectorsFilter<T>::configure()
   } else if (normalVectorPositiveAxis == "x") {
     normalVectorPositiveAxis_ = Vector3::UnitX();
   } else {
-    ROS_ERROR(
+    RCLCPP_ERROR(
+      this->logging_interface_->get_logger(),
       "The normal vector positive axis '%s' is not valid.",
       normalVectorPositiveAxis.c_str());
     return false;
@@ -130,17 +147,25 @@ bool NormalVectorsFilter<T>::configure()
 
   // Read input_layer, to define input grid map layer.
   if (!filters::FilterBase<T>::getParam(std::string("input_layer"), inputLayer_)) {
-    ROS_ERROR("Normal vectors filter did not find parameter `input_layer`.");
+    RCLCPP_ERROR(
+      this->logging_interface_->get_logger(),
+      "Normal vectors filter did not find parameter `input_layer`.");
     return false;
   }
-  ROS_DEBUG("Normal vectors filter input layer is = %s.", inputLayer_.c_str());
+  RCLCPP_DEBUG(
+    this->logging_interface_->get_logger(), "Normal vectors filter input layer is = %s.",
+    inputLayer_.c_str());
 
   // Read output_layers_prefix, to define output grid map layers prefix.
   if (!filters::FilterBase<T>::getParam(std::string("output_layers_prefix"), outputLayersPrefix_)) {
-    ROS_ERROR("Normal vectors filter did not find parameter `output_layers_prefix`.");
+    RCLCPP_ERROR(
+      this->logging_interface_->get_logger(),
+      "Normal vectors filter did not find parameter `output_layers_prefix`.");
     return false;
   }
-  ROS_DEBUG("Normal vectors filter output_layer = %s.", outputLayersPrefix_.c_str());
+  RCLCPP_DEBUG(
+    this->logging_interface_->get_logger(), "Normal vectors filter output_layer = %s.",
+    outputLayersPrefix_.c_str());
 
   // If everything has been set up correctly
   return true;
@@ -182,7 +207,8 @@ void NormalVectorsFilter<T>::computeWithAreaSerial(
   GridMap & map, const std::string & inputLayer,
   const std::string & outputLayersPrefix)
 {
-  const double start = ros::Time::now().toSec();
+  rclcpp::Clock clock;
+  const double start = clock.now().seconds();
 
   // For each cell in submap.
   for (GridMapIterator iterator(map); !iterator.isPastEnd(); ++iterator) {
@@ -193,8 +219,10 @@ void NormalVectorsFilter<T>::computeWithAreaSerial(
     }
   }
 
-  const double end = ros::Time::now().toSec();
-  ROS_DEBUG_THROTTLE(2.0, "NORMAL COMPUTATION TIME = %f", (end - start));
+  const double end = clock.now().seconds();
+  RCLCPP_DEBUG_THROTTLE(
+    this->logging_interface_->get_logger(), clock, 2.0, "NORMAL COMPUTATION TIME = %f",
+    (end - start));
 }
 
 template<typename T>
@@ -202,7 +230,8 @@ void NormalVectorsFilter<T>::computeWithAreaParallel(
   GridMap & map, const std::string & inputLayer,
   const std::string & outputLayersPrefix)
 {
-  const double start = ros::Time::now().toSec();
+  rclcpp::Clock clock;
+  const double start = clock.now().seconds();
   grid_map::Size gridMapSize = map.getSize();
 
   // Set number of thread to use for parallel programming.
@@ -221,8 +250,10 @@ void NormalVectorsFilter<T>::computeWithAreaParallel(
       }
     });
 
-  const double end = ros::Time::now().toSec();
-  ROS_DEBUG_THROTTLE(2.0, "NORMAL COMPUTATION TIME = %f", (end - start));
+  const double end = clock.now().seconds();
+  RCLCPP_DEBUG_THROTTLE(
+    this->logging_interface_->get_logger(), clock, 2.0, "NORMAL COMPUTATION TIME = %f",
+    (end - start));
 }
 
 template<typename T>
@@ -237,7 +268,8 @@ void NormalVectorsFilter<T>::areaSingleNormalComputation(
   // Prepare data computation. Check if area is bigger than cell.
   const double minAllowedEstimationRadius = 0.5 * map.getResolution();
   if (estimationRadius_ <= minAllowedEstimationRadius) {
-    ROS_WARN(
+    RCLCPP_WARN(
+      this->logging_interface_->get_logger(),
       "Estimation radius is smaller than allowed by the map resolution (%f < %f)",
       estimationRadius_, minAllowedEstimationRadius);
   }
@@ -260,7 +292,8 @@ void NormalVectorsFilter<T>::areaSingleNormalComputation(
 
   Vector3 unitaryNormalVector = Vector3::Zero();
   if (nPoints < 3) {
-    ROS_DEBUG(
+    RCLCPP_DEBUG(
+      this->logging_interface_->get_logger(),
       "Not enough points to establish normal direction (nPoints = %i)",
       static_cast<int>(nPoints));
     unitaryNormalVector = Vector3::UnitZ();
@@ -276,8 +309,11 @@ void NormalVectorsFilter<T>::areaSingleNormalComputation(
     if (solver.eigenvalues()(1) > 1e-8) {
       unitaryNormalVector = solver.eigenvectors().col(0);
     } else {  // If second eigenvalue is zero, the normal is not defined.
-      ROS_DEBUG("Covariance matrix needed for eigen decomposition is degenerated.");
-      ROS_DEBUG(
+      RCLCPP_DEBUG(
+        this->logging_interface_->get_logger(),
+        "Covariance matrix needed for eigen decomposition is degenerated.");
+      RCLCPP_DEBUG(
+        this->logging_interface_->get_logger(),
         "Expected cause: data is on a straight line (nPoints = %i)",
         static_cast<int>(nPoints));
       unitaryNormalVector = Vector3::UnitZ();
@@ -300,7 +336,8 @@ void NormalVectorsFilter<T>::computeWithRasterSerial(
   const std::string & outputLayersPrefix)
 {
   // Inspiration for algorithm: http://www.flipcode.com/archives/Calculating_Vertex_Normals_for_Height_Maps.shtml
-  const double start = ros::Time::now().toSec();
+  rclcpp::Clock clock;
+  const double start = clock.now().seconds();
 
   const grid_map::Size gridMapSize = map.getSize();
   gridMapResolution_ = map.getResolution();
@@ -319,8 +356,10 @@ void NormalVectorsFilter<T>::computeWithRasterSerial(
     rasterSingleNormalComputation(map, outputLayersPrefix, dataMap, index);
   }
 
-  const double end = ros::Time::now().toSec();
-  ROS_DEBUG_THROTTLE(2.0, "NORMAL COMPUTATION TIME = %f", (end - start));
+  const double end = clock.now().seconds();
+  RCLCPP_DEBUG_THROTTLE(
+    this->logging_interface_->get_logger(), clock, 2.0, "NORMAL COMPUTATION TIME = %f",
+    (end - start));
 }
 
 template<typename T>
@@ -329,7 +368,8 @@ void NormalVectorsFilter<T>::computeWithRasterParallel(
   const std::string & inputLayer,
   const std::string & outputLayersPrefix)
 {
-  const double start = ros::Time::now().toSec();
+  rclcpp::Clock clock;
+  const double start = clock.now().seconds();
 
   const grid_map::Size gridMapSize = map.getSize();
   gridMapResolution_ = map.getResolution();
@@ -354,11 +394,15 @@ void NormalVectorsFilter<T>::computeWithRasterParallel(
         rasterSingleNormalComputation(map, outputLayersPrefix, dataMap, index);
       });
   } else {
-    ROS_ERROR("Grid map size is too small for normal raster computation");
+    RCLCPP_ERROR(
+      this->logging_interface_->get_logger(),
+      "Grid map size is too small for normal raster computation");
   }
 
-  const double end = ros::Time::now().toSec();
-  ROS_DEBUG_THROTTLE(2.0, "NORMAL COMPUTATION TIME = %f", (end - start));
+  const double end = clock.now().seconds();
+  RCLCPP_DEBUG_THROTTLE(
+    this->logging_interface_->get_logger(), clock, 2.0, "NORMAL COMPUTATION TIME = %f",
+    (end - start));
 }
 
 template<typename T>

@@ -9,13 +9,11 @@
 #include <grid_map_filters/ColorFillFilter.hpp>
 
 #include <grid_map_core/grid_map_core.hpp>
-#include <pluginlib/class_list_macros.h>
+#include <pluginlib/class_list_macros.hpp>
 
 #include <Eigen/Dense>
 
 #include <string>
-
-using namespace filters;
 
 namespace grid_map
 {
@@ -36,32 +34,42 @@ ColorFillFilter<T>::~ColorFillFilter()
 template<typename T>
 bool ColorFillFilter<T>::configure()
 {
-  if (!FilterBase<T>::getParam(std::string("red"), r_)) {
-    ROS_ERROR("Color fill filter did not find parameter `red`.");
+  if (!filters::FilterBase<T>::getParam(std::string("red"), r_)) {
+    RCLCPP_ERROR(
+      this->logging_interface_->get_logger(), "Color fill filter did not find parameter `red`.");
     return false;
   }
-  ROS_DEBUG("Color fill filter red is = %f.", r_);
+  RCLCPP_DEBUG(this->logging_interface_->get_logger(), "Color fill filter red is = %f.", r_);
 
-  if (!FilterBase<T>::getParam(std::string("green"), g_)) {
-    ROS_ERROR("Color fill filter did not find parameter `green`.");
+  if (!filters::FilterBase<T>::getParam(std::string("green"), g_)) {
+    RCLCPP_ERROR(
+      this->logging_interface_->get_logger(),
+      "Color fill filter did not find parameter `green`.");
     return false;
   }
-  ROS_DEBUG("Color fill filter green is = %f.", g_);
+  RCLCPP_DEBUG(this->logging_interface_->get_logger(), "Color fill filter green is = %f.", g_);
 
-  if (!FilterBase<T>::getParam(std::string("blue"), b_)) {
-    ROS_ERROR("Color fill filter did not find parameter `blue`.");
+  if (!filters::FilterBase<T>::getParam(std::string("blue"), b_)) {
+    RCLCPP_ERROR(
+      this->logging_interface_->get_logger(), "Color fill filter did not find parameter `blue`.");
     return false;
   }
-  ROS_DEBUG("Color fill filter blue is = %f.", b_);
+  RCLCPP_DEBUG(this->logging_interface_->get_logger(), "Color fill filter blue is = %f.", b_);
 
-  if (!FilterBase<T>::getParam(std::string("mask_layer"), maskLayer_)) {}
-  ROS_DEBUG("Color fill filter mask_layer = %s.", maskLayer_.c_str());
+  // if (!filters::FilterBase<T>::getParam(std::string("mask_layer"), maskLayer_)) {}
+  RCLCPP_DEBUG(
+    this->logging_interface_->get_logger(), "Color fill filter mask_layer = %s.",
+    maskLayer_.c_str());
 
-  if (!FilterBase<T>::getParam(std::string("output_layer"), outputLayer_)) {
-    ROS_ERROR("Color fill filter did not find parameter `output_layer`.");
+  if (!filters::FilterBase<T>::getParam(std::string("output_layer"), outputLayer_)) {
+    RCLCPP_ERROR(
+      this->logging_interface_->get_logger(),
+      "Color fill filter did not find parameter `output_layer`.");
     return false;
   }
-  ROS_DEBUG("Color fill filter output_layer = %s.", outputLayer_.c_str());
+  RCLCPP_DEBUG(
+    this->logging_interface_->get_logger(), "Color fill filter output_layer = %s.",
+    outputLayer_.c_str());
   return true;
 }
 
@@ -82,7 +90,7 @@ bool ColorFillFilter<T>::update(const T & mapIn, T & mapOut)
     auto & mask = mapOut[maskLayer_];
 
     // For each cell in map.
-    for (size_t i = 0; i < output.size(); ++i) {
+    for (int64_t i = 0; i < output.size(); ++i) {
       output(i) = std::isfinite(mask(i)) ? colorValue : NAN;
     }
   }

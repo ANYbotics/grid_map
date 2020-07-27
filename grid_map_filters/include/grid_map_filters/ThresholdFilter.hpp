@@ -9,7 +9,7 @@
 #ifndef GRID_MAP_FILTERS__THRESHOLDFILTER_HPP_
 #define GRID_MAP_FILTERS__THRESHOLDFILTER_HPP_
 
-#include <filters/filter_base.h>
+#include <filters/filter_base.hpp>
 
 #include <string>
 #include <vector>
@@ -38,7 +38,7 @@ public:
   /*!
    * Configures the filter from parameters on the parameter server.
    */
-  virtual bool configure();
+  bool configure() override;
 
   /*!
    * Uses either an upper or lower threshold. If the threshold is exceeded
@@ -46,7 +46,7 @@ public:
    * @param mapIn GridMap with the different layers to apply a threshold.
    * @param mapOut GridMap with the threshold applied to the layers.
    */
-  virtual bool update(const T & mapIn, T & mapOut);
+  bool update(const T & mapIn, T & mapOut) override;
 
 private:
   //! Layer the threshold should be applied to.

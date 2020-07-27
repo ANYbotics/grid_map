@@ -9,13 +9,11 @@
 #include <grid_map_filters/CurvatureFilter.hpp>
 
 #include <grid_map_core/grid_map_core.hpp>
-#include <pluginlib/class_list_macros.h>
+#include <pluginlib/class_list_macros.hpp>
 
 #include <Eigen/Dense>
 
 #include <string>
-
-using namespace filters;
 
 namespace grid_map
 {
@@ -33,17 +31,25 @@ CurvatureFilter<T>::~CurvatureFilter()
 template<typename T>
 bool CurvatureFilter<T>::configure()
 {
-  if (!FilterBase<T>::getParam(std::string("input_layer"), inputLayer_)) {
-    ROS_ERROR("Curvature filter did not find parameter `input_layer`.");
+  if (!filters::FilterBase<T>::getParam(std::string("input_layer"), inputLayer_)) {
+    RCLCPP_ERROR(
+      this->logging_interface_->get_logger(),
+      "Curvature filter did not find parameter `input_layer`.");
     return false;
   }
-  ROS_DEBUG("Curvature filter input layer is = %s.", inputLayer_.c_str());
+  RCLCPP_DEBUG(
+    this->logging_interface_->get_logger(), "Curvature filter input layer is = %s.",
+    inputLayer_.c_str());
 
-  if (!FilterBase<T>::getParam(std::string("output_layer"), outputLayer_)) {
-    ROS_ERROR("Curvature filter did not find parameter `output_layer`.");
+  if (!filters::FilterBase<T>::getParam(std::string("output_layer"), outputLayer_)) {
+    RCLCPP_ERROR(
+      this->logging_interface_->get_logger(),
+      "Curvature filter did not find parameter `output_layer`.");
     return false;
   }
-  ROS_DEBUG("Curvature filter output_layer = %s.", outputLayer_.c_str());
+  RCLCPP_DEBUG(
+    this->logging_interface_->get_logger(), "Curvature filter output_layer = %s.",
+    outputLayer_.c_str());
 
   return true;
 }
@@ -63,8 +69,8 @@ bool CurvatureFilter<T>::update(const T & mapIn, T & mapOut)
   auto & curvature = mapOut[outputLayer_];
   const float L2 = mapOut.getResolution() * mapOut.getResolution();
 
-  for (size_t j = 0; j < input.cols(); ++j) {
-    for (size_t i = 0; i < input.rows(); ++i) {
+  for (int64_t j = 0; j < input.cols(); ++j) {
+    for (int64_t i = 0; i < input.rows(); ++i) {
       // http://help.arcgis.com/en/arcgisdesktop/10.0/help/index.html#/How_Curvature_works/00q90000000t000000/
       if (!std::isfinite(input(i, j))) {continue;}
       float D =

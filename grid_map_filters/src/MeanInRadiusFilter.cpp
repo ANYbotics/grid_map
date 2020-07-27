@@ -9,11 +9,9 @@
 #include "grid_map_filters/MeanInRadiusFilter.hpp"
 
 #include <grid_map_core/grid_map_core.hpp>
-#include <pluginlib/class_list_macros.h>
+#include <pluginlib/class_list_macros.hpp>
 
 #include <string>
-
-using namespace filters;
 
 namespace grid_map
 {
@@ -32,31 +30,43 @@ MeanInRadiusFilter<T>::~MeanInRadiusFilter()
 template<typename T>
 bool MeanInRadiusFilter<T>::configure()
 {
-  if (!FilterBase<T>::getParam(std::string("radius"), radius_)) {
-    ROS_ERROR("MeanInRadius filter did not find parameter `radius`.");
+  if (!filters::FilterBase<T>::getParam(std::string("radius"), radius_)) {
+    RCLCPP_ERROR(
+      this->logging_interface_->get_logger(),
+      "MeanInRadius filter did not find parameter `radius`.");
     return false;
   }
 
   if (radius_ < 0.0) {
-    ROS_ERROR("MeanInRadius filter: Radius must be greater than zero.");
+    RCLCPP_ERROR(
+      this->logging_interface_->get_logger(),
+      "MeanInRadius filter: Radius must be greater than zero.");
     return false;
   }
 
-  ROS_DEBUG("Radius = %f.", radius_);
+  RCLCPP_DEBUG(this->logging_interface_->get_logger(), "Radius = %f.", radius_);
 
-  if (!FilterBase<T>::getParam(std::string("input_layer"), inputLayer_)) {
-    ROS_ERROR("MeanInRadius filter did not find parameter `input_layer`.");
+  if (!filters::FilterBase<T>::getParam(std::string("input_layer"), inputLayer_)) {
+    RCLCPP_ERROR(
+      this->logging_interface_->get_logger(),
+      "MeanInRadius filter did not find parameter `input_layer`.");
     return false;
   }
 
-  ROS_DEBUG("MeanInRadius input layer is = %s.", inputLayer_.c_str());
+  RCLCPP_DEBUG(
+    this->logging_interface_->get_logger(), "MeanInRadius input layer is = %s.",
+    inputLayer_.c_str());
 
-  if (!FilterBase<T>::getParam(std::string("output_layer"), outputLayer_)) {
-    ROS_ERROR("MeanInRadius filter did not find parameter `output_layer`.");
+  if (!filters::FilterBase<T>::getParam(std::string("output_layer"), outputLayer_)) {
+    RCLCPP_ERROR(
+      this->logging_interface_->get_logger(),
+      "MeanInRadius filter did not find parameter `output_layer`.");
     return false;
   }
 
-  ROS_DEBUG("MeanInRadius output_layer = %s.", outputLayer_.c_str());
+  RCLCPP_DEBUG(
+    this->logging_interface_->get_logger(), "MeanInRadius output_layer = %s.",
+    outputLayer_.c_str());
   return true;
 }
 

@@ -9,7 +9,7 @@
 #ifndef GRID_MAP_FILTERS__DUPLICATIONFILTER_HPP_
 #define GRID_MAP_FILTERS__DUPLICATIONFILTER_HPP_
 
-#include <filters/filter_base.h>
+#include <filters/filter_base.hpp>
 
 #include <string>
 
@@ -36,14 +36,14 @@ public:
   /*!
    * Configures the filter from parameters on the parameter server.
    */
-  virtual bool configure();
+  bool configure() override;
 
   /*!
    * Duplicates the specified layers of a grid map.
    * @param mapIn with the layer to duplicate.
    * @param mapOut with the layer duplicated.
    */
-  virtual bool update(const T & mapIn, T & mapOut);
+  bool update(const T & mapIn, T & mapOut) override;
 
 private:
   //! Name of the layer that is duplicated.

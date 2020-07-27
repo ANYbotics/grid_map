@@ -9,14 +9,12 @@
 #include <grid_map_filters/ColorBlendingFilter.hpp>
 
 #include <grid_map_core/grid_map_core.hpp>
-#include <pluginlib/class_list_macros.h>
+#include <pluginlib/class_list_macros.hpp>
 
 #include <Eigen/Dense>
 #include <math.h>
 
 #include <string>
-
-using namespace filters;
 
 namespace grid_map
 {
@@ -36,43 +34,62 @@ ColorBlendingFilter<T>::~ColorBlendingFilter()
 template<typename T>
 bool ColorBlendingFilter<T>::configure()
 {
-  if (!FilterBase<T>::getParam(std::string("background_layer"), backgroundLayer_)) {
-    ROS_ERROR("Color blending filter did not find parameter `background_layer`.");
+  if (!filters::FilterBase<T>::getParam(std::string("background_layer"), backgroundLayer_)) {
+    RCLCPP_ERROR(
+      this->logging_interface_->get_logger(),
+      "Color blending filter did not find parameter `background_layer`.");
     return false;
   }
-  ROS_DEBUG("Color blending filter background layer is = %s.", backgroundLayer_.c_str());
+  RCLCPP_DEBUG(
+    this->logging_interface_->get_logger(), "Color blending filter background layer is = %s.",
+    backgroundLayer_.c_str());
 
-  if (!FilterBase<T>::getParam(std::string("foreground_layer"), foregroundLayer_)) {
-    ROS_ERROR("Color blending filter did not find parameter `foreground_layer`.");
+  if (!filters::FilterBase<T>::getParam(std::string("foreground_layer"), foregroundLayer_)) {
+    RCLCPP_ERROR(
+      this->logging_interface_->get_logger(),
+      "Color blending filter did not find parameter `foreground_layer`.");
     return false;
   }
-  ROS_DEBUG("Color blending filter foreground layer is = %s.", foregroundLayer_.c_str());
+  RCLCPP_DEBUG(
+    this->logging_interface_->get_logger(), "Color blending filter foreground layer is = %s.",
+    foregroundLayer_.c_str());
 
   std::string blendMode;
-  if (!FilterBase<T>::getParam(std::string("blend_mode"), blendMode)) {
+  if (!filters::FilterBase<T>::getParam(std::string("blend_mode"), blendMode)) {
     blendMode = "normal";
   }
-  ROS_DEBUG("Color blending filter blend mode is = %s.", blendMode.c_str());
+  RCLCPP_DEBUG(
+    this->logging_interface_->get_logger(), "Color blending filter blend mode is = %s.",
+    blendMode.c_str());
   if (blendMode == "normal") {
     blendMode_ = BlendModes::Normal;
   } else if (blendMode == "hard_light") {
     blendMode_ = BlendModes::HardLight;
   } else if (blendMode == "soft_light") {blendMode_ = BlendModes::SoftLight;} else {
-    ROS_ERROR("Color blending filter blend mode `%s` does not exist.", blendMode.c_str());
+    RCLCPP_ERROR(
+      this->logging_interface_->get_logger(),
+      "Color blending filter blend mode `%s` does not exist.", blendMode.c_str());
     return false;
   }
 
-  if (!FilterBase<T>::getParam(std::string("opacity"), opacity_)) {
-    ROS_ERROR("Color blending filter did not find parameter `opacity`.");
+  if (!filters::FilterBase<T>::getParam(std::string("opacity"), opacity_)) {
+    RCLCPP_ERROR(
+      this->logging_interface_->get_logger(),
+      "Color blending filter did not find parameter `opacity`.");
     return false;
   }
-  ROS_DEBUG("Color blending filter opacity is = %f.", opacity_);
+  RCLCPP_DEBUG(
+    this->logging_interface_->get_logger(), "Color blending filter opacity is = %f.", opacity_);
 
-  if (!FilterBase<T>::getParam(std::string("output_layer"), outputLayer_)) {
-    ROS_ERROR("Color blending filter did not find parameter `output_layer`.");
+  if (!filters::FilterBase<T>::getParam(std::string("output_layer"), outputLayer_)) {
+    RCLCPP_ERROR(
+      this->logging_interface_->get_logger(),
+      "Color blending filter did not find parameter `output_layer`.");
     return false;
   }
-  ROS_DEBUG("Color blending filter output_layer = %s.", outputLayer_.c_str());
+  RCLCPP_DEBUG(
+    this->logging_interface_->get_logger(), "Color blending filter output_layer = %s.",
+    outputLayer_.c_str());
   return true;
 }
 
@@ -87,7 +104,7 @@ bool ColorBlendingFilter<T>::update(const T & mapIn, T & mapOut)
   auto & output = mapOut[outputLayer_];
 
   // For each cell in map.
-  for (size_t i = 0; i < output.size(); ++i) {
+  for (int64_t i = 0; i < output.size(); ++i) {
     if (std::isnan(background(i))) {
       output(i) = foreground(i);
     } else if (std::isnan(foreground(i))) {

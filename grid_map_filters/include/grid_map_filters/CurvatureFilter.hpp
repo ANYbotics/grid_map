@@ -9,7 +9,7 @@
 #ifndef GRID_MAP_FILTERS__CURVATUREFILTER_HPP_
 #define GRID_MAP_FILTERS__CURVATUREFILTER_HPP_
 
-#include <filters/filter_base.h>
+#include <filters/filter_base.hpp>
 
 #include <Eigen/Core>
 #include <string>
@@ -37,7 +37,7 @@ public:
   /*!
    * Configures the filter from parameters on the Parameter Server
    */
-  virtual bool configure();
+  bool configure() override;
 
   /*!
    * Compute the curvature of a layer in a map and
@@ -45,7 +45,7 @@ public:
    * @param mapIn grid map containing the layer for which the curvature is computed for.
    * @param mapOut grid map containing mapIn and the new layer for the curvature.
    */
-  virtual bool update(const T & mapIn, T & mapOut);
+  bool update(const T & mapIn, T & mapOut) override;
 
 private:
   //! Input layer name.

@@ -46,9 +46,9 @@ namespace EigenLab
 // ONLY valid when isLocal() is true. In most cases, you're best off
 // accessing the matrix data via matrix() instead.
 //----------------------------------------
-template < typename Derived = Eigen::MatrixXd >
-class Value
-{
+  template < typename Derived = Eigen::MatrixXd >
+    class Value  // NOLINT
+  {
 private:
     // Local matrix data.
     Derived mLocal;
@@ -94,10 +94,12 @@ public:
     // Set local data.
     Value() : mLocal(1, 1), mShared(mLocal.data(), mLocal.rows(), mLocal.cols()), mIsLocal(true) {
     }
-    Value(const typename Derived::Scalar s) : mLocal(Derived::Constant(1, 1, s)), mShared(
+    explicit Value(const typename Derived::Scalar s)
+    : mLocal(Derived::Constant(1, 1, s)), mShared(
         mLocal.data(), mLocal.rows(), mLocal.cols()), mIsLocal(true) {
     }
-    Value(const Derived & mat) : mLocal(mat), mShared(mLocal.data(), mLocal.rows(), mLocal.cols()),
+    explicit Value(const Derived & mat)
+    : mLocal(mat), mShared(mLocal.data(), mLocal.rows(), mLocal.cols()),
       mIsLocal(true) {
     }
     inline void setLocal(const typename Derived::Scalar s)
@@ -114,7 +116,8 @@ public:
     inline Value & operator = (const Derived & mat) {setLocal(mat); return *this;}
 
     // Set shared data.
-    Value(const typename Derived::Scalar * data, size_t rows = 1, size_t cols = 1) : mShared(
+    explicit Value(const typename Derived::Scalar * data, size_t rows = 1, size_t cols = 1)
+    : mShared(
         const_cast < typename Derived::Scalar * > (data), rows, cols), mIsLocal(false) {
     }
     inline void setShared(const typename Derived::Scalar * data, size_t rows = 1, size_t cols = 1)
@@ -144,26 +147,26 @@ public:
   typedef Value < Eigen::MatrixXi > ValueXi;
 
 // check if a class has a comparison operator (ie. std::complex does not)
-template < typename T >
-struct has_operator_lt_impl
-{
-  template < class U >
-  static auto test(U *)->decltype(std::declval < U > () < std::declval < U > ());
-  template < typename >
-  static auto test(...)->std::false_type;
-  using type = typename std::is_same < bool, decltype(test < T > (0)) > ::type;
-};
-template < typename T >
-struct has_operator_lt : has_operator_lt_impl < T > ::type {};
+  template < typename T >
+  struct has_operator_lt_impl  // NOLINT
+  {
+    template < class U >
+    static auto test(U *)->decltype(std::declval < U > () < std::declval < U > ());
+    template < typename >
+    static auto test(...)->std::false_type;
+    using type = typename std::is_same < bool, decltype(test < T > (0)) > ::type;
+  };
+  template < typename T >
+  struct has_operator_lt : has_operator_lt_impl < T > ::type {};
 
 //----------------------------------------
 // Equation parser.
 //
 // Template typename Derived can be any dynamically sized matrix type supported by Eigen.
 //----------------------------------------
-template < typename Derived = Eigen::MatrixXd >
-class Parser
-{
+  template < typename Derived = Eigen::MatrixXd >
+    class Parser  // NOLINT
+  {
 public:
     // A map to hold named values.
     typedef std::map < std::string, Value < Derived >> ValueMap;
@@ -303,9 +306,9 @@ public:
   typedef Parser < Eigen::MatrixXf > ParserXf;
   typedef Parser < Eigen::MatrixXi > ParserXi;
 
-  //----------------------------------------
-  // Function definitions.
-  //----------------------------------------
+//----------------------------------------
+// Function definitions.
+//----------------------------------------
   template < typename Derived >
   Parser < Derived > ::Parser()
     : mOperators1("+-*/^()[]="),
@@ -528,7 +531,7 @@ public:
           } else if (isdigit(*kt)) {token = 2;} else if (*kt == '.') {
             token = 3;
           } else if (*kt == 'e' || *kt == 'E') {token = 4;} else {break;}
-          const static char nextstate[9][5] = {{0},
+          static const char nextstate[9][5] = {{0},
             {1, 2, 3, 4, 0},
             {0, 0, 3, 4, 0},
             {0, 0, 3, 5, 6},
@@ -577,7 +580,7 @@ public:
         }
         it = jt;
       }
-    }             // it
+    }           // it
 #ifdef DEBUG
 #       ifdef EIGENLAB_DEBUG
     std::cout << "CHUNKS: "; printChunks(chunks); std::cout << std::endl;
@@ -781,7 +784,7 @@ public:
         if (j > 0 && size_t(submatrix.matrix().cols()) != nrows) {
           throw std::runtime_error(
             "Invalid matrix definition '[" + str + "]'. Successive column entries '" +
-            cols[static_cast(j) - 1] + "' and '" + cols[j] +
+            cols[static_cast < int > (j) - 1] + "' and '" + cols[j] +
             "' do not have the same number of rows.");
         }
         nrows = submatrix.matrix().rows();
@@ -928,8 +931,9 @@ public:
         result.local() = arg0.matrix().cwiseMin(arg1matrix);
         result.mapLocal();
         return true;
-      } else if (arg0.matrix().cols() == arg1.matrix().cols() &&
-        arg0.matrix().rows() == arg1.matrix().rows()) {
+      } else if (arg0.matrix().cols() == arg1.matrix().cols() &&  // NOLINT
+        arg0.matrix().rows() == arg1.matrix().rows())
+      {
         result.local() = arg0.matrix().cwiseMin(arg1.matrix());
         result.mapLocal();
         return true;
@@ -945,8 +949,9 @@ public:
         result.local() = arg0.matrix().cwiseMax(arg1matrix);
         result.mapLocal();
         return true;
-      } else if (arg0.matrix().cols() == arg1.matrix().cols() &&
-        arg0.matrix().rows() == arg1.matrix().rows()) {
+      } else if (arg0.matrix().cols() == arg1.matrix().cols() &&  // NOLINT
+        arg0.matrix().rows() == arg1.matrix().rows())
+      {
         result.local() = arg0.matrix().cwiseMax(arg1.matrix());
         result.mapLocal();
         return true;
@@ -1026,9 +1031,10 @@ public:
       } else if (name == "norm") {
         result.setLocal(arg.matrix().norm());
         return;
-      } else if (evalFunction_1_lt(
+      } else if (evalFunction_1_lt(  // NOLINT
           name, arg, result,
-          has_operator_lt < typename Derived::Scalar > ())) {
+          has_operator_lt < typename Derived::Scalar > ()))
+      {
         return;
       } else if (name == "mean") {
         result.setLocal(arg.matrix().mean());
@@ -1132,9 +1138,10 @@ public:
           result.setLocal((typename Derived::Scalar) arg0.matrix().cols());
           return;
         }
-      } else if (evalFunction_2_lt(
+      } else if (evalFunction_2_lt(  // NOLINT
           name, arg0, arg1, result,
-          has_operator_lt < typename Derived::Scalar > ())) {
+          has_operator_lt < typename Derived::Scalar > ()))
+      {
         return;
       } else if (name == "mean") {
         if (arg1.matrix().size() != 1) {
@@ -1481,8 +1488,9 @@ public:
           }
           lhs->value.mapLocal();
           lhs->type = VALUE;
-        } else if (op->field == ".^" && lhs->value.matrix().rows() == rhs->value.matrix().rows() &&
-          lhs->value.matrix().cols() == rhs->value.matrix().cols()) {
+        } else if (op->field == ".^" && lhs->value.matrix().rows() == rhs->value.matrix().rows() &&  // NOLINT
+          lhs->value.matrix().cols() == rhs->value.matrix().cols())
+        {
           lhs->value.local().resize(rhs->value.matrix().rows(), rhs->value.matrix().cols());
           for (size_t row = 0; row < size_t(rhs->value.matrix().rows()); row++) {
             for (size_t col = 0; col < size_t(rhs->value.matrix().cols()); col++) {
@@ -1553,13 +1561,13 @@ public:
           if (lhs->value.isLocal()) {
             if (op->field == "*" || op->field == ".*") {
               lhs->value.local().array() *= rhs->value.matrix()(0, 0);
-            } else {                                 // if(op->field == "/" || op->field == "./")
+            } else {                               // if(op->field == "/" || op->field == "./")
               lhs->value.local().array() /= rhs->value.matrix()(0, 0);
             }
           } else {
             if (op->field == "*" || op->field == ".*") {
               lhs->value.local() = lhs->value.matrix().array() * rhs->value.matrix()(0, 0);
-            } else {                                 // if(op->field == "/" || op->field == "./")
+            } else {                               // if(op->field == "/" || op->field == "./")
               lhs->value.local() = lhs->value.matrix().array() / rhs->value.matrix()(0, 0);
             }
             lhs->value.mapLocal();
@@ -1569,26 +1577,27 @@ public:
           typename Derived::Scalar temp = lhs->value.matrix()(0, 0);
           if (op->field == "*" || op->field == ".*") {
             lhs->value.local() = rhs->value.matrix().array() * temp;
-          } else {                           // if(op->field == "/" || op->field == "./")
+          } else {                         // if(op->field == "/" || op->field == "./")
             lhs->value.local() = Derived::Constant(
               rhs->value.matrix().rows(),
               rhs->value.matrix().cols(), temp).array() / rhs->value.matrix().array();
           }
           lhs->value.mapLocal();
           lhs->type = VALUE;
-        } else if ((op->field == ".*" || op->field == "./") &&
+        } else if ((op->field == ".*" || op->field == "./") &&    // NOLINT
           lhs->value.matrix().rows() == rhs->value.matrix().rows() &&
-          lhs->value.matrix().cols() == rhs->value.matrix().cols()) {
+          lhs->value.matrix().cols() == rhs->value.matrix().cols())
+        {
           if (lhs->value.isLocal()) {
             if (op->field == ".*") {
               lhs->value.local().array() *= rhs->value.matrix().array();
-            } else {                                 // if(op->field == "./")
+            } else {                               // if(op->field == "./")
               lhs->value.local().array() /= rhs->value.matrix().array();
             }
           } else {
             if (op->field == ".*") {
               lhs->value.local() = lhs->value.matrix().array() * rhs->value.matrix().array();
-            } else {                                 // if(op->field == "./")
+            } else {                               // if(op->field == "./")
               lhs->value.local() = lhs->value.matrix().array() / rhs->value.matrix().array();
             }
             lhs->value.mapLocal();
@@ -1663,13 +1672,13 @@ public:
           if (lhs->value.isLocal()) {
             if (op->field == "+" || op->field == ".+") {
               lhs->value.local().array() += rhs->value.matrix()(0, 0);
-            } else {                                 // if(op->field == "-" || op->field == ".-")
+            } else {                               // if(op->field == "-" || op->field == ".-")
               lhs->value.local().array() -= rhs->value.matrix()(0, 0);
             }
           } else {
             if (op->field == "+" || op->field == ".+") {
               lhs->value.local() = lhs->value.matrix().array() + rhs->value.matrix()(0, 0);
-            } else {                                 // if(op->field == "-" || op->field == ".-")
+            } else {                               // if(op->field == "-" || op->field == ".-")
               lhs->value.local() = lhs->value.matrix().array() - rhs->value.matrix()(0, 0);
             }
             lhs->value.mapLocal();
@@ -1679,25 +1688,26 @@ public:
           typename Derived::Scalar temp = lhs->value.matrix()(0, 0);
           if (op->field == "+" || op->field == ".+") {
             lhs->value.local() = rhs->value.matrix().array() + temp;
-          } else {                           // if(op->field == "-" || op->field == ".-")
+          } else {                         // if(op->field == "-" || op->field == ".-")
             lhs->value.local() = Derived::Constant(
               rhs->value.matrix().rows(),
               rhs->value.matrix().cols(), temp).array() - rhs->value.matrix().array();
           }
           lhs->value.mapLocal();
           lhs->type = VALUE;
-        } else if (lhs->value.matrix().rows() == rhs->value.matrix().rows() &&
-          lhs->value.matrix().cols() == rhs->value.matrix().cols()) {
+        } else if (lhs->value.matrix().rows() == rhs->value.matrix().rows() &&  // NOLINT
+          lhs->value.matrix().cols() == rhs->value.matrix().cols())
+        {
           if (lhs->value.isLocal()) {
             if (op->field == "+" || op->field == ".+") {
               lhs->value.local().array() += rhs->value.matrix().array();
-            } else {                                 // if(op->field == "-" || op->field == ".-")
+            } else {                               // if(op->field == "-" || op->field == ".-")
               lhs->value.local().array() -= rhs->value.matrix().array();
             }
           } else {
             if (op->field == "+" || op->field == ".+") {
               lhs->value.local() = lhs->value.matrix().array() + rhs->value.matrix().array();
-            } else {                                 // if(op->field == "-" || op->field == ".-")
+            } else {                               // if(op->field == "-" || op->field == ".-")
               lhs->value.local() = lhs->value.matrix().array() - rhs->value.matrix().array();
             }
             lhs->value.mapLocal();

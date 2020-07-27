@@ -9,7 +9,7 @@
 #ifndef GRID_MAP_FILTERS__BUFFERNORMALIZERFILTER_HPP_
 #define GRID_MAP_FILTERS__BUFFERNORMALIZERFILTER_HPP_
 
-#include <filters/filter_base.h>
+#include <filters/filter_base.hpp>
 
 #include <string>
 
@@ -36,14 +36,14 @@ public:
   /*!
    * Configures the filter from parameters on the parameter server.
    */
-  virtual bool configure();
+  bool configure() override;
 
   /*!
    * Normalizes the buffer of a map.
    * @param mapIn the input map before normalization.
    * @param mapOut the normalized map.
    */
-  virtual bool update(const T & mapIn, T & mapOut);
+  bool update(const T & mapIn, T & mapOut) override;
 };
 
 }  // namespace grid_map

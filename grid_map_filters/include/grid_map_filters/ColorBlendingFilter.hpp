@@ -9,7 +9,7 @@
 #ifndef GRID_MAP_FILTERS__COLORBLENDINGFILTER_HPP_
 #define GRID_MAP_FILTERS__COLORBLENDINGFILTER_HPP_
 
-#include <filters/filter_base.h>
+#include <filters/filter_base.hpp>
 
 #include <Eigen/Core>
 #include <string>
@@ -37,14 +37,14 @@ public:
   /*!
    * Configures the filter.
    */
-  virtual bool configure();
+  bool configure() override;
 
   /*!
    * Compute a new color layer based on blending two color layers.
    * @param mapIn grid map containing the two color layers.
    * @param mapOut grid map containing mapIn and the blended color layer.
    */
-  virtual bool update(const T & mapIn, T & mapOut);
+  bool update(const T & mapIn, T & mapOut) override;
 
 private:
   enum class BlendModes
@@ -57,11 +57,11 @@ private:
   //! Input layers.
   std::string backgroundLayer_, foregroundLayer_;
 
-  //! Blend mode.
-  BlendModes blendMode_;
-
   //! Opacity of foreground layer.
   double opacity_;
+
+  //! Blend mode.
+  BlendModes blendMode_;
 
   //! Output layer name.
   std::string outputLayer_;

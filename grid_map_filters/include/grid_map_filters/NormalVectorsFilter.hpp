@@ -9,7 +9,7 @@
 #ifndef GRID_MAP_FILTERS__NORMALVECTORSFILTER_HPP_
 #define GRID_MAP_FILTERS__NORMALVECTORSFILTER_HPP_
 
-#include <filters/filter_base.h>
+#include <filters/filter_base.hpp>
 #include <grid_map_core/grid_map_core.hpp>
 
 #include <Eigen/Core>

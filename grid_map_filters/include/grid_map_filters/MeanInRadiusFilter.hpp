@@ -9,7 +9,7 @@
 #ifndef GRID_MAP_FILTERS__MEANINRADIUSFILTER_HPP_
 #define GRID_MAP_FILTERS__MEANINRADIUSFILTER_HPP_
 
-#include <filters/filter_base.h>
+#include <filters/filter_base.hpp>
 
 #include <vector>
 #include <string>
@@ -37,7 +37,7 @@ public:
   /*!
    * Configures the filter from parameters on the Parameter Server
    */
-  virtual bool configure();
+  bool configure() override;
 
   /*!
    * Computes for each value in the input layer the mean of all values in a radius around it
@@ -45,7 +45,7 @@ public:
    * @param mapIn grid map containing the input layer.
    * @param mapOut grid map containing the layers of the input map and the new layer.
    */
-  virtual bool update(const T & mapIn, T & mapOut);
+  bool update(const T & mapIn, T & mapOut) override;
 
 private:
   //! Radius to take the mean from.

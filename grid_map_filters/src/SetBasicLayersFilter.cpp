@@ -9,12 +9,10 @@
 #include "../include/grid_map_filters/SetBasicLayersFilter.hpp"
 
 #include <grid_map_core/GridMap.hpp>
-#include <pluginlib/class_list_macros.h>
+#include <pluginlib/class_list_macros.hpp>
 
 #include <string>
 #include <vector>
-
-using namespace filters;
 
 namespace grid_map
 {
@@ -32,8 +30,10 @@ SetBasicLayersFilter<T>::~SetBasicLayersFilter()
 template<typename T>
 bool SetBasicLayersFilter<T>::configure()
 {
-  if (!FilterBase<T>::getParam(std::string("layers"), layers_)) {
-    ROS_ERROR("SetBasicLayersFilters did not find parameter 'layers'.");
+  if (!filters::FilterBase<T>::getParam(std::string("layers"), layers_)) {
+    RCLCPP_ERROR(
+      this->logging_interface_->get_logger(),
+      "SetBasicLayersFilters did not find parameter 'layers'.");
     return false;
   }
 
@@ -48,7 +48,10 @@ bool SetBasicLayersFilter<T>::update(const T & mapIn, T & mapOut)
 
   for (const auto & layer : layers_) {
     if (!mapOut.exists(layer)) {
-      ROS_WARN("Layer `%s` does not exist and is not set as basic layer.", layer.c_str());
+      RCLCPP_WARN(
+        this->logging_interface_->get_logger(),
+        "Layer `%s` does not exist and is not set as basic layer.",
+        layer.c_str());
       continue;
     }
     layersChecked.push_back(layer);

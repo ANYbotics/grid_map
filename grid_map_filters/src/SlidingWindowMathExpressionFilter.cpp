@@ -8,11 +8,9 @@
 
 #include "grid_map_filters/SlidingWindowMathExpressionFilter.hpp"
 
-#include <pluginlib/class_list_macros.h>
+#include <pluginlib/class_list_macros.hpp>
 
 #include <string>
-
-using namespace filters;
 
 namespace grid_map
 {
@@ -35,35 +33,45 @@ SlidingWindowMathExpressionFilter<T>::~SlidingWindowMathExpressionFilter()
 template<typename T>
 bool SlidingWindowMathExpressionFilter<T>::configure()
 {
-  if (!FilterBase<T>::getParam(std::string("input_layer"), inputLayer_)) {
-    ROS_ERROR("SlidingWindowMathExpressionFilter did not find parameter 'input_layer'.");
+  if (!filters::FilterBase<T>::getParam(std::string("input_layer"), inputLayer_)) {
+    RCLCPP_ERROR(
+      this->logging_interface_->get_logger(),
+      "SlidingWindowMathExpressionFilter did not find parameter 'input_layer'.");
     return false;
   }
 
-  if (!FilterBase<T>::getParam(std::string("output_layer"), outputLayer_)) {
-    ROS_ERROR("SlidingWindowMathExpressionFilter did not find parameter 'output_layer'.");
+  if (!filters::FilterBase<T>::getParam(std::string("output_layer"), outputLayer_)) {
+    RCLCPP_ERROR(
+      this->logging_interface_->get_logger(),
+      "SlidingWindowMathExpressionFilter did not find parameter 'output_layer'.");
     return false;
   }
 
-  if (!FilterBase<T>::getParam(std::string("expression"), expression_)) {
-    ROS_ERROR("SlidingWindowMathExpressionFilter did not find parameter 'expression'.");
+  if (!filters::FilterBase<T>::getParam(std::string("expression"), expression_)) {
+    RCLCPP_ERROR(
+      this->logging_interface_->get_logger(),
+      "SlidingWindowMathExpressionFilter did not find parameter 'expression'.");
     return false;
   }
 
-  if (!FilterBase<T>::getParam(std::string("window_size"), windowSize_)) {
-    if (FilterBase<T>::getParam(std::string("window_length"), windowLength_)) {
+  if (!filters::FilterBase<T>::getParam(std::string("window_size"), windowSize_)) {
+    if (filters::FilterBase<T>::getParam(std::string("window_length"), windowLength_)) {
       useWindowLength_ = true;
     }
   }
 
-  if (!FilterBase<T>::getParam(std::string("compute_empty_cells"), isComputeEmptyCells_)) {
-    ROS_ERROR("SlidingWindowMathExpressionFilter did not find parameter 'compute_empty_cells'.");
+  if (!filters::FilterBase<T>::getParam(std::string("compute_empty_cells"), isComputeEmptyCells_)) {
+    RCLCPP_ERROR(
+      this->logging_interface_->get_logger(),
+      "SlidingWindowMathExpressionFilter did not find parameter 'compute_empty_cells'.");
     return false;
   }
 
   std::string edgeHandlingMethod;
-  if (!FilterBase<T>::getParam(std::string("edge_handling"), edgeHandlingMethod)) {
-    ROS_ERROR("SlidingWindowMathExpressionFilter did not find parameter 'edge_handling'.");
+  if (!filters::FilterBase<T>::getParam(std::string("edge_handling"), edgeHandlingMethod)) {
+    RCLCPP_ERROR(
+      this->logging_interface_->get_logger(),
+      "SlidingWindowMathExpressionFilter did not find parameter 'edge_handling'.");
     return false;
   }
   if (edgeHandlingMethod == "inside") {
@@ -75,7 +83,8 @@ bool SlidingWindowMathExpressionFilter<T>::configure()
   } else if (edgeHandlingMethod == "mean") {
     edgeHandling_ = SlidingWindowIterator::EdgeHandling::MEAN;
   } else {
-    ROS_ERROR(
+    RCLCPP_ERROR(
+      this->logging_interface_->get_logger(),
       "SlidingWindowMathExpressionFilter did not find method '%s' for edge handling.",
       edgeHandlingMethod.c_str());
     return false;
@@ -100,7 +109,8 @@ bool SlidingWindowMathExpressionFilter<T>::update(const T & mapIn, T & mapOut)
     if (result.matrix().cols() == 1 && result.matrix().rows() == 1) {
       outputData(iterator.getLinearIndex()) = result.matrix()(0);
     } else {
-      ROS_ERROR(
+      RCLCPP_ERROR(
+        this->logging_interface_->get_logger(),
         "SlidingWindowMathExpressionFilter could not apply filter"
         " because expression has to result in a scalar!");
     }

@@ -9,11 +9,9 @@
 #include "grid_map_filters/MathExpressionFilter.hpp"
 
 #include <grid_map_core/grid_map_core.hpp>
-#include <pluginlib/class_list_macros.h>
+#include <pluginlib/class_list_macros.hpp>
 
 #include <string>
-
-using namespace filters;
 
 namespace grid_map
 {
@@ -31,13 +29,17 @@ MathExpressionFilter<T>::~MathExpressionFilter()
 template<typename T>
 bool MathExpressionFilter<T>::configure()
 {
-  if (!FilterBase<T>::getParam(std::string("expression"), expression_)) {
-    ROS_ERROR("MathExpressionFilter did not find parameter 'expression'.");
+  if (!filters::FilterBase<T>::getParam(std::string("expression"), expression_)) {
+    RCLCPP_ERROR(
+      this->logging_interface_->get_logger(),
+      "MathExpressionFilter did not find parameter 'expression'.");
     return false;
   }
 
-  if (!FilterBase<T>::getParam(std::string("output_layer"), outputLayer_)) {
-    ROS_ERROR("MathExpressionFilter did not find parameter 'output_layer'.");
+  if (!filters::FilterBase<T>::getParam(std::string("output_layer"), outputLayer_)) {
+    RCLCPP_ERROR(
+      this->logging_interface_->get_logger(),
+      "MathExpressionFilter did not find parameter 'output_layer'.");
     return false;
   }
 

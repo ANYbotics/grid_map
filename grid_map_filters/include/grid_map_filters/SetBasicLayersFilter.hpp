@@ -9,7 +9,7 @@
 #ifndef GRID_MAP_FILTERS__SETBASICLAYERSFILTER_HPP_
 #define GRID_MAP_FILTERS__SETBASICLAYERSFILTER_HPP_
 
-#include <filters/filter_base.h>
+#include <filters/filter_base.hpp>
 
 #include <vector>
 #include <string>
@@ -37,14 +37,14 @@ public:
   /*!
    * Configures the filter from parameters on the parameter server.
    */
-  virtual bool configure();
+  bool configure() override;
 
   /*!
    * Set the specified layers as basic layers.
    * @param mapIn input grid map.
    * @param mapOut output grid map with basic layers set.
    */
-  virtual bool update(const T & mapIn, T & mapOut);
+  bool update(const T & mapIn, T & mapOut) override;
 
 private:
   //! List of layers that should be set as basic layers.

@@ -9,11 +9,9 @@
 #include "grid_map_filters/DeletionFilter.hpp"
 
 #include <grid_map_core/GridMap.hpp>
-#include <pluginlib/class_list_macros.h>
+#include <pluginlib/class_list_macros.hpp>
 
 #include <string>
-
-using namespace filters;
 
 namespace grid_map
 {
@@ -32,8 +30,9 @@ template<typename T>
 bool DeletionFilter<T>::configure()
 {
   // Load Parameters
-  if (!FilterBase<T>::getParam(std::string("layers"), layers_)) {
-    ROS_ERROR("DeletionFilter did not find parameter 'layers'.");
+  if (!filters::FilterBase<T>::getParam(std::string("layers"), layers_)) {
+    RCLCPP_ERROR(
+      this->logging_interface_->get_logger(), "DeletionFilter did not find parameter 'layers'.");
     return false;
   }
 
@@ -48,14 +47,17 @@ bool DeletionFilter<T>::update(const T & mapIn, T & mapOut)
   for (const auto & layer : layers_) {
     // Check if layer exists.
     if (!mapOut.exists(layer)) {
-      ROS_ERROR(
+      RCLCPP_ERROR(
+        this->logging_interface_->get_logger(),
         "Check your deletion layers! Type %s does not exist.",
         layer.c_str());
       continue;
     }
 
     if (!mapOut.erase(layer)) {
-      ROS_ERROR("Could not remove type %s.", layer.c_str());
+      RCLCPP_ERROR(
+        this->logging_interface_->get_logger(), "Could not remove type %s.",
+        layer.c_str());
     }
   }
 
