@@ -6,18 +6,23 @@
  *   Institute: ETH Zurich, ANYbotics
  */
 
-#pragma once
+#ifndef GRID_MAP_ROS__GRIDMAPMSGHELPERS_HPP_
+#define GRID_MAP_ROS__GRIDMAPMSGHELPERS_HPP_
 
 // ROS
-#include <ros/ros.h>
-#include <std_msgs/UInt32MultiArray.h>
-#include <std_msgs/Float32MultiArray.h>
-#include <std_msgs/Float64MultiArray.h>
+#include <rclcpp/rclcpp.hpp>
+#include <std_msgs/msg/u_int32_multi_array.hpp>
+#include <std_msgs/msg/float32_multi_array.hpp>
+#include <std_msgs/msg/float64_multi_array.hpp>
 
 // Eigen
 #include <Eigen/Core>
 
-namespace grid_map {
+#include <map>
+#include <string>
+
+namespace grid_map
+{
 
 /*!
  * Returns the number of dimensions of the grid map.
@@ -25,12 +30,13 @@ namespace grid_map {
  */
 int nDimensions();
 
-enum class StorageIndices {
-    Column,
-    Row
+enum class StorageIndices
+{
+  Column,
+  Row
 };
 
-//! Holds the names of the storage indeces.
+//! Holds the names of the storage indices.
 extern std::map<StorageIndices, std::string> storageIndexNames;
 
 /*!
@@ -40,11 +46,17 @@ extern std::map<StorageIndices, std::string> storageIndexNames;
  * @return true if is in row-major format, false if is in column-major format.
  */
 template<typename MultiArrayMessageType_>
-bool isRowMajor(const MultiArrayMessageType_& message)
+bool isRowMajor(const MultiArrayMessageType_ & message)
 {
-  if (message.layout.dim[0].label == grid_map::storageIndexNames[grid_map::StorageIndices::Column]) return false;
-  else if (message.layout.dim[0].label == grid_map::storageIndexNames[grid_map::StorageIndices::Row]) return true;
-  ROS_ERROR("isRowMajor() failed because layout label is not set correctly.");
+  if (message.layout.dim[0].label ==
+    grid_map::storageIndexNames[grid_map::StorageIndices::Column])
+  {
+    return false;
+  } else if (message.layout.dim[0].label ==
+    grid_map::storageIndexNames[grid_map::StorageIndices::Row]) {return true;}
+  RCLCPP_ERROR(
+    rclcpp::get_logger(
+      "isRowMajor"), "isRowMajor() failed because layout label is not set correctly.");
   return false;
 }
 
@@ -55,9 +67,9 @@ bool isRowMajor(const MultiArrayMessageType_& message)
  * @return the number of columns.
  */
 template<typename MultiArrayMessageType_>
-unsigned int getCols(const MultiArrayMessageType_& message)
+unsigned int getCols(const MultiArrayMessageType_ & message)
 {
-  if (isRowMajor(message)) return message.layout.dim.at(1).size;
+  if (isRowMajor(message)) {return message.layout.dim.at(1).size;}
   return message.layout.dim.at(0).size;
 }
 
@@ -68,9 +80,9 @@ unsigned int getCols(const MultiArrayMessageType_& message)
  * @return the number of rows.
  */
 template<typename MultiArrayMessageType_>
-unsigned int getRows(const MultiArrayMessageType_& message)
+unsigned int getRows(const MultiArrayMessageType_ & message)
 {
-  if (isRowMajor(message)) return message.layout.dim.at(0).size;
+  if (isRowMajor(message)) {return message.layout.dim.at(0).size;}
   return message.layout.dim.at(1).size;
 }
 
@@ -85,7 +97,7 @@ unsigned int getRows(const MultiArrayMessageType_& message)
  * @return true if successful.
  */
 template<typename EigenType_, typename MultiArrayMessageType_>
-bool matrixEigenCopyToMultiArrayMessage(const EigenType_& e, MultiArrayMessageType_& m)
+bool matrixEigenCopyToMultiArrayMessage(const EigenType_ & e, MultiArrayMessageType_ & m)
 {
   m.layout.dim.resize(nDimensions());
   m.layout.dim[0].stride = e.size();
@@ -114,10 +126,12 @@ bool matrixEigenCopyToMultiArrayMessage(const EigenType_& e, MultiArrayMessageTy
  * @return true if successful.
  */
 template<typename EigenType_, typename MultiArrayMessageType_>
-bool multiArrayMessageCopyToMatrixEigen(const MultiArrayMessageType_& m, EigenType_& e)
+bool multiArrayMessageCopyToMatrixEigen(const MultiArrayMessageType_ & m, EigenType_ & e)
 {
   if (e.IsRowMajor != isRowMajor(m)) {
-    ROS_ERROR("multiArrayMessageToMatrixEigen() failed because the storage order is not compatible.");
+    RCLCPP_ERROR(
+      rclcpp::get_logger("multiArrayMessageCopyToMatrixEigen"), "multiArrayMessageToMatrixEigen() "
+      "failed because the storage order is not compatible.");
     return false;
   }
 
@@ -135,10 +149,12 @@ bool multiArrayMessageCopyToMatrixEigen(const MultiArrayMessageType_& m, EigenTy
  * @return true if successful.
  */
 template<typename EigenType_, typename MultiArrayMessageType_>
-bool multiArrayMessageMapToMatrixEigen(MultiArrayMessageType_& m, EigenType_& e)
+bool multiArrayMessageMapToMatrixEigen(MultiArrayMessageType_ & m, EigenType_ & e)
 {
   if (e.IsRowMajor != isRowMajor(m)) {
-    ROS_ERROR("multiArrayMessageToMatrixEigen() failed because the storage order is not compatible.");
+    RCLCPP_ERROR(
+      rclcpp::get_logger("multiArrayMessageMapToMatrixEigen"), "multiArrayMessageToMatrixEigen() "
+      "failed because the storage order is not compatible.");
     return false;
   }
 
@@ -147,4 +163,5 @@ bool multiArrayMessageMapToMatrixEigen(MultiArrayMessageType_& m, EigenType_& e)
   return true;
 }
 
-} /* namespace */
+}  // namespace grid_map
+#endif  // GRID_MAP_ROS__GRIDMAPMSGHELPERS_HPP_
