@@ -825,8 +825,8 @@ void Parser<Derived>::evalMatrixExpression(const std::string & str, Value<Derive
     }
     row0 += nrows;
   }
+  if (temp.empty()) {return;}
   nrows = temp.size();
-  if (nrows == 0) {return;}
   ncols = temp[0].size();
   mat.setLocal(Derived(nrows, ncols));
   for (size_t row = 0; row < nrows; row++) {
@@ -1908,7 +1908,7 @@ std::string Parser<Derived>::textRepresentation(
 template<typename Derived>
 std::string Parser<Derived>::trim(const std::string & str)
 {
-  if (str.size() == 0) {return str;}
+  if (str.empty()) {return str;}
   std::string::const_iterator first = str.begin();
   std::string::const_iterator last = str.end() - 1;
   while (first < last && isspace(*first)) {first++;}
