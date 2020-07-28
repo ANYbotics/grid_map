@@ -15,10 +15,10 @@
   <buildtool_depend>ament_cmake</buildtool_depend>
   <build_depend>grid_map_cmake_helpers</build_depend>
 
-  <depend>grid_map_core</depend>
-  <depend>grid_map_ros</depend>
-  <depend>grid_map_msgs</depend>
   <depend>filters</depend>
+  <depend>grid_map_core</depend>
+  <depend>grid_map_msgs</depend>
+  <depend>grid_map_ros</depend>
   <depend>tbb</depend>
 
   <test_depend>ament_cmake_gtest</test_depend>
