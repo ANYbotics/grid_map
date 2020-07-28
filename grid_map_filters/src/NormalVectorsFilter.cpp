@@ -9,8 +9,7 @@
 #include <pluginlib/class_list_macros.hpp>
 #include <Eigen/Dense>
 
-#include <tbb/task_scheduler_init.h>
-#include <tbb/tbb.h>
+#include <tbb/parallel_for.h>
 
 #include <grid_map_core/grid_map_core.hpp>
 
@@ -83,17 +82,6 @@ bool NormalVectorsFilter<T>::configure()
   RCLCPP_DEBUG(
     this->logging_interface_->get_logger(), "Parallelization_enabled = %d",
     parallelizationEnabled_);
-
-  // Read thread_number to set the number of threads to be used if parallelization is enebled,
-  // if parameter is not found an error is thrown and the default is to set it to automatic.
-  if (!filters::FilterBase<T>::getParam(std::string("thread_number"), threadCount_)) {
-    RCLCPP_WARN(
-      this->logging_interface_->get_logger(),
-      "Could not find the parameter:"
-      " `thread_number`. Setting to default value: 'automatic'.");
-    threadCount_ = tbb::task_scheduler_init::automatic;
-  }
-  RCLCPP_DEBUG(this->logging_interface_->get_logger(), "Thread_number = %d", threadCount_);
 
   // Set wanted method looking at algorithm and parallelization_enabled parameters.
   // parallelization_enabled is used to select whether to use parallelization or not.
@@ -233,12 +221,6 @@ void NormalVectorsFilter<T>::computeWithAreaParallel(
   rclcpp::Clock clock;
   const double start = clock.now().seconds();
   grid_map::Size gridMapSize = map.getSize();
-
-  // Set number of thread to use for parallel programming.
-  std::unique_ptr<tbb::task_scheduler_init> TBBInitPtr;
-  if (threadCount_ != -1) {
-    TBBInitPtr.reset(new tbb::task_scheduler_init(threadCount_));
-  }
 
   // Parallelized iteration through the map.
   tbb::parallel_for(
@@ -380,11 +362,6 @@ void NormalVectorsFilter<T>::computeWithRasterParallel(
   const Index submapStartIndex(1, 1);
   const Index submapBufferSize(gridMapSize(0) - 2, gridMapSize(1) - 2);
   if (submapBufferSize(1) != 0) {
-    // Set number of thread to use for parallel programming
-    std::unique_ptr<tbb::task_scheduler_init> TBBInitPtr;
-    if (threadCount_ != -1) {
-      TBBInitPtr.reset(new tbb::task_scheduler_init(threadCount_));
-    }
     // Parallelized iteration through the map.
     tbb::parallel_for(
       0, submapBufferSize(0) * submapBufferSize(1), [&](int range) {
