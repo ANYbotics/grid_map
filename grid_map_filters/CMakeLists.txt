@@ -96,6 +96,37 @@ ament_export_include_directories(
   include 
   ${TBB_INCLUDE_DIRS}
 )
+
+#############
+## Testing ##
+#############
+
+if(BUILD_TESTING)
+  # Linting is setup this way to add a filter
+  # to ament_cpplint to ignore the lack of
+  # copyright messages at the top of files.
+  # Copyright messages are being checked for by both
+  # ament_cmake_cpplint & ament_cmake_copyright.
+
+  find_package(ament_lint_auto REQUIRED)
+  find_package(ament_lint_auto QUIET)
+  if(ament_lint_auto_FOUND)
+    # exclude copyright checks
+    list(APPEND AMENT_LINT_AUTO_EXCLUDE
+      ament_cmake_cpplint
+      ament_cmake_copyright
+    )
+    ament_lint_auto_find_test_dependencies()
+
+    # run cpplint without copyright filter
+    find_package(ament_cmake_cpplint)
+    ament_cpplint(
+      FILTERS -legal/copyright
+    )
+  endif()
+  ament_lint_auto_find_test_dependencies()
+endif()
+
 ament_export_dependencies(${dependencies})
 ament_export_libraries(${PROJECT_NAME})
 ament_package()
