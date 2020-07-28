@@ -13,7 +13,7 @@
 
 #include <string>
 
-#include "EigenLab/EigenLab.h"
+#include "EigenLab/EigenLab.hpp"
 
 namespace grid_map
 {

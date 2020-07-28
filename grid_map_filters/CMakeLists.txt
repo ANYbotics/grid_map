@@ -13,15 +13,15 @@ find_package(grid_map_ros REQUIRED)
 find_package(PkgConfig REQUIRED)
 
 pkg_check_modules(TBB "tbb")
-if (TBB_FOUND)
+if(TBB_FOUND)
 add_definitions(
   ${TBB_CFLAGS}
   ${TBB_CFLAGS_OTHER}
 )
 else()
 message([FATAL_ERROR] "tbb module not found")
-endif ()
-  
+endif()
+
 grid_map_package()
 
 set(dependencies
@@ -93,7 +93,7 @@ install(
 )
 
 ament_export_include_directories(
-  include 
+  include
   ${TBB_INCLUDE_DIRS}
 )
 
