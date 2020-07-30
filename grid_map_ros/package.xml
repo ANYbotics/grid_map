@@ -22,4 +22,5 @@
   <depend>rosbag</depend>
   <depend>tf</depend>
   <depend>visualization_msgs</depend>
+  <test_depend>cmake_code_coverage</test_depend>
 </package>

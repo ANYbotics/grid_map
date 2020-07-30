@@ -13,4 +13,5 @@
   <buildtool_depend>catkin</buildtool_depend>
   <depend>grid_map_core</depend>
   <depend>octomap</depend>
+  <test_depend>cmake_code_coverage</test_depend>
 </package>

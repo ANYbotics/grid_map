@@ -11,4 +11,5 @@
   <author email="pfankhauser@anybotics.com">Péter Fankhauser</author>
   <buildtool_depend>catkin</buildtool_depend>
   <depend>eigen</depend>
+  <test_depend>cmake_code_coverage</test_depend>
 </package>
