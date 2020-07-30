@@ -351,4 +351,33 @@ double Polygon::vectorsMakeClockwiseTurn(const Eigen::Vector2d &pointOrigin,
   return computeCrossProduct2D(pointA - pointOrigin, pointB - pointOrigin) <= 0;
 }
 
+const std::vector<Position> Polygon::getInterpolatedConvexHull(const double stepSize) {
+  std::vector<Position> result;
+  Polygon hull = monotoneChainConvexHullOfPoints(this->getVertices());
+
+  for (int curIdx = 0; curIdx < hull.nVertices(); curIdx++){
+    int nextIdx = curIdx < hull.nVertices() -1 ? curIdx + 1 : 0;
+
+    Position curPos = hull.getVertex(curIdx);
+    Position nextPos = hull.getVertex(nextIdx);
+
+    Position diff = nextPos - curPos;
+    double diffDistance = diff.norm();
+    int steps = std::max(1, (int) ceil(diffDistance / stepSize));
+    Position direction(
+      diff[0] / steps,
+      diff[1] / steps
+    );
+
+    result.push_back(curPos);
+    for (int i = 0; i < steps; i++) {
+      double factor = ((double) i) / steps;
+      Position tmp = curPos + factor * diff;
+      result.push_back(tmp);
+    }
+  }
+
+  return result;
+}
+
 } /* namespace grid_map */
