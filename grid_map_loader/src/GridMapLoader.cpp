@@ -11,7 +11,7 @@
 #include <grid_map_msgs/msg/grid_map.hpp>
 
 #include <chrono>
-
+#include <memory>
 #include <string>
 
 namespace grid_map_loader
@@ -63,7 +63,7 @@ void GridMapLoader::publish()
 {
   grid_map_msgs::msg::GridMap message;
   grid_map::GridMapRosConverter::toMessage(map_, message);
-  publisher_->publish(message);
+  publisher_->publish(std::make_unique<grid_map_msgs::msg::GridMap>(message));
   rclcpp::sleep_for(std::chrono::nanoseconds(duration_.nanoseconds()));
 }
 }  // namespace grid_map_loader
