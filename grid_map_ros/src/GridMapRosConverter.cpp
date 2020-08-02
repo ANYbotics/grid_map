@@ -102,42 +102,44 @@ bool GridMapRosConverter::fromMessage(
   return fromMessage(message, gridMap, std::vector<std::string>(), true, true);
 }
 
-void GridMapRosConverter::toMessage(
-  const grid_map::GridMap & gridMap,
-  grid_map_msgs::msg::GridMap & message)
+std::unique_ptr<grid_map_msgs::msg::GridMap> GridMapRosConverter::toMessage(
+  const grid_map::GridMap & gridMap)
 {
-  toMessage(gridMap, gridMap.getLayers(), message);
+  return toMessage(gridMap, gridMap.getLayers());
 }
 
-void GridMapRosConverter::toMessage(
-  const grid_map::GridMap & gridMap, const std::vector<std::string> & layers,
-  grid_map_msgs::msg::GridMap & message)
+std::unique_ptr<grid_map_msgs::msg::GridMap> GridMapRosConverter::toMessage(
+  const grid_map::GridMap & gridMap, const std::vector<std::string> & layers)
 {
-  message.header.stamp = rclcpp::Time(gridMap.getTimestamp());
-  message.header.frame_id = gridMap.getFrameId();
-  message.info.resolution = gridMap.getResolution();
-  message.info.length_x = gridMap.getLength().x();
-  message.info.length_y = gridMap.getLength().y();
-  message.info.pose.position.x = gridMap.getPosition().x();
-  message.info.pose.position.y = gridMap.getPosition().y();
-  message.info.pose.position.z = 0.0;
-  message.info.pose.orientation.x = 0.0;
-  message.info.pose.orientation.y = 0.0;
-  message.info.pose.orientation.z = 0.0;
-  message.info.pose.orientation.w = 1.0;
+  auto message = std::make_unique<grid_map_msgs::msg::GridMap>();
 
-  message.layers = layers;
-  message.basic_layers = gridMap.getBasicLayers();
+  message->header.stamp = rclcpp::Time(gridMap.getTimestamp());
+  message->header.frame_id = gridMap.getFrameId();
+  message->info.resolution = gridMap.getResolution();
+  message->info.length_x = gridMap.getLength().x();
+  message->info.length_y = gridMap.getLength().y();
+  message->info.pose.position.x = gridMap.getPosition().x();
+  message->info.pose.position.y = gridMap.getPosition().y();
+  message->info.pose.position.z = 0.0;
+  message->info.pose.orientation.x = 0.0;
+  message->info.pose.orientation.y = 0.0;
+  message->info.pose.orientation.z = 0.0;
+  message->info.pose.orientation.w = 1.0;
 
-  message.data.clear();
+  message->layers = layers;
+  message->basic_layers = gridMap.getBasicLayers();
+
+  message->data.clear();
   for (const auto & layer : layers) {
     std_msgs::msg::Float32MultiArray dataArray;
     matrixEigenCopyToMultiArrayMessage(gridMap.get(layer), dataArray);
-    message.data.push_back(dataArray);
+    message->data.push_back(dataArray);
   }
 
-  message.outer_start_index = gridMap.getStartIndex()(0);
-  message.inner_start_index = gridMap.getStartIndex()(1);
+  message->outer_start_index = gridMap.getStartIndex()(0);
+  message->inner_start_index = gridMap.getStartIndex()(1);
+
+  return message;
 }
 
 void GridMapRosConverter::toPointCloud(
@@ -659,12 +661,11 @@ bool GridMapRosConverter::saveToBag(
   const grid_map::GridMap & gridMap, const std::string & pathToBag,
   const std::string & topic)
 {
-  grid_map_msgs::msg::GridMap message;
-  toMessage(gridMap, message);
+  auto message = toMessage(gridMap);
 
   rclcpp::SerializedMessage serialized_msg;
   rclcpp::Serialization<grid_map_msgs::msg::GridMap> serialization;
-  serialization.serialize_message(&message, &serialized_msg);
+  serialization.serialize_message(message.get(), &serialized_msg);
 
   rosbag2_cpp::StorageOptions storage_options;
   storage_options.uri = pathToBag;
