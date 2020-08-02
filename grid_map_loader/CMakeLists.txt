@@ -24,10 +24,14 @@ include_directories(
   include
 )
 
-## Declare a cpp executable
-add_executable(
-  ${PROJECT_NAME}
+# Declare a cpp executable
+add_executable(${PROJECT_NAME}
   src/grid_map_loader_node.cpp
+)
+
+set(library_name ${PROJECT_NAME}_core)
+
+add_library(${library_name} SHARED
   src/GridMapLoader.cpp
 )
 
@@ -36,15 +40,23 @@ ament_target_dependencies(${PROJECT_NAME}
   ${dependencies}
 )
 
+target_link_libraries(${PROJECT_NAME} ${library_name})
+
+ament_target_dependencies(${library_name}
+  ${dependencies}
+)
+
 #############
 ## Install ##
 #############
 
-# Mark executables and/or libraries for installation
-install(
-  TARGETS ${PROJECT_NAME}
+install(TARGETS ${library_name}
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin
+)
+
+install(TARGETS ${PROJECT_NAME}
   RUNTIME DESTINATION lib/${PROJECT_NAME}
 )
 

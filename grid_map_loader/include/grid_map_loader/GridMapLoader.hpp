@@ -72,7 +72,10 @@ private:
   std::string publishTopic_;
 
   //! Duration to publish the grid map.
-  rclcpp::Duration duration_{0, 0};
+  double durationInSec;
+
+  //! QOS Transient local state
+  bool qos_transient_local_;
 };
 
 }  // namespace grid_map_loader
