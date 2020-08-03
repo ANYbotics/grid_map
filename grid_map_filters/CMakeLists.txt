@@ -44,28 +44,57 @@ include_directories(
 )
 
 ## Declare a cpp library
-add_library(${PROJECT_NAME}
-  src/ThresholdFilter.cpp
-  src/MinInRadiusFilter.cpp
-  src/MeanInRadiusFilter.cpp
-  src/NormalVectorsFilter.cpp
-  src/CurvatureFilter.cpp
-  src/NormalColorMapFilter.cpp
-  src/LightIntensityFilter.cpp
-  src/MathExpressionFilter.cpp
-  src/SlidingWindowMathExpressionFilter.cpp
-  src/DuplicationFilter.cpp
-  src/DeletionFilter.cpp
-  src/ColorFillFilter.cpp
-  src/ColorMapFilter.cpp
-  src/ColorBlendingFilter.cpp
-  src/SetBasicLayersFilter.cpp
-  src/BufferNormalizerFilter.cpp
-)
+add_library(ThresholdFilter src/ThresholdFilter.cpp)
+list(APPEND filter_libs ThresholdFilter)
 
-ament_target_dependencies(${PROJECT_NAME}
-  ${dependencies}
-)
+add_library(MinInRadiusFilter src/MinInRadiusFilter.cpp)
+list(APPEND filter_libs MinInRadiusFilter)
+
+add_library(MeanInRadiusFilter src/MeanInRadiusFilter.cpp)
+list(APPEND filter_libs MeanInRadiusFilter)
+
+add_library(NormalVectorsFilter src/NormalVectorsFilter.cpp)
+list(APPEND filter_libs NormalVectorsFilter)
+
+add_library(CurvatureFilter src/CurvatureFilter.cpp)
+list(APPEND filter_libs CurvatureFilter)
+
+add_library(NormalColorMapFilter src/NormalColorMapFilter.cpp)
+list(APPEND filter_libs NormalColorMapFilter)
+
+add_library(LightIntensityFilter src/LightIntensityFilter.cpp)
+list(APPEND filter_libs LightIntensityFilter)
+
+add_library(MathExpressionFilter src/MathExpressionFilter.cpp)
+list(APPEND filter_libs MathExpressionFilter)
+
+add_library(SlidingWindowMathExpressionFilter src/SlidingWindowMathExpressionFilter.cpp)
+list(APPEND filter_libs SlidingWindowMathExpressionFilter)
+
+add_library(DuplicationFilter src/DuplicationFilter.cpp)
+list(APPEND filter_libs DuplicationFilter)
+
+add_library(DeletionFilter src/DeletionFilter.cpp)
+list(APPEND filter_libs DeletionFilter)
+
+add_library(ColorFillFilter src/ColorFillFilter.cpp)
+list(APPEND filter_libs ColorFillFilter)
+
+add_library(ColorMapFilter src/ColorMapFilter.cpp)
+list(APPEND filter_libs ColorMapFilter)
+
+add_library(ColorBlendingFilter src/ColorBlendingFilter.cpp)
+list(APPEND filter_libs ColorBlendingFilter)
+
+add_library(SetBasicLayersFilter src/SetBasicLayersFilter.cpp)
+list(APPEND filter_libs SetBasicLayersFilter)
+
+add_library(BufferNormalizerFilter src/BufferNormalizerFilter.cpp)
+list(APPEND filter_libs BufferNormalizerFilter)
+
+foreach(filter_lib ${filter_libs})
+  ament_target_dependencies(${filter_lib} ${dependencies})
+endforeach()
 
 #############
 ## Install ##
@@ -73,7 +102,7 @@ ament_target_dependencies(${PROJECT_NAME}
 
 # Mark executables and/or libraries for installation
 install(
-  TARGETS ${PROJECT_NAME}
+  TARGETS ${filter_libs}
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION lib/${PROJECT_NAME}
