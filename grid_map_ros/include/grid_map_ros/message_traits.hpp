@@ -8,7 +8,7 @@
 #include <type_traits>
 #include <memory>
 
-namespace grid_map
+namespace ros
 {
 namespace message_traits
 {
@@ -113,5 +113,5 @@ struct TimeStamp<M, typename std::enable_if<HasHeader<M>::value>::type>
 };
 
 }  // namespace message_traits
-}  // namespace grid_map
+}  // namespace ros
 #endif  // GRID_MAP_ROS__MESSAGE_TRAITS_HPP_
