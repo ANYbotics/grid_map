@@ -7,10 +7,11 @@
  *
  */
 
-#pragma once
+#ifndef GRID_MAP_LOADER__GRIDMAPLOADER_HPP_
+#define GRID_MAP_LOADER__GRIDMAPLOADER_HPP_
 
 // ROS
-#include <ros/ros.h>
+#include <rclcpp/rclcpp.hpp>
 
 // Grid map
 #include <grid_map_ros/grid_map_ros.hpp>
@@ -18,20 +19,19 @@
 // STD
 #include <string>
 
-namespace grid_map_loader {
+namespace grid_map_loader
+{
 
 /*!
  * Loads and publishes a grid map from a bag file.
  */
-class GridMapLoader
+class GridMapLoader : public rclcpp::Node
 {
- public:
-
+public:
   /*!
    * Constructor.
-   * @param nodeHandle the ROS node handle.
    */
-  GridMapLoader(ros::NodeHandle nodeHandle);
+  GridMapLoader();
 
   /*!
    * Destructor.
@@ -55,13 +55,9 @@ class GridMapLoader
    */
   void publish();
 
- private:
-
-  //! ROS nodehandle.
-  ros::NodeHandle nodeHandle_;
-
+private:
   //! Grid map publisher.
-  ros::Publisher publisher_;
+  rclcpp::Publisher<grid_map_msgs::msg::GridMap>::SharedPtr publisher_;
 
   //! Grid map data.
   grid_map::GridMap map_;
@@ -76,7 +72,11 @@ class GridMapLoader
   std::string publishTopic_;
 
   //! Duration to publish the grid map.
-  ros::Duration duration_;
+  double durationInSec;
+
+  //! QOS Transient local state
+  bool qos_transient_local_;
 };
 
-} /* namespace */
+}  // namespace grid_map_loader
+#endif  // GRID_MAP_LOADER__GRIDMAPLOADER_HPP_

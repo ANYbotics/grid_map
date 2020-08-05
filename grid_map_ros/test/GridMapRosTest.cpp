@@ -42,10 +42,9 @@ TEST(RosMessageConversion, roundTrip)
   mapIn.setGeometry(Length(2.0, 3.0), 0.5, Position(1.0, 1.5));
   mapIn["layer"].setRandom();
 
-  grid_map_msgs::msg::GridMap message;
-  GridMapRosConverter::toMessage(mapIn, message);
+  auto message = GridMapRosConverter::toMessage(mapIn);
   GridMap mapOut;
-  GridMapRosConverter::fromMessage(message, mapOut);
+  GridMapRosConverter::fromMessage(*message, mapOut);
 
   for (size_t i = 0; i < mapIn.getLayers().size(); ++i) {
     EXPECT_EQ(mapIn.getLayers().at(i), mapOut.getLayers().at(i));

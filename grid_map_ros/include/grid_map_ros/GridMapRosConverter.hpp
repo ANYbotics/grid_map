@@ -29,6 +29,7 @@
 #include <vector>
 #include <unordered_map>
 #include <string>
+#include <memory>
 
 namespace grid_map
 {
@@ -76,7 +77,8 @@ public:
    * @param[in] gridMap the grid map object.
    * @param[out] message the grid map message to be populated.
    */
-  static void toMessage(const grid_map::GridMap & gridMap, grid_map_msgs::msg::GridMap & message);
+  static std::unique_ptr<grid_map_msgs::msg::GridMap> toMessage(
+    const grid_map::GridMap & gridMap);
 
   /*!
    * Converts requested layers of a grid map object to a ROS grid map message.
@@ -84,9 +86,8 @@ public:
    * @param[in] layers the layers to be added to the message.
    * @param[out] message the grid map message to be populated.
    */
-  static void toMessage(
-    const grid_map::GridMap & gridMap, const std::vector<std::string> & layers,
-    grid_map_msgs::msg::GridMap & message);
+  static std::unique_ptr<grid_map_msgs::msg::GridMap> toMessage(
+    const grid_map::GridMap & gridMap, const std::vector<std::string> & layers);
 
   /*!
    * Converts a grid map object to a ROS PointCloud2 message. Set the layer to be transformed

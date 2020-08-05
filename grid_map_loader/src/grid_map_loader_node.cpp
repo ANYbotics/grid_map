@@ -7,13 +7,14 @@
  */
 
 #include <grid_map_loader/GridMapLoader.hpp>
-#include <ros/ros.h>
+#include <rclcpp/rclcpp.hpp>
 
-int main(int argc, char** argv)
+#include <memory>
+
+int main(int argc, char ** argv)
 {
-  ros::init(argc, argv, "grid_map_loader");
-  ros::NodeHandle nodeHandle("~");
-  grid_map_loader::GridMapLoader gridMapLoader(nodeHandle);
-  ros::waitForShutdown();
+  rclcpp::init(argc, argv);
+  rclcpp::spin(std::make_shared<grid_map_loader::GridMapLoader>());
+  rclcpp::shutdown();
   return 0;
 }
