@@ -24,11 +24,6 @@ GridMapLoader::GridMapLoader()
 
   rclcpp::QoS custom_qos(10);  // initialize to default
 
-  if (durationInSec > 0) {
-    // Expiration duration of persisted messasges.
-    custom_qos.lifespan(rclcpp::Duration::from_seconds(durationInSec));
-  }
-
   if (qos_transient_local_) {
     custom_qos.transient_local();  // Persist messages for “late-joining” subscriptions.
   }
