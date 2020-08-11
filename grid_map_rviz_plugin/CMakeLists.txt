@@ -23,7 +23,8 @@ catkin_package(
 
 include_directories(
   include
-  ${catkin_INCLUDE_DIRS}
+  SYSTEM
+    ${catkin_INCLUDE_DIRS}
 )
 
 link_directories(${catkin_LIBRARY_DIRS})
@@ -112,3 +113,34 @@ install(
   DIRECTORY doc
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
+
+#############
+## Testing ##
+#############
+
+if (CATKIN_ENABLE_TESTING)
+  find_package(catkin REQUIRED)
+
+  include_directories(
+    include
+    SYSTEM
+      ${catkin_INCLUDE_DIRS}
+      ${EIGEN3_INCLUDE_DIRS}
+  )
+
+  catkin_add_gtest(${PROJECT_NAME}-test
+    test/test_grid_map_rviz_plugin.cpp
+  )
+endif()
+
+###################
+## Code_coverage ##
+###################
+
+# find_package(cmake_code_coverage QUIET)
+# if(cmake_code_coverage_FOUND)
+#   add_gtest_coverage(
+#     TEST_BUILD_TARGETS
+#       ${PROJECT_NAME}-test
+#   )
+# endif(cmake_code_coverage_FOUND)

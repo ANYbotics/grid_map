@@ -40,14 +40,16 @@ if(${octomap_VERSION} VERSION_LESS 1.8) # ROS Indigo and Jade.
   add_definitions(-DOCTOMAP_VERSION_BEFORE_ROS_KINETIC)
   include_directories(
     include
-    ${catkin_INCLUDE_DIRS}
-    ${OCTOMAP_INCLUDE_DIR}
+    SYSTEM
+      ${catkin_INCLUDE_DIRS}
+      ${OCTOMAP_INCLUDE_DIR}
   )
 else() # ROS Kinetic and above.
   include_directories(
     include
-    ${catkin_INCLUDE_DIRS}
-    ${OCTOMAP_INCLUDE_DIRS}
+    SYSTEM
+      ${catkin_INCLUDE_DIRS}
+      ${OCTOMAP_INCLUDE_DIRS}
   )
 endif()
 
@@ -104,14 +106,14 @@ if(TARGET ${PROJECT_NAME}-test)
   )
 endif()
 
-##################
-# Code_coverage ##
-##################
+###################
+## Code_coverage ##
+###################
 
-find_package(cmake_code_coverage QUIET)
-if(cmake_code_coverage_FOUND)
-  add_gtest_coverage(
-    TEST_BUILD_TARGETS
-      ${PROJECT_NAME}-test
-  )
-endif(cmake_code_coverage_FOUND)
+# find_package(cmake_code_coverage QUIET)
+# if(cmake_code_coverage_FOUND)
+#   add_gtest_coverage(
+#     TEST_BUILD_TARGETS
+#       ${PROJECT_NAME}-test
+#   )
+# endif(cmake_code_coverage_FOUND)

@@ -37,8 +37,9 @@ catkin_package(
 ## Your package locations should be listed before other locations
 include_directories(
   include
-  ${catkin_INCLUDE_DIRS}
-  ${EIGEN3_INCLUDE_DIR}
+  SYSTEM
+    ${catkin_INCLUDE_DIRS}
+    ${EIGEN3_INCLUDE_DIR}
 )
 
 ## Declare a cpp executable
@@ -66,3 +67,34 @@ install(
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
+#############
+## Testing ##
+#############
+
+if (CATKIN_ENABLE_TESTING)
+  find_package(catkin REQUIRED)
+
+  include_directories(
+    include
+    SYSTEM
+      ${catkin_INCLUDE_DIRS}
+      ${EIGEN3_INCLUDE_DIRS}
+  )
+
+  catkin_add_gtest(${PROJECT_NAME}-test
+    test/test_grid_map_loader.cpp
+  )
+endif()
+
+
+###################
+## Code_coverage ##
+###################
+
+# find_package(cmake_code_coverage QUIET)
+# if(cmake_code_coverage_FOUND)
+#   add_gtest_coverage(
+#     TEST_BUILD_TARGETS
+#       ${PROJECT_NAME}-test
+#   )
+# endif(cmake_code_coverage_FOUND)

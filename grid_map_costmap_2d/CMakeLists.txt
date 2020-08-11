@@ -40,8 +40,9 @@ catkin_package(
 ## Specify additional locations of header files
 include_directories(
   include
-  ${catkin_INCLUDE_DIRS}
-  ${EIGEN3_INCLUDE_DIR}
+  SYSTEM
+    ${catkin_INCLUDE_DIRS}
+    ${EIGEN3_INCLUDE_DIR}
 )
 
 #############
@@ -74,14 +75,14 @@ if(TARGET ${PROJECT_NAME}-test)
   target_link_libraries(${PROJECT_NAME}-test ${catkin_LIBRARIES})
 endif()
 
-##################
-# Code_coverage ##
-##################
+###################
+## Code_coverage ##
+###################
 
-find_package(cmake_code_coverage QUIET)
-if(cmake_code_coverage_FOUND)
-  add_gtest_coverage(
-    TEST_BUILD_TARGETS
-      ${PROJECT_NAME}-test
-  )
-endif(cmake_code_coverage_FOUND)
+# find_package(cmake_code_coverage QUIET)
+# if(cmake_code_coverage_FOUND)
+#   add_gtest_coverage(
+#     TEST_BUILD_TARGETS
+#       ${PROJECT_NAME}-test
+#   )
+# endif(cmake_code_coverage_FOUND)

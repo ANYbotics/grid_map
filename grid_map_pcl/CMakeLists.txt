@@ -135,14 +135,14 @@ if(TARGET ${PROJECT_NAME}-test)
     ${catkin_LIBRARIES})
 endif()
 
-##################
-# Code_coverage ##
-##################
+###################
+## Code_coverage ##
+###################
 
-find_package(cmake_code_coverage QUIET)
-if(cmake_code_coverage_FOUND)
-  add_gtest_coverage(
-    TEST_BUILD_TARGETS
-      ${PROJECT_NAME}-test
-  )
-endif(cmake_code_coverage_FOUND)
+# find_package(cmake_code_coverage QUIET)
+# if(cmake_code_coverage_FOUND)
+#   add_gtest_coverage(
+#     TEST_BUILD_TARGETS
+#       ${PROJECT_NAME}-test
+#   )
+# endif(cmake_code_coverage_FOUND)

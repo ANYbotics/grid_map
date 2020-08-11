@@ -18,5 +18,5 @@
   <depend>pcl_ros</depend>
   <depend>roscpp</depend>
   <depend>yaml-cpp</depend>
-  <test_depend>cmake_code_coverage</test_depend>
+  <!-- <test_depend>cmake_code_coverage</test_depend> -->
 </package>
