@@ -155,8 +155,7 @@ bool getIndexFromPosition(
   internal::getVectorToOrigin(offset, mapLength);
   Vector indexVector = ((position - offset - mapPosition).array() / resolution).matrix();
   index = internal::getIndexFromIndexVector(indexVector, bufferSize, bufferStartIndex);
-  if (!checkIfPositionWithinMap(position, mapLength, mapPosition)) {return false;}
-  return true;
+  return checkIfPositionWithinMap(position, mapLength, mapPosition) && checkIfIndexInRange(index, bufferSize);
 }
 
 bool checkIfPositionWithinMap(
