@@ -58,7 +58,7 @@ public:
    * Checks if visualization is active (if somebody has actually subscribed).
    * @return true if active, false otherwise.
    */
-  bool isActive(const std::string & topic) const;
+  bool isActive() const;
 
 protected:
   //! ROS nodehandle.

@@ -52,7 +52,7 @@ bool FlatPointCloudVisualization::initialize()
 
 bool FlatPointCloudVisualization::visualize(const grid_map::GridMap & map)
 {
-  if (!isActive(name_)) {return true;}
+  if (!isActive()) {return true;}
   sensor_msgs::msg::PointCloud2 pointCloud;
 
   grid_map::GridMap mapCopy(map);

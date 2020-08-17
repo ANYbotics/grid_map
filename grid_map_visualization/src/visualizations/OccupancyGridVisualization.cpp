@@ -69,7 +69,7 @@ bool OccupancyGridVisualization::initialize()
 
 bool OccupancyGridVisualization::visualize(const grid_map::GridMap & map)
 {
-  if (!isActive(name_)) {return true;}
+  if (!isActive()) {return true;}
   if (!map.exists(layer_)) {
     RCLCPP_WARN_STREAM(
       nodeHandle_->get_logger(),

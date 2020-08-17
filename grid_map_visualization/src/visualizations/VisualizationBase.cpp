@@ -23,9 +23,9 @@ VisualizationBase::~VisualizationBase()
 {
 }
 
-bool VisualizationBase::isActive(const std::string & topic) const
+bool VisualizationBase::isActive() const
 {
-  if (nodeHandle_->count_subscribers(topic) > 0) {return true;}
+  if (nodeHandle_->count_subscribers(name_) > 0) {return true;}
   return false;
 }
 }  // namespace grid_map_visualization

@@ -70,7 +70,7 @@ bool MapRegionVisualization::initialize()
 
 bool MapRegionVisualization::visualize(const grid_map::GridMap & map)
 {
-  if (!isActive(name_)) {return true;}
+  if (!isActive()) {return true;}
 
   // TODO(needs_assignment): Replace this with ploygon?
 
