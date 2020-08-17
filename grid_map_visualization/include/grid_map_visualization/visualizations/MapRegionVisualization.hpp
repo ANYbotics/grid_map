@@ -9,15 +9,16 @@
 #ifndef GRID_MAP_VISUALIZATION__VISUALIZATIONS__MAPREGIONVISUALIZATION_HPP_
 #define GRID_MAP_VISUALIZATION__VISUALIZATIONS__MAPREGIONVISUALIZATION_HPP_
 
-#include <grid_map_visualization/visualizations/VisualizationBase.hpp>
 #include <grid_map_core/GridMap.hpp>
 
 // ROS
-#include <ros/ros.h>
-#include <visualization_msgs/Marker.h>
-#include <std_msgs/ColorRGBA.h>
+#include <rclcpp/rclcpp.hpp>
+#include <visualization_msgs/msg/marker.hpp>
+#include <std_msgs/msg/color_rgba.hpp>
 
 #include <string>
+
+#include "grid_map_visualization/visualizations/VisualizationBase.hpp"
 
 namespace grid_map_visualization
 {
@@ -33,7 +34,7 @@ public:
    * @param nodeHandle the ROS node handle.
    * @param name the name of the visualization.
    */
-  MapRegionVisualization(ros::NodeHandle & nodeHandle, const std::string & name);
+  MapRegionVisualization(rclcpp::Node::SharedPtr nodeHandle, const std::string & name);
 
   /*!
    * Destructor.
@@ -45,32 +46,35 @@ public:
    * @param config the parameters as XML.
    * @return true if successful.
    */
-  bool readParameters(XmlRpc::XmlRpcValue & config);
+  bool readParameters() override;
 
   /*!
    * Initialization.
    */
-  bool initialize();
+  bool initialize() override;
 
   /*!
    * Generates the visualization.
    * @param map the grid map to visualize.
    * @return true if successful.
    */
-  bool visualize(const grid_map::GridMap & map);
+  bool visualize(const grid_map::GridMap & map) override;
 
 private:
   //! Marker to be published.
-  visualization_msgs::Marker marker_;
+  visualization_msgs::msg::Marker marker_;
 
   //! Number of vertices of the map region visualization.
   const unsigned int nVertices_;
 
   //! Color of the map region visualization.
-  std_msgs::ColorRGBA color_;
+  std_msgs::msg::ColorRGBA color_;
 
   //! Line width of the map region marker [m].
   double lineWidth_;
+
+  //! ROS publisher.
+  rclcpp::Publisher<visualization_msgs::msg::Marker>::SharedPtr publisher_;
 };
 
 }  // namespace grid_map_visualization

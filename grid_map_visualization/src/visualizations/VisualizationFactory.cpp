@@ -6,23 +6,23 @@
  *   Institute: ETH Zurich, ANYbotics
  */
 
-#include <grid_map_visualization/visualizations/VisualizationFactory.hpp>
-#include <grid_map_visualization/visualizations/PointCloudVisualization.hpp>
-#include <grid_map_visualization/visualizations/FlatPointCloudVisualization.hpp>
-#include <grid_map_visualization/visualizations/VectorVisualization.hpp>
-#include <grid_map_visualization/visualizations/OccupancyGridVisualization.hpp>
-#include <grid_map_visualization/visualizations/GridCellsVisualization.hpp>
-#include <grid_map_visualization/visualizations/MapRegionVisualization.hpp>
-
 // STL
 #include <string>
 #include <memory>
 #include <algorithm>
 
+#include "grid_map_visualization/visualizations/VisualizationFactory.hpp"
+#include "grid_map_visualization/visualizations/PointCloudVisualization.hpp"
+#include "grid_map_visualization/visualizations/FlatPointCloudVisualization.hpp"
+#include "grid_map_visualization/visualizations/VectorVisualization.hpp"
+#include "grid_map_visualization/visualizations/OccupancyGridVisualization.hpp"
+#include "grid_map_visualization/visualizations/GridCellsVisualization.hpp"
+#include "grid_map_visualization/visualizations/MapRegionVisualization.hpp"
+
 namespace grid_map_visualization
 {
 
-VisualizationFactory::VisualizationFactory(ros::NodeHandle & nodeHandle)
+VisualizationFactory::VisualizationFactory(rclcpp::Node::SharedPtr nodeHandle)
 : nodeHandle_(nodeHandle)
 {
   types_.push_back("point_cloud");

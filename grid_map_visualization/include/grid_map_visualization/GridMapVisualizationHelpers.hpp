@@ -10,9 +10,9 @@
 #define GRID_MAP_VISUALIZATION__GRIDMAPVISUALIZATIONHELPERS_HPP_
 
 // ROS
-#include <ros/ros.h>
-#include <visualization_msgs/MarkerArray.h>
-#include <std_msgs/ColorRGBA.h>
+#include <rclcpp/rclcpp.hpp>
+#include <visualization_msgs/msg/marker_array.hpp>
+#include <std_msgs/msg/color_rgba.hpp>
 
 // Eigen
 #include <Eigen/Core>
@@ -27,7 +27,7 @@ namespace grid_map_visualization
  * @param[in] resetTransparency if transparency should be reset (to fully visible) or left at current value.
  */
 void getColorMessageFromColorVector(
-  std_msgs::ColorRGBA & colorMessage,
+  std_msgs::msg::ColorRGBA & colorMessage,
   const Eigen::Vector3f & colorVector,
   bool resetTransparency = true);
 
@@ -38,7 +38,7 @@ void getColorMessageFromColorVector(
  */
 void getColorVectorFromColorMessage(
   Eigen::Vector3f & colorVector,
-  const std_msgs::ColorRGBA & colorMessage);
+  const std_msgs::msg::ColorRGBA & colorMessage);
 
 /*!
  * Sets a color message from a color value.
@@ -47,7 +47,7 @@ void getColorVectorFromColorMessage(
  * @param[in] resetTransparency if transparency should be reset (to fully visible) or left at current value.
  */
 void setColorFromColorValue(
-  std_msgs::ColorRGBA & color, const unsigned int64 & colorValue,
+  std_msgs::msg::ColorRGBA & color, const uint64_t & colorValue,
   bool resetTransparency = true);
 
 /*!
@@ -76,8 +76,8 @@ void setColorChannelFromValue(
  * @param[in] upperValueBound the upper boundary of the value.
  */
 void interpolateBetweenColors(
-  std_msgs::ColorRGBA & color, const std_msgs::ColorRGBA & colorForLowerValue,
-  const std_msgs::ColorRGBA & colorForUpperValue, const double value,
+  std_msgs::msg::ColorRGBA & color, const std_msgs::msg::ColorRGBA & colorForLowerValue,
+  const std_msgs::msg::ColorRGBA & colorForUpperValue, const double value,
   const double lowerValueBound, const double upperValueBound);
 
 /*!
@@ -90,7 +90,7 @@ void interpolateBetweenColors(
  * @param[in] minSaturation the minimum saturation.
  */
 void setSaturationFromValue(
-  std_msgs::ColorRGBA & color, const double value, const double lowerValueBound,
+  std_msgs::msg::ColorRGBA & color, const double value, const double lowerValueBound,
   const double upperValueBound, const double maxSaturation, const double minSaturation);
 
 /*!
@@ -101,7 +101,7 @@ void setSaturationFromValue(
  * @param[in] upperValueBound the upper boundary of the value.
  */
 void setColorFromValue(
-  std_msgs::ColorRGBA & color, const double value, const double lowerValueBound,
+  std_msgs::msg::ColorRGBA & color, const double value, const double lowerValueBound,
   const double upperValueBound);
 
 /*!

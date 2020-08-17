@@ -6,29 +6,36 @@
  *	 Institute: ETH Zurich, ANYbotics
  */
 
-#include "grid_map_visualization/GridMapVisualization.hpp"
 #include <grid_map_core/GridMap.hpp>
 #include <grid_map_ros/GridMapRosConverter.hpp>
 
 #include <string>
+#include <vector>
+#include <memory>
+#include <unordered_set>
+
+#include "grid_map_visualization/GridMapVisualization.hpp"
 
 namespace grid_map_visualization
 {
 
-GridMapVisualization::GridMapVisualization(
-  ros::NodeHandle & nodeHandle,
-  const std::string & parameterName)
-: nodeHandle_(nodeHandle),
-  visualizationsParameter_(parameterName),
-  factory_(nodeHandle_),
-  isSubscribed_(false)
+GridMapVisualization::GridMapVisualization(const std::string & parameterName)
+: visualizationsParameter_(parameterName)
+  // isSubscribed_(false)
 {
-  ROS_INFO("Grid map visualization node started.");
+  nodeHandle_ = std::make_shared<rclcpp::Node>("grid_map_visualization");
+  factory_ = std::make_shared<VisualizationFactory>(nodeHandle_);
+
+  RCLCPP_INFO(nodeHandle_->get_logger(), "Grid map visualization node started.");
   readParameters();
-  activityCheckTimer_ = nodeHandle_.createTimer(
-    activityCheckDuration_,
-    &GridMapVisualization::updateSubscriptionCallback,
-    this);
+
+  // Unsubscribing from a topic is not yet implemented in rclcpp
+  // https://answers.ros.org/question/354792/rclcpp-how-to-unsubscribe-from-a-topic/
+  // TODO(marwan99): reactivate updateSubscriptionCallback once unsubscribing is implemented
+  // activityCheckTimer_ = nodeHandle_->create_wall_timer(
+  //   activityCheckDuration_,
+  //   &GridMapVisualization::updateSubscriptionCallback,
+  //   this);
   initialize();
 }
 
@@ -36,148 +43,145 @@ GridMapVisualization::~GridMapVisualization()
 {
 }
 
+rclcpp::Node::SharedPtr
+GridMapVisualization::get_node_ptr()
+{
+  return nodeHandle_;
+}
+
 bool GridMapVisualization::readParameters()
 {
-  nodeHandle_.param("grid_map_topic", mapTopic_, string("/grid_map"));
+  nodeHandle_->declare_parameter("grid_map_topic", std::string("/grid_map"));
+  nodeHandle_->declare_parameter("activity_check_rate", 2.0);
+  nodeHandle_->declare_parameter(visualizationsParameter_, std::vector<std::string>());
 
   double activityCheckRate;
-  nodeHandle_.param("activity_check_rate", activityCheckRate, 2.0);
-  activityCheckDuration_.fromSec(1.0 / activityCheckRate);
-  ROS_ASSERT(!activityCheckDuration_.isZero());
+
+  nodeHandle_->get_parameter("grid_map_topic", mapTopic_);
+  nodeHandle_->get_parameter("activity_check_rate", activityCheckRate);
+
+  // activityCheckDuration_.fromSec(1.0 / activityCheckRate);
+  // ROS_ASSERT(!activityCheckDuration_.isZero());
 
   // Configure the visualizations from a configuration stored on the parameter server.
-  XmlRpc::XmlRpcValue config;
-  if (!nodeHandle_.getParam(visualizationsParameter_, config)) {
-    ROS_WARN(
+  std::vector<std::string> config;
+  if (!nodeHandle_->get_parameter(visualizationsParameter_, config)) {
+    RCLCPP_WARN(
+      nodeHandle_->get_logger(),
       "Could not load the visualizations configuration from parameter %s,are you sure it"
       "was pushed to the parameter server? Assuming that you meant to leave it empty.",
       visualizationsParameter_.c_str());
     return false;
   }
 
-  // Verify proper naming and structure,
-  if (config.getType() != XmlRpc::XmlRpcValue::TypeArray) {
-    ROS_ERROR(
-      "%s: The visualization specification must be a list, but it is of XmlRpcType %d",
-      visualizationsParameter_.c_str(), config.getType());
-    ROS_ERROR("The XML passed in is formatted as follows:\n %s", config.toXml().c_str());
-    return false;
-  }
+  std::unordered_set<std::string> config_check;
 
   // Iterate over all visualizations (may be just one),
-  for (unsigned int i = 0; i < config.size(); ++i) {
-    if (config[i].getType() != XmlRpc::XmlRpcValue::TypeStruct) {
-      ROS_ERROR(
-        "%s: Visualizations must be specified as maps, but they are XmlRpcType:%d",
-        visualizationsParameter_.c_str(), config[i].getType());
-      return false;
-    } else if (!config[i].hasMember("type")) {
-      ROS_ERROR(
-        "%s: Could not add a visualization because no type was given",
-        visualizationsParameter_.c_str());
-      return false;
-    } else if (!config[i].hasMember("name")) {
-      ROS_ERROR(
-        "%s: Could not add a visualization because no name was given",
-        visualizationsParameter_.c_str());
-      return false;
+  for (auto name : config) {
+    std::string type;
+
+    // Check for name collisions within the list itself.
+    if (config_check.find(name) == config_check.end()) {
+      config_check.insert(name);
     } else {
-      // Check for name collisions within the list itself.
-      for (int j = i + 1; j < config.size(); ++j) {
-        if (config[j].getType() != XmlRpc::XmlRpcValue::TypeStruct) {
-          ROS_ERROR(
-            "%s: Visualizations must be specified as maps, but they are XmlRpcType:%d",
-            visualizationsParameter_.c_str(), config[j].getType());
-          return false;
-        }
+      RCLCPP_ERROR(
+        nodeHandle_->get_logger(),
+        "%s: A visualization with the name '%s' already exists.",
+        visualizationsParameter_.c_str(), namei.c_str());
+      return false;
+    }
 
-        if (!config[j].hasMember("name") ||
-          config[i]["name"].getType() != XmlRpc::XmlRpcValue::TypeString ||
-          config[j]["name"].getType() != XmlRpc::XmlRpcValue::TypeString)
-        {
-          ROS_ERROR(
-            "%s: Visualizations names must be strings, but they are XmlRpcTypes:%d and %d",
-            visualizationsParameter_.c_str(), config[i].getType(), config[j].getType());
-          return false;
-        }
-
-        std::string namei = config[i]["name"];
-        std::string namej = config[j]["name"];
-        if (namei == namej) {
-          ROS_ERROR(
-            "%s: A visualization with the name '%s' already exists.",
-            visualizationsParameter_.c_str(), namei.c_str());
-          return false;
-        }
+    nodeHandle_->declare_parameter(name + ".type");
+    try {
+      if (nodeHandle_->get_parameter(name + ".type", type)) {
+        RCLCPP_ERROR(
+          nodeHandle_->get_logger(),
+          "%s: Could not add a visualization because no type was given",
+          name.c_str());
+        return false;
       }
+    } catch (const rclcpp::ParameterTypeException & e) {
+      RCLCPP_ERROR(
+        nodeHandle_->get_logger(),
+        "%s: Could not add %s visualization, because the %s.type parameter is not a string.",
+        visualizationsParameter_.c_str(), name.c_str(), name.c_str());
+      return false;
     }
 
     // Make sure the visualization has a valid type.
-    if (!factory_.isValidType(config[i]["type"])) {
-      ROS_ERROR(
+    if (!factory_->isValidType(type)) {
+      RCLCPP_ERROR(
+        nodeHandle_->get_logger(),
         "Could not find visualization of type '%s'.",
-        std::string(config[i]["type"]).c_str());
+        type.c_str());
       return false;
     }
-  }
 
-  for (int i = 0; i < config.size(); ++i) {
-    std::string type = config[i]["type"];
-    std::string name = config[i]["name"];
-    auto visualization = factory_.getInstance(type, name);
-    visualization->readParameters(config[i]);
+    auto visualization = factory_->getInstance(name, type);
+    visualization->readParameters();
     visualizations_.push_back(visualization);
-    ROS_INFO(
-      "%s: Configured visualization of type '%s' with name '%s'.",
+    RCLCPP_INFO(
+      nodeHandle_->get_logger(), "%s: Configured visualization of type '%s' with name '%s'.",
       visualizationsParameter_.c_str(), type.c_str(), name.c_str());
   }
-
   return true;
 }
 
 bool GridMapVisualization::initialize()
 {
-  for (auto & visualization : visualizations_) {
+  for (auto visualization : visualizations_) {
     visualization->initialize();
   }
-  updateSubscriptionCallback(ros::TimerEvent());
-  ROS_INFO("Grid map visualization initialized.");
+
+  // Unsubscribing from a topic is not yet implemented in rclcpp
+  // https://answers.ros.org/question/354792/rclcpp-how-to-unsubscribe-from-a-topic/
+  // TODO(marwan99): reactivate updateSubscriptionCallback once unsubscribing is implemented
+  // updateSubscriptionCallback(ros::TimerEvent());
+  mapSubscriber_ = nodeHandle_->create_subscription<grid_map_msgs::msg::GridMap>(
+    mapTopic_, rclcpp::SystemDefaultsQoS(),
+    std::bind(&GridMapVisualization::callback, this, std::placeholders::_1));
+
+  RCLCPP_INFO(nodeHandle_->get_logger(), "Grid map visualization initialized.");
   return true;
 }
 
-void GridMapVisualization::updateSubscriptionCallback(const ros::TimerEvent &)
+// void GridMapVisualization::updateSubscriptionCallback(const ros::TimerEvent & timerEvent)
+// {
+//   bool isActive = false;
+
+//   for (auto & visualization : visualizations_) {
+//     if (visualization->isActive()) {
+//       isActive = true;
+//       break;
+//     }
+//   }
+
+//   if (!isSubscribed_ && isActive) {
+//     mapSubscriber_ = nodeHandle_->create_subscription<grid_map_msgs::msg::GridMap>(
+//       mapTopic_, rclcpp::SystemDefaultsQoS(),
+//       std::bind(&GridMapVisualization::callback, this, _1));
+
+//     isSubscribed_ = true;
+//     RCLCPP_DEBUG(nodeHandle_->get_logger(),"Subscribed to grid map at '%s'.", mapTopic_.c_str());
+//   }
+//   if (isSubscribed_ && !isActive) {
+//     mapSubscriber_.shutdown();
+//     isSubscribed_ = false;
+//     RCLCPP_DEBUG(nodeHandle_->get_logger(),"Cancelled subscription to grid map.");
+//   }
+// }￼
+
+void GridMapVisualization::callback(const grid_map_msgs::msg::GridMap::SharedPtr message)
 {
-  bool isActive = false;
-
-  for (auto & visualization : visualizations_) {
-    if (visualization->isActive()) {
-      isActive = true;
-      break;
-    }
-  }
-
-  if (!isSubscribed_ && isActive) {
-    mapSubscriber_ = nodeHandle_.subscribe(mapTopic_, 1, &GridMapVisualization::callback, this);
-    isSubscribed_ = true;
-    ROS_DEBUG("Subscribed to grid map at '%s'.", mapTopic_.c_str());
-  }
-  if (isSubscribed_ && !isActive) {
-    mapSubscriber_.shutdown();
-    isSubscribed_ = false;
-    ROS_DEBUG("Cancelled subscription to grid map.");
-  }
-}
-
-void GridMapVisualization::callback(const grid_map_msgs::GridMap & message)
-{
-  ROS_DEBUG(
+  RCLCPP_DEBUG(
+    nodeHandle_->get_logger(),
     "Grid map visualization received a map (timestamp %f) for visualization.",
-    message.info.header.stamp.toSec());
+    rclcpp::Time(message->header.stamp).seconds());
   grid_map::GridMap map;
-  grid_map::GridMapRosConverter::fromMessage(message, map);
+  grid_map::GridMapRosConverter::fromMessage(*message, map);
 
-  for (auto & visualization : visualizations_) {
-    visualization->visualize(map);
+  for (std::size_t i = 0; i < visualizations_.size(); i++) {
+    visualizations_[i]->visualize(map);
   }
 }
 

@@ -9,13 +9,14 @@
 #ifndef GRID_MAP_VISUALIZATION__VISUALIZATIONS__FLATPOINTCLOUDVISUALIZATION_HPP_
 #define GRID_MAP_VISUALIZATION__VISUALIZATIONS__FLATPOINTCLOUDVISUALIZATION_HPP_
 
-#include <grid_map_visualization/visualizations/VisualizationBase.hpp>
 #include <grid_map_core/GridMap.hpp>
 
 // ROS
-#include <ros/ros.h>
+// #include <rclcpp/rclcpp.hpp>
 
 #include <string>
+
+#include "grid_map_visualization/visualizations/VisualizationBase.hpp"
 
 namespace grid_map_visualization
 {
@@ -31,7 +32,7 @@ public:
    * @param nodeHandle the ROS node handle.
    * @param name the name of the visualization.
    */
-  FlatPointCloudVisualization(ros::NodeHandle & nodeHandle, const std::string & name);
+  FlatPointCloudVisualization(rclcpp::Node::SharedPtr nodeHandle, const std::string & name);
 
   /*!
    * Destructor.
@@ -43,19 +44,19 @@ public:
    * @param config the parameters as XML.
    * @return true if successful.
    */
-  bool readParameters(XmlRpc::XmlRpcValue & config);
+  bool readParameters() override;
 
   /*!
    * Initialization.
    */
-  bool initialize();
+  bool initialize() override;
 
   /*!
    * Generates the visualization.
    * @param map the grid map to visualize.
    * @return true if successful.
    */
-  bool visualize(const grid_map::GridMap & map);
+  bool visualize(const grid_map::GridMap & map) override;
 
 private:
   //! Type that is transformed to points.
@@ -63,6 +64,9 @@ private:
 
   //! Height of the z-coordinate at which the flat point cloud is visualized.
   double height_;
+
+  //! ROS publisher.
+  rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr publisher_;
 };
 
 }  // namespace grid_map_visualization

@@ -10,7 +10,7 @@
 #include <grid_map_visualization/GridMapVisualizationHelpers.hpp>
 
 // ROS
-#include <geometry_msgs/Point.h>
+#include <geometry_msgs/msg/point.hpp>
 
 #include <string>
 
@@ -18,7 +18,7 @@ namespace grid_map_visualization
 {
 
 MapRegionVisualization::MapRegionVisualization(
-  ros::NodeHandle & nodeHandle,
+  rclcpp::Node::SharedPtr nodeHandle,
   const std::string & name)
 : VisualizationBase(nodeHandle, name),
   nVertices_(5),
@@ -30,20 +30,21 @@ MapRegionVisualization::~MapRegionVisualization()
 {
 }
 
-bool MapRegionVisualization::readParameters(XmlRpc::XmlRpcValue & config)
+bool MapRegionVisualization::readParameters()
 {
-  VisualizationBase::readParameters(config);
-
   lineWidth_ = 0.003;
-  if (!getParam("line_width", lineWidth_)) {
-    ROS_INFO(
+  if (!nodeHandle_->get_parameter(name_ + "line_width", lineWidth_)) {
+    RCLCPP_INFO(
+      nodeHandle_->get_logger(),
       "MapRegionVisualization with name '%s' did not find a 'line_width' parameter. Using default.",
       name_.c_str());
+    return false;
   }
 
   int colorValue = 16777215;  // white, http://www.wolframalpha.com/input/?i=BitOr%5BBitShiftLeft%5Br%2C16%5D%2C+BitShiftLeft%5Bg%2C8%5D%2C+b%5D+where+%7Br%3D20%2C+g%3D50%2C+b%3D230%7D  // NOLINT
-  if (!getParam("color", colorValue)) {
-    ROS_INFO(
+  if (!nodeHandle_->get_parameter(name_ + "color", colorValue)) {
+    RCLCPP_INFO(
+      nodeHandle_->get_logger(),
       "MapRegionVisualization with name '%s' did not find a 'color' parameter. Using default.",
       name_.c_str());
   }
@@ -55,25 +56,25 @@ bool MapRegionVisualization::readParameters(XmlRpc::XmlRpcValue & config)
 bool MapRegionVisualization::initialize()
 {
   marker_.ns = "map_region";
-  marker_.lifetime = ros::Duration();
-  marker_.action = visualization_msgs::Marker::ADD;
-  marker_.type = visualization_msgs::Marker::LINE_STRIP;
+  marker_.lifetime = rclcpp::Duration(0);  // Setting lifetime to forever
+  marker_.action = visualization_msgs::msg::Marker::ADD;
+  marker_.type = visualization_msgs::msg::Marker::LINE_STRIP;
   marker_.scale.x = lineWidth_;
   marker_.points.resize(nVertices_);  // Initialized to [0.0, 0.0, 0.0]
   marker_.colors.resize(nVertices_, color_);
-  publisher_ = nodeHandle_.advertise<visualization_msgs::Marker>(name_, 1, true);
+  publisher_ = nodeHandle_->create_publisher<visualization_msgs::msg::Marker>(name_, 10);
   return true;
 }
 
 bool MapRegionVisualization::visualize(const grid_map::GridMap & map)
 {
-  if (!isActive()) {return true;}
+  if (!isActive(name_)) {return true;}
 
   // TODO(needs_assignment): Replace this with ploygon?
 
   // Set marker info.
   marker_.header.frame_id = map.getFrameId();
-  marker_.header.stamp.fromNSec(map.getTimestamp());
+  marker_.header.stamp = rclcpp::Time(map.getTimestamp());
 
   // Adapt positions of markers.
   float halfLengthX = map.getLength().x() / 2.0;
@@ -90,7 +91,7 @@ bool MapRegionVisualization::visualize(const grid_map::GridMap & map)
   marker_.points[4].x = marker_.points[0].x;
   marker_.points[4].y = marker_.points[0].y;
 
-  publisher_.publish(marker_);
+  publisher_->publish(marker_);
   return true;
 }
 

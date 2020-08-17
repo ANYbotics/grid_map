@@ -6,10 +6,8 @@
  *   Institute: ETH Zurich, ANYbotics
  */
 
-#include <grid_map_visualization/visualizations/PointCloudVisualization.hpp>
+#include "grid_map_visualization/visualizations/PointCloudVisualization.hpp"
 #include <grid_map_ros/GridMapRosConverter.hpp>
-
-#include <sensor_msgs/PointCloud2.h>
 
 #include <string>
 
@@ -17,7 +15,7 @@ namespace grid_map_visualization
 {
 
 PointCloudVisualization::PointCloudVisualization(
-  ros::NodeHandle & nodeHandle,
+  rclcpp::Node::SharedPtr nodeHandle,
   const std::string & name)
 : VisualizationBase(nodeHandle, name)
 {
@@ -27,11 +25,11 @@ PointCloudVisualization::~PointCloudVisualization()
 {
 }
 
-bool PointCloudVisualization::readParameters(XmlRpc::XmlRpcValue & config)
+bool PointCloudVisualization::readParameters()
 {
-  VisualizationBase::readParameters(config);
-  if (!getParam("layer", layer_)) {
-    ROS_ERROR(
+  if (!nodeHandle_->get_parameter(name_ + "layer", layer_)) {
+    RCLCPP_ERROR(
+      nodeHandle_->get_logger(),
       "PointCloudVisualization with name '%s' did not find a 'layer' parameter.",
       name_.c_str());
     return false;
@@ -41,22 +39,23 @@ bool PointCloudVisualization::readParameters(XmlRpc::XmlRpcValue & config)
 
 bool PointCloudVisualization::initialize()
 {
-  publisher_ = nodeHandle_.advertise<sensor_msgs::PointCloud2>(name_, 1, true);
+  publisher_ = nodeHandle_->create_publisher<sensor_msgs::msg::PointCloud2>(name_, 10);
   return true;
 }
 
 bool PointCloudVisualization::visualize(const grid_map::GridMap & map)
 {
-  if (!isActive()) {return true;}
+  if (!isActive(name_)) {return true;}
   if (!map.exists(layer_)) {
-    ROS_WARN_STREAM(
+    RCLCPP_WARN_STREAM(
+      nodeHandle_->get_logger(),
       "PointCloudVisualization::visualize: No grid map layer with name '" << layer_ <<
         "' found.");
     return false;
   }
-  sensor_msgs::PointCloud2 pointCloud;
+  sensor_msgs::msg::PointCloud2 pointCloud;
   grid_map::GridMapRosConverter::toPointCloud(map, layer_, pointCloud);
-  publisher_.publish(pointCloud);
+  publisher_->publish(pointCloud);
   return true;
 }
 

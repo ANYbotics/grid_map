@@ -8,7 +8,7 @@
 
 #include "grid_map_visualization/visualizations/OccupancyGridVisualization.hpp"
 #include <grid_map_ros/GridMapRosConverter.hpp>
-#include <nav_msgs/OccupancyGrid.h>
+#include <nav_msgs/msg/occupancy_grid.hpp>
 
 #include <string>
 
@@ -16,7 +16,7 @@ namespace grid_map_visualization
 {
 
 OccupancyGridVisualization::OccupancyGridVisualization(
-  ros::NodeHandle & nodeHandle,
+  rclcpp::Node::SharedPtr nodeHandle,
   const std::string & name)
 : VisualizationBase(nodeHandle, name),
   dataMin_(0.0),
@@ -28,26 +28,27 @@ OccupancyGridVisualization::~OccupancyGridVisualization()
 {
 }
 
-bool OccupancyGridVisualization::readParameters(XmlRpc::XmlRpcValue & config)
+bool OccupancyGridVisualization::readParameters()
 {
-  VisualizationBase::readParameters(config);
-
-  if (!getParam("layer", layer_)) {
-    ROS_ERROR(
+  if (!nodeHandle_->get_parameter(name_ + "layer", layer_)) {
+    RCLCPP_ERROR(
+      nodeHandle_->get_logger(),
       "OccupancyGridVisualization with name '%s' did not find a 'layer' parameter.",
       name_.c_str());
     return false;
   }
 
-  if (!getParam("data_min", dataMin_)) {
-    ROS_ERROR(
+  if (!nodeHandle_->get_parameter(name_ + "data_min", dataMin_)) {
+    RCLCPP_ERROR(
+      nodeHandle_->get_logger(),
       "OccupancyGridVisualization with name '%s' did not find a 'data_min' parameter.",
       name_.c_str());
     return false;
   }
 
-  if (!getParam("data_max", dataMax_)) {
-    ROS_ERROR(
+  if (!nodeHandle_->get_parameter(name_ + "data_max", dataMax_)) {
+    RCLCPP_ERROR(
+      nodeHandle_->get_logger(),
       "OccupancyGridVisualization with name '%s' did not find a 'data_max' parameter.",
       name_.c_str());
     return false;
@@ -58,22 +59,23 @@ bool OccupancyGridVisualization::readParameters(XmlRpc::XmlRpcValue & config)
 
 bool OccupancyGridVisualization::initialize()
 {
-  publisher_ = nodeHandle_.advertise<nav_msgs::OccupancyGrid>(name_, 1, true);
+  publisher_ = nodeHandle_->create_publisher<nav_msgs::msg::OccupancyGrid>(name_, 1);
   return true;
 }
 
 bool OccupancyGridVisualization::visualize(const grid_map::GridMap & map)
 {
-  if (!isActive()) {return true;}
+  if (!isActive(name_)) {return true;}
   if (!map.exists(layer_)) {
-    ROS_WARN_STREAM(
+    RCLCPP_WARN_STREAM(
+      nodeHandle_->get_logger(),
       "OccupancyGridVisualization::visualize: No grid map layer with name '" << layer_ <<
         "' found.");
     return false;
   }
-  nav_msgs::OccupancyGrid occupancyGrid;
+  nav_msgs::msg::OccupancyGrid occupancyGrid;
   grid_map::GridMapRosConverter::toOccupancyGrid(map, layer_, dataMin_, dataMax_, occupancyGrid);
-  publisher_.publish(occupancyGrid);
+  publisher_->publish(occupancyGrid);
   return true;
 }
 

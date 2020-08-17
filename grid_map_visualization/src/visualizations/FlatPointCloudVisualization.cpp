@@ -6,18 +6,19 @@
  *   Institute: ETH Zurich, ANYbotics
  */
 
-#include <grid_map_visualization/visualizations/FlatPointCloudVisualization.hpp>
 #include <grid_map_ros/GridMapRosConverter.hpp>
 
-#include <sensor_msgs/PointCloud2.h>
+#include <sensor_msgs/msg/point_cloud2.hpp>
 
 #include <string>
+
+#include "grid_map_visualization/visualizations/FlatPointCloudVisualization.hpp"
 
 namespace grid_map_visualization
 {
 
 FlatPointCloudVisualization::FlatPointCloudVisualization(
-  ros::NodeHandle & nodeHandle,
+  rclcpp::Node::SharedPtr nodeHandle,
   const std::string & name)
 : VisualizationBase(nodeHandle, name),
   height_(0.0)
@@ -28,13 +29,12 @@ FlatPointCloudVisualization::~FlatPointCloudVisualization()
 {
 }
 
-bool FlatPointCloudVisualization::readParameters(XmlRpc::XmlRpcValue & config)
+bool FlatPointCloudVisualization::readParameters()
 {
-  VisualizationBase::readParameters(config);
-
   height_ = 0.0;
-  if (!getParam("height", height_)) {
-    ROS_INFO(
+  if (!nodeHandle_->get_parameter(name_ + "height", height_)) {
+    RCLCPP_INFO(
+      nodeHandle_->get_logger(),
       "FlatPointCloudVisualization with name '%s' "
       "did not find a 'height' parameter. Using default.",
       name_.c_str());
@@ -45,20 +45,20 @@ bool FlatPointCloudVisualization::readParameters(XmlRpc::XmlRpcValue & config)
 
 bool FlatPointCloudVisualization::initialize()
 {
-  publisher_ = nodeHandle_.advertise<sensor_msgs::PointCloud2>(name_, 1, true);
+  publisher_ = nodeHandle_->create_publisher<sensor_msgs::msg::PointCloud2>(name_, 10);
   return true;
 }
 
 bool FlatPointCloudVisualization::visualize(const grid_map::GridMap & map)
 {
-  if (!isActive()) {return true;}
-  sensor_msgs::PointCloud2 pointCloud;
+  if (!isActive(name_)) {return true;}
+  sensor_msgs::msg::PointCloud2 pointCloud;
 
   grid_map::GridMap mapCopy(map);
   mapCopy.add("flat", height_);
   grid_map::GridMapRosConverter::toPointCloud(mapCopy, "flat", pointCloud);
 
-  publisher_.publish(pointCloud);
+  publisher_->publish(pointCloud);
   return true;
 }
 
