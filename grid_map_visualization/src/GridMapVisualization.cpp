@@ -12,6 +12,7 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <chrono>
 #include <unordered_set>
 
 #include "grid_map_visualization/GridMapVisualization.hpp"
@@ -29,13 +30,9 @@ GridMapVisualization::GridMapVisualization(const std::string & parameterName)
   RCLCPP_INFO(nodeHandle_->get_logger(), "Grid map visualization node started.");
   readParameters();
 
-  // Unsubscribing from a topic is not yet implemented in rclcpp
-  // https://answers.ros.org/question/354792/rclcpp-how-to-unsubscribe-from-a-topic/
-  // TODO(marwan99): reactivate updateSubscriptionCallback once unsubscribing is implemented
-  // activityCheckTimer_ = nodeHandle_->create_wall_timer(
-  //   activityCheckDuration_,
-  //   &GridMapVisualization::updateSubscriptionCallback,
-  //   this);
+  activityCheckTimer_ = nodeHandle_->create_wall_timer(
+    std::chrono::duration<double>(1.0 / activityCheckRate_),
+    std::bind(&GridMapVisualization::updateSubscriptionCallback, this));
   initialize();
 }
 
@@ -55,13 +52,10 @@ bool GridMapVisualization::readParameters()
   nodeHandle_->declare_parameter("activity_check_rate", 2.0);
   nodeHandle_->declare_parameter(visualizationsParameter_, std::vector<std::string>());
 
-  double activityCheckRate;
-
   nodeHandle_->get_parameter("grid_map_topic", mapTopic_);
-  nodeHandle_->get_parameter("activity_check_rate", activityCheckRate);
+  nodeHandle_->get_parameter("activity_check_rate", activityCheckRate_);
 
-  // activityCheckDuration_.fromSec(1.0 / activityCheckRate);
-  // ROS_ASSERT(!activityCheckDuration_.isZero());
+  assert(activityCheckRate_);
 
   // Configure the visualizations from a configuration stored on the parameter server.
   std::vector<std::string> config;
@@ -133,43 +127,36 @@ bool GridMapVisualization::initialize()
     visualization->initialize();
   }
 
-  // Unsubscribing from a topic is not yet implemented in rclcpp
-  // https://answers.ros.org/question/354792/rclcpp-how-to-unsubscribe-from-a-topic/
-  // TODO(marwan99): reactivate updateSubscriptionCallback once unsubscribing is implemented
-  // updateSubscriptionCallback(ros::TimerEvent());
-  mapSubscriber_ = nodeHandle_->create_subscription<grid_map_msgs::msg::GridMap>(
-    mapTopic_, rclcpp::SystemDefaultsQoS(),
-    std::bind(&GridMapVisualization::callback, this, std::placeholders::_1));
-
+  updateSubscriptionCallback();
   RCLCPP_INFO(nodeHandle_->get_logger(), "Grid map visualization initialized.");
   return true;
 }
 
-// void GridMapVisualization::updateSubscriptionCallback(const ros::TimerEvent & timerEvent)
-// {
-//   bool isActive = false;
+void GridMapVisualization::updateSubscriptionCallback()
+{
+  bool isActive = false;
 
-//   for (auto & visualization : visualizations_) {
-//     if (visualization->isActive()) {
-//       isActive = true;
-//       break;
-//     }
-//   }
+  for (auto & visualization : visualizations_) {
+    if (visualization->isActive()) {
+      isActive = true;
+      break;
+    }
+  }
 
-//   if (!isSubscribed_ && isActive) {
-//     mapSubscriber_ = nodeHandle_->create_subscription<grid_map_msgs::msg::GridMap>(
-//       mapTopic_, rclcpp::SystemDefaultsQoS(),
-//       std::bind(&GridMapVisualization::callback, this, _1));
+  if (!isSubscribed_ && isActive) {
+    mapSubscriber_ = nodeHandle_->create_subscription<grid_map_msgs::msg::GridMap>(
+      mapTopic_, rclcpp::SystemDefaultsQoS(),
+      std::bind(&GridMapVisualization::callback, this, std::placeholders::_1));
 
-//     isSubscribed_ = true;
-//     RCLCPP_DEBUG(nodeHandle_->get_logger(),"Subscribed to grid map at '%s'.", mapTopic_.c_str());
-//   }
-//   if (isSubscribed_ && !isActive) {
-//     mapSubscriber_.shutdown();
-//     isSubscribed_ = false;
-//     RCLCPP_DEBUG(nodeHandle_->get_logger(),"Cancelled subscription to grid map.");
-//   }
-// }￼
+    isSubscribed_ = true;
+    RCLCPP_DEBUG(nodeHandle_->get_logger(), "Subscribed to grid map at '%s'.", mapTopic_.c_str());
+  }
+  if (isSubscribed_ && !isActive) {
+    mapSubscriber_.reset();
+    isSubscribed_ = false;
+    RCLCPP_DEBUG(nodeHandle_->get_logger(), "Cancelled subscription to grid map.");
+  }
+}
 
 void GridMapVisualization::callback(const grid_map_msgs::msg::GridMap::SharedPtr message)
 {

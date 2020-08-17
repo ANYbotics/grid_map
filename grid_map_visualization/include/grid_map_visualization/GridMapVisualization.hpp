@@ -76,7 +76,7 @@ private:
    * grid map to save bandwidth.
    * @param timerEvent the timer event.
    */
-  // void updateSubscriptionCallback(const ros::TimerEvent & timerEvent);
+  void updateSubscriptionCallback();
 
   //! ROS nodehandle.
   rclcpp::Node::SharedPtr nodeHandle_;
@@ -97,13 +97,13 @@ private:
   std::shared_ptr<VisualizationFactory> factory_;
 
   //! Timer to check the activity of the visualizations.
-  // rclcpp::TimerBase activityCheckTimer_;
+  rclcpp::TimerBase::SharedPtr activityCheckTimer_;
 
-  //! Duration of checking the activity of the visualizations.
-  // rclcpp::Duration activityCheckDuration_;
+  //! Rate of checking the activity of the visualizations.
+  double activityCheckRate_;
 
   //! If the grid map visualization is subscribed to the grid map.
-  // bool isSubscribed_;
+  bool isSubscribed_;
 };
 
 }  // namespace grid_map_visualization
