@@ -32,7 +32,11 @@ GridCellsVisualization::~GridCellsVisualization()
 
 bool GridCellsVisualization::readParameters()
 {
-  if (!nodeHandle_->get_parameter(name_ + "layer", layer_)) {
+  nodeHandle_->declare_parameter(name_ + ".params.layer", std::string("elevation"));
+  nodeHandle_->declare_parameter(name_ + ".params.lower_threshold", 5.0);
+  nodeHandle_->declare_parameter(name_ + ".params.upper_threshold", -5.0);
+
+  if (!nodeHandle_->get_parameter(name_ + ".params.layer", layer_)) {
     RCLCPP_ERROR(
       nodeHandle_->get_logger(),
       "GridCellsVisualization with name '%s' did not find a 'layer' parameter.",
@@ -40,7 +44,7 @@ bool GridCellsVisualization::readParameters()
     return false;
   }
 
-  if (!nodeHandle_->get_parameter(name_ + "lower_threshold", lowerThreshold_)) {
+  if (!nodeHandle_->get_parameter(name_ + ".params.lower_threshold", lowerThreshold_)) {
     RCLCPP_INFO(
       nodeHandle_->get_logger(),
       "GridCellsVisualization with name '%s' "
@@ -48,7 +52,7 @@ bool GridCellsVisualization::readParameters()
       name_.c_str());
   }
 
-  if (!nodeHandle_->get_parameter(name_ + "upper_threshold", upperThreshold_)) {
+  if (!nodeHandle_->get_parameter(name_ + ".params.upper_threshold", upperThreshold_)) {
     RCLCPP_INFO(
       nodeHandle_->get_logger(),
       "GridCellsVisualization with name '%s' "
@@ -61,7 +65,7 @@ bool GridCellsVisualization::readParameters()
 
 bool GridCellsVisualization::initialize()
 {
-  publisher_ = nodeHandle_->create_publisher<nav_msgs::msg::GridCells>(name_, 10);
+  publisher_ = nodeHandle_->create_publisher<nav_msgs::msg::GridCells>(name_, 1);
   return true;
 }
 

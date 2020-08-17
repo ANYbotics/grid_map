@@ -36,8 +36,14 @@ VectorVisualization::~VectorVisualization()
 
 bool VectorVisualization::readParameters()
 {
+  nodeHandle_->declare_parameter(name_ + ".params.layer_prefix", std::string(""));
+  nodeHandle_->declare_parameter(name_ + ".params.position_layer", std::string(""));
+  nodeHandle_->declare_parameter(name_ + ".params.scale", 1.0);
+  nodeHandle_->declare_parameter(name_ + ".params.line_width", 0.003);
+  nodeHandle_->declare_parameter(name_ + ".params.color", 65280);
+
   std::string typePrefix;
-  if (!nodeHandle_->get_parameter(name_ + "layer_prefix", typePrefix)) {
+  if (!nodeHandle_->get_parameter(name_ + ".params.layer_prefix", typePrefix)) {
     RCLCPP_ERROR(
       nodeHandle_->get_logger(),
       "VectorVisualization with name '%s' did not find a 'layer_prefix' parameter.",
@@ -48,7 +54,7 @@ bool VectorVisualization::readParameters()
   types_.push_back(typePrefix + "y");
   types_.push_back(typePrefix + "z");
 
-  if (!nodeHandle_->get_parameter(name_ + "position_layer", positionLayer_)) {
+  if (!nodeHandle_->get_parameter(name_ + ".params.position_layer", positionLayer_)) {
     RCLCPP_ERROR(
       nodeHandle_->get_logger(),
       "VectorVisualization with name '%s' did not find a 'position_layer' parameter.",
@@ -57,7 +63,7 @@ bool VectorVisualization::readParameters()
   }
 
   scale_ = 1.0;
-  if (!nodeHandle_->get_parameter(name_ + "scale", scale_)) {
+  if (!nodeHandle_->get_parameter(name_ + ".params.scale", scale_)) {
     RCLCPP_INFO(
       nodeHandle_->get_logger(),
       "VectorVisualization with name '%s' did not find a 'scale' parameter. Using default.",
@@ -65,7 +71,7 @@ bool VectorVisualization::readParameters()
   }
 
   lineWidth_ = 0.003;
-  if (!nodeHandle_->get_parameter(name_ + "line_width", lineWidth_)) {
+  if (!nodeHandle_->get_parameter(name_ + ".params.line_width", lineWidth_)) {
     RCLCPP_INFO(
       nodeHandle_->get_logger(),
       "VectorVisualization with name '%s' did not find a 'line_width' parameter. Using default.",
@@ -73,7 +79,7 @@ bool VectorVisualization::readParameters()
   }
 
   int colorValue = 65280;  // green
-  if (!nodeHandle_->get_parameter(name_ + "color", colorValue)) {
+  if (!nodeHandle_->get_parameter(name_ + ".params.color", colorValue)) {
     RCLCPP_INFO(
       nodeHandle_->get_logger(),
       "VectorVisualization with name '%s' did not find a 'color' parameter. Using default.",
@@ -91,7 +97,7 @@ bool VectorVisualization::initialize()
   marker_.action = visualization_msgs::msg::Marker::ADD;
   marker_.type = visualization_msgs::msg::Marker::LINE_LIST;
   marker_.scale.x = lineWidth_;
-  publisher_ = nodeHandle_->create_publisher<visualization_msgs::msg::Marker>(name_, 10);
+  publisher_ = nodeHandle_->create_publisher<visualization_msgs::msg::Marker>(name_, 1);
   return true;
 }
 

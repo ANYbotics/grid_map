@@ -32,7 +32,8 @@ FlatPointCloudVisualization::~FlatPointCloudVisualization()
 bool FlatPointCloudVisualization::readParameters()
 {
   height_ = 0.0;
-  if (!nodeHandle_->get_parameter(name_ + "height", height_)) {
+  nodeHandle_->declare_parameter(name_ + ".params.height", 0.0);
+  if (!nodeHandle_->get_parameter(name_ + ".params.height", height_)) {
     RCLCPP_INFO(
       nodeHandle_->get_logger(),
       "FlatPointCloudVisualization with name '%s' "
@@ -45,7 +46,7 @@ bool FlatPointCloudVisualization::readParameters()
 
 bool FlatPointCloudVisualization::initialize()
 {
-  publisher_ = nodeHandle_->create_publisher<sensor_msgs::msg::PointCloud2>(name_, 10);
+  publisher_ = nodeHandle_->create_publisher<sensor_msgs::msg::PointCloud2>(name_, 1);
   return true;
 }
 

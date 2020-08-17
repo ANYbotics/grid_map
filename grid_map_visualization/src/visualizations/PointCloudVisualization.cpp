@@ -27,7 +27,8 @@ PointCloudVisualization::~PointCloudVisualization()
 
 bool PointCloudVisualization::readParameters()
 {
-  if (!nodeHandle_->get_parameter(name_ + "layer", layer_)) {
+  nodeHandle_->declare_parameter(name_ + ".params.layer", std::string("elevation"));
+  if (!nodeHandle_->get_parameter(name_ + ".params.layer", layer_)) {
     RCLCPP_ERROR(
       nodeHandle_->get_logger(),
       "PointCloudVisualization with name '%s' did not find a 'layer' parameter.",
@@ -39,7 +40,7 @@ bool PointCloudVisualization::readParameters()
 
 bool PointCloudVisualization::initialize()
 {
-  publisher_ = nodeHandle_->create_publisher<sensor_msgs::msg::PointCloud2>(name_, 10);
+  publisher_ = nodeHandle_->create_publisher<sensor_msgs::msg::PointCloud2>(name_, 1);
   return true;
 }
 

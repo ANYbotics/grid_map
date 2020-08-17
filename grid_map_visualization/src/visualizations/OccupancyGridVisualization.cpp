@@ -30,7 +30,11 @@ OccupancyGridVisualization::~OccupancyGridVisualization()
 
 bool OccupancyGridVisualization::readParameters()
 {
-  if (!nodeHandle_->get_parameter(name_ + "layer", layer_)) {
+  nodeHandle_->declare_parameter(name_ + ".params.layer", std::string("elevation"));
+  nodeHandle_->declare_parameter(name_ + ".params.data_min", 0.0);
+  nodeHandle_->declare_parameter(name_ + ".params.data_max", 1.0);
+
+  if (!nodeHandle_->get_parameter(name_ + ".params.layer", layer_)) {
     RCLCPP_ERROR(
       nodeHandle_->get_logger(),
       "OccupancyGridVisualization with name '%s' did not find a 'layer' parameter.",
@@ -38,7 +42,7 @@ bool OccupancyGridVisualization::readParameters()
     return false;
   }
 
-  if (!nodeHandle_->get_parameter(name_ + "data_min", dataMin_)) {
+  if (!nodeHandle_->get_parameter(name_ + ".params.data_min", dataMin_)) {
     RCLCPP_ERROR(
       nodeHandle_->get_logger(),
       "OccupancyGridVisualization with name '%s' did not find a 'data_min' parameter.",
@@ -46,7 +50,7 @@ bool OccupancyGridVisualization::readParameters()
     return false;
   }
 
-  if (!nodeHandle_->get_parameter(name_ + "data_max", dataMax_)) {
+  if (!nodeHandle_->get_parameter(name_ + ".params.data_max", dataMax_)) {
     RCLCPP_ERROR(
       nodeHandle_->get_logger(),
       "OccupancyGridVisualization with name '%s' did not find a 'data_max' parameter.",

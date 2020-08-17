@@ -87,13 +87,13 @@ bool GridMapVisualization::readParameters()
       RCLCPP_ERROR(
         nodeHandle_->get_logger(),
         "%s: A visualization with the name '%s' already exists.",
-        visualizationsParameter_.c_str(), namei.c_str());
+        visualizationsParameter_.c_str(), name.c_str());
       return false;
     }
 
     nodeHandle_->declare_parameter(name + ".type");
     try {
-      if (nodeHandle_->get_parameter(name + ".type", type)) {
+      if (!nodeHandle_->get_parameter(name + ".type", type)) {
         RCLCPP_ERROR(
           nodeHandle_->get_logger(),
           "%s: Could not add a visualization because no type was given",
@@ -103,8 +103,8 @@ bool GridMapVisualization::readParameters()
     } catch (const rclcpp::ParameterTypeException & e) {
       RCLCPP_ERROR(
         nodeHandle_->get_logger(),
-        "%s: Could not add %s visualization, because the %s.type parameter is not a string.",
-        visualizationsParameter_.c_str(), name.c_str(), name.c_str());
+        "Could not add %s visualization, because the %s.type parameter is not a string.",
+        name.c_str(), name.c_str());
       return false;
     }
 
@@ -112,12 +112,12 @@ bool GridMapVisualization::readParameters()
     if (!factory_->isValidType(type)) {
       RCLCPP_ERROR(
         nodeHandle_->get_logger(),
-        "Could not find visualization of type '%s'.",
-        type.c_str());
+        "Could not add %s visualization, no visualization of type '%s' found.",
+        name.c_str(), type.c_str());
       return false;
     }
 
-    auto visualization = factory_->getInstance(name, type);
+    auto visualization = factory_->getInstance(type, name);
     visualization->readParameters();
     visualizations_.push_back(visualization);
     RCLCPP_INFO(
