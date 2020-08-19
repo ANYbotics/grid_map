@@ -29,10 +29,10 @@ class FlatPointCloudVisualization : public VisualizationBase
 public:
   /*!
    * Constructor.
-   * @param nodeHandle the ROS node handle.
+   * @param node the ROS node.
    * @param name the name of the visualization.
    */
-  FlatPointCloudVisualization(rclcpp::Node::SharedPtr nodeHandle, const std::string & name);
+  FlatPointCloudVisualization(rclcpp::Node::SharedPtr node, const std::string & name);
 
   /*!
    * Destructor.

@@ -18,9 +18,9 @@ namespace grid_map_visualization
 {
 
 MapRegionVisualization::MapRegionVisualization(
-  rclcpp::Node::SharedPtr nodeHandle,
+  rclcpp::Node::SharedPtr node,
   const std::string & name)
-: VisualizationBase(nodeHandle, name),
+: VisualizationBase(node, name),
   nVertices_(5),
   lineWidth_(0.01)
 {
@@ -32,21 +32,21 @@ MapRegionVisualization::~MapRegionVisualization()
 
 bool MapRegionVisualization::readParameters()
 {
-  nodeHandle_->declare_parameter(name_ + ".params.line_width", 0.003);
-  nodeHandle_->declare_parameter(name_ + ".params.color", 16777215);
+  node_->declare_parameter(name_ + ".params.line_width", 0.003);
+  node_->declare_parameter(name_ + ".params.color", 16777215);
   lineWidth_ = 0.003;
-  if (!nodeHandle_->get_parameter(name_ + ".params.line_width", lineWidth_)) {
+  if (!node_->get_parameter(name_ + ".params.line_width", lineWidth_)) {
     RCLCPP_INFO(
-      nodeHandle_->get_logger(),
+      node_->get_logger(),
       "MapRegionVisualization with name '%s' did not find a 'line_width' parameter. Using default.",
       name_.c_str());
     return false;
   }
 
   int colorValue = 16777215;  // white, http://www.wolframalpha.com/input/?i=BitOr%5BBitShiftLeft%5Br%2C16%5D%2C+BitShiftLeft%5Bg%2C8%5D%2C+b%5D+where+%7Br%3D20%2C+g%3D50%2C+b%3D230%7D  // NOLINT
-  if (!nodeHandle_->get_parameter(name_ + ".params.color", colorValue)) {
+  if (!node_->get_parameter(name_ + ".params.color", colorValue)) {
     RCLCPP_INFO(
-      nodeHandle_->get_logger(),
+      node_->get_logger(),
       "MapRegionVisualization with name '%s' did not find a 'color' parameter. Using default.",
       name_.c_str());
   }
@@ -64,7 +64,7 @@ bool MapRegionVisualization::initialize()
   marker_.scale.x = lineWidth_;
   marker_.points.resize(nVertices_);  // Initialized to [0.0, 0.0, 0.0]
   marker_.colors.resize(nVertices_, color_);
-  publisher_ = nodeHandle_->create_publisher<visualization_msgs::msg::Marker>(name_, 1);
+  publisher_ = node_->create_publisher<visualization_msgs::msg::Marker>(name_, 1);
   return true;
 }
 

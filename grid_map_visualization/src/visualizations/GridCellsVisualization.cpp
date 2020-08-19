@@ -18,9 +18,9 @@ namespace grid_map_visualization
 {
 
 GridCellsVisualization::GridCellsVisualization(
-  rclcpp::Node::SharedPtr nodeHandle,
+  rclcpp::Node::SharedPtr node,
   const std::string & name)
-: VisualizationBase(nodeHandle, name),
+: VisualizationBase(node, name),
   lowerThreshold_(-std::numeric_limits<float>::infinity()),
   upperThreshold_(std::numeric_limits<float>::infinity())
 {
@@ -32,29 +32,29 @@ GridCellsVisualization::~GridCellsVisualization()
 
 bool GridCellsVisualization::readParameters()
 {
-  nodeHandle_->declare_parameter(name_ + ".params.layer", std::string("elevation"));
-  nodeHandle_->declare_parameter(name_ + ".params.lower_threshold", 5.0);
-  nodeHandle_->declare_parameter(name_ + ".params.upper_threshold", -5.0);
+  node_->declare_parameter(name_ + ".params.layer", std::string("elevation"));
+  node_->declare_parameter(name_ + ".params.lower_threshold", 5.0);
+  node_->declare_parameter(name_ + ".params.upper_threshold", -5.0);
 
-  if (!nodeHandle_->get_parameter(name_ + ".params.layer", layer_)) {
+  if (!node_->get_parameter(name_ + ".params.layer", layer_)) {
     RCLCPP_ERROR(
-      nodeHandle_->get_logger(),
+      node_->get_logger(),
       "GridCellsVisualization with name '%s' did not find a 'layer' parameter.",
       name_.c_str());
     return false;
   }
 
-  if (!nodeHandle_->get_parameter(name_ + ".params.lower_threshold", lowerThreshold_)) {
+  if (!node_->get_parameter(name_ + ".params.lower_threshold", lowerThreshold_)) {
     RCLCPP_INFO(
-      nodeHandle_->get_logger(),
+      node_->get_logger(),
       "GridCellsVisualization with name '%s' "
       "did not find a 'lower_threshold' parameter. Using negative infinity.",
       name_.c_str());
   }
 
-  if (!nodeHandle_->get_parameter(name_ + ".params.upper_threshold", upperThreshold_)) {
+  if (!node_->get_parameter(name_ + ".params.upper_threshold", upperThreshold_)) {
     RCLCPP_INFO(
-      nodeHandle_->get_logger(),
+      node_->get_logger(),
       "GridCellsVisualization with name '%s' "
       "did not find a 'upper_threshold' parameter. Using infinity.",
       name_.c_str());
@@ -65,7 +65,7 @@ bool GridCellsVisualization::readParameters()
 
 bool GridCellsVisualization::initialize()
 {
-  publisher_ = nodeHandle_->create_publisher<nav_msgs::msg::GridCells>(name_, 1);
+  publisher_ = node_->create_publisher<nav_msgs::msg::GridCells>(name_, 1);
   return true;
 }
 
@@ -74,7 +74,7 @@ bool GridCellsVisualization::visualize(const grid_map::GridMap & map)
   if (!isActive()) {return true;}
   if (!map.exists(layer_)) {
     RCLCPP_WARN_STREAM(
-      nodeHandle_->get_logger(),
+      node_->get_logger(),
       "GridCellsVisualization::visualize: No grid map layer with name '" << layer_ << "' found.");
     return false;
   }

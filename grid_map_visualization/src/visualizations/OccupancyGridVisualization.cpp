@@ -16,9 +16,9 @@ namespace grid_map_visualization
 {
 
 OccupancyGridVisualization::OccupancyGridVisualization(
-  rclcpp::Node::SharedPtr nodeHandle,
+  rclcpp::Node::SharedPtr node,
   const std::string & name)
-: VisualizationBase(nodeHandle, name),
+: VisualizationBase(node, name),
   dataMin_(0.0),
   dataMax_(1.0)
 {
@@ -30,29 +30,29 @@ OccupancyGridVisualization::~OccupancyGridVisualization()
 
 bool OccupancyGridVisualization::readParameters()
 {
-  nodeHandle_->declare_parameter(name_ + ".params.layer", std::string("elevation"));
-  nodeHandle_->declare_parameter(name_ + ".params.data_min", 0.0);
-  nodeHandle_->declare_parameter(name_ + ".params.data_max", 1.0);
+  node_->declare_parameter(name_ + ".params.layer", std::string("elevation"));
+  node_->declare_parameter(name_ + ".params.data_min", 0.0);
+  node_->declare_parameter(name_ + ".params.data_max", 1.0);
 
-  if (!nodeHandle_->get_parameter(name_ + ".params.layer", layer_)) {
+  if (!node_->get_parameter(name_ + ".params.layer", layer_)) {
     RCLCPP_ERROR(
-      nodeHandle_->get_logger(),
+      node_->get_logger(),
       "OccupancyGridVisualization with name '%s' did not find a 'layer' parameter.",
       name_.c_str());
     return false;
   }
 
-  if (!nodeHandle_->get_parameter(name_ + ".params.data_min", dataMin_)) {
+  if (!node_->get_parameter(name_ + ".params.data_min", dataMin_)) {
     RCLCPP_ERROR(
-      nodeHandle_->get_logger(),
+      node_->get_logger(),
       "OccupancyGridVisualization with name '%s' did not find a 'data_min' parameter.",
       name_.c_str());
     return false;
   }
 
-  if (!nodeHandle_->get_parameter(name_ + ".params.data_max", dataMax_)) {
+  if (!node_->get_parameter(name_ + ".params.data_max", dataMax_)) {
     RCLCPP_ERROR(
-      nodeHandle_->get_logger(),
+      node_->get_logger(),
       "OccupancyGridVisualization with name '%s' did not find a 'data_max' parameter.",
       name_.c_str());
     return false;
@@ -63,7 +63,7 @@ bool OccupancyGridVisualization::readParameters()
 
 bool OccupancyGridVisualization::initialize()
 {
-  publisher_ = nodeHandle_->create_publisher<nav_msgs::msg::OccupancyGrid>(name_, 1);
+  publisher_ = node_->create_publisher<nav_msgs::msg::OccupancyGrid>(name_, 1);
   return true;
 }
 
@@ -72,7 +72,7 @@ bool OccupancyGridVisualization::visualize(const grid_map::GridMap & map)
   if (!isActive()) {return true;}
   if (!map.exists(layer_)) {
     RCLCPP_WARN_STREAM(
-      nodeHandle_->get_logger(),
+      node_->get_logger(),
       "OccupancyGridVisualization::visualize: No grid map layer with name '" << layer_ <<
         "' found.");
     return false;

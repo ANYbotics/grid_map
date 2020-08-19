@@ -78,8 +78,8 @@ private:
    */
   void updateSubscriptionCallback();
 
-  //! ROS nodehandle.
-  rclcpp::Node::SharedPtr nodeHandle_;
+  //! ROS node.
+  rclcpp::Node::SharedPtr node_;
 
   //! Parameter name of the visualizer configuration list.
   std::string visualizationsParameter_;

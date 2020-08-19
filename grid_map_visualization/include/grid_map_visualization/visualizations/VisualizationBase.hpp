@@ -26,10 +26,10 @@ class VisualizationBase
 public:
   /*!
    * Constructor.
-   * @param nodeHandle the ROS node handle.
+   * @param node the ROS node.
    * @param name the name of the visualization.
    */
-  VisualizationBase(rclcpp::Node::SharedPtr nodeHandle, const std::string & name);
+  VisualizationBase(rclcpp::Node::SharedPtr node, const std::string & name);
 
   /*!
    * Destructor.
@@ -61,8 +61,8 @@ public:
   bool isActive() const;
 
 protected:
-  //! ROS nodehandle.
-  rclcpp::Node::SharedPtr nodeHandle_;
+  //! ROS node.
+  rclcpp::Node::SharedPtr node_;
 
   //! Name of the visualization.
   std::string name_;
