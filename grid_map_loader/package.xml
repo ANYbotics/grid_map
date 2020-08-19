@@ -13,5 +13,5 @@
   <depend>roscpp</depend>
   <depend>grid_map_ros</depend>
   <depend>grid_map_msgs</depend>
-  <!-- <test_depend>cmake_code_coverage</test_depend> -->
+<!--   <test_depend>cmake_code_coverage</test_depend> -->
 </package>

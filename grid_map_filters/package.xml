@@ -16,7 +16,7 @@
   <depend>grid_map_msgs</depend>
   <depend>filters</depend>
   <depend>tbb</depend>
-  <!-- <test_depend>cmake_code_coverage</test_depend> -->
+<!--   <test_depend>cmake_code_coverage</test_depend> -->
   <export>
     <filters plugin="${prefix}/filter_plugins.xml" />
   </export>
