@@ -6,20 +6,23 @@
  *  Institute: ETH Zurich, ANYbotics
  */
 
-#include <rviz/uniform_string_stream.h>
-#include <OGRE/OgreMaterialManager.h>
-#include <OGRE/OgreTextureManager.h>
-#include <OGRE/OgreTechnique.h>
+#ifndef Q_MOC_RUN
 
-#include <OGRE/OgreVector3.h>
-#include <OGRE/OgreSceneNode.h>
-#include <OGRE/OgreSceneManager.h>
-#include <OGRE/OgreManualObject.h>
+#include <OgreMaterialManager.h>
+#include <OgreTextureManager.h>
+#include <OgreTechnique.h>
 
-#include <rviz/ogre_helpers/billboard_line.h>
+#include <OgreVector3.h>
+#include <OgreSceneNode.h>
+#include <OgreSceneManager.h>
+#include <OgreManualObject.h>
 
-#include <grid_map_ros/grid_map_ros.hpp>
+#endif  // Q_MOC_RUN
+
+#include <rclcpp/rclcpp.hpp>
 #include <grid_map_core/GridMapMath.hpp>
+#include <grid_map_ros/grid_map_ros.hpp>
+#include <rviz_common/uniform_string_stream.hpp>
 
 #include <string>
 #include <vector>
@@ -38,7 +41,7 @@ GridMapVisual::GridMapVisual(Ogre::SceneManager * sceneManager, Ogre::SceneNode 
   frameNode_ = parentNode->createChildSceneNode();
 
   // Create BillboardLine object.
-  meshLines_.reset(new rviz::BillboardLine(sceneManager_, frameNode_));
+  meshLines_.reset(new rviz_rendering::BillboardLine(sceneManager_, frameNode_));
 }
 
 GridMapVisual::~GridMapVisual()
@@ -52,7 +55,7 @@ GridMapVisual::~GridMapVisual()
   sceneManager_->destroySceneNode(frameNode_);
 }
 
-void GridMapVisual::setMessage(const grid_map_msgs::GridMap::ConstPtr & msg)
+void GridMapVisual::setMessage(grid_map_msgs::msg::GridMap::ConstSharedPtr msg)
 {
   // Convert grid map message.
   grid_map::GridMapRosConverter::fromMessage(*msg, map_);
@@ -67,20 +70,26 @@ void GridMapVisual::computeVisualization(
   bool autocomputeIntensity, float minIntensity, float maxIntensity)
 {
   if (!haveMap_) {
-    ROS_DEBUG("Unable to visualize grid map, no map data. Use setMessage() first!");
+    RCLCPP_DEBUG(
+      rclcpp::get_logger(
+        "grid_map_display"), "Unable to visualize grid map, no map data. Use setMessage() first!");
     return;
   }
 
   // Get list of layers and check if the requested ones are present.
   std::vector<std::string> layerNames = map_.getLayers();
   if (layerNames.size() < 1) {
-    ROS_DEBUG("Unable to visualize grid map, map must contain at least one layer.");
+    RCLCPP_DEBUG(
+      rclcpp::get_logger(
+        "grid_map_display"), "Unable to visualize grid map, map must contain at least one layer.");
     return;
   }
   if ((!flatTerrain && !map_.exists(heightLayer)) ||
     (!noColor && !flatColor && !map_.exists(colorLayer)))
   {
-    ROS_DEBUG("Unable to visualize grid map, requested layer(s) not available.");
+    RCLCPP_DEBUG(
+      rclcpp::get_logger(
+        "grid_map_display"), "Unable to visualize grid map, requested layer(s) not available.");
     return;
   }
 
@@ -91,7 +100,7 @@ void GridMapVisual::computeVisualization(
   const size_t rows = map_.getSize()(0);
   const size_t cols = map_.getSize()(1);
   if (rows < 2 || cols < 2) {
-    ROS_DEBUG("GridMap has not enough cells.");
+    RCLCPP_DEBUG(rclcpp::get_logger("grid_map_display"), "GridMap has not enough cells.");
     return;
   }
   const double resolution = map_.getResolution();
@@ -101,7 +110,7 @@ void GridMapVisual::computeVisualization(
   // initialize ManualObject
   if (!manualObject_) {
     static uint32_t count = 0;
-    rviz::UniformStringStream ss;
+    rviz_common::UniformStringStream ss;
     ss << "Mesh" << count++;
     manualObject_ = sceneManager_->createManualObject(ss.str());
     frameNode_->attachObject(manualObject_);
@@ -200,25 +209,25 @@ void GridMapVisual::computeVisualization(
         if (showGridLines) {
           meshLines_->addPoint(vertices[0]);
           meshLines_->addPoint(vertices[1]);
-          meshLines_->newLine();
+          meshLines_->finishLine();
 
           if (vertices.size() == 3) {
             meshLines_->addPoint(vertices[1]);
             meshLines_->addPoint(vertices[2]);
-            meshLines_->newLine();
+            meshLines_->finishLine();
           } else {
             meshLines_->addPoint(vertices[1]);
             meshLines_->addPoint(vertices[3]);
-            meshLines_->newLine();
+            meshLines_->finishLine();
 
             meshLines_->addPoint(vertices[3]);
             meshLines_->addPoint(vertices[2]);
-            meshLines_->newLine();
+            meshLines_->finishLine();
           }
 
           meshLines_->addPoint(vertices[2]);
           meshLines_->addPoint(vertices[0]);
-          meshLines_->newLine();
+          meshLines_->finishLine();
         }
       }
     }

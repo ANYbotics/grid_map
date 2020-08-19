@@ -6,58 +6,58 @@
  *  Institute: ETH Zurich, ANYbotics
  */
 
-#include <OGRE/OgreSceneNode.h>
-#include <OGRE/OgreSceneManager.h>
+#include <OgreSceneNode.h>
+#include <OgreSceneManager.h>
 
-#include <tf/transform_listener.h>
 
-#include <rviz/visualization_manager.h>
-#include <rviz/properties/bool_property.h>
-#include <rviz/properties/color_property.h>
-#include <rviz/properties/float_property.h>
-#include <rviz/properties/int_property.h>
-#include <rviz/properties/enum_property.h>
-#include <rviz/properties/editable_enum_property.h>
-#include <pluginlib/class_list_macros.h>
+#include <rclcpp/rclcpp.hpp>
+#include <tf2_ros/transform_listener.h>
+#include <rviz_common/properties/bool_property.hpp>
+#include <rviz_common/properties/color_property.hpp>
+#include <rviz_common/properties/float_property.hpp>
+#include <rviz_common/properties/int_property.hpp>
+#include <rviz_common/properties/enum_property.hpp>
+#include <rviz_common/properties/editable_enum_property.hpp>
+#include <rviz_common/display.hpp>
+#include <pluginlib/class_list_macros.hpp>
 
 #include <string>
 #include <vector>
 
 #include "grid_map_rviz_plugin/GridMapVisual.hpp"
 #include "grid_map_rviz_plugin/GridMapDisplay.hpp"
-#include "grid_map_rviz_plugin/modified/frame_manager.h"
 
 namespace grid_map_rviz_plugin
 {
 
 GridMapDisplay::GridMapDisplay()
 {
-  alphaProperty_ = new rviz::FloatProperty(
+  alphaProperty_ = new rviz_common::properties::FloatProperty(
     "Alpha", 1.0,
     "0 is fully transparent, 1.0 is fully opaque.", this,
     SLOT(updateVisualization()));
 
-  historyLengthProperty_ = new rviz::IntProperty(
+  historyLengthProperty_ = new rviz_common::properties::IntProperty(
     "History Length", 1,
     "Number of prior grid maps to display.", this,
     SLOT(updateHistoryLength()));
 
-  showGridLinesProperty_ = new rviz::BoolProperty(
+  showGridLinesProperty_ = new rviz_common::properties::BoolProperty(
     "Show Grid Lines", true, "Whether to show the lines connecting the grid cells.", this,
     SLOT(updateVisualization()));
 
-  heightModeProperty_ = new rviz::EnumProperty(
+  heightModeProperty_ = new rviz_common::properties::EnumProperty(
     "Height Transformer", "GridMapLayer",
     "Select the transformer to use to set the height.",
     this, SLOT(updateHeightMode()));
   heightModeProperty_->addOption("Layer", 0);
   heightModeProperty_->addOption("Flat", 1);
 
-  heightTransformerProperty_ = new rviz::EditableEnumProperty(
+  heightTransformerProperty_ = new rviz_common::properties::EditableEnumProperty(
     "Height Layer", "elevation", "Select the grid map layer to compute the height.", this,
     SLOT(updateVisualization()));
 
-  colorModeProperty_ = new rviz::EnumProperty(
+  colorModeProperty_ = new rviz_common::properties::EnumProperty(
     "Color Transformer", "GridMapLayer",
     "Select the transformer to use to set the color.",
     this, SLOT(updateColorMode()));
@@ -66,50 +66,50 @@ GridMapDisplay::GridMapDisplay()
   colorModeProperty_->addOption("FlatColor", 2);
   colorModeProperty_->addOption("None", 3);
 
-  colorTransformerProperty_ = new rviz::EditableEnumProperty(
+  colorTransformerProperty_ = new rviz_common::properties::EditableEnumProperty(
     "Color Layer", "elevation", "Select the grid map layer to compute the color.", this,
     SLOT(updateVisualization()));
 
-  colorProperty_ = new rviz::ColorProperty(
+  colorProperty_ = new rviz_common::properties::ColorProperty(
     "Color", QColor(200, 200, 200),
     "Color to draw the mesh.", this,
     SLOT(updateVisualization()));
   colorProperty_->hide();
 
-  useRainbowProperty_ = new rviz::BoolProperty(
+  useRainbowProperty_ = new rviz_common::properties::BoolProperty(
     "Use Rainbow", true,
     "Whether to use a rainbow of colors or to interpolate between two colors.", this,
     SLOT(updateUseRainbow()));
 
-  invertRainbowProperty_ = new rviz::BoolProperty(
+  invertRainbowProperty_ = new rviz_common::properties::BoolProperty(
     "Invert Rainbow", false,
     "Whether to invert the rainbow colors.", this,
     SLOT(updateVisualization()));
 
-  minColorProperty_ = new rviz::ColorProperty(
+  minColorProperty_ = new rviz_common::properties::ColorProperty(
     "Min Color", QColor(0, 0, 0), "Color to assign to cells with the minimum intensity.  "
     "Actual color is interpolated between this and Max Color.",
     this, SLOT(updateVisualization()));
   minColorProperty_->hide();
 
-  maxColorProperty_ = new rviz::ColorProperty(
+  maxColorProperty_ = new rviz_common::properties::ColorProperty(
     "Max Color", QColor(255, 255, 255), "Color to assign to cells with the maximum intensity.  "
     "Actual color is interpolated between Min Color and this.",
     this, SLOT(updateVisualization()));
   maxColorProperty_->hide();
 
-  autocomputeIntensityBoundsProperty_ = new BoolProperty(
+  autocomputeIntensityBoundsProperty_ = new rviz_common::properties::BoolProperty(
     "Autocompute Intensity Bounds", true,
     "Whether to automatically compute the intensity min/max values.", this,
     SLOT(updateAutocomputeIntensityBounds()));
 
-  minIntensityProperty_ = new rviz::FloatProperty(
+  minIntensityProperty_ = new rviz_common::properties::FloatProperty(
     "Min Intensity", 0.0,
     "Minimum possible intensity value, used to interpolate from Min Color to Max Color.", this,
     SLOT(updateVisualization()));
   minIntensityProperty_->hide();
 
-  maxIntensityProperty_ = new rviz::FloatProperty(
+  maxIntensityProperty_ = new rviz_common::properties::FloatProperty(
     "Max Intensity", 10.0,
     "Maximum possible intensity value, used to interpolate from Min Color to Max Color.", this,
     SLOT(updateVisualization()));
@@ -125,7 +125,8 @@ GridMapDisplay::~GridMapDisplay()
 
 void GridMapDisplay::onInitialize()
 {
-  MFDClass::onInitialize();      //  "MFDClass" = typedef of "MessageFilterDisplay<message type>"
+  MFDClass::onInitialize();  //  "MFDClass" = typedef of "MessageFilterDisplay<message type>"
+  MFDClass::subscribe();
   updateHistoryLength();
 }
 
@@ -209,17 +210,18 @@ void GridMapDisplay::updateVisualization()
   }
 }
 
-void GridMapDisplay::processMessage(const grid_map_msgs::GridMap::ConstPtr & msg)
+void GridMapDisplay::processMessage(grid_map_msgs::msg::GridMap::ConstSharedPtr msg)
 {
   // Check if transform between the message's frame and the fixed frame exists.
   Ogre::Quaternion orientation;
   Ogre::Vector3 position;
   if (!context_->getFrameManager()->getTransform(
-      msg->info.header.frame_id, msg->info.header.stamp,
+      msg->header.frame_id, msg->header.stamp,
       position, orientation))
   {
-    ROS_DEBUG(
-      "Error transforming from frame '%s' to frame '%s'", msg->info.header.frame_id.c_str(),
+    RCLCPP_DEBUG(
+      rclcpp::get_logger("GridMapDisplay::processMessage"),
+      "Error transforming from frame '%s' to frame '%s'", msg->header.frame_id.c_str(),
       qPrintable(fixed_frame_));
     return;
   }
@@ -258,4 +260,4 @@ void GridMapDisplay::processMessage(const grid_map_msgs::GridMap::ConstPtr & msg
 
 }  // end namespace grid_map_rviz_plugin
 
-PLUGINLIB_EXPORT_CLASS(grid_map_rviz_plugin::GridMapDisplay, rviz::Display)
+PLUGINLIB_EXPORT_CLASS(grid_map_rviz_plugin::GridMapDisplay, rviz_common::Display)

@@ -9,24 +9,30 @@
 #ifndef GRID_MAP_RVIZ_PLUGIN__GRIDMAPVISUAL_HPP_
 #define GRID_MAP_RVIZ_PLUGIN__GRIDMAPVISUAL_HPP_
 
-#include <OGRE/OgreMaterial.h>
-#include <OGRE/OgreSharedPtr.h>
+#ifndef Q_MOC_RUN
 
-#include <grid_map_msgs/GridMap.h>
+#include <OgreMaterial.h>
+#include <OgreSharedPtr.h>
+
+#endif  // Q_MOC_RUN
+
 #include <grid_map_core/GridMap.hpp>
+#include <grid_map_msgs/msg/grid_map.hpp>
+#include <rviz_rendering/objects/billboard_line.hpp>
 
+#include <boost/shared_ptr.hpp>
 #include <string>
 #include <vector>
 
-namespace Ogre
-{
-class Vector3;
-class Quaternion;
-class ManualObject;
-class ColourValue;
-}
+// namespace Ogre
+// {
+// class Vector3;
+// class Quaternion;
+// class ManualObject;
+// class ColourValue;
+// }
 
-namespace rviz
+namespace rviz_rendering
 {
 class BillboardLine;
 }
@@ -34,7 +40,7 @@ class BillboardLine;
 namespace grid_map_rviz_plugin
 {
 
-// Visualizes a single grid_map_msgs::GridMap message.
+// Visualizes a single grid_map_msgs::msg::GridMap message.
 class GridMapVisual
 {
 public:
@@ -42,7 +48,7 @@ public:
   virtual ~GridMapVisual();
 
   // Copy the grid map data to map_.
-  void setMessage(const grid_map_msgs::GridMap::ConstPtr & msg);
+  void setMessage(grid_map_msgs::msg::GridMap::ConstSharedPtr msg);
   // Compute the visualization of map_.
   void computeVisualization(
     float alpha, bool showGridLines, bool flatTerrain, std::string heightLayer, bool flatColor,
@@ -67,7 +73,7 @@ private:
   std::string materialName_;
 
   // Lines for mesh.
-  boost::shared_ptr<rviz::BillboardLine> meshLines_;
+  boost::shared_ptr<rviz_rendering::BillboardLine> meshLines_;
 
   // Grid map.
   grid_map::GridMap map_;
