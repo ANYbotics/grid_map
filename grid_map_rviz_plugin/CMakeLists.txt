@@ -1,62 +1,40 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.5)
 project(grid_map_rviz_plugin)
 
-set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
+find_package(ament_cmake REQUIRED)
+find_package(grid_map_cmake_helpers REQUIRED)
+find_package(grid_map_msgs REQUIRED)
+find_package(grid_map_ros REQUIRED)
+find_package(Qt5 REQUIRED COMPONENTS Core Widgets)
+find_package(rclcpp REQUIRED)
+find_package(rviz_common REQUIRED)
+find_package(rviz_ogre_vendor REQUIRED)
+find_package(rviz_rendering REQUIRED COMPONENTS Core Widgets)
 
-find_package(catkin REQUIRED
-  COMPONENTS
-    rviz
-    grid_map_ros
-    grid_map_msgs
-)
+grid_map_package()
 
-catkin_package(
-  INCLUDE_DIRS
-    include
-  LIBRARIES
-    ${PROJECT_NAME}
-  CATKIN_DEPENDS
-    rviz
-    grid_map_ros
-    grid_map_msgs
+## Qt5 boilerplate options from http://doc.qt.io/qt-5/cmake-manual.html
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+set(CMAKE_AUTOMOC ON) # This setting causes Qt's "MOC" generation to happen automatically.
+
+set(dependencies
+  grid_map_msgs
+  grid_map_ros
+  rclcpp
+  rviz_common
+  rviz_ogre_vendor
+  rviz_rendering
 )
 
 include_directories(
   include
-  ${catkin_INCLUDE_DIRS}
 )
-
-link_directories(${catkin_LIBRARY_DIRS})
-
-## This setting causes Qt's "MOC" generation to happen automatically.
-set(CMAKE_AUTOMOC ON)
 
 set(INCLUDE_FILES_QT
   include/grid_map_rviz_plugin/GridMapDisplay.hpp
 )
-set(INCLUDE_FILES
-  include/grid_map_rviz_plugin/GridMapVisual.hpp
-)
 
-## This plugin includes Qt widgets, so we must include Qt.
-## We'll use the version that rviz used so they are compatible.
-if(rviz_QT_VERSION VERSION_LESS "5")
-  message(STATUS "Using Qt4 based on the rviz_QT_VERSION: ${rviz_QT_VERSION}")
-  find_package(Qt4 ${rviz_QT_VERSION} EXACT REQUIRED QtCore QtGui)
-  ## pull in all required include dirs, define QT_LIBRARIES, etc.
-  include(${QT_USE_FILE})
-  qt4_wrap_cpp(MOC_FILES
-    ${INCLUDE_FILES_QT}
-  )
-else()
-  message(STATUS "Using Qt5 based on the rviz_QT_VERSION: ${rviz_QT_VERSION}")
-  find_package(Qt5 ${rviz_QT_VERSION} EXACT REQUIRED Core Widgets)
-  ## make target_link_libraries(${QT_LIBRARIES}) pull in all required dependencies
-  set(QT_LIBRARIES Qt5::Widgets)
-  QT5_WRAP_CPP(MOC_FILES
-    ${INCLUDE_FILES_QT}
-  )
-endif()
+qt5_wrap_cpp(MOC_FILES ${INCLUDE_FILES_QT})
 
 ## Avoid Qt signals and slots defining "emit", "slots", etc.
 add_definitions(-DQT_NO_KEYWORDS)
@@ -65,50 +43,101 @@ add_definitions(-DQT_NO_KEYWORDS)
 ## The generated MOC files are included automatically as headers.
 set(SOURCE_FILES
   src/GridMapDisplay.cpp
-  src/GridMapVisual.cpp
 )
 
 ## An rviz plugin is just a shared library, so here we declare the
 ## library to be called ${PROJECT_NAME} and specify the list of
 ## source files we collected above in ${SOURCE_FILES}.
-add_library(${PROJECT_NAME}
+add_library(${PROJECT_NAME} SHARED
   ${SOURCE_FILES}
   ${MOC_FILES}
 )
 
-## Link the executable with whatever Qt libraries have been defined by
-## the find_package(Qt4 ...) line above, or by the
-## set(QT_LIBRARIES Qt5::Widgets), and with whatever libraries
-## catkin has included.
-target_link_libraries(${PROJECT_NAME}
-  ${QT_LIBRARIES}
-  ${catkin_LIBRARIES}
+ament_target_dependencies(${PROJECT_NAME}
+  ${dependencies}
 )
 
-## Install rules
+# Causes the visibility macros to use dllexport rather than dllimport,
+# which is appropriate when building the dll but not consuming it.
+target_compile_definitions(${PROJECT_NAME} PRIVATE "RVIZ_DEFAULT_PLUGINS_BUILDING_LIBRARY")
+
+# prevent pluginlib from using boost
+target_compile_definitions(${PROJECT_NAME} PUBLIC "PLUGINLIB__DISABLE_BOOST_FUNCTIONS")
+
+pluginlib_export_plugin_description_file(rviz_common plugin_description.xml)
+
+## Avoid Qt signals and slots defining "emit", "slots", etc.
+add_definitions(-DQT_NO_KEYWORDS)
+
+# Install rules
 install(
-  DIRECTORY include/${PROJECT_NAME}
-  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+  DIRECTORY include/
+  DESTINATION include
 )
 
 install(
   TARGETS ${PROJECT_NAME}
-  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+  EXPORT ${PROJECT_NAME}
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin
+  INCLUDES DESTINATION include
 )
 
 install(
   FILES plugin_description.xml
-  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+  DESTINATION share/${PROJECT_NAME}
 )
 
 install(
   DIRECTORY icons
-  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/icons
+  DESTINATION share/${PROJECT_NAME}/icons
 )
 
 install(
   DIRECTORY doc
-  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+  DESTINATION share/${PROJECT_NAME}
 )
+
+#############
+## Testing ##
+#############
+
+if(BUILD_TESTING)
+  # Linting is setup this way to add a filter
+  # to ament_cpplint to ignore the lack of
+  # copyright messages at the top of files.
+  # Copyright messages are being checked for by both
+  # ament_cmake_cpplint & ament_cmake_copyright.
+
+  find_package(ament_lint_auto REQUIRED)
+  find_package(ament_lint_auto QUIET)
+  if(ament_lint_auto_FOUND)
+    # exclude copyright checks
+    list(APPEND AMENT_LINT_AUTO_EXCLUDE
+      ament_cmake_cpplint
+      ament_cmake_copyright
+    )
+    ament_lint_auto_find_test_dependencies()
+
+    # run cpplint without copyright filter
+    find_package(ament_cmake_cpplint)
+    ament_cpplint(
+      FILTERS -legal/copyright
+    )
+  endif()
+endif()
+
+
+ament_export_include_directories(include)
+ament_export_targets(${PROJECT_NAME} HAS_LIBRARY_TARGET)
+ament_export_dependencies(
+  Qt5
+  rviz_common
+  geometry_msgs
+  map_msgs
+  nav_msgs
+  rclcpp
+)
+
+ament_package()
