@@ -222,3 +222,35 @@ install(
   DIRECTORY config data doc launch rviz scripts
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
+
+##############
+##   Test   ##
+##############
+if(CATKIN_ENABLE_TESTING)
+  catkin_add_gtest(test_${PROJECT_NAME}
+    test/empty_test.cpp
+  )
+
+  target_include_directories(test_${PROJECT_NAME}
+    PRIVATE
+      include
+    SYSTEM PUBLIC
+      ${catkin_INCLUDE_DIRS}
+  )
+
+  target_link_libraries(test_${PROJECT_NAME}
+    ${catkin_LIBRARIES}
+    gtest_main
+  )
+
+  ###################
+  ## Code_coverage ##
+  ###################
+  find_package(cmake_code_coverage QUIET)
+  if(cmake_code_coverage_FOUND)
+    add_gtest_coverage(
+      TEST_BUILD_TARGETS
+        test_${PROJECT_NAME}
+    )
+  endif(cmake_code_coverage_FOUND)
+endif()
