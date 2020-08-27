@@ -223,6 +223,7 @@ void NormalVectorsFilter<T>::computeWithAreaParallel(
   grid_map::Size gridMapSize = map.getSize();
 
   // Parallelized iteration through the map.
+  // Number of threads is automatically determined.
   tbb::parallel_for(
     0, gridMapSize(0) * gridMapSize(1), [&](int range) {
       // Recover Cell index from range iterator.
