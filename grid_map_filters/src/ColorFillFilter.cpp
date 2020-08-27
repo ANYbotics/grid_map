@@ -56,7 +56,12 @@ bool ColorFillFilter<T>::configure()
   }
   RCLCPP_DEBUG(this->logging_interface_->get_logger(), "Color fill filter blue is = %f.", b_);
 
-  // if (!filters::FilterBase<T>::getParam(std::string("mask_layer"), maskLayer_)) {}
+  if (!filters::FilterBase<T>::getParam(std::string("mask_layer"), maskLayer_)) {
+    RCLCPP_ERROR(
+      this->logging_interface_->get_logger(),
+      "Color fill filter did not find parameter `mask_layer`.");
+    return false;
+  }
   RCLCPP_DEBUG(
     this->logging_interface_->get_logger(), "Color fill filter mask_layer = %s.",
     maskLayer_.c_str());
