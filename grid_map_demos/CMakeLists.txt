@@ -1,26 +1,26 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.5.0)
 project(grid_map_demos)
 
-set(CMAKE_CXX_STANDARD 11)
-
-## Find catkin macros and libraries
-find_package(catkin REQUIRED COMPONENTS
-  roscpp
-  grid_map_core
-  grid_map_ros
-  grid_map_cv
-  grid_map_filters
-  grid_map_loader
-  grid_map_msgs
-  grid_map_octomap
-  grid_map_rviz_plugin
-  grid_map_visualization
-  geometry_msgs
-  sensor_msgs
-  cv_bridge
-  octomap_msgs
-  filters
-)
+## Find ament_cmake macros and libraries
+find_package(ament_cmake REQUIRED)
+find_package(cv_bridge REQUIRED)
+find_package(filters REQUIRED)
+find_package(geometry_msgs REQUIRED)
+find_package(grid_map_cmake_helpers REQUIRED)
+find_package(grid_map_core REQUIRED)
+find_package(grid_map_ros REQUIRED)
+find_package(grid_map_cv REQUIRED)
+# find_package(grid_map_filters REQUIRED)
+# find_package(grid_map_loader REQUIRED)
+find_package(grid_map_msgs REQUIRED)
+find_package(grid_map_octomap REQUIRED)
+find_package(grid_map_ros REQUIRED)
+# find_package(grid_map_rviz_plugin REQUIRED)
+# find_package(grid_map_visualization REQUIRED)
+find_package(OCTOMAP REQUIRED)
+find_package(octomap_msgs REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(sensor_msgs REQUIRED)
 
 find_package(OpenCV REQUIRED
   COMPONENTS
@@ -28,22 +28,12 @@ find_package(OpenCV REQUIRED
   CONFIG
 )
 
-find_package(octomap REQUIRED)
+grid_map_package()
 
-###################################
-## catkin specific configuration ##
-###################################
-## The catkin_package macro generates cmake config files for your package
-## Declare things to be passed to dependent projects
-## INCLUDE_DIRS: uncomment this if your package contains header files
-## LIBRARIES: libraries you create in this project that dependent projects also need
-## CATKIN_DEPENDS: catkin_packages dependent projects also need
-## DEPENDS: system dependencies of this project that dependent projects also need
-catkin_package(
-  INCLUDE_DIRS include
-#  LIBRARIES ${PROJECT_NAME}
-  CATKIN_DEPENDS
-#  DEPENDS system_lib
+set(dependencies
+  rclcpp
+  grid_map_ros
+  grid_map_msgs
 )
 
 ###########
@@ -54,9 +44,8 @@ catkin_package(
 ## Your package locations should be listed before other locations
 include_directories(
   include
-  ${catkin_INCLUDE_DIRS}
-  ${EIGEN3_INCLUDE_DIR}
-  ${OCTOMAP_INCLUDE_DIR}
+  # ${EIGEN3_INCLUDE_DIR}
+  # ${OCTOMAP_INCLUDE_DIR}
 )
 
 ## Declare a cpp executable
@@ -82,143 +71,184 @@ add_executable(
   src/ImageToGridmapDemo.cpp
 )
 
-add_executable(
-  octomap_to_gridmap_demo
-  src/octomap_to_gridmap_demo_node.cpp
-  src/OctomapToGridmapDemo.cpp
-)
+# add_executable(
+#   octomap_to_gridmap_demo
+#   src/octomap_to_gridmap_demo_node.cpp
+#   src/OctomapToGridmapDemo.cpp
+# )
 
-add_executable(
-  move_demo
-  src/move_demo_node.cpp
-)
+# add_executable(
+#   move_demo
+#   src/move_demo_node.cpp
+# )
 
-add_executable(
-  iterator_benchmark
-  src/iterator_benchmark.cpp
-)
+# add_executable(
+#   iterator_benchmark
+#   src/iterator_benchmark.cpp
+# )
 
-add_executable(
-  opencv_demo
-  src/opencv_demo_node.cpp
-)
+# add_executable(
+#   opencv_demo
+#   src/opencv_demo_node.cpp
+# )
 
-add_executable(
-  resolution_change_demo
-  src/resolution_change_demo_node.cpp
-)
+# add_executable(
+#   resolution_change_demo
+#   src/resolution_change_demo_node.cpp
+# )
 
-add_executable(
-  filters_demo
-  src/filters_demo_node.cpp
-  src/FiltersDemo.cpp
-)
+# add_executable(
+#   filters_demo
+#   src/filters_demo_node.cpp
+#   src/FiltersDemo.cpp
+# )
 
-add_executable(
-  normal_filter_comparison_demo
-  src/normal_filter_comparison_node.cpp
-)
+# add_executable(
+#   normal_filter_comparison_demo
+#   src/normal_filter_comparison_node.cpp
+# )
 
-add_executable(
-  interpolation_demo
-  src/interpolation_demo_node.cpp
-  src/InterpolationDemo.cpp
-)
+# add_executable(
+#   interpolation_demo
+#   src/interpolation_demo_node.cpp
+#   src/InterpolationDemo.cpp
+# )
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(
+ament_target_dependencies(
   simple_demo
-  ${catkin_LIBRARIES}
+  "rclcpp"
+  "grid_map_ros"
+  "grid_map_msgs"
 )
 
-target_link_libraries(
+ament_target_dependencies(
   tutorial_demo
-  ${catkin_LIBRARIES}
+  "rclcpp"
+  "grid_map_ros"
+  "grid_map_msgs"
 )
 
-target_link_libraries(
+ament_target_dependencies(
   iterators_demo
-  ${catkin_LIBRARIES}
+  "rclcpp"
+  "grid_map_ros"
+  "grid_map_msgs"
 )
 
-target_link_libraries(
-  image_to_gridmap_demo
-  ${catkin_LIBRARIES}
+ament_target_dependencies(image_to_gridmap_demo
+  "rclcpp"
+  "grid_map_ros"
+  "grid_map_msgs"
 )
 
-target_link_libraries(
-  octomap_to_gridmap_demo
-  ${catkin_LIBRARIES}
-  ${OCTOMAP_LIBRARIES}
-)
+# ament_target_dependencies(
+#   octomap_to_gridmap_demo
+#   ${dependencies}
+#   ${OCTOMAP_LIBRARIES}
+# )
 
-target_link_libraries(
-  move_demo
-  ${catkin_LIBRARIES}
-)
+# ament_target_dependencies(
+#   move_demo
+# )
 
-target_link_libraries(
-  iterator_benchmark
-  ${catkin_LIBRARIES}
-)
+# ament_target_dependencies(
+#   iterator_benchmark
+#   ${dependencies}
+# )
 
-target_link_libraries(
-  opencv_demo
-  ${catkin_LIBRARIES}
-  ${OpenCV_LIBRARIES}
-)
+# ament_target_dependencies(
+#   opencv_demo
+#   ${dependencies}
+#   ${OpenCV_LIBRARIES}
+# )
 
-target_link_libraries(
-  resolution_change_demo
-  ${catkin_LIBRARIES}
-)
+# ament_target_dependencies(
+#   resolution_change_demo
+#   ${dependencies}
+# )
 
-target_link_libraries(
-  filters_demo
-  ${catkin_LIBRARIES}
-)
+# ament_target_dependencies(
+#   filters_demo
+#   ${dependencies}
+# )
 
-target_link_libraries(
-  normal_filter_comparison_demo
-  ${catkin_LIBRARIES}
-)
+# ament_target_dependencies(
+#   normal_filter_comparison_demo
+#   ${dependencies}
+# )
 
-target_link_libraries(
-  interpolation_demo
-  ${catkin_LIBRARIES}
-)
+# ament_target_dependencies(
+#   interpolation_demo
+#   ${dependencies}
+# )
 
 #############
 ## Install ##
 #############
 
-catkin_install_python(
-  PROGRAMS scripts/image_publisher.py
-  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-)
-
 # Mark executables and/or libraries for installation
 install(
-  TARGETS 
-    filters_demo
+  TARGETS
+    # filters_demo
     image_to_gridmap_demo
-    interpolation_demo
-    iterator_benchmark
+    # interpolation_demo
+    # iterator_benchmark
     iterators_demo
-    move_demo
-    normal_filter_comparison_demo
-    octomap_to_gridmap_demo
-    opencv_demo
-    resolution_change_demo
+    # move_demo
+    # normal_filter_comparison_demo
+    # octomap_to_gridmap_demo
+    # opencv_demo
+    # resolution_change_demo
     simple_demo
     tutorial_demo
-  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION lib/${PROJECT_NAME}
 )
 
 # Mark other files for installation
 install(
-  DIRECTORY config data doc launch rviz scripts
-  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+  DIRECTORY config data doc launch rviz
+  DESTINATION share/${PROJECT_NAME}
 )
+
+# Install python scripts
+install(
+  PROGRAMS scripts/image_publisher.py
+  DESTINATION lib/${PROJECT_NAME}
+)
+
+#############
+## Testing ##
+#############
+
+if(BUILD_TESTING)
+  # Linting is setup this way to add a filter
+  # to ament_cpplint to ignore the lack of
+  # copyright messages at the top of files.
+  # Copyright messages are being checked for by both
+  # ament_cmake_cpplint & ament_cmake_copyright.
+
+  find_package(ament_lint_auto REQUIRED)
+  find_package(ament_lint_auto QUIET)
+  if(ament_lint_auto_FOUND)
+    # exclude copyright checks
+    list(APPEND AMENT_LINT_AUTO_EXCLUDE
+      ament_cmake_cpplint
+      ament_cmake_copyright
+    )
+    ament_lint_auto_find_test_dependencies()
+
+    # run cpplint without copyright filter
+    find_package(ament_cmake_cpplint)
+    ament_cpplint(
+      FILTERS -legal/copyright
+    )
+  endif()
+  ament_lint_auto_find_test_dependencies()
+endif()
+
+ament_export_include_directories(include ${OCTOMAP_INCLUDE_DIRS})
+# ament_export_libraries(${OCTOMAP_LIBRARIES})
+ament_package()
