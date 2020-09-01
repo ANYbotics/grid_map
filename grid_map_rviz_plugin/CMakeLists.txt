@@ -43,6 +43,7 @@ add_definitions(-DQT_NO_KEYWORDS)
 ## The generated MOC files are included automatically as headers.
 set(SOURCE_FILES
   src/GridMapDisplay.cpp
+  src/GridMapVisual.cpp
 )
 
 ## An rviz plugin is just a shared library, so here we declare the
