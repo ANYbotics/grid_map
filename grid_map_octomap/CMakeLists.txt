@@ -4,8 +4,9 @@ project(grid_map_octomap)
 set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
 
 ## Find catkin macros and libraries
-find_package(catkin REQUIRED COMPONENTS
-  grid_map_core
+find_package(catkin REQUIRED
+  COMPONENTS
+    grid_map_core
 )
 find_package(octomap REQUIRED)
 message(STATUS "Found Octomap (version ${octomap_VERSION}): ${OCTOMAP_INCLUDE_DIRS}")
@@ -92,28 +93,36 @@ install(
 
 if(CATKIN_ENABLE_TESTING)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
+  find_package(catkin REQUIRED
+    COMPONENTS
+      grid_map_core
+  )
+
   # Add gtest based cpp test target and link libraries
   catkin_add_gtest(${PROJECT_NAME}-test
     test/test_grid_map_octomap.cpp
     test/OctomapConverterTest.cpp
   )
-endif()
-
-if(TARGET ${PROJECT_NAME}-test)
+  target_include_directories(${PROJECT_NAME}-test
+    PRIVATE
+      include
+    PUBLIC SYSTEM
+      ${catkin_INCLUDE_DIRS}
+      ${OCTOMAP_INCLUDE_DIRS}
+  )
   target_link_libraries(${PROJECT_NAME}-test
     ${PROJECT_NAME}
     ${OCTOMAP_LIBRARIES}
   )
+
+  ###################
+  ## Code_coverage ##
+  ###################
+  find_package(cmake_code_coverage QUIET)
+  if(cmake_code_coverage_FOUND)
+    add_gtest_coverage(
+      TEST_BUILD_TARGETS
+        ${PROJECT_NAME}-test
+    )
+  endif()
 endif()
-
-###################
-## Code_coverage ##
-###################
-
-find_package(cmake_code_coverage QUIET)
-if(cmake_code_coverage_FOUND)
-  add_gtest_coverage(
-    TEST_BUILD_TARGETS
-      ${PROJECT_NAME}-test
-  )
-endif(cmake_code_coverage_FOUND)

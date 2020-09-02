@@ -94,26 +94,41 @@ install(
 #############
 
 if(CATKIN_ENABLE_TESTING)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
-## Add gtest based cpp test target and link libraries
-catkin_add_gtest(${PROJECT_NAME}-test
-  test/test_grid_map_cv.cpp
-  test/GridMapCvTest.cpp
-  test/GridMapCvProcessingTest.cpp)
-endif()
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
 
-if(TARGET ${PROJECT_NAME}-test)
-  target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
-endif()
-
-###################
-## Code_coverage ##
-###################
-
-find_package(cmake_code_coverage QUIET)
-if(cmake_code_coverage_FOUND)
-  add_gtest_coverage(
-    TEST_BUILD_TARGETS
-      ${PROJECT_NAME}-test
+  find_package(catkin REQUIRED
+    COMPONENTS
+      grid_map_core
+      cv_bridge
+      filters
   )
-endif(cmake_code_coverage_FOUND)
+
+  ## Add gtest based cpp test target and link libraries
+  catkin_add_gtest(${PROJECT_NAME}-test
+    test/test_grid_map_cv.cpp
+    test/GridMapCvTest.cpp
+    test/GridMapCvProcessingTest.cpp
+  )
+  target_include_directories(${PROJECT_NAME}-test
+    PRIVATE
+      include
+    PUBLIC SYSTEM
+      ${catkin_INCLUDE_DIRS}
+      ${EIGEN3_INCLUDE_DIR}
+  )
+  target_link_libraries(${PROJECT_NAME}-test
+    ${PROJECT_NAME}
+  )
+
+  ###################
+  ## Code_coverage ##
+  ###################
+  find_package(cmake_code_coverage QUIET)
+  if(cmake_code_coverage_FOUND)
+    add_gtest_coverage(
+      TEST_BUILD_TARGETS
+        ${PROJECT_NAME}-test
+    )
+  endif()
+endif()
+

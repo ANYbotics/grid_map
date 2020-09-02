@@ -227,17 +227,34 @@ install(
 ##   Test   ##
 ##############
 if(CATKIN_ENABLE_TESTING)
+  find_package(catkin REQUIRED
+    COMPONENTS
+      roscpp
+      grid_map_core
+      grid_map_ros
+      grid_map_cv
+      grid_map_filters
+      grid_map_loader
+      grid_map_msgs
+      grid_map_octomap
+      grid_map_rviz_plugin
+      grid_map_visualization
+      geometry_msgs
+      sensor_msgs
+      cv_bridge
+      octomap_msgs
+      filters
+  )
+
   catkin_add_gtest(test_${PROJECT_NAME}
     test/empty_test.cpp
   )
-
   target_include_directories(test_${PROJECT_NAME}
     PRIVATE
       include
     SYSTEM PUBLIC
       ${catkin_INCLUDE_DIRS}
   )
-
   target_link_libraries(test_${PROJECT_NAME}
     ${catkin_LIBRARIES}
     gtest_main
@@ -252,5 +269,5 @@ if(CATKIN_ENABLE_TESTING)
       TEST_BUILD_TARGETS
         test_${PROJECT_NAME}
     )
-  endif(cmake_code_coverage_FOUND)
+  endif()
 endif()

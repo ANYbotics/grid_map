@@ -125,31 +125,28 @@ install(
 if (CATKIN_ENABLE_TESTING)
   find_package(catkin REQUIRED)
 
-  include_directories(
-    include
-    SYSTEM
-      ${catkin_INCLUDE_DIRS}
-      ${TBB_INCLUDE_DIRS}
-  )
-
   catkin_add_gtest(${PROJECT_NAME}-test
     test/test_grid_map_filters.cpp
   )
-
+  target_include_directories(${PROJECT_NAME}-test
+    PRIVATE
+      include
+    PUBLIC SYSTEM
+      ${catkin_INCLUDE_DIRS}
+      ${TBB_INCLUDE_DIRS}
+  )
   target_link_libraries(${PROJECT_NAME}-test
     ${PROJECT_NAME}
   )
+
+  ###################
+  ## Code_coverage ##
+  ###################
+  find_package(cmake_code_coverage QUIET)
+  if(cmake_code_coverage_FOUND)
+    add_gtest_coverage(
+      TEST_BUILD_TARGETS
+        ${PROJECT_NAME}-test
+    )
+  endif()
 endif()
-
-
-###################
-## Code_coverage ##
-###################
-
-find_package(cmake_code_coverage QUIET)
-if(cmake_code_coverage_FOUND)
-  add_gtest_coverage(
-    TEST_BUILD_TARGETS
-      ${PROJECT_NAME}-test
-  )
-endif(cmake_code_coverage_FOUND)
