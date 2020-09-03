@@ -46,13 +46,15 @@ bool FlatPointCloudVisualization::readParameters()
 
 bool FlatPointCloudVisualization::initialize()
 {
-  publisher_ = node_->create_publisher<sensor_msgs::msg::PointCloud2>(name_, 1);
+  publisher_ = node_->create_publisher<sensor_msgs::msg::PointCloud2>(
+    name_,
+    rclcpp::QoS(1).transient_local());
   return true;
 }
 
 bool FlatPointCloudVisualization::visualize(const grid_map::GridMap & map)
 {
-  if (!isActive()) {return true;}
+  if (!isActive()) {return false;}
   sensor_msgs::msg::PointCloud2 pointCloud;
 
   grid_map::GridMap mapCopy(map);

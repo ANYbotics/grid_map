@@ -7,9 +7,9 @@
  */
 
 // STL
-#include <string>
-#include <memory>
 #include <algorithm>
+#include <memory>
+#include <string>
 
 #include "grid_map_visualization/visualizations/VisualizationFactory.hpp"
 #include "grid_map_visualization/visualizations/PointCloudVisualization.hpp"

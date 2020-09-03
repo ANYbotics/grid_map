@@ -40,13 +40,15 @@ bool PointCloudVisualization::readParameters()
 
 bool PointCloudVisualization::initialize()
 {
-  publisher_ = node_->create_publisher<sensor_msgs::msg::PointCloud2>(name_, 1);
+  publisher_ = node_->create_publisher<sensor_msgs::msg::PointCloud2>(
+    name_,
+    rclcpp::QoS(1).transient_local());
   return true;
 }
 
 bool PointCloudVisualization::visualize(const grid_map::GridMap & map)
 {
-  if (!isActive()) {return true;}
+  if (!isActive()) {return false;}
   if (!map.exists(layer_)) {
     RCLCPP_WARN_STREAM(
       node_->get_logger(),

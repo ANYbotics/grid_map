@@ -20,9 +20,9 @@ set(dependencies
   grid_map_msgs
   grid_map_ros
   nav_msgs
+  rclcpp
   sensor_msgs
   visualization_msgs
-  rclcpp
 )
 
 ###########
@@ -41,14 +41,14 @@ set(library_name ${PROJECT_NAME}_core)
 add_library(${library_name} SHARED
   src/GridMapVisualization.cpp
   src/GridMapVisualizationHelpers.cpp
-  src/visualizations/VisualizationBase.cpp
-  src/visualizations/VisualizationFactory.cpp
-  src/visualizations/PointCloudVisualization.cpp
   src/visualizations/FlatPointCloudVisualization.cpp
-  src/visualizations/VectorVisualization.cpp
-  src/visualizations/OccupancyGridVisualization.cpp
   src/visualizations/GridCellsVisualization.cpp
   src/visualizations/MapRegionVisualization.cpp
+  src/visualizations/OccupancyGridVisualization.cpp
+  src/visualizations/PointCloudVisualization.cpp
+  src/visualizations/VectorVisualization.cpp
+  src/visualizations/VisualizationFactory.cpp
+  src/visualizations/VisualizationBase.cpp
 )
 
 ament_target_dependencies(${library_name}

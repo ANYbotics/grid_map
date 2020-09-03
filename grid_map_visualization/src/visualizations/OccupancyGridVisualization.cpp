@@ -63,13 +63,15 @@ bool OccupancyGridVisualization::readParameters()
 
 bool OccupancyGridVisualization::initialize()
 {
-  publisher_ = node_->create_publisher<nav_msgs::msg::OccupancyGrid>(name_, 1);
+  publisher_ = node_->create_publisher<nav_msgs::msg::OccupancyGrid>(
+    name_,
+    rclcpp::QoS(1).transient_local());
   return true;
 }
 
 bool OccupancyGridVisualization::visualize(const grid_map::GridMap & map)
 {
-  if (!isActive()) {return true;}
+  if (!isActive()) {return false;}
   if (!map.exists(layer_)) {
     RCLCPP_WARN_STREAM(
       node_->get_logger(),

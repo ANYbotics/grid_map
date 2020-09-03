@@ -11,8 +11,8 @@
 
 // ROS
 #include <rclcpp/rclcpp.hpp>
-#include <visualization_msgs/msg/marker_array.hpp>
 #include <std_msgs/msg/color_rgba.hpp>
+#include <visualization_msgs/msg/marker_array.hpp>
 
 // Eigen
 #include <Eigen/Core>

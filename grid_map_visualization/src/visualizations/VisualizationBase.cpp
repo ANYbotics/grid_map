@@ -25,7 +25,6 @@ VisualizationBase::~VisualizationBase()
 
 bool VisualizationBase::isActive() const
 {
-  if (node_->count_subscribers(name_) > 0) {return true;}
-  return false;
+  return static_cast<bool>(node_->count_subscribers(name_));
 }
 }  // namespace grid_map_visualization

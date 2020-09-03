@@ -8,11 +8,11 @@
 
 #include "grid_map_visualization/visualizations/VectorVisualization.hpp"
 
-// Color conversion
-#include <grid_map_visualization/GridMapVisualizationHelpers.hpp>
-
 // Iterator
 #include <grid_map_core/iterators/GridMapIterator.hpp>
+
+// Color conversion
+#include <grid_map_visualization/GridMapVisualizationHelpers.hpp>
 
 // ROS
 #include <geometry_msgs/msg/point.hpp>
@@ -97,13 +97,15 @@ bool VectorVisualization::initialize()
   marker_.action = visualization_msgs::msg::Marker::ADD;
   marker_.type = visualization_msgs::msg::Marker::LINE_LIST;
   marker_.scale.x = lineWidth_;
-  publisher_ = node_->create_publisher<visualization_msgs::msg::Marker>(name_, 1);
+  publisher_ = node_->create_publisher<visualization_msgs::msg::Marker>(
+    name_,
+    rclcpp::QoS(1).transient_local());
   return true;
 }
 
 bool VectorVisualization::visualize(const grid_map::GridMap & map)
 {
-  if (!isActive()) {return true;}
+  if (!isActive()) {return false;}
 
   for (const auto & type : types_) {
     if (!map.exists(type)) {

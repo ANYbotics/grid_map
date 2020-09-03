@@ -64,13 +64,15 @@ bool MapRegionVisualization::initialize()
   marker_.scale.x = lineWidth_;
   marker_.points.resize(nVertices_);  // Initialized to [0.0, 0.0, 0.0]
   marker_.colors.resize(nVertices_, color_);
-  publisher_ = node_->create_publisher<visualization_msgs::msg::Marker>(name_, 1);
+  publisher_ = node_->create_publisher<visualization_msgs::msg::Marker>(
+    name_,
+    rclcpp::QoS(1).transient_local());
   return true;
 }
 
 bool MapRegionVisualization::visualize(const grid_map::GridMap & map)
 {
-  if (!isActive()) {return true;}
+  if (!isActive()) {return false;}
 
   // TODO(needs_assignment): Replace this with ploygon?
 

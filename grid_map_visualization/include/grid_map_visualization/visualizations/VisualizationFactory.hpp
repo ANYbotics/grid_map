@@ -9,9 +9,9 @@
 #ifndef GRID_MAP_VISUALIZATION__VISUALIZATIONS__VISUALIZATIONFACTORY_HPP_
 #define GRID_MAP_VISUALIZATION__VISUALIZATIONS__VISUALIZATIONFACTORY_HPP_
 
-#include <vector>
-#include <string>
 #include <memory>
+#include <string>
+#include <vector>
 
 #include "grid_map_visualization/visualizations/VisualizationBase.hpp"
 

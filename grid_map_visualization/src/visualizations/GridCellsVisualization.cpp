@@ -11,8 +11,8 @@
 #include <nav_msgs/msg/grid_cells.hpp>
 
 // STD
-#include <string>
 #include <limits>
+#include <string>
 
 namespace grid_map_visualization
 {
@@ -65,13 +65,15 @@ bool GridCellsVisualization::readParameters()
 
 bool GridCellsVisualization::initialize()
 {
-  publisher_ = node_->create_publisher<nav_msgs::msg::GridCells>(name_, 1);
+  publisher_ = node_->create_publisher<nav_msgs::msg::GridCells>(
+    name_,
+    rclcpp::QoS(1).transient_local());
   return true;
 }
 
 bool GridCellsVisualization::visualize(const grid_map::GridMap & map)
 {
-  if (!isActive()) {return true;}
+  if (!isActive()) {return false;}
   if (!map.exists(layer_)) {
     RCLCPP_WARN_STREAM(
       node_->get_logger(),

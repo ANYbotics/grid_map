@@ -11,19 +11,19 @@
 #define GRID_MAP_VISUALIZATION__GRIDMAPVISUALIZATION_HPP_
 
 #include <grid_map_msgs/msg/grid_map.hpp>
-#include <grid_map_visualization/visualizations/VisualizationFactory.hpp>
 #include <grid_map_visualization/visualizations/MapRegionVisualization.hpp>
+#include <grid_map_visualization/visualizations/OccupancyGridVisualization.hpp>
 #include <grid_map_visualization/visualizations/PointCloudVisualization.hpp>
 #include <grid_map_visualization/visualizations/VectorVisualization.hpp>
-#include <grid_map_visualization/visualizations/OccupancyGridVisualization.hpp>
+#include <grid_map_visualization/visualizations/VisualizationFactory.hpp>
 
 // ROS
 #include <rclcpp/rclcpp.hpp>
 
 // STD
+#include <memory>
 #include <string>
 #include <vector>
-#include <memory>
 
 namespace grid_map_visualization
 {

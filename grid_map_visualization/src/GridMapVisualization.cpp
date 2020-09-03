@@ -9,11 +9,11 @@
 #include <grid_map_core/GridMap.hpp>
 #include <grid_map_ros/GridMapRosConverter.hpp>
 
-#include <string>
-#include <vector>
-#include <memory>
 #include <chrono>
+#include <memory>
+#include <string>
 #include <unordered_set>
+#include <vector>
 
 #include "grid_map_visualization/GridMapVisualization.hpp"
 
@@ -123,7 +123,7 @@ bool GridMapVisualization::readParameters()
 
 bool GridMapVisualization::initialize()
 {
-  for (auto visualization : visualizations_) {
+  for (auto & visualization : visualizations_) {
     visualization->initialize();
   }
 
@@ -167,8 +167,8 @@ void GridMapVisualization::callback(const grid_map_msgs::msg::GridMap::SharedPtr
   grid_map::GridMap map;
   grid_map::GridMapRosConverter::fromMessage(*message, map);
 
-  for (std::size_t i = 0; i < visualizations_.size(); i++) {
-    visualizations_[i]->visualize(map);
+  for (auto & visualization : visualizations_) {
+    visualization->visualize(map);
   }
 }
 
