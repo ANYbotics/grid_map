@@ -6,8 +6,6 @@
  *  Institute: ETH Zurich, ANYbotics
  */
 
-#ifndef Q_MOC_RUN
-
 #include <OgreMaterialManager.h>
 #include <OgreTextureManager.h>
 #include <OgreTechnique.h>
@@ -16,8 +14,6 @@
 #include <OgreSceneNode.h>
 #include <OgreSceneManager.h>
 #include <OgreManualObject.h>
-
-#endif  // Q_MOC_RUN
 
 #include <rclcpp/rclcpp.hpp>
 #include <grid_map_core/GridMapMath.hpp>

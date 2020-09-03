@@ -9,7 +9,6 @@
 #ifndef GRID_MAP_RVIZ_PLUGIN__GRIDMAPDISPLAY_HPP_
 #define GRID_MAP_RVIZ_PLUGIN__GRIDMAPDISPLAY_HPP_
 
-// #ifndef Q_MOC_RUN
 #include <grid_map_ros/grid_map_ros.hpp>
 #include <grid_map_msgs/msg/grid_map.hpp>
 
@@ -22,7 +21,6 @@
 #include <rviz_common/properties/editable_enum_property.hpp>
 
 #include <boost/circular_buffer.hpp>
-// #endif
 
 namespace Ogre
 {

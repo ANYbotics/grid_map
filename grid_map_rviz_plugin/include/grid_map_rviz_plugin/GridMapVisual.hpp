@@ -24,14 +24,6 @@
 #include <string>
 #include <vector>
 
-// namespace Ogre
-// {
-// class Vector3;
-// class Quaternion;
-// class ManualObject;
-// class ColourValue;
-// }
-
 namespace rviz_rendering
 {
 class BillboardLine;
