@@ -17,10 +17,8 @@
 namespace grid_map_visualization
 {
 
-FlatPointCloudVisualization::FlatPointCloudVisualization(
-  rclcpp::Node::SharedPtr node,
-  const std::string & name)
-: VisualizationBase(node, name),
+FlatPointCloudVisualization::FlatPointCloudVisualization(const std::string & name)
+: VisualizationBase(name),
   height_(0.0)
 {
 }
@@ -32,13 +30,13 @@ FlatPointCloudVisualization::~FlatPointCloudVisualization()
 bool FlatPointCloudVisualization::readParameters()
 {
   height_ = 0.0;
-  node_->declare_parameter(name_ + ".params.height", 0.0);
-  if (!node_->get_parameter(name_ + ".params.height", height_)) {
+  this->declare_parameter(std::string(this->get_name()) + ".params.height", 0.0);
+  if (!this->get_parameter(std::string(this->get_name()) + ".params.height", height_)) {
     RCLCPP_INFO(
-      node_->get_logger(),
+      this->get_logger(),
       "FlatPointCloudVisualization with name '%s' "
       "did not find a 'height' parameter. Using default.",
-      name_.c_str());
+      this->get_name());
   }
 
   return true;
@@ -46,8 +44,8 @@ bool FlatPointCloudVisualization::readParameters()
 
 bool FlatPointCloudVisualization::initialize()
 {
-  publisher_ = node_->create_publisher<sensor_msgs::msg::PointCloud2>(
-    name_,
+  publisher_ = this->create_publisher<sensor_msgs::msg::PointCloud2>(
+    this->get_name(),
     rclcpp::QoS(1).transient_local());
   return true;
 }

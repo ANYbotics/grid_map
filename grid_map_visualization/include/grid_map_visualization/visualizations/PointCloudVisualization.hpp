@@ -30,10 +30,9 @@ class PointCloudVisualization : public VisualizationBase
 public:
   /*!
    * Constructor.
-   * @param node the ROS node.
    * @param name the name of the visualization.
    */
-  PointCloudVisualization(rclcpp::Node::SharedPtr node, const std::string & name);
+  explicit PointCloudVisualization(const std::string & name);
 
   /*!
    * Destructor.

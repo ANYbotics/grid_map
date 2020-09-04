@@ -21,7 +21,7 @@ namespace grid_map_visualization
 class VisualizationFactory
 {
 public:
-  explicit VisualizationFactory(rclcpp::Node::SharedPtr node);
+  VisualizationFactory();
   virtual ~VisualizationFactory();
 
   bool isValidType(const std::string & type);
@@ -31,7 +31,6 @@ public:
     const std::string & name);
 
 private:
-  rclcpp::Node::SharedPtr node_;
   std::vector<std::string> types_;
 };
 

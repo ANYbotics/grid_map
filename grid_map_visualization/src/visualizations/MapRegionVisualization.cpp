@@ -17,10 +17,8 @@
 namespace grid_map_visualization
 {
 
-MapRegionVisualization::MapRegionVisualization(
-  rclcpp::Node::SharedPtr node,
-  const std::string & name)
-: VisualizationBase(node, name),
+MapRegionVisualization::MapRegionVisualization(const std::string & name)
+: VisualizationBase(name),
   nVertices_(5),
   lineWidth_(0.01)
 {
@@ -32,23 +30,23 @@ MapRegionVisualization::~MapRegionVisualization()
 
 bool MapRegionVisualization::readParameters()
 {
-  node_->declare_parameter(name_ + ".params.line_width", 0.003);
-  node_->declare_parameter(name_ + ".params.color", 16777215);
+  this->declare_parameter(std::string(this->get_name()) + ".params.line_width", 0.003);
+  this->declare_parameter(std::string(this->get_name()) + ".params.color", 16777215);
   lineWidth_ = 0.003;
-  if (!node_->get_parameter(name_ + ".params.line_width", lineWidth_)) {
+  if (!this->get_parameter(std::string(this->get_name()) + ".params.line_width", lineWidth_)) {
     RCLCPP_INFO(
-      node_->get_logger(),
+      this->get_logger(),
       "MapRegionVisualization with name '%s' did not find a 'line_width' parameter. Using default.",
-      name_.c_str());
+      this->get_name());
     return false;
   }
 
   int colorValue = 16777215;  // white, http://www.wolframalpha.com/input/?i=BitOr%5BBitShiftLeft%5Br%2C16%5D%2C+BitShiftLeft%5Bg%2C8%5D%2C+b%5D+where+%7Br%3D20%2C+g%3D50%2C+b%3D230%7D  // NOLINT
-  if (!node_->get_parameter(name_ + ".params.color", colorValue)) {
+  if (!this->get_parameter(std::string(this->get_name()) + ".params.color", colorValue)) {
     RCLCPP_INFO(
-      node_->get_logger(),
+      this->get_logger(),
       "MapRegionVisualization with name '%s' did not find a 'color' parameter. Using default.",
-      name_.c_str());
+      this->get_name());
   }
   setColorFromColorValue(color_, colorValue, true);
 
@@ -64,8 +62,8 @@ bool MapRegionVisualization::initialize()
   marker_.scale.x = lineWidth_;
   marker_.points.resize(nVertices_);  // Initialized to [0.0, 0.0, 0.0]
   marker_.colors.resize(nVertices_, color_);
-  publisher_ = node_->create_publisher<visualization_msgs::msg::Marker>(
-    name_,
+  publisher_ = this->create_publisher<visualization_msgs::msg::Marker>(
+    this->get_name(),
     rclcpp::QoS(1).transient_local());
   return true;
 }

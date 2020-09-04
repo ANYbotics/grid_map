@@ -21,15 +21,14 @@
 namespace grid_map_visualization
 {
 
-class VisualizationBase
+class VisualizationBase : public rclcpp::Node
 {
 public:
   /*!
    * Constructor.
-   * @param node the ROS node.
    * @param name the name of the visualization.
    */
-  VisualizationBase(rclcpp::Node::SharedPtr node, const std::string & name);
+  explicit VisualizationBase(const std::string & name);
 
   /*!
    * Destructor.
@@ -59,13 +58,6 @@ public:
    * @return true if active, false otherwise.
    */
   bool isActive() const;
-
-protected:
-  //! ROS node.
-  rclcpp::Node::SharedPtr node_;
-
-  //! Name of the visualization.
-  std::string name_;
 };
 
 }  // namespace grid_map_visualization

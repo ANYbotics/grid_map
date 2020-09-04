@@ -14,10 +14,8 @@
 namespace grid_map_visualization
 {
 
-PointCloudVisualization::PointCloudVisualization(
-  rclcpp::Node::SharedPtr node,
-  const std::string & name)
-: VisualizationBase(node, name)
+PointCloudVisualization::PointCloudVisualization(const std::string & name)
+: VisualizationBase(name)
 {
 }
 
@@ -27,12 +25,14 @@ PointCloudVisualization::~PointCloudVisualization()
 
 bool PointCloudVisualization::readParameters()
 {
-  node_->declare_parameter(name_ + ".params.layer", std::string("elevation"));
-  if (!node_->get_parameter(name_ + ".params.layer", layer_)) {
+  this->declare_parameter(
+    std::string(this->get_name()) + ".params.layer",
+    std::string("elevation"));
+  if (!this->get_parameter(std::string(this->get_name()) + ".params.layer", layer_)) {
     RCLCPP_ERROR(
-      node_->get_logger(),
+      this->get_logger(),
       "PointCloudVisualization with name '%s' did not find a 'layer' parameter.",
-      name_.c_str());
+      this->get_name());
     return false;
   }
   return true;
@@ -40,8 +40,8 @@ bool PointCloudVisualization::readParameters()
 
 bool PointCloudVisualization::initialize()
 {
-  publisher_ = node_->create_publisher<sensor_msgs::msg::PointCloud2>(
-    name_,
+  publisher_ = this->create_publisher<sensor_msgs::msg::PointCloud2>(
+    this->get_name(),
     rclcpp::QoS(1).transient_local());
   return true;
 }
@@ -51,7 +51,7 @@ bool PointCloudVisualization::visualize(const grid_map::GridMap & map)
   if (!isActive()) {return false;}
   if (!map.exists(layer_)) {
     RCLCPP_WARN_STREAM(
-      node_->get_logger(),
+      this->get_logger(),
       "PointCloudVisualization::visualize: No grid map layer with name '" << layer_ <<
         "' found.");
     return false;
