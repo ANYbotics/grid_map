@@ -6,15 +6,16 @@
  *   Institute: ETH Zurich, ANYbotics
  */
 
-#include <grid_map_visualization/visualizations/PointCloudVisualization.hpp>
+#include "grid_map_visualization/visualizations/PointCloudVisualization.hpp"
 #include <grid_map_ros/GridMapRosConverter.hpp>
 
-#include <sensor_msgs/PointCloud2.h>
+#include <string>
 
-namespace grid_map_visualization {
+namespace grid_map_visualization
+{
 
-PointCloudVisualization::PointCloudVisualization(ros::NodeHandle& nodeHandle, const std::string& name)
-    : VisualizationBase(nodeHandle, name)
+PointCloudVisualization::PointCloudVisualization(const std::string & name)
+: VisualizationBase(name)
 {
 }
 
@@ -22,11 +23,16 @@ PointCloudVisualization::~PointCloudVisualization()
 {
 }
 
-bool PointCloudVisualization::readParameters(XmlRpc::XmlRpcValue& config)
+bool PointCloudVisualization::readParameters()
 {
-  VisualizationBase::readParameters(config);
-  if (!getParam("layer", layer_)) {
-    ROS_ERROR("PointCloudVisualization with name '%s' did not find a 'layer' parameter.", name_.c_str());
+  this->declare_parameter(
+    std::string(this->get_name()) + ".params.layer",
+    std::string("elevation"));
+  if (!this->get_parameter(std::string(this->get_name()) + ".params.layer", layer_)) {
+    RCLCPP_ERROR(
+      this->get_logger(),
+      "PointCloudVisualization with name '%s' did not find a 'layer' parameter.",
+      this->get_name());
     return false;
   }
   return true;
@@ -34,21 +40,26 @@ bool PointCloudVisualization::readParameters(XmlRpc::XmlRpcValue& config)
 
 bool PointCloudVisualization::initialize()
 {
-  publisher_ = nodeHandle_.advertise<sensor_msgs::PointCloud2>(name_, 1, true);
+  publisher_ = this->create_publisher<sensor_msgs::msg::PointCloud2>(
+    this->get_name(),
+    rclcpp::QoS(1).transient_local());
   return true;
 }
 
-bool PointCloudVisualization::visualize(const grid_map::GridMap& map)
+bool PointCloudVisualization::visualize(const grid_map::GridMap & map)
 {
-  if (!isActive()) return true;
+  if (!isActive()) {return false;}
   if (!map.exists(layer_)) {
-    ROS_WARN_STREAM("PointCloudVisualization::visualize: No grid map layer with name '" << layer_ << "' found.");
+    RCLCPP_WARN_STREAM(
+      this->get_logger(),
+      "PointCloudVisualization::visualize: No grid map layer with name '" << layer_ <<
+        "' found.");
     return false;
   }
-  sensor_msgs::PointCloud2 pointCloud;
+  sensor_msgs::msg::PointCloud2 pointCloud;
   grid_map::GridMapRosConverter::toPointCloud(map, layer_, pointCloud);
-  publisher_.publish(pointCloud);
+  publisher_->publish(pointCloud);
   return true;
 }
 
-} /* namespace */
+}  // namespace grid_map_visualization

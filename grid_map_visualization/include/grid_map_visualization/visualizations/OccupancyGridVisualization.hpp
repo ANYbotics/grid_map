@@ -6,26 +6,27 @@
  *   Institute: ETH Zurich, ANYbotics
  */
 
-#pragma once
+#ifndef GRID_MAP_VISUALIZATION__VISUALIZATIONS__OCCUPANCYGRIDVISUALIZATION_HPP_
+#define GRID_MAP_VISUALIZATION__VISUALIZATIONS__OCCUPANCYGRIDVISUALIZATION_HPP_
 
-#include <grid_map_visualization/visualizations/VisualizationBase.hpp>
 #include <grid_map_core/GridMap.hpp>
+#include <nav_msgs/msg/occupancy_grid.hpp>
 
-// ROS
-#include <ros/ros.h>
+#include <string>
 
-namespace grid_map_visualization {
+#include "grid_map_visualization/visualizations/VisualizationBase.hpp"
+
+namespace grid_map_visualization
+{
 
 class OccupancyGridVisualization : public VisualizationBase
 {
- public:
-
+public:
   /*!
    * Constructor.
-   * @param nodeHandle the ROS node handle.
    * @param name the name of the visualization.
    */
-  OccupancyGridVisualization(ros::NodeHandle& nodeHandle, const std::string& name);
+  explicit OccupancyGridVisualization(const std::string & name);
 
   /*!
    * Destructor.
@@ -37,27 +38,31 @@ class OccupancyGridVisualization : public VisualizationBase
    * @param config the parameters as XML.
    * @return true if successful.
    */
-  bool readParameters(XmlRpc::XmlRpcValue& config);
+  bool readParameters() override;
 
   /*!
    * Initialization.
    */
-  bool initialize();
+  bool initialize() override;
 
   /*!
    * Generates the visualization.
    * @param map the grid map to visualize.
    * @return true if successful.
    */
-  bool visualize(const grid_map::GridMap& map);
+  bool visualize(const grid_map::GridMap & map) override;
 
- private:
-
+private:
   //! Type that is transformed to the occupancy grid.
   std::string layer_;
 
-  //! Minimum and maximum value of the grid map data (used to normalize the cell data in [min, max]).
+  //! Minimum and maximum value of the grid map data
+  // (used to normalize the cell data in [min, max]).
   float dataMin_, dataMax_;
+
+  //! ROS publisher.
+  rclcpp::Publisher<nav_msgs::msg::OccupancyGrid>::SharedPtr publisher_;
 };
 
-} /* namespace */
+}  // namespace grid_map_visualization
+#endif  // GRID_MAP_VISUALIZATION__VISUALIZATIONS__OCCUPANCYGRIDVISUALIZATION_HPP_
