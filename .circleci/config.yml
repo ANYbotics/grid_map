@@ -21,11 +21,12 @@ jobs:
             mkdir -p $UNDERLAY_WS/src && cp $OVERLAY_WS/src/grid_map/tools/ros2_dependencies.repos \
               $UNDERLAY_WS/ros2_dependencies.repos
             cd $UNDERLAY_WS && vcs import src < ros2_dependencies.repos
-            cp $UNDERLAY_WS/src/ros-planning/navigation2/tools/ros2_dependencies.repos \
-              $UNDERLAY_WS/ros2_dependencies.repos
-            vcs import src < ros2_dependencies.repos
+            cp $UNDERLAY_WS/src/ros-planning/navigation2/tools/underlay.repos \
+              $UNDERLAY_WS/underlay.repos
+            vcs import src < underlay.repos
             rosdep install -y --ignore-src --skip-keys "slam_toolbox" --from-paths src
-            colcon build --symlink-install --packages-up-to nav2_costmap_2d rcpputils rosbag2_cpp
+            colcon build --symlink-install --parallel-workers 1 --packages-up-to \
+              nav2_costmap_2d rcpputils rosbag2_cpp
             source $UNDERLAY_WS/install/setup.bash
             cd $OVERLAY_WS && rosdep install -y --ignore-src --from-paths src
       - run:

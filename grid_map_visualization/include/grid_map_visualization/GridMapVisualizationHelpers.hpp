@@ -6,17 +6,19 @@
  *   Institute: ETH Zurich, ANYbotics
  */
 
-#pragma once
+#ifndef GRID_MAP_VISUALIZATION__GRIDMAPVISUALIZATIONHELPERS_HPP_
+#define GRID_MAP_VISUALIZATION__GRIDMAPVISUALIZATIONHELPERS_HPP_
 
 // ROS
-#include <ros/ros.h>
-#include <visualization_msgs/MarkerArray.h>
-#include <std_msgs/ColorRGBA.h>
+#include <rclcpp/rclcpp.hpp>
+#include <std_msgs/msg/color_rgba.hpp>
+#include <visualization_msgs/msg/marker_array.hpp>
 
 // Eigen
 #include <Eigen/Core>
 
-namespace grid_map_visualization {
+namespace grid_map_visualization
+{
 
 /*!
  * Create a color message from a color vector.
@@ -24,14 +26,19 @@ namespace grid_map_visualization {
  * @param[in] colorVector the color vector
  * @param[in] resetTransparency if transparency should be reset (to fully visible) or left at current value.
  */
-void getColorMessageFromColorVector(std_msgs::ColorRGBA& colorMessage, const Eigen::Vector3f& colorVector, bool resetTransparency = true);
+void getColorMessageFromColorVector(
+  std_msgs::msg::ColorRGBA & colorMessage,
+  const Eigen::Vector3f & colorVector,
+  bool resetTransparency = true);
 
 /*!
  * Create a color vector from a color message.
  * @param[out] colorVector the color vector.
  * @param[in] colorMessage the color message.
  */
-void getColorVectorFromColorMessage(Eigen::Vector3f& colorVector, const std_msgs::ColorRGBA& colorMessage);
+void getColorVectorFromColorMessage(
+  Eigen::Vector3f & colorVector,
+  const std_msgs::msg::ColorRGBA & colorMessage);
 
 /*!
  * Sets a color message from a color value.
@@ -39,7 +46,9 @@ void getColorVectorFromColorMessage(Eigen::Vector3f& colorVector, const std_msgs
  * @param[in] colorValue the color value.
  * @param[in] resetTransparency if transparency should be reset (to fully visible) or left at current value.
  */
-void setColorFromColorValue(std_msgs::ColorRGBA& color, const unsigned long& colorValue, bool resetTransparency = true);
+void setColorFromColorValue(
+  std_msgs::msg::ColorRGBA & color, const uint64_t & colorValue,
+  bool resetTransparency = true);
 
 /*!
  * Set the color channel from a scalar value.
@@ -51,9 +60,11 @@ void setColorFromColorValue(std_msgs::ColorRGBA& color, const unsigned long& col
  * @param[in] colorChannelLowerValue the lower value for the color channel.
  * @param[in] colorChannelUpperValue the upper value for the color channel.
  */
-void setColorChannelFromValue(float& colorChannel, const double value, const double lowerValueBound,
-                              const double upperValueBound, const bool invert = false, const double colorChannelLowerValue = 0.0,
-                              const double colorChannelUpperValue = 1.0);
+void setColorChannelFromValue(
+  float & colorChannel, const double value, const double lowerValueBound,
+  const double upperValueBound, const bool invert = false,
+  const double colorChannelLowerValue = 0.0,
+  const double colorChannelUpperValue = 1.0);
 
 /*!
  * Sets the color to the interpolation between two colors based on a scalar value.
@@ -64,9 +75,10 @@ void setColorChannelFromValue(float& colorChannel, const double value, const dou
  * @param[in] lowerValueBound the lower boundary of the value.
  * @param[in] upperValueBound the upper boundary of the value.
  */
-void interpolateBetweenColors(std_msgs::ColorRGBA& color, const std_msgs::ColorRGBA& colorForLowerValue,
-                              const std_msgs::ColorRGBA& colorForUpperValue, const double value,
-                              const double lowerValueBound, const double upperValueBound);
+void interpolateBetweenColors(
+  std_msgs::msg::ColorRGBA & color, const std_msgs::msg::ColorRGBA & colorForLowerValue,
+  const std_msgs::msg::ColorRGBA & colorForUpperValue, const double value,
+  const double lowerValueBound, const double upperValueBound);
 
 /*!
  * Sets the saturation of the color from a scalar value.
@@ -77,8 +89,9 @@ void interpolateBetweenColors(std_msgs::ColorRGBA& color, const std_msgs::ColorR
  * @param[in] maxSaturation the maximum saturation.
  * @param[in] minSaturation the minimum saturation.
  */
-void setSaturationFromValue(std_msgs::ColorRGBA& color, const double value, const double lowerValueBound,
-                            const double upperValueBound, const double maxSaturation, const double minSaturation);
+void setSaturationFromValue(
+  std_msgs::msg::ColorRGBA & color, const double value, const double lowerValueBound,
+  const double upperValueBound, const double maxSaturation, const double minSaturation);
 
 /*!
  * Set the color from the rainbow color spectrum based on scalar value.
@@ -87,8 +100,9 @@ void setSaturationFromValue(std_msgs::ColorRGBA& color, const double value, cons
  * @param[in] lowerValueBound the lower boundary of the value.
  * @param[in] upperValueBound the upper boundary of the value.
  */
-void setColorFromValue(std_msgs::ColorRGBA& color, const double value, const double lowerValueBound,
-                       const double upperValueBound);
+void setColorFromValue(
+  std_msgs::msg::ColorRGBA & color, const double value, const double lowerValueBound,
+  const double upperValueBound);
 
 /*!
  * Computes a linear mapping for a query from the source and to the map.
@@ -100,7 +114,8 @@ void setColorFromValue(std_msgs::ColorRGBA& color, const double value, const dou
  * @return the query mapped to the map.
  */
 double computeLinearMapping(
-    const double& sourceValue, const double& sourceLowerValue, const double& sourceUpperValue,
-    const double& mapLowerValue, const double& mapUpperValue);
+  const double & sourceValue, const double & sourceLowerValue, const double & sourceUpperValue,
+  const double & mapLowerValue, const double & mapUpperValue);
 
-} /* namespace */
+}  // namespace grid_map_visualization
+#endif  // GRID_MAP_VISUALIZATION__GRIDMAPVISUALIZATIONHELPERS_HPP_
