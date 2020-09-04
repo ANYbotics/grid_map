@@ -6,17 +6,17 @@
  *   Institute: ETH Zurich, ANYbotics
  */
 
-#include <ros/ros.h>
-#include "grid_map_visualization/GridMapVisualization.hpp"
+#include <rclcpp/rclcpp.hpp>
+#include <grid_map_visualization/GridMapVisualization.hpp>
 
-int main(int argc, char** argv)
+#include <memory>
+
+int main(int argc, char ** argv)
 {
-  ros::init(argc, argv, "grid_map_visualization");
-
-  ros::NodeHandle nodeHandle("~");
-
-  grid_map_visualization::GridMapVisualization gridMapVisualization(nodeHandle, "grid_map_visualizations");
-
-  ros::spin();
+  rclcpp::init(argc, argv);
+  auto node = std::make_shared<grid_map_visualization::GridMapVisualization>(
+    "grid_map_visualizations");
+  rclcpp::spin(node->get_node_base_interface());
+  rclcpp::shutdown();
   return 0;
 }

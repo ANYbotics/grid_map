@@ -6,34 +6,36 @@
  *   Institute: ETH Zurich, ANYbotics
  */
 
-#pragma once
+#ifndef GRID_MAP_VISUALIZATION__VISUALIZATIONS__VECTORVISUALIZATION_HPP_
+#define GRID_MAP_VISUALIZATION__VISUALIZATIONS__VECTORVISUALIZATION_HPP_
 
-#include <grid_map_visualization/visualizations/VisualizationBase.hpp>
 #include <grid_map_core/GridMap.hpp>
 
 // ROS
-#include <ros/ros.h>
-#include <visualization_msgs/Marker.h>
-#include <std_msgs/ColorRGBA.h>
+#include <rclcpp/rclcpp.hpp>
+#include <visualization_msgs/msg/marker.hpp>
+#include <std_msgs/msg/color_rgba.hpp>
 
 // STD
+#include <string>
 #include <vector>
 
-namespace grid_map_visualization {
+#include "grid_map_visualization/visualizations/VisualizationBase.hpp"
+
+namespace grid_map_visualization
+{
 
 /*!
  * Visualization a combination of three layers of the grid map as a vector field.
  */
 class VectorVisualization : public VisualizationBase
 {
- public:
-
+public:
   /*!
    * Constructor.
-   * @param nodeHandle the ROS node handle.
    * @param name the name of the visualization.
    */
-  VectorVisualization(ros::NodeHandle& nodeHandle, const std::string& name);
+  explicit VectorVisualization(const std::string & name);
 
   /*!
    * Destructor.
@@ -45,24 +47,23 @@ class VectorVisualization : public VisualizationBase
    * @param config the parameters as XML.
    * @return true if successful.
    */
-  bool readParameters(XmlRpc::XmlRpcValue& config);
+  bool readParameters() override;
 
   /*!
    * Initialization.
    */
-  bool initialize();
+  bool initialize() override;
 
   /*!
    * Generates the visualization.
    * @param map the grid map to visualize.
    * @return true if successful.
    */
-  bool visualize(const grid_map::GridMap& map);
+  bool visualize(const grid_map::GridMap & map) override;
 
- private:
-
+private:
   //! Marker to be published.
-  visualization_msgs::Marker marker_;
+  visualization_msgs::msg::Marker marker_;
 
   //! Types that are transformed to vectors.
   std::vector<std::string> types_;
@@ -77,7 +78,11 @@ class VectorVisualization : public VisualizationBase
   double lineWidth_;
 
   //! Color of the vectors.
-  std_msgs::ColorRGBA color_;
+  std_msgs::msg::ColorRGBA color_;
+
+  //! ROS publisher.
+  rclcpp::Publisher<visualization_msgs::msg::Marker>::SharedPtr publisher_;
 };
 
-} /* namespace */
+}  // namespace grid_map_visualization
+#endif  // GRID_MAP_VISUALIZATION__VISUALIZATIONS__VECTORVISUALIZATION_HPP_
