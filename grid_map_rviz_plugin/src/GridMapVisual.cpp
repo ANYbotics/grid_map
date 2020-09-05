@@ -45,7 +45,7 @@ GridMapVisual::~GridMapVisual()
   // Destroy the ManualObject.
   sceneManager_->destroyManualObject(manualObject_);
   material_->unload();
-  Ogre::MaterialManager::getSingleton().remove(material_->getName());
+  Ogre::MaterialManager::getSingleton().remove(material_->getName(), "rviz_rendering");
 
   // Destroy the frame node.
   sceneManager_->destroySceneNode(frameNode_);
