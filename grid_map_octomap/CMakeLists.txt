@@ -93,22 +93,18 @@ install(
 
 if(CATKIN_ENABLE_TESTING)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
-  find_package(catkin REQUIRED
-    COMPONENTS
-      grid_map_core
-  )
 
   # Add gtest based cpp test target and link libraries
   catkin_add_gtest(${PROJECT_NAME}-test
     test/test_grid_map_octomap.cpp
     test/OctomapConverterTest.cpp
   )
-  target_include_directories(${PROJECT_NAME}-test
-    PRIVATE
-      include
-    PUBLIC SYSTEM
-      ${catkin_INCLUDE_DIRS}
-      ${OCTOMAP_INCLUDE_DIRS}
+  target_include_directories(${PROJECT_NAME}-test PRIVATE
+    include
+  )
+  target_include_directories(${PROJECT_NAME}-test SYSTEM PUBLIC
+    ${catkin_INCLUDE_DIRS}
+    ${OCTOMAP_INCLUDE_DIRS}
   )
   target_link_libraries(${PROJECT_NAME}-test
     ${PROJECT_NAME}

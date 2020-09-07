@@ -123,17 +123,15 @@ install(
 #############
 
 if (CATKIN_ENABLE_TESTING)
-  find_package(catkin REQUIRED)
-
   catkin_add_gtest(${PROJECT_NAME}-test
     test/test_grid_map_filters.cpp
   )
-  target_include_directories(${PROJECT_NAME}-test
-    PRIVATE
-      include
-    PUBLIC SYSTEM
-      ${catkin_INCLUDE_DIRS}
-      ${TBB_INCLUDE_DIRS}
+  target_include_directories(${PROJECT_NAME}-test PRIVATE
+    include
+  )
+  target_include_directories(${PROJECT_NAME}-test SYSTEM PUBLIC
+    ${catkin_INCLUDE_DIRS}
+    ${TBB_INCLUDE_DIRS}
   )
   target_link_libraries(${PROJECT_NAME}-test
     ${PROJECT_NAME}

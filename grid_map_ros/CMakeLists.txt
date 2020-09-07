@@ -104,32 +104,18 @@ install(
 
 if(CATKIN_ENABLE_TESTING)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
-  find_package(catkin REQUIRED COMPONENTS
-    roscpp
-    grid_map_core
-    grid_map_msgs
-    grid_map_cv
-    sensor_msgs
-    nav_msgs
-    std_msgs
-    geometry_msgs
-    cv_bridge
-    rosbag
-    tf
-    visualization_msgs
-  )
 
   ## Add gtest based cpp test target and link libraries
   catkin_add_gtest(${PROJECT_NAME}-test
     test/test_grid_map_ros.cpp
     test/GridMapRosTest.cpp
   )
-  target_include_directories(${PROJECT_NAME}-test
-    PRIVATE
-      include
-    PUBLIC SYSTEM
-      ${catkin_INCLUDE_DIRS}
-      ${EIGEN3_INCLUDE_DIR}
+  target_include_directories(${PROJECT_NAME}-test PRIVATE
+    include
+  )
+  target_include_directories(${PROJECT_NAME}-test SYSTEM PUBLIC
+    ${catkin_INCLUDE_DIRS}
+    ${EIGEN3_INCLUDE_DIR}
   )
   target_link_libraries(${PROJECT_NAME}-test
     ${PROJECT_NAME}

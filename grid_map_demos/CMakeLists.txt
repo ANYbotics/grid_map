@@ -60,67 +60,55 @@ include_directories(
 )
 
 ## Declare a cpp executable
-add_executable(
-  simple_demo
+add_executable(simple_demo
   src/simple_demo_node.cpp
 )
 
-add_executable(
-  tutorial_demo
+add_executable(tutorial_demo
   src/tutorial_demo_node.cpp
 )
 
-add_executable(
-  iterators_demo
+add_executable(iterators_demo
   src/iterators_demo_node.cpp
   src/IteratorsDemo.cpp
 )
 
-add_executable(
-  image_to_gridmap_demo
+add_executable(image_to_gridmap_demo
   src/image_to_gridmap_demo_node.cpp
   src/ImageToGridmapDemo.cpp
 )
 
-add_executable(
-  octomap_to_gridmap_demo
+add_executable(octomap_to_gridmap_demo
   src/octomap_to_gridmap_demo_node.cpp
   src/OctomapToGridmapDemo.cpp
 )
 
-add_executable(
-  move_demo
+add_executable(move_demo
   src/move_demo_node.cpp
 )
 
-add_executable(
-  iterator_benchmark
+add_executable(iterator_benchmark
   src/iterator_benchmark.cpp
 )
 
-add_executable(
-  opencv_demo
+add_executable(opencv_demo
   src/opencv_demo_node.cpp
 )
 
-add_executable(
-  resolution_change_demo
+add_executable(resolution_change_demo
   src/resolution_change_demo_node.cpp
 )
 
-add_executable(
-  filters_demo
+add_executable(filters_demo
   src/filters_demo_node.cpp
   src/FiltersDemo.cpp
 )
 
-add_executable(
-  normal_filter_comparison_demo
+add_executable(normal_filter_comparison_demo
   src/normal_filter_comparison_node.cpp
 )
 
-add_executable(
-  interpolation_demo
+add_executable(interpolation_demo
   src/interpolation_demo_node.cpp
   src/InterpolationDemo.cpp
 )
@@ -227,37 +215,32 @@ install(
 ##   Test   ##
 ##############
 if(CATKIN_ENABLE_TESTING)
-  find_package(catkin REQUIRED
-    COMPONENTS
-      roscpp
-      grid_map_core
-      grid_map_ros
-      grid_map_cv
-      grid_map_filters
-      grid_map_loader
-      grid_map_msgs
-      grid_map_octomap
-      grid_map_rviz_plugin
-      grid_map_visualization
-      geometry_msgs
-      sensor_msgs
-      cv_bridge
-      octomap_msgs
-      filters
-  )
-
-  catkin_add_gtest(test_${PROJECT_NAME}
+  catkin_add_gtest(${PROJECT_NAME}-test
     test/empty_test.cpp
   )
-  target_include_directories(test_${PROJECT_NAME}
-    PRIVATE
-      include
-    SYSTEM PUBLIC
-      ${catkin_INCLUDE_DIRS}
+  add_dependencies(${PROJECT_NAME}-test
+    filters_demo
+    image_to_gridmap_demo
+    interpolation_demo
+    iterator_benchmark
+    iterators_demo
+    move_demo
+    normal_filter_comparison_demo
+    octomap_to_gridmap_demo
+    opencv_demo
+    resolution_change_demo
+    simple_demo
+    tutorial_demo
   )
-  target_link_libraries(test_${PROJECT_NAME}
-    ${catkin_LIBRARIES}
+  target_include_directories(${PROJECT_NAME}-test PRIVATE
+    include
+  )
+  target_include_directories(${PROJECT_NAME}-test SYSTEM PUBLIC
+    ${catkin_INCLUDE_DIRS}
+  )
+  target_link_libraries(${PROJECT_NAME}-test
     gtest_main
+    ${catkin_LIBRARIES}
   )
 
   ###################
@@ -267,7 +250,7 @@ if(CATKIN_ENABLE_TESTING)
   if(cmake_code_coverage_FOUND)
     add_gtest_coverage(
       TEST_BUILD_TARGETS
-        test_${PROJECT_NAME}
+        ${PROJECT_NAME}-test
     )
   endif()
 endif()

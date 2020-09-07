@@ -43,8 +43,7 @@ include_directories(
 )
 
 ## Declare a cpp executable
-add_executable(
-  ${PROJECT_NAME}
+add_executable(${PROJECT_NAME}
   src/grid_map_loader_node.cpp
   src/GridMapLoader.cpp
 )
@@ -72,17 +71,18 @@ install(
 #############
 
 if (CATKIN_ENABLE_TESTING)
-  find_package(catkin REQUIRED)
-
   catkin_add_gtest(${PROJECT_NAME}-test
     test/test_grid_map_loader.cpp
   )
-  target_include_directories(${PROJECT_NAME}-test
-    PRIVATE
-      include
-    PUBLIC SYSTEM
-      ${catkin_INCLUDE_DIRS}
-      ${EIGEN3_INCLUDE_DIRS}
+  add_dependencies(${PROJECT_NAME}-test
+    ${PROJECT_NAME}
+  )
+  target_include_directories(${PROJECT_NAME}-test PRIVATE
+    include
+  )
+  target_include_directories(${PROJECT_NAME}-test SYSTEM PUBLIC
+    ${catkin_INCLUDE_DIRS}
+    ${EIGEN3_INCLUDE_DIRS}
   )
 
   ###################
