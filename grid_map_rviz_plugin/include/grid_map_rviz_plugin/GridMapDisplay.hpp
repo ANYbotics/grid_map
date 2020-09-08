@@ -6,44 +6,58 @@
  *  Institute: ETH Zurich, ANYbotics
  */
 
-#pragma once
+#ifndef GRID_MAP_RVIZ_PLUGIN__GRIDMAPDISPLAY_HPP_
+#define GRID_MAP_RVIZ_PLUGIN__GRIDMAPDISPLAY_HPP_
 
-#ifndef Q_MOC_RUN
 #include <grid_map_ros/grid_map_ros.hpp>
-#include <grid_map_msgs/GridMap.h>
-#include <boost/circular_buffer.hpp>
-#include "grid_map_rviz_plugin/modified/message_filter_display.h"
-#endif
+#include <grid_map_msgs/msg/grid_map.hpp>
 
-namespace Ogre {
+#include <rviz_common/message_filter_display.hpp>
+#include <rviz_common/properties/float_property.hpp>
+#include <rviz_common/properties/bool_property.hpp>
+#include <rviz_common/properties/int_property.hpp>
+#include <rviz_common/properties/color_property.hpp>
+#include <rviz_common/properties/enum_property.hpp>
+#include <rviz_common/properties/editable_enum_property.hpp>
+
+#include <boost/circular_buffer.hpp>
+
+namespace Ogre
+{
 class SceneNode;
 }
 
-namespace rviz {
+namespace rviz_common
+{
+namespace properties
+{
 class BoolProperty;
 class ColorProperty;
 class FloatProperty;
 class IntProperty;
 class EnumProperty;
 class EditableEnumProperty;
-}
+}  // namespace properties
+}  // namespace rviz_common
 
-namespace grid_map_rviz_plugin {
+namespace grid_map_rviz_plugin
+{
 
 class GridMapVisual;
-class GridMapDisplay : public MessageFilterDisplayMod<grid_map_msgs::GridMap>
+class GridMapDisplay : public rviz_common::MessageFilterDisplay<grid_map_msgs::msg::GridMap>
 {
-Q_OBJECT
- public:
+  Q_OBJECT
+
+public:
   GridMapDisplay();
   virtual ~GridMapDisplay();
 
- protected:
-  virtual void onInitialize();
+protected:
+  void onInitialize() override;
 
-  virtual void reset();
+  void reset() override;
 
- private Q_SLOTS:
+private Q_SLOTS:
   void updateHistoryLength();
   void updateHeightMode();
   void updateColorMode();
@@ -51,29 +65,30 @@ Q_OBJECT
   void updateAutocomputeIntensityBounds();
   void updateVisualization();
 
- private:
+private:
   // Callback for incoming ROS messages
-  void processMessage(const grid_map_msgs::GridMap::ConstPtr& msg);
+  void processMessage(grid_map_msgs::msg::GridMap::ConstSharedPtr msg) override;
 
   // Circular buffer for visuals
-  boost::circular_buffer<boost::shared_ptr<GridMapVisual> > visuals_;
+  boost::circular_buffer<boost::shared_ptr<GridMapVisual>> visuals_;
 
   // Property variables
-  rviz::FloatProperty* alphaProperty_;
-  rviz::IntProperty* historyLengthProperty_;
-  rviz::BoolProperty* showGridLinesProperty_;
-  rviz::EnumProperty* heightModeProperty_;
-  rviz::EditableEnumProperty* heightTransformerProperty_;
-  rviz::EnumProperty* colorModeProperty_;
-  rviz::EditableEnumProperty* colorTransformerProperty_;
-  rviz::ColorProperty* colorProperty_;
-  rviz::BoolProperty* useRainbowProperty_;
-  rviz::BoolProperty* invertRainbowProperty_;
-  rviz::ColorProperty* minColorProperty_;
-  rviz::ColorProperty* maxColorProperty_;
-  rviz::BoolProperty* autocomputeIntensityBoundsProperty_;
-  rviz::FloatProperty* minIntensityProperty_;
-  rviz::FloatProperty* maxIntensityProperty_;
+  rviz_common::properties::FloatProperty * alphaProperty_;
+  rviz_common::properties::IntProperty * historyLengthProperty_;
+  rviz_common::properties::BoolProperty * showGridLinesProperty_;
+  rviz_common::properties::EnumProperty * heightModeProperty_;
+  rviz_common::properties::EditableEnumProperty * heightTransformerProperty_;
+  rviz_common::properties::EnumProperty * colorModeProperty_;
+  rviz_common::properties::EditableEnumProperty * colorTransformerProperty_;
+  rviz_common::properties::ColorProperty * colorProperty_;
+  rviz_common::properties::BoolProperty * useRainbowProperty_;
+  rviz_common::properties::BoolProperty * invertRainbowProperty_;
+  rviz_common::properties::ColorProperty * minColorProperty_;
+  rviz_common::properties::ColorProperty * maxColorProperty_;
+  rviz_common::properties::BoolProperty * autocomputeIntensityBoundsProperty_;
+  rviz_common::properties::FloatProperty * minIntensityProperty_;
+  rviz_common::properties::FloatProperty * maxIntensityProperty_;
 };
 
-}  // end namespace grid_map_rviz_plugin
+}  // namespace grid_map_rviz_plugin
+#endif  // GRID_MAP_RVIZ_PLUGIN__GRIDMAPDISPLAY_HPP_

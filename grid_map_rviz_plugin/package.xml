@@ -1,7 +1,8 @@
 <?xml version="1.0"?>
-<package>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
   <name>grid_map_rviz_plugin</name>
-  <version>1.6.2</version>
+  <version>2.0.0</version>
   <description>RViz plugin for displaying grid map messages.</description>
   <maintainer email="mwulf@anybotics.com">Maximilian Wulf</maintainer>
   <maintainer email="ynava@anybotics.com">Yoshua Nava</maintainer>
@@ -9,18 +10,27 @@
   <author email="philipp.kruesi@mavt.ethz.ch">Philipp Krüsi</author>
   <author>Péter Fankhauser</author>
 
-  <buildtool_depend>catkin</buildtool_depend>
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <build_depend>grid_map_cmake_helpers</build_depend>
   <build_depend>qtbase5-dev</build_depend>
-  <build_depend>rviz</build_depend>
-  <build_depend>grid_map_ros</build_depend>
-  <build_depend>grid_map_msgs</build_depend>
-  <run_depend>libqt5-core</run_depend>
-  <run_depend>libqt5-gui</run_depend>
-  <run_depend>libqt5-widgets</run_depend>
-  <run_depend>rviz</run_depend>
-  <run_depend>grid_map_ros</run_depend>
-  <run_depend>grid_map_msgs</run_depend>
+
+  <depend>grid_map_msgs</depend>
+  <depend>grid_map_ros</depend>
+  <depend>rclcpp</depend>
+  <depend>rviz_common</depend>
+  <depend>rviz_ogre_vendor</depend>
+  <depend>rviz_rendering</depend>
+  
+  <exec_depend>libqt5-core</exec_depend>
+  <exec_depend>libqt5-gui</exec_depend>
+  <exec_depend>libqt5-widgets</exec_depend>
+
+  <test_depend>ament_lint_auto</test_depend>
+  <test_depend>ament_lint_common</test_depend>
+
   <export>
-      <rviz plugin="${prefix}/plugin_description.xml"/>
+    <build_type>ament_cmake</build_type>
+    <rviz plugin="${prefix}/plugin_description.xml"/>
   </export>
 </package>
