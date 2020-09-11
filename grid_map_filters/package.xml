@@ -11,10 +11,11 @@
   <author email="pfankhauser@anybotics.com">Péter Fankhauser</author>
   <author email="martiwer@student.ethz.ch">Martin Wermelinger</author>
   <buildtool_depend>catkin</buildtool_depend>
+  <depend>boost</depend>
+  <depend>filters</depend>
   <depend>grid_map_core</depend>
   <depend>grid_map_ros</depend>
   <depend>grid_map_msgs</depend>
-  <depend>filters</depend>
   <depend>tbb</depend>
 <!--   <test_depend>cmake_code_coverage</test_depend> -->
   <test_depend>gtest</test_depend>

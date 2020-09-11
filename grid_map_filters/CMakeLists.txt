@@ -6,7 +6,11 @@ project(grid_map_filters)
 
 # Better with serial algorithms.
 set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  -ffast-math")
+# We want performance (fast-math) but also need a representation for NaN values to represent missing values. 
+# Therefore, we disable the finite-math-only flag that was set by fast-math.  
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ffast-math -fno-finite-math-only")
+
+find_package(Boost REQUIRED)
 
 # Other possible options.
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native -mtune=native -ffast-math")
@@ -54,6 +58,7 @@ catkin_package(
     grid_map_msgs
     filters
   DEPENDS
+    Boost
 )
 
 ###########
@@ -66,6 +71,7 @@ include_directories(
   SYSTEM
     ${catkin_INCLUDE_DIRS}
     ${TBB_INCLUDE_DIRS}
+    ${Boost_INCLUDE_DIRS}
 )
 
 ## Declare a cpp library
@@ -73,6 +79,7 @@ add_library(${PROJECT_NAME}
   src/ThresholdFilter.cpp
   src/MinInRadiusFilter.cpp
   src/MeanInRadiusFilter.cpp
+  src/MedianFillFilter.cpp
   src/NormalVectorsFilter.cpp
   src/CurvatureFilter.cpp
   src/NormalColorMapFilter.cpp
@@ -91,6 +98,7 @@ add_library(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME}
   ${catkin_LIBRARIES}
   ${TBB_LIBRARIES}
+  ${Boost_LIBRARIES}
 )
 
 #############
@@ -125,16 +133,18 @@ install(
 if (CATKIN_ENABLE_TESTING)
   catkin_add_gtest(${PROJECT_NAME}-test
     test/test_grid_map_filters.cpp
+    test/median_fill_filter_test.cpp
   )
   target_include_directories(${PROJECT_NAME}-test PRIVATE
     include
   )
   target_include_directories(${PROJECT_NAME}-test SYSTEM PUBLIC
     ${catkin_INCLUDE_DIRS}
-    ${TBB_INCLUDE_DIRS}
+    ${Boost_INCLUDE_DIRS}
   )
   target_link_libraries(${PROJECT_NAME}-test
     ${PROJECT_NAME}
+    ${Boost_LIBRARIES}
   )
 
   ###################

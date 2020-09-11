@@ -22,7 +22,7 @@ The source code is released under a [BSD 3-Clause license](LICENSE).
 **Author: Péter Fankhauser<br />
 Affiliation: [ANYbotics](https://www.anybotics.com/)<br />
 Maintainer: Péter Fankhauser, pfankhauser@anybotics.com<br />**
-With contributions by: Tanja Baumann, Jeff Delmerico, Remo Diethelm, Perry Franklin, Dominic Jud, Ralph Kaestner, Philipp Krüsi, Alex Millane, Daniel Stonier, Elena Stumm, Martin Wermelinger, Christos Zalidis, Edo Jelavic, Ruben Grandia, Simone Arreghini
+With contributions by: Tanja Baumann, Jeff Delmerico, Remo Diethelm, Perry Franklin, Dominic Jud, Ralph Kaestner, Philipp Krüsi, Alex Millane, Daniel Stonier, Elena Stumm, Martin Wermelinger, Christos Zalidis, Edo Jelavic, Ruben Grandia, Simone Arreghini, Magnus Gärtner
 
 This projected was initially developed at ETH Zurich (Autonomous Systems Lab & Robotic Systems Lab).
 
@@ -391,7 +391,20 @@ Several basic filters are provided in the *grid_map_filters* package:
           input_layer: input
           output_layer: output
           radius: 0.06 # in m.
+* **`gridMapFilters/MedianFillFilter`**
 
+    Compute for each _NaN_ cell of a layer the median (of finites) inside a patch with radius. 
+    Optionally, apply median calculations for values that are already finite, the patch radius for these points is given by existing_value_radius. 
+
+        name: median
+        type: gridMapFilters/MedianFillFilter
+        params:
+          input_layer: input
+          output_layer: output
+          fill_hole_radius: 0.11 # in m. 
+          filter_existing_values: false # Default is false. If enabled it also does a median computation for existing values. 
+          existing_value_radius: 0.2 # in m. Note that this option only has an effect if filter_existing_values is set true. 
+    
 * **`gridMapFilters/NormalVectorsFilter`**
 
     Compute the normal vectors of a layer in a map.

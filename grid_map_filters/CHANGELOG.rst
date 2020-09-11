@@ -2,6 +2,12 @@
 Changelog for package grid_map_filters
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.6.3 (2020-09-08)
+------------------
+* Implemented a new filter:
+* - MedianFillFilter
+* Contributors: Magnus Gärtner
+
 1.6.2 (2019-10-14)
 ------------------
 * Update MinInRadiusFilter.cpp
