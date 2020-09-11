@@ -184,7 +184,61 @@ TEST(checkIfPositionWithinMap, EdgeCases)
   Length mapLength(2.0, 3.0);
   Position mapPosition(0.0, 0.0);
 
+  /*
+  *  
+  *  A (is inside)             B (is not inside)
+  *   +-----------------------+
+  *   |                       |
+  *   |                       |
+  *   |              X        |
+  *   |             ^         |
+  *   |             |         |
+  *   |             |         |
+  *   |       <-----+         |
+  *   |      Y                |
+  *   |                       |
+  *   |                       |
+  *   |                       |
+  *   +-----------------------+
+  *  C (is not inside)         D (is not inside)
+  *
+  * Resulting coordinates are:
+  *  A: (1.0, 1.5)
+  *  B: (1.0, -1.5)
+  *  C: (-1.0, 1.5)
+  *  D: (-1.0, -1.5)
+  *
+  */
+
+  // Noise around A.
+  EXPECT_TRUE(checkIfPositionWithinMap(Position(1.0, 1.5), mapLength, mapPosition));
+  EXPECT_FALSE(checkIfPositionWithinMap(Position(1.0 + DBL_EPSILON, 1.5), mapLength, mapPosition));
+  EXPECT_TRUE(checkIfPositionWithinMap(Position(1.0 - DBL_EPSILON, 1.5), mapLength, mapPosition));
+  EXPECT_FALSE(checkIfPositionWithinMap(Position(1.0, 1.5 + DBL_EPSILON), mapLength, mapPosition));
+  EXPECT_TRUE(checkIfPositionWithinMap(Position(1.0, 1.5 - DBL_EPSILON), mapLength, mapPosition));
+
+  // Noise around B.
   EXPECT_FALSE(checkIfPositionWithinMap(Position(1.0, -1.5), mapLength, mapPosition));
+  EXPECT_FALSE(checkIfPositionWithinMap(Position(1.0 + DBL_EPSILON, - 1.5), mapLength, mapPosition));
+  EXPECT_FALSE(checkIfPositionWithinMap(Position(1.0 - DBL_EPSILON, - 1.5), mapLength, mapPosition));
+  EXPECT_FALSE(checkIfPositionWithinMap(Position(1.0, - 1.5 + DBL_EPSILON), mapLength, mapPosition));
+  EXPECT_FALSE(checkIfPositionWithinMap(Position(1.0, - 1.5 - DBL_EPSILON), mapLength, mapPosition));
+  
+  // Noise around C.
+  EXPECT_FALSE(checkIfPositionWithinMap(Position(-1.0, 1.5), mapLength, mapPosition));
+  EXPECT_TRUE(checkIfPositionWithinMap(Position(-1.0 + DBL_EPSILON, 1.5), mapLength, mapPosition));
+  EXPECT_FALSE(checkIfPositionWithinMap(Position(-1.0 - DBL_EPSILON, 1.5), mapLength, mapPosition));
+  EXPECT_FALSE(checkIfPositionWithinMap(Position(-1.0, 1.5 + DBL_EPSILON), mapLength, mapPosition));
+  EXPECT_FALSE(checkIfPositionWithinMap(Position(-1.0, 1.5 - DBL_EPSILON), mapLength, mapPosition));
+
+  // Noise around D.
+  EXPECT_FALSE(checkIfPositionWithinMap(Position(-1.0, -1.5), mapLength, mapPosition));
+  EXPECT_FALSE(checkIfPositionWithinMap(Position(-1.0 + DBL_EPSILON, -1.5), mapLength, mapPosition));
+  EXPECT_FALSE(checkIfPositionWithinMap(Position(-1.0 - DBL_EPSILON, -1.5), mapLength, mapPosition));
+  EXPECT_FALSE(checkIfPositionWithinMap(Position(-1.0, -1.5 + DBL_EPSILON), mapLength, mapPosition));
+  EXPECT_FALSE(checkIfPositionWithinMap(Position(-1.0, -1.5 - DBL_EPSILON), mapLength, mapPosition));
+
+  // Extra tests.
   EXPECT_FALSE(checkIfPositionWithinMap(Position(-1.0, 1.5), mapLength, mapPosition));
   EXPECT_FALSE(checkIfPositionWithinMap(Position(1.0 + DBL_EPSILON, 1.0), mapLength, mapPosition));
   EXPECT_TRUE(checkIfPositionWithinMap(Position((2.0 + DBL_EPSILON) / 2.0, 1.0), mapLength, mapPosition));

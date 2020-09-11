@@ -18,4 +18,6 @@
   <depend>visualization_msgs</depend>
   <depend>sensor_msgs</depend>
   <depend>nav_msgs</depend>
+<!--   <test_depend>cmake_code_coverage</test_depend> -->
+  <test_depend>gtest</test_depend>
 </package>

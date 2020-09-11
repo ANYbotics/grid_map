@@ -1,7 +1,16 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.5.1)
 project(grid_map_filters)
 
-set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
+# Better with parallelized algorithms.
+#set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}  -ffast-math")
+
+# Better with serial algorithms.
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  -ffast-math")
+
+# Other possible options.
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native -mtune=native -ffast-math")
+#set(TARGET_ARCHITECTURE "kaby-lake")
 
 ## Find catkin macros and libraries
 find_package(catkin REQUIRED COMPONENTS
@@ -12,7 +21,17 @@ find_package(catkin REQUIRED COMPONENTS
 )
 
 ## System dependencies are found with CMake's conventions
-#find_package(Eigen3 REQUIRED)
+find_package(PkgConfig REQUIRED)
+
+pkg_check_modules(TBB "tbb")
+if (TBB_FOUND)
+  add_definitions(
+    ${TBB_CFLAGS}
+    ${TBB_CFLAGS_OTHER}
+  )
+else()
+  message([FATAL_ERROR] "tbb module not found")
+endif ()
 
 ###################################
 ## catkin specific configuration ##
@@ -26,6 +45,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
   INCLUDE_DIRS
     include
+    ${TBB_INCLUDE_DIRS}
   LIBRARIES
     ${PROJECT_NAME}
   CATKIN_DEPENDS
@@ -34,7 +54,6 @@ catkin_package(
     grid_map_msgs
     filters
   DEPENDS
-    #Eigen3
 )
 
 ###########
@@ -44,8 +63,9 @@ catkin_package(
 ## Specify additional locations of header files
 include_directories(
   include
-  ${catkin_INCLUDE_DIRS}
-  ${EIGEN3_INCLUDE_DIR}
+  SYSTEM
+    ${catkin_INCLUDE_DIRS}
+    ${TBB_INCLUDE_DIRS}
 )
 
 ## Declare a cpp library
@@ -70,6 +90,7 @@ add_library(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME}
   ${catkin_LIBRARIES}
+  ${TBB_LIBRARIES}
 )
 
 #############
@@ -96,3 +117,34 @@ install(
   FILES filter_plugins.xml
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
+
+#############
+## Testing ##
+#############
+
+if (CATKIN_ENABLE_TESTING)
+  catkin_add_gtest(${PROJECT_NAME}-test
+    test/test_grid_map_filters.cpp
+  )
+  target_include_directories(${PROJECT_NAME}-test PRIVATE
+    include
+  )
+  target_include_directories(${PROJECT_NAME}-test SYSTEM PUBLIC
+    ${catkin_INCLUDE_DIRS}
+    ${TBB_INCLUDE_DIRS}
+  )
+  target_link_libraries(${PROJECT_NAME}-test
+    ${PROJECT_NAME}
+  )
+
+  ###################
+  ## Code_coverage ##
+  ###################
+  find_package(cmake_code_coverage QUIET)
+  if(cmake_code_coverage_FOUND)
+    add_gtest_coverage(
+      TEST_BUILD_TARGETS
+        ${PROJECT_NAME}-test
+    )
+  endif()
+endif()

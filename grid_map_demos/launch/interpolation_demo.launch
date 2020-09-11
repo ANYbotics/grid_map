@@ -1,0 +1,15 @@
+<launch>
+
+  <arg name="launch_rviz" default="true" />
+  <!-- Launch the grid map iterators demo node -->
+  <node pkg="grid_map_demos" type="interpolation_demo"
+    name="grid_map_interpolation_demo" output="screen" launch-prefix="">
+    <rosparam command="load"
+      file="$(find grid_map_demos)/config/interpolation_demo.yaml" />
+  </node>
+
+  <!-- Launch RViz with the demo configuration -->
+  <node name="rviz" pkg="rviz" type="rviz"
+    args="-d $(find grid_map_demos)/rviz/interpolation_demo.rviz" if ="$(arg launch_rviz)"/>
+
+</launch>

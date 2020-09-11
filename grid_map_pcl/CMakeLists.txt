@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.5.1)
 project(grid_map_pcl)
 
 set(CMAKE_CXX_STANDARD 14)
@@ -117,21 +117,38 @@ install(
 #############
 
 if(CATKIN_ENABLE_TESTING)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
-## Add gtest based cpp test target and link libraries
-catkin_add_gtest(${PROJECT_NAME}-test
-  test/test_grid_map_pcl.cpp
-  test/GridMapPclLoaderTest.cpp
-  test/HelpersTest.cpp
-  test/PointcloudProcessorTest.cpp
-  test/test_helpers.cpp
-  test/PointcloudCreator.cpp
-  )
-endif()
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
 
-if(TARGET ${PROJECT_NAME}-test)
+  ## Add gtest based cpp test target and link libraries
+  catkin_add_gtest(${PROJECT_NAME}-test
+    test/test_grid_map_pcl.cpp
+    test/GridMapPclLoaderTest.cpp
+    test/HelpersTest.cpp
+    test/PointcloudProcessorTest.cpp
+    test/test_helpers.cpp
+    test/PointcloudCreator.cpp
+  )
+  target_include_directories(${PROJECT_NAME}-test PRIVATE
+    include
+  )
+  target_include_directories(${PROJECT_NAME}-test SYSTEM PUBLIC
+    ${catkin_INCLUDE_DIRS}
+    ${EIGEN3_INCLUDE_DIR}
+    ${OpenMP_CXX_INCLUDE_DIRS}
+  )
   target_link_libraries(${PROJECT_NAME}-test 
     ${PROJECT_NAME}
-    ${catkin_LIBRARIES})
-endif()
+    ${catkin_LIBRARIES}
+  )
 
+  ###################
+  ## Code_coverage ##
+  ###################
+  find_package(cmake_code_coverage QUIET)
+  if(cmake_code_coverage_FOUND)
+    add_gtest_coverage(
+      TEST_BUILD_TARGETS
+        ${PROJECT_NAME}-test
+    )
+  endif()
+endif()
