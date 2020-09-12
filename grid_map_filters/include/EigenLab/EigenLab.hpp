@@ -162,6 +162,7 @@ template<typename T>
 struct has_operator_lt_impl
 {
   template<class U>
+  // deepcode ignore CopyPasteError: We will not change third party code yet.
   static auto test(U *)->decltype(std::declval<U>() < std::declval<U>());
   template<typename>
   static auto test(...)->std::false_type;
