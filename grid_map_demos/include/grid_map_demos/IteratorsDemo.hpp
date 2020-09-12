@@ -13,7 +13,8 @@
 #include <grid_map_ros/grid_map_ros.hpp>
 
 // ROS
-#include <ros/ros.h>
+#include <rclcpp/rclcpp.hpp>
+#include <geometry_msgs/msg/polygon_stamped.hpp>
 
 namespace grid_map_demos
 {
@@ -21,14 +22,13 @@ namespace grid_map_demos
 /*!
  * Visualizes a grid map by publishing different topics that can be viewed in Rviz.
  */
-class IteratorsDemo
+class IteratorsDemo : public rclcpp::Node
 {
 public:
   /*!
    * Constructor.
-   * @param nodeHandle the ROS node handle.
    */
-  IteratorsDemo(ros::NodeHandle & nodeHandle);
+  IteratorsDemo();
 
   /*!
    * Destructor.
@@ -53,14 +53,11 @@ public:
   void publish();
 
 private:
-  //! ROS nodehandle.
-  ros::NodeHandle & nodeHandle_;
-
   //! Grid map publisher.
-  ros::Publisher gridMapPublisher_;
+  rclcpp::Publisher<grid_map_msgs::msg::GridMap>::SharedPtr gridMapPublisher_;
 
   //! Polygon publisher.
-  ros::Publisher polygonPublisher_;
+  rclcpp::Publisher<geometry_msgs::msg::PolygonStamped>::SharedPtr polygonPublisher_;
 
   //! Grid map data.
   grid_map::GridMap map_;

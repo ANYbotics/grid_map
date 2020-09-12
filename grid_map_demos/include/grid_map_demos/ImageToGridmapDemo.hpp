@@ -11,8 +11,8 @@
 #define GRID_MAP_DEMOS__IMAGETOGRIDMAPDEMO_HPP_
 
 // ROS
-#include <ros/ros.h>
-#include <sensor_msgs/Image.h>
+#include <rclcpp/rclcpp.hpp>
+#include <sensor_msgs/msg/image.hpp>
 
 #include <grid_map_ros/grid_map_ros.hpp>
 
@@ -25,14 +25,14 @@ namespace grid_map_demos
  * Loads an image and saves it as layer 'elevation' of a grid map.
  * The grid map is published and can be viewed in Rviz.
  */
-class ImageToGridmapDemo
+class ImageToGridmapDemo : public rclcpp::Node
 {
 public:
   /*!
    * Constructor.
    * @param nodeHandle the ROS node handle.
    */
-  ImageToGridmapDemo(ros::NodeHandle & nodeHandle);
+  ImageToGridmapDemo();
 
   /*!
    * Destructor.
@@ -45,20 +45,17 @@ public:
   */
   bool readParameters();
 
-  void imageCallback(const sensor_msgs::Image & msg);
+  void imageCallback(const sensor_msgs::msg::Image::SharedPtr msg);
 
 private:
-  //! ROS nodehandle.
-  ros::NodeHandle & nodeHandle_;
-
   //! Grid map publisher.
-  ros::Publisher gridMapPublisher_;
+  rclcpp::Publisher<grid_map_msgs::msg::GridMap>::SharedPtr gridMapPublisher_;
 
   //! Grid map data.
   grid_map::GridMap map_;
 
   //! Image subscriber
-  ros::Subscriber imageSubscriber_;
+  rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr imageSubscriber_;
 
   //! Name of the grid map topic.
   std::string imageTopic_;
