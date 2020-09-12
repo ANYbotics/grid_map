@@ -7,6 +7,7 @@
  */
 
 #include <gtest/gtest.h>
+#include <rcutils/logging.h>
 
 #include <cstdlib>
 
@@ -23,8 +24,8 @@ namespace grid_map_pcl_test
 
 TEST(HelpersTest, MeanPositionTest)
 {
-  grid_map_pcl_test::setVerbosityLevel(ros::console::levels::Warn);
-  const auto seed = rand();
+  // rcutils_logging_set_logger_level(get_logger().get_name(), RCUTILS_LOG_SEVERITY_WARN);
+  const auto seed = std::rand();
   grid_map_pcl_test::rndGenerator.seed(seed);
 
   const unsigned int numTests = 10;

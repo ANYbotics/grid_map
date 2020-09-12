@@ -11,8 +11,7 @@
 
 #include <Eigen/Core>
 #include <pcl/common/common.h>
-#include <ros/package.h>
-#include <ros/console.h>
+#include <ament_index_cpp/get_package_share_directory.hpp>
 #include <string>
 #include <vector>
 #include <random>
@@ -30,7 +29,7 @@ namespace grid_map_pcl_test
 using Point = pcl::PointXYZ;
 using Pointcloud = pcl::PointCloud<Point>;
 
-static const std::string layerName = "elevation";
+static const std::string layerName = "elevation";  // NOLINT
 static const double savePointclouds = true;
 extern std::mt19937 rndGenerator;
 
@@ -65,7 +64,6 @@ Pointcloud::Ptr createStepTerrain(
   double zLow, double stdDevZ, std::mt19937 * generator,
   double * center);
 
-void setVerbosityLevel(ros::console::levels::Level level);
 std::string getTestPcdFilePath();
 
 }  // namespace grid_map_pcl_test

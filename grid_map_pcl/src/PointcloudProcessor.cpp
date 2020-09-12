@@ -20,7 +20,7 @@
 #include <pcl/point_types.h>
 #include <pcl/segmentation/extract_clusters.h>
 
-#include <ros/console.h>
+#include <rclcpp/rclcpp.hpp>
 
 #include <string>
 #include <vector>
@@ -31,9 +31,10 @@ namespace grid_map
 namespace grid_map_pcl
 {
 
-PointcloudProcessor::PointcloudProcessor()
+PointcloudProcessor::PointcloudProcessor(const rclcpp::Logger & node_logger)
+: node_logger_(node_logger)
 {
-  params_ = std::make_unique<grid_map_pcl::PclLoaderParameters>();
+  params_ = std::make_unique<grid_map_pcl::PclLoaderParameters>(node_logger_);
 }
 
 void PointcloudProcessor::loadParameters(const std::string & filename)
@@ -133,7 +134,8 @@ Pointcloud::Ptr PointcloudProcessor::applyRigidBodyTransformation(
     inputCloud,
     grid_map_pcl::getRigidBodyTransform(
       params_->get().cloudTransformation_.translation_,
-      params_->get().cloudTransformation_.rpyIntrinsic_));
+      params_->get().cloudTransformation_.rpyIntrinsic_,
+      node_logger_));
   return transformedCloud;
 }
 

@@ -17,8 +17,7 @@
 #include <omp.h>
 #endif
 
-#include <ros/console.h>
-#include <ros/package.h>
+#include <rclcpp/rclcpp.hpp>
 
 #include "grid_map_core/GridMapMath.hpp"
 #include "grid_map_pcl/GridMapPclLoader.hpp"
@@ -29,9 +28,11 @@ namespace grid_map
 
 constexpr double kRadToDeg = 180.0 / M_PI;
 
-GridMapPclLoader::GridMapPclLoader()
+GridMapPclLoader::GridMapPclLoader(const rclcpp::Logger & node_logger)
+: node_logger_(node_logger),
+  pointcloudProcessor_(node_logger_)
 {
-  params_ = std::make_unique<grid_map_pcl::PclLoaderParameters>();
+  params_ = std::make_unique<grid_map_pcl::PclLoaderParameters>(node_logger_);
 }
 
 GridMapPclLoader::~GridMapPclLoader() = default;
@@ -73,7 +74,7 @@ void GridMapPclLoader::setWorkingCloud(Pointcloud::ConstPtr workingCloud)
 void GridMapPclLoader::preProcessInputCloud()
 {
   // Preprocess: Remove outliers, downsample cloud, transform cloud
-  ROS_INFO_STREAM("Preprocessing of the pointcloud started");
+  RCLCPP_INFO_STREAM(node_logger_, "Preprocessing of the pointcloud started");
 
   if (params_->get().outlierRemoval_.isRemoveOutliers_) {
     auto filteredCloud = pointcloudProcessor_.removeOutliersFromInputCloud(workingCloud_);
@@ -87,7 +88,7 @@ void GridMapPclLoader::preProcessInputCloud()
 
   auto transformedCloud = pointcloudProcessor_.applyRigidBodyTransformation(workingCloud_);
   setWorkingCloud(transformedCloud);
-  ROS_INFO_STREAM("Preprocessing and filtering finished");
+  RCLCPP_INFO_STREAM(node_logger_, "Preprocessing and filtering finished");
 }
 
 void GridMapPclLoader::initializeGridMapGeometryFromInputCloud()
@@ -113,19 +114,22 @@ void GridMapPclLoader::initializeGridMapGeometryFromInputCloud()
     (maxBound.y + minBound.y) / 2.0);
   workingGridMap_.setGeometry(length, resolution, position);
 
-  ROS_INFO_STREAM(
+  RCLCPP_INFO_STREAM(
+    node_logger_,
     "Grid map dimensions: " << workingGridMap_.getLength()(
       0) << " x " << workingGridMap_.getLength()(1));
-  ROS_INFO_STREAM("Grid map resolution: " << workingGridMap_.getResolution());
-  ROS_INFO_STREAM(
+  RCLCPP_INFO_STREAM(
+    node_logger_, "Grid map resolution: " << workingGridMap_.getResolution());
+  RCLCPP_INFO_STREAM(
+    node_logger_,
     "Grid map num cells: " << workingGridMap_.getSize()(0) << " x " <<
       workingGridMap_.getSize()(1));
-  ROS_INFO_STREAM("Initialized map geometry");
+  RCLCPP_INFO_STREAM(node_logger_, "Initialized map geometry");
 }
 
 void GridMapPclLoader::addLayerFromInputCloud(const std::string & layer)
 {
-  ROS_INFO_STREAM("Started adding layer: " << layer);
+  RCLCPP_INFO_STREAM(node_logger_, "Started adding layer: " << layer);
   // Preprocess: allocate memory in the internal data structure
   preprocessGridMapCells();
   workingGridMap_.add(layer);
@@ -133,7 +137,7 @@ void GridMapPclLoader::addLayerFromInputCloud(const std::string & layer)
   unsigned int linearGridMapSize = workingGridMap_.getSize().prod();
 
 #ifndef GRID_MAP_PCL_OPENMP_FOUND
-  ROS_WARN_STREAM("OpemMP not found, defaulting to single threaded implementation");
+  RCLCPP_WARN_STREAM("OpemMP not found, defaulting to single threaded implementation");
 #else
   omp_set_num_threads(params_->get().numThreads_);
 #pragma omp parallel for schedule(dynamic, 10)
@@ -142,7 +146,7 @@ void GridMapPclLoader::addLayerFromInputCloud(const std::string & layer)
   for (unsigned int linearIndex = 0; linearIndex < linearGridMapSize; ++linearIndex) {
     processGridMapCell(linearIndex, &gridMapData);
   }
-  ROS_INFO_STREAM("Finished adding layer: " << layer);
+  RCLCPP_INFO_STREAM(node_logger_, "Finished adding layer: " << layer);
 }
 
 void GridMapPclLoader::processGridMapCell(
@@ -158,7 +162,9 @@ void GridMapPclLoader::processGridMapCell(
   const bool isTooFewPointsInCell = pointsInsideCellBorder->size() <
     params_->get().gridMap_.minCloudPointsPerCell_;
   if (isTooFewPointsInCell) {
-    ROS_WARN_STREAM_THROTTLE(
+    rclcpp::Clock clock;
+    RCLCPP_WARN_STREAM_THROTTLE(
+      node_logger_, clock,
       10.0, "Less than " << params_->get().gridMap_.minCloudPointsPerCell_ << " points in a cell");
     return;
   }
@@ -175,7 +181,9 @@ double GridMapPclLoader::calculateElevationFromPointsInsideGridMapCell(
     pointcloudProcessor_.extractClusterCloudsFromPointcloud(cloud);
   const bool isNoClustersFound = clusterClouds.empty();
   if (isNoClustersFound) {
-    ROS_WARN_STREAM_THROTTLE(10.0, "No clusters found in the grid map cell");
+    rclcpp::Clock clock;
+    RCLCPP_WARN_STREAM_THROTTLE(
+      node_logger_, clock, 10.0, "No clusters found in the grid map cell");
     return std::nan("1");  // this will leave the grid map cell uninitialized
   }
 

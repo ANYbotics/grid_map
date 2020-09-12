@@ -1,56 +1,39 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.5)
 project(grid_map_pcl)
 
-set(CMAKE_CXX_STANDARD 14)
-add_compile_options(-Wall -Wextra -Wpedantic)
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-
-set(SRC_FILES
-  src/GridMapPclConverter.cpp
-  src/GridMapPclLoader.cpp
-  src/helpers.cpp
-  src/PclLoaderParameters.cpp
-  src/PointcloudProcessor.cpp
-)
-
-set(CATKIN_PACKAGE_DEPENDENCIES  
-  grid_map_core
-  grid_map_msgs
-  grid_map_ros
-  pcl_ros
-  roscpp
-)
+## Find ament macros and libraries
+find_package(ament_cmake REQUIRED)
+find_package(grid_map_cmake_helpers REQUIRED)
+find_package(grid_map_core REQUIRED)
+find_package(grid_map_msgs REQUIRED)
+find_package(grid_map_ros REQUIRED)
+find_package(pcl_ros REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(rcutils REQUIRED)
 
 find_package(OpenMP QUIET)
-if (OpenMP_FOUND)
+if(OpenMP_FOUND)
   add_compile_options("${OpenMP_CXX_FLAGS}")
   add_definitions(-DGRID_MAP_PCL_OPENMP_FOUND=${OpenMP_FOUND})
 endif()
 
-## Find catkin macros and libraries
-find_package(catkin REQUIRED 
-  COMPONENTS
-    ${CATKIN_PACKAGE_DEPENDENCIES}
+grid_map_package()
+
+set(SRC_FILES
+  src/GridMapPclLoader.cpp
+  src/PclLoaderParameters.cpp
+  src/PointcloudProcessor.cpp
+  src/helpers.cpp
+  src/GridMapPclConverter.cpp
 )
 
-###################################
-## catkin specific configuration ##
-###################################
-## The catkin_package macro generates cmake config files for your package
-## Declare things to be passed to dependent projects
-## INCLUDE_DIRS: uncomment this if you package contains header files
-## LIBRARIES: libraries you create in this project that dependent projects also need
-## CATKIN_DEPENDS: catkin_packages dependent projects also need
-## DEPENDS: system dependencies of this project that dependent projects also need
-catkin_package(
-  INCLUDE_DIRS
-    include
-  LIBRARIES
-    ${PROJECT_NAME}
-    yaml-cpp
-  CATKIN_DEPENDS
-    ${CATKIN_PACKAGE_DEPENDENCIES}
-  DEPENDS
+set(dependencies
+  grid_map_core
+  grid_map_msgs
+  grid_map_ros
+  pcl_ros
+  rclcpp
+  rcutils
 )
 
 ###########
@@ -61,24 +44,22 @@ catkin_package(
 include_directories(
   include
   SYSTEM
-    ${catkin_INCLUDE_DIRS}
     ${EIGEN3_INCLUDE_DIR}
     ${OpenMP_CXX_INCLUDE_DIRS}
 )
 
 ## Declare a cpp library
-add_library(${PROJECT_NAME}
+add_library(${PROJECT_NAME} SHARED
   ${SRC_FILES}
 )
 
 target_link_libraries(${PROJECT_NAME}
-  ${catkin_LIBRARIES}
   ${OpenMP_CXX_LIBRARIES}
   yaml-cpp
 )
 
-add_dependencies(${PROJECT_NAME}
-  ${catkin_EXPORTED_TARGETS}
+ament_target_dependencies(${PROJECT_NAME}
+  ${dependencies}
 )
 
 add_executable(grid_map_pcl_loader_node
@@ -87,8 +68,11 @@ add_executable(grid_map_pcl_loader_node
 
 target_link_libraries(grid_map_pcl_loader_node
   ${PROJECT_NAME}
-  ${catkin_LIBRARIES}
   ${OpenMP_CXX_LIBRARIES}
+)
+
+ament_target_dependencies(${PROJECT_NAME}
+  ${dependencies}
 )
 
 #############
@@ -100,38 +84,78 @@ install(
   TARGETS
     ${PROJECT_NAME}
     grid_map_pcl_loader_node
-  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION lib/${PROJECT_NAME}
 )
 
 # Mark cpp header files for installation
 install(
   DIRECTORY include/${PROJECT_NAME}/
-  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+  DESTINATION include/${PROJECT_NAME}
   FILES_MATCHING PATTERN "*.hpp"
+)
+
+install(
+  DIRECTORY
+    config
+    launch
+  DESTINATION share/${PROJECT_NAME}
+)
+
+install(
+  DIRECTORY test/test_data/
+  DESTINATION share/${PROJECT_NAME}/test_data/
 )
 
 #############
 ## Testing ##
 #############
 
-if(CATKIN_ENABLE_TESTING)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
-## Add gtest based cpp test target and link libraries
-catkin_add_gtest(${PROJECT_NAME}-test
-  test/test_grid_map_pcl.cpp
-  test/GridMapPclLoaderTest.cpp
-  test/HelpersTest.cpp
-  test/PointcloudProcessorTest.cpp
-  test/test_helpers.cpp
-  test/PointcloudCreator.cpp
+if(BUILD_TESTING)
+  # Linting is setup this way to add a filter
+  # to ament_cpplint to ignore the lack of
+  # copyright messages at the top of files.
+  # Copyright messages are being checked for by both
+  # ament_cmake_cpplint & ament_cmake_copyright.
+
+  find_package(ament_lint_auto REQUIRED)
+  find_package(ament_lint_auto QUIET)
+  if(ament_lint_auto_FOUND)
+    # exclude copyright checks
+    list(APPEND AMENT_LINT_AUTO_EXCLUDE
+      ament_cmake_cpplint
+      ament_cmake_copyright
+    )
+    ament_lint_auto_find_test_dependencies()
+
+    # run cpplint without copyright filter
+    find_package(ament_cmake_cpplint)
+    ament_cpplint(
+      FILTERS -legal/copyright
+    )
+  endif()
+  ament_lint_auto_find_test_dependencies()
+
+  find_package(ament_cmake_gtest REQUIRED)
+
+  ## Add gtest based cpp test target and link libraries
+  ament_add_gtest(${PROJECT_NAME}-test
+    test/GridMapPclLoaderTest.cpp
+    test/HelpersTest.cpp
+    test/PointcloudCreator.cpp
+    test/PointcloudProcessorTest.cpp
+    test/test_helpers.cpp
+    test/test_grid_map_pcl.cpp
   )
 endif()
 
 if(TARGET ${PROJECT_NAME}-test)
-  target_link_libraries(${PROJECT_NAME}-test 
+  target_link_libraries(${PROJECT_NAME}-test
     ${PROJECT_NAME}
-    ${catkin_LIBRARIES})
+  )
 endif()
 
+ament_export_include_directories(include)
+ament_export_libraries(${PROJECT_NAME})
+ament_package()

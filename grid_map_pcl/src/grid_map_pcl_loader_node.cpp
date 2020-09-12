@@ -1,14 +1,17 @@
 /*
- * grid_map_pcl_loader_node.cpp
+ * grid_map_pcl_loader_node->cpp
  *
  *  Created on: Aug 26, 2019
  *      Author: Edo Jelavic
  *      Institute: ETH Zurich, Robotic Systems Lab
  */
 
-#include <ros/ros.h>
+#include <rclcpp/rclcpp.hpp>
+#include <grid_map_msgs/msg/grid_map.hpp>
 
+#include <memory>
 #include <string>
+#include <utility>
 
 #include "grid_map_core/GridMap.hpp"
 #include "grid_map_ros/GridMapRosConverter.hpp"
@@ -19,33 +22,30 @@ namespace gm = ::grid_map::grid_map_pcl;
 
 int main(int argc, char ** argv)
 {
-  ros::init(argc, argv, "grid_map_pcl_loader_node");
-  ros::NodeHandle nh("~");
-  gm::setVerbosityLevelToDebugIfFlagSet(nh);
+  rclcpp::init(argc, argv);
+  auto node = std::make_shared<rclcpp::Node>("grid_map_pcl_loader_node");
+  gm::setVerbosityLevelToDebugIfFlagSet(node);
 
-  ros::Publisher gridMapPub;
-  gridMapPub = nh.advertise<grid_map_msgs::GridMap>("grid_map_from_raw_pointcloud", 1, true);
+  auto gridMapPub = node->create_publisher<grid_map_msgs::msg::GridMap>(
+    "grid_map_from_raw_pointcloud", rclcpp::QoS(1).transient_local());
 
-  grid_map::GridMapPclLoader gridMapPclLoader;
-  const std::string pathToCloud = gm::getPcdFilePath(nh);
+  grid_map::GridMapPclLoader gridMapPclLoader(node->get_logger());
+  const std::string pathToCloud = gm::getPcdFilePath(node);
   gridMapPclLoader.loadParameters(gm::getParameterPath());
   gridMapPclLoader.loadCloudFromPcdFile(pathToCloud);
 
-  gm::processPointcloud(&gridMapPclLoader, nh);
+  gm::processPointcloud(&gridMapPclLoader, node);
 
   grid_map::GridMap gridMap = gridMapPclLoader.getGridMap();
-  gridMap.setFrameId(gm::getMapFrame(nh));
+  gridMap.setFrameId(gm::getMapFrame(node));
 
-  gm::saveGridMap(gridMap, nh, gm::getMapRosbagTopic(nh));
+  gm::saveGridMap(gridMap, node, gm::getMapRosbagTopic(node));
 
   // publish grid map
-
-  grid_map_msgs::GridMap msg;
-  grid_map::GridMapRosConverter::toMessage(gridMap, msg);
-  gridMapPub.publish(msg);
-
+  auto msg = grid_map::GridMapRosConverter::toMessage(gridMap);
+  gridMapPub->publish(std::move(msg));
 
   // run
-  ros::spin();
+  rclcpp::spin(node->get_node_base_interface());
   return EXIT_SUCCESS;
 }

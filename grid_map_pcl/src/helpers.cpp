@@ -6,14 +6,16 @@
  *      Institute: ETH Zurich, Robotic Systems Lab
  */
 
+#include <ament_index_cpp/get_package_share_directory.hpp>
+
 #include <pcl/common/common.h>
 #include <pcl/common/transforms.h>
 #include <pcl/conversions.h>
 #include <pcl/io/pcd_io.h>
 #include <pcl/point_types.h>
 
-#include <ros/console.h>
-#include <ros/package.h>
+#include <rclcpp/rclcpp.hpp>
+#include <rcutils/error_handling.h>
 
 #include <cstdlib>
 #include <memory>
@@ -30,113 +32,144 @@ namespace grid_map_pcl
 {
 
 
-void setVerbosityLevelToDebugIfFlagSet(const ros::NodeHandle & nh)
+void setVerbosityLevelToDebugIfFlagSet(rclcpp::Node::SharedPtr & node)
 {
   bool isSetVerbosityLevelToDebug;
-  nh.param<bool>("set_verbosity_to_debug", isSetVerbosityLevelToDebug, false);
+  node->declare_parameter("set_verbosity_to_debug", false);
+  node->get_parameter("set_verbosity_to_debug", isSetVerbosityLevelToDebug);
 
   if (!isSetVerbosityLevelToDebug) {
     return;
   }
 
-  if (ros::console::set_logger_level(ROSCONSOLE_DEFAULT_NAME, ros::console::levels::Debug)) {
-    ros::console::notifyLoggerLevelsChanged();
+  auto ret = rcutils_logging_set_logger_level(
+    node->get_logger().get_name(), RCUTILS_LOG_SEVERITY_DEBUG);
+  if (ret != RCUTILS_RET_OK) {
+    RCLCPP_ERROR(
+      node->get_logger(), "Failed to change logging severity: %s",
+      rcutils_get_error_string().str);
+    rcutils_reset_error();
   }
 }
 
 std::string getParameterPath()
 {
-  std::string filePath = ros::package::getPath("grid_map_pcl") + "/config/parameters.yaml";
+  std::string filePath = ament_index_cpp::get_package_share_directory("grid_map_pcl") +
+    "/config/parameters.yaml";
   return filePath;
 }
 
-std::string getOutputBagPath(const ros::NodeHandle & nh)
+std::string getOutputBagPath(rclcpp::Node::SharedPtr & node)
 {
+  if (!node->has_parameter("folder_path")) {
+    node->declare_parameter("folder_path", std::string(""));
+  }
+  node->declare_parameter("output_grid_map", "output_grid_map.bag");
+
   std::string outputRosbagName, folderPath;
-  nh.param<std::string>("folder_path", folderPath, "");
-  nh.param<std::string>("output_grid_map", outputRosbagName, "output_grid_map.bag");
+  node->get_parameter("folder_path", folderPath);
+  node->get_parameter("output_grid_map", outputRosbagName);
   std::string pathToOutputBag = folderPath + "/" + outputRosbagName;
   return pathToOutputBag;
 }
 
-std::string getPcdFilePath(const ros::NodeHandle & nh)
+std::string getPcdFilePath(rclcpp::Node::SharedPtr & node)
 {
+  if (!node->has_parameter("folder_path")) {
+    node->declare_parameter("folder_path", std::string(""));
+  }
+  node->declare_parameter("pcd_filename", "input_cloud");
+
   std::string inputCloudName, folderPath;
-  nh.param<std::string>("folder_path", folderPath, "");
-  nh.param<std::string>("pcd_filename", inputCloudName, "input_cloud");
+  node->get_parameter("folder_path", folderPath);
+  node->get_parameter("pcd_filename", inputCloudName);
   std::string pathToCloud = folderPath + "/" + inputCloudName;
   return pathToCloud;
 }
 
-std::string getMapFrame(const ros::NodeHandle & nh)
+std::string getMapFrame(rclcpp::Node::SharedPtr & node)
 {
+  node->declare_parameter("map_frame", std::string("map"));
+
   std::string mapFrame;
-  nh.param<std::string>("map_frame", mapFrame, "map");
+  node->get_parameter("map_frame", mapFrame);
   return mapFrame;
 }
 
-std::string getMapRosbagTopic(const ros::NodeHandle & nh)
+std::string getMapRosbagTopic(rclcpp::Node::SharedPtr & node)
 {
+  node->declare_parameter("map_rosbag_topic", std::string("grid_map"));
+
   std::string mapRosbagTopic;
-  nh.param<std::string>("map_rosbag_topic", mapRosbagTopic, "grid_map");
+  node->get_parameter("map_rosbag_topic", mapRosbagTopic);
   return mapRosbagTopic;
 }
 
-std::string getMapLayerName(const ros::NodeHandle & nh)
+std::string getMapLayerName(rclcpp::Node::SharedPtr & node)
 {
+  node->declare_parameter("map_layer_name", std::string("elevation"));
+
   std::string mapLayerName;
-  nh.param<std::string>("map_layer_name", mapLayerName, "elevation");
+  node->get_parameter("map_layer_name", mapLayerName);
   return mapLayerName;
 }
 
 void saveGridMap(
-  const grid_map::GridMap & gridMap, const ros::NodeHandle & nh,
+  const grid_map::GridMap & gridMap, rclcpp::Node::SharedPtr & node,
   const std::string & mapTopic)
 {
-  std::string pathToOutputBag = getOutputBagPath(nh);
+  std::string pathToOutputBag = getOutputBagPath(node);
   const bool savingSuccessful = grid_map::GridMapRosConverter::saveToBag(
     gridMap, pathToOutputBag,
     mapTopic);
-  ROS_INFO_STREAM("Saving grid map successful: " << std::boolalpha << savingSuccessful);
+  RCLCPP_INFO_STREAM(
+    node->get_logger(), "Saving grid map successful: " << std::boolalpha << savingSuccessful);
 }
 
 inline void printTimeElapsedToRosInfoStream(
   const std::chrono::system_clock::time_point & start,
-  const std::string & prefix)
+  const std::string & prefix,
+  const rclcpp::Logger & node_logger)
 {
   const auto stop = std::chrono::high_resolution_clock::now();
   const auto duration =
     std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count() / 1000.0;
-  ROS_INFO_STREAM(prefix << duration << " sec");
+  RCLCPP_INFO_STREAM(node_logger, prefix << duration << " sec");
 }
 
-void processPointcloud(grid_map::GridMapPclLoader * gridMapPclLoader, const ros::NodeHandle & nh)
+void processPointcloud(
+  grid_map::GridMapPclLoader * gridMapPclLoader,
+  rclcpp::Node::SharedPtr & node)
 {
   const auto start = std::chrono::high_resolution_clock::now();
   gridMapPclLoader->preProcessInputCloud();
   gridMapPclLoader->initializeGridMapGeometryFromInputCloud();
-  printTimeElapsedToRosInfoStream(start, "Initialization took: ");
-  gridMapPclLoader->addLayerFromInputCloud(getMapLayerName(nh));
-  printTimeElapsedToRosInfoStream(start, "Total time: ");
+  printTimeElapsedToRosInfoStream(
+    start, "Initialization took: ", node->get_logger());
+  gridMapPclLoader->addLayerFromInputCloud(getMapLayerName(node));
+  printTimeElapsedToRosInfoStream(start, "Total time: ", node->get_logger());
 }
 
 Eigen::Affine3f getRigidBodyTransform(
   const Eigen::Vector3d & translation,
-  const Eigen::Vector3d & intrinsicRpy)
+  const Eigen::Vector3d & intrinsicRpy,
+  const rclcpp::Logger & node_logger)
 {
   Eigen::Affine3f rigidBodyTransform;
   rigidBodyTransform.setIdentity();
   rigidBodyTransform.translation() << translation.x(), translation.y(), translation.z();
   Eigen::Matrix3f rotation(Eigen::Matrix3f::Identity());
-  rotation *= getRotationMatrix(intrinsicRpy.x(), XYZ::X);
-  rotation *= getRotationMatrix(intrinsicRpy.y(), XYZ::Y);
-  rotation *= getRotationMatrix(intrinsicRpy.z(), XYZ::Z);
+  rotation *= getRotationMatrix(intrinsicRpy.x(), XYZ::X, node_logger);
+  rotation *= getRotationMatrix(intrinsicRpy.y(), XYZ::Y, node_logger);
+  rotation *= getRotationMatrix(intrinsicRpy.z(), XYZ::Z, node_logger);
   rigidBodyTransform.rotate(rotation);
 
   return rigidBodyTransform;
 }
 
-Eigen::Matrix3f getRotationMatrix(double angle, XYZ axis)
+Eigen::Matrix3f getRotationMatrix(
+  double angle, XYZ axis,
+  const rclcpp::Logger & node_logger)
 {
   Eigen::Matrix3f rotationMatrix = Eigen::Matrix3f::Identity();
   switch (axis) {
@@ -153,7 +186,7 @@ Eigen::Matrix3f getRotationMatrix(double angle, XYZ axis)
         break;
       }
     default:
-      ROS_ERROR("Unknown axis while trying to rotate the pointcloud");
+      RCLCPP_ERROR(node_logger, "Unknown axis while trying to rotate the pointcloud");
   }
   return rotationMatrix;
 }

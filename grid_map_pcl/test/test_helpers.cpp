@@ -6,7 +6,7 @@
  *      Institute: ETH Zurich, Robotic Systems Lab
  */
 
-#include <ros/package.h>
+#include <ament_index_cpp/get_package_share_directory.hpp>
 
 #include <string>
 #include <vector>
@@ -29,8 +29,9 @@ std::string getConfigFilePath()
 
 std::string getTestDataFolderPath()
 {
-  std::string filename = ros::package::getPath("grid_map_pcl") + "/test/test_data";
-  return filename;
+  std::string dir = ament_index_cpp::get_package_share_directory("grid_map_pcl") +
+    "/test_data";
+  return dir;
 }
 
 std::vector<Eigen::Vector3d> getNonNanElevationValuesWithCoordinates(
@@ -192,16 +193,11 @@ Pointcloud::Ptr createStepTerrain(
 
   return cloud;
 }
-void setVerbosityLevel(ros::console::levels::Level level)
-{
-  if (ros::console::set_logger_level(ROSCONSOLE_DEFAULT_NAME, level)) {
-    ros::console::notifyLoggerLevelsChanged();
-  }
-}
 
 std::string getTestPcdFilePath()
 {
-  std::string filename = ros::package::getPath("grid_map_pcl") + "/test/test_data/plane_noisy.pcd";
+  std::string filename = ament_index_cpp::get_package_share_directory("grid_map_pcl") +
+    "/test/test_data/plane_noisy.pcd";
   return filename;
 }
 

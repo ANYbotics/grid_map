@@ -10,7 +10,7 @@
 #define GRID_MAP_PCL__HELPERS_HPP_
 
 #include <pcl/common/common.h>
-#include <ros/ros.h>
+#include <rclcpp/rclcpp.hpp>
 #include <string>
 #include <chrono>
 
@@ -23,29 +23,32 @@ class GridMap;
 namespace grid_map_pcl
 {
 
-void setVerbosityLevelToDebugIfFlagSet(const ros::NodeHandle & nh);
+void setVerbosityLevelToDebugIfFlagSet(rclcpp::Node::SharedPtr & node);
 
 std::string getParameterPath();
 
-std::string getOutputBagPath(const ros::NodeHandle & nh);
+std::string getOutputBagPath(rclcpp::Node::SharedPtr & node);
 
-std::string getPcdFilePath(const ros::NodeHandle & nh);
+std::string getPcdFilePath(rclcpp::Node::SharedPtr & node);
 
-std::string getMapFrame(const ros::NodeHandle & nh);
+std::string getMapFrame(rclcpp::Node::SharedPtr & node);
 
-std::string getMapRosbagTopic(const ros::NodeHandle & nh);
+std::string getMapRosbagTopic(rclcpp::Node::SharedPtr & node);
 
-std::string getMapLayerName(const ros::NodeHandle & nh);
+std::string getMapLayerName(rclcpp::Node::SharedPtr & node);
 
 void saveGridMap(
-  const grid_map::GridMap & gridMap, const ros::NodeHandle & nh,
+  const grid_map::GridMap & gridMap, rclcpp::Node::SharedPtr & node,
   const std::string & mapTopic);
 
 inline void printTimeElapsedToRosInfoStream(
   const std::chrono::system_clock::time_point & start,
-  const std::string & prefix);
+  const std::string & prefix,
+  const rclcpp::Logger & node_logger);
 
-void processPointcloud(grid_map::GridMapPclLoader * gridMapPclLoader, const ros::NodeHandle & nh);
+void processPointcloud(
+  grid_map::GridMapPclLoader * gridMapPclLoader,
+  rclcpp::Node::SharedPtr & node);
 
 using Point = ::pcl::PointXYZ;
 using Pointcloud = ::pcl::PointCloud<Point>;
@@ -53,8 +56,12 @@ enum class XYZ: int {X, Y, Z};
 
 Eigen::Affine3f getRigidBodyTransform(
   const Eigen::Vector3d & translation,
-  const Eigen::Vector3d & intrinsicRpy);
-Eigen::Matrix3f getRotationMatrix(double angle, XYZ axis);
+  const Eigen::Vector3d & intrinsicRpy,
+  const rclcpp::Logger & node_logger);
+
+Eigen::Matrix3f getRotationMatrix(
+  double angle, XYZ axis,
+  const rclcpp::Logger & node_logger);
 
 // processing point clouds
 Eigen::Vector3d calculateMeanOfPointPositions(Pointcloud::ConstPtr inputCloud);

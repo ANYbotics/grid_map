@@ -18,8 +18,6 @@ Pointcloud::Ptr PointcloudCreator::createNoisyPointcloudOfStepTerrain(
   double * zHigh, double * zLow,
   double * stdDev)
 {
-  const double minHeight = 0.0;
-  const double maxHeight = 10.0;
   std::uniform_real_distribution<double> heightDist(-2.0, 2.0);
   const double maxXY = 3.0;
   const double minXY = -3.0;

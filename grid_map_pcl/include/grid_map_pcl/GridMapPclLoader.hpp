@@ -50,7 +50,12 @@ public:
   using Point = ::pcl::PointXYZ;
   using Pointcloud = ::pcl::PointCloud<Point>;
 
-  GridMapPclLoader();
+  /*!
+   * Constructor
+   * @param[in] node logging interface.
+   */
+  explicit GridMapPclLoader(
+    const rclcpp::Logger & node_logger);
   ~GridMapPclLoader();
 
   /*!
@@ -192,6 +197,9 @@ private:
 
   // Parameters for the algorithm. Also includes parameters for the pcl filters.
   std::unique_ptr<grid_map_pcl::PclLoaderParameters> params_;
+
+  // Logging interface
+  rclcpp::Logger node_logger_;
 
   // Class that handles point cloud processing
   grid_map_pcl::PointcloudProcessor pointcloudProcessor_;

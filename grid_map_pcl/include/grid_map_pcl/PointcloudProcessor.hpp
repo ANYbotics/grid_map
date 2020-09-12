@@ -24,7 +24,7 @@ namespace grid_map_pcl
 class PointcloudProcessor
 {
 public:
-  PointcloudProcessor();
+  explicit PointcloudProcessor(const rclcpp::Logger & node_logger);
   virtual ~PointcloudProcessor() = default;
 
   /*!
@@ -103,6 +103,10 @@ public:
 protected:
   // Parameters for the pcl filters.
   std::unique_ptr<grid_map_pcl::PclLoaderParameters> params_;
+
+private:
+  // Logging interface
+  rclcpp::Logger node_logger_;
 };
 
 }  // namespace grid_map_pcl

@@ -8,7 +8,7 @@
 
 #include "grid_map_pcl/PclLoaderParameters.hpp"
 
-#include <ros/console.h>
+#include <rclcpp/rclcpp.hpp>
 
 #include <string>
 
@@ -18,6 +18,9 @@ namespace grid_map
 
 namespace grid_map_pcl
 {
+
+PclLoaderParameters::PclLoaderParameters(const rclcpp::Logger & node_logger)
+: node_logger_(node_logger) {}
 
 void PclLoaderParameters::handleYamlNode(const YAML::Node & yamlNode)
 {
@@ -76,14 +79,16 @@ bool PclLoaderParameters::loadParameters(const std::string & filename)
 
   const bool loadingFailed = yamlNode.IsNull();
   if (loadingFailed) {
-    ROS_ERROR_STREAM("PclLoaderParameters: Reading from file failed");
+    RCLCPP_ERROR_STREAM(node_logger_, "PclLoaderParameters: Reading from file failed");
     return false;
   }
 
   try {
     handleYamlNode(yamlNode);
   } catch (const std::runtime_error & exception) {
-    ROS_ERROR_STREAM("PclLoaderParameters: Loading parameters failed: " << exception.what());
+    RCLCPP_ERROR_STREAM(
+      node_logger_,
+      "PclLoaderParameters: Loading parameters failed: " << exception.what());
     return false;
   }
 

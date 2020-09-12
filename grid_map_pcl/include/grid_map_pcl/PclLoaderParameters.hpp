@@ -11,6 +11,9 @@
 
 #include <yaml-cpp/yaml.h>
 #include <Eigen/Dense>
+
+#include <rclcpp/rclcpp.hpp>
+
 #include <memory>
 #include <string>
 
@@ -73,7 +76,7 @@ class PclLoaderParameters
   friend class grid_map::grid_map_pcl::PointcloudProcessor;
 
 public:
-  PclLoaderParameters() = default;
+  explicit PclLoaderParameters(const rclcpp::Logger & node_logger);
   ~PclLoaderParameters() = default;
 
 private:
@@ -99,6 +102,9 @@ private:
 
   // Parameters for the GridMapPclLoader class.
   Parameters parameters_;
+
+  // Node logger
+  rclcpp::Logger node_logger_;
 };
 
 }  // namespace grid_map_pcl
