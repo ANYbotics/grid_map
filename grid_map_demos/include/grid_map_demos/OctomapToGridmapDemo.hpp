@@ -30,7 +30,7 @@ public:
    * Constructor.
    * @param nodeHandle the ROS node handle.
    */
-  OctomapToGridmapDemo(ros::NodeHandle & nodeHandle);
+  OctomapToGridmapDemo();
 
   /*!
    * Destructor.

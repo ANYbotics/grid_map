@@ -11,8 +11,6 @@
 
 #include "grid_map_demos/FiltersDemo.hpp"
 
-using namespace grid_map;
-
 namespace grid_map_demos
 {
 

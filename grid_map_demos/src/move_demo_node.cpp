@@ -1,9 +1,6 @@
 #include <ros/ros.h>
 #include <grid_map_ros/grid_map_ros.hpp>
-
-using namespace grid_map;
-using namespace ros;
-
+[]
 int main(int argc, char ** argv)
 {
   // Initialize node and publisher.

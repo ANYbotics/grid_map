@@ -64,7 +64,7 @@ enum class Worlds: int
   NUM_WORLDS
 };
 
-static const std::string demoLayer = "demo";
+static const char * demoLayer = "demo";
 
 struct AnalyticalFunctions
 {
@@ -152,7 +152,7 @@ static const std::map<std::string, grid_map::InterpolationMethods> interpolation
 class InterpolationDemo
 {
 public:
-  InterpolationDemo(ros::NodeHandle * nh);
+  InterpolationDemo();
 
 private:
   using clk = std::chrono::steady_clock;

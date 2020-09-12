@@ -10,10 +10,6 @@
 #include <iostream>
 #include <string>
 
-using namespace std;
-using namespace std::chrono;
-using namespace grid_map;
-
 #define duration(a) duration_cast<milliseconds>(a).count()
 typedef high_resolution_clock clk;
 

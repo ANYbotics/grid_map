@@ -4,9 +4,6 @@
 #include <cv_bridge/cv_bridge.h>
 #include <opencv2/highgui/highgui.hpp>
 
-using namespace grid_map;
-using namespace ros;
-
 int main(int argc, char ** argv)
 {
   // Initialize node and publisher.
