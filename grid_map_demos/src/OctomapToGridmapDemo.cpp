@@ -10,25 +10,32 @@
 
 #include <grid_map_octomap/GridMapOctomapConverter.hpp>
 
-#include <octomap_msgs/Octomap.h>
 #include <octomap/octomap.h>
 #include <octomap_msgs/conversions.h>
-#include <octomap_msgs/GetOctomap.h>
+#include <octomap_msgs/msg/octomap.hpp>
+#include <octomap_msgs/srv/get_octomap.hpp>
 
+#include <chrono>
+#include <memory>
 #include <string>
+#include <utility>
 
 namespace grid_map_demos
 {
 
-OctomapToGridmapDemo::OctomapToGridmapDemo(ros::NodeHandle & nodeHandle)
-: nodeHandle_(nodeHandle),
+OctomapToGridmapDemo::OctomapToGridmapDemo()
+: Node("octomap_to_gridmap_demo"),
   map_(grid_map::GridMap({"elevation"}))
 {
   readParameters();
-  client_ = nodeHandle_.serviceClient<octomap_msgs::GetOctomap>(octomapServiceTopic_);
+  client_ = this->create_client<octomap_msgs::srv::GetOctomap>(octomapServiceTopic_);
   map_.setBasicLayers({"elevation"});
-  gridMapPublisher_ = nodeHandle_.advertise<grid_map_msgs::GridMap>("grid_map", 1, true);
-  octomapPublisher_ = nodeHandle_.advertise<octomap_msgs::Octomap>("octomap", 1, true);
+  gridMapPublisher_ = this->create_publisher<grid_map_msgs::msg::GridMap>(
+    "grid_map", rclcpp::QoS(
+      1).transient_local());
+  octomapPublisher_ = this->create_publisher<octomap_msgs::msg::Octomap>(
+    "octomap", rclcpp::QoS(
+      1).transient_local());
 }
 
 OctomapToGridmapDemo::~OctomapToGridmapDemo()
@@ -37,31 +44,51 @@ OctomapToGridmapDemo::~OctomapToGridmapDemo()
 
 bool OctomapToGridmapDemo::readParameters()
 {
-  nodeHandle_.param("octomap_service_topic", octomapServiceTopic_, std::string("/octomap_binary"));
-  nodeHandle_.param("min_x", minX_, NAN);
-  nodeHandle_.param("max_x", maxX_, NAN);
-  nodeHandle_.param("min_y", minY_, NAN);
-  nodeHandle_.param("max_y", maxY_, NAN);
-  nodeHandle_.param("min_z", minZ_, NAN);
-  nodeHandle_.param("max_z", maxZ_, NAN);
+  this->declare_parameter("octomap_service_topic", std::string("/octomap_binary"));
+  this->declare_parameter("min_x", NAN);
+  this->declare_parameter("max_x", NAN);
+  this->declare_parameter("min_y", NAN);
+  this->declare_parameter("max_y", NAN);
+  this->declare_parameter("min_z", NAN);
+  this->declare_parameter("max_z", NAN);
+
+  this->get_parameter("octomap_service_topic", octomapServiceTopic_);
+  this->get_parameter("min_x", minX_);
+  this->get_parameter("max_x", maxX_);
+  this->get_parameter("min_y", minY_);
+  this->get_parameter("max_y", maxY_);
+  this->get_parameter("min_z", minZ_);
+  this->get_parameter("max_z", maxZ_);
   return true;
 }
 
 void OctomapToGridmapDemo::convertAndPublishMap()
 {
-  octomap_msgs::GetOctomap srv;
-  if (!client_.call(srv)) {
-    ROS_ERROR_STREAM("Failed to call service: " << octomapServiceTopic_);
+  while (!client_->wait_for_service(std::chrono::seconds(1))) {
+    if (!rclcpp::ok()) {
+      RCLCPP_ERROR(this->get_logger(), "client interrupted while waiting for service to appear.");
+      return;
+    }
+    RCLCPP_INFO(this->get_logger(), "waiting for service to appear...");
+  }
+
+  auto request = std::make_shared<octomap_msgs::srv::GetOctomap::Request>();
+  auto result_future = client_->async_send_request(request);
+  if (rclcpp::spin_until_future_complete(this->get_node_base_interface(), result_future) !=
+    rclcpp::FutureReturnCode::SUCCESS)
+  {
+    RCLCPP_ERROR_STREAM(this->get_logger(), "Failed to call service: " << octomapServiceTopic_);
     return;
   }
+  auto response = result_future.get();
 
   // creating octree
   octomap::OcTree * octomap = nullptr;
-  octomap::AbstractOcTree * tree = octomap_msgs::msgToMap(srv.response.map);
+  octomap::AbstractOcTree * tree = octomap_msgs::msgToMap(response->map);
   if (tree) {
     octomap = dynamic_cast<octomap::OcTree *>(tree);
   } else {
-    ROS_ERROR("Failed to call convert Octomap.");
+    RCLCPP_ERROR(this->get_logger(), "Failed to call convert Octomap.");
     return;
   }
 
@@ -91,21 +118,20 @@ void OctomapToGridmapDemo::convertAndPublishMap()
     *octomap, "elevation", map_, &min_bound,
     &max_bound);
   if (!res) {
-    ROS_ERROR("Failed to call convert Octomap.");
+    RCLCPP_ERROR(this->get_logger(), "Failed to call convert Octomap.");
     return;
   }
-  map_.setFrameId(srv.response.map.header.frame_id);
+  map_.setFrameId(response->map.header.frame_id);
 
   // Publish as grid map.
-  grid_map_msgs::GridMap gridMapMessage;
-  grid_map::GridMapRosConverter::toMessage(map_, gridMapMessage);
-  gridMapPublisher_.publish(gridMapMessage);
+  auto gridMapMessage = grid_map::GridMapRosConverter::toMessage(map_);
+  gridMapPublisher_->publish(std::move(gridMapMessage));
 
   // Also publish as an octomap msg for visualization
-  octomap_msgs::Octomap octomapMessage;
+  octomap_msgs::msg::Octomap octomapMessage;
   octomap_msgs::fullMapToMsg(*octomap, octomapMessage);
   octomapMessage.header.frame_id = map_.getFrameId();
-  octomapPublisher_.publish(octomapMessage);
+  octomapPublisher_->publish(octomapMessage);
 }
 
 }  // namespace grid_map_demos
