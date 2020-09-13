@@ -1,6 +1,8 @@
-grid_map_topic: /grid_map_opencv_demo/grid_map
-grid_map_visualizations:
-  - name: elevation_points
-    type: point_cloud
-    params:
-     layer: elevation
+grid_map_visualization:
+  ros__parameters:
+    grid_map_topic: /grid_map
+    grid_map_visualizations: [elevation_points]
+    elevation_points:
+        type: point_cloud
+        params:
+          layer: elevation
