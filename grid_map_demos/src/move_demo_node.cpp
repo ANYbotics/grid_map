@@ -1,18 +1,23 @@
-#include <ros/ros.h>
+#include <rclcpp/rclcpp.hpp>
 #include <grid_map_ros/grid_map_ros.hpp>
-[]
+#include <utility>
+
 int main(int argc, char ** argv)
 {
   // Initialize node and publisher.
-  init(argc, argv, "move_demo");
-  NodeHandle nh("~");
-  Publisher publisher = nh.advertise<grid_map_msgs::GridMap>("grid_map", 1, true);
+  rclcpp::init(argc, argv);
+  rclcpp::Node node("move_demo");
+
+  auto publisher = node.create_publisher<grid_map_msgs::msg::GridMap>(
+    "grid_map", rclcpp::QoS(
+      1).transient_local());
 
   // Create grid map.
-  GridMap map({"layer"});
+  grid_map::GridMap map({"layer"});
   map.setFrameId("map");
-  map.setGeometry(Length(0.7, 0.7), 0.01, Position(0.0, 0.0));
-  ROS_INFO(
+  map.setGeometry(grid_map::Length(0.7, 0.7), 0.01, grid_map::Position(0.0, 0.0));
+  RCLCPP_INFO(
+    node.get_logger(),
     "Created map with size %f x %f m (%i x %i cells).\n"
     " The center of the map is located at (%f, %f) in the %s frame.",
     map.getLength().x(), map.getLength().y(),
@@ -21,26 +26,26 @@ int main(int argc, char ** argv)
   map["layer"].setRandom();
 
   bool useMoveMethod = true;
-  while (nh.ok()) {
+  while (rclcpp::ok()) {
     if (useMoveMethod) {
-      ROS_INFO("Using the `move(...)` method.");
+      RCLCPP_INFO(node.get_logger(), "Using the `move(...)` method.");
     } else {
-      ROS_INFO("Using the `setPosition(...)` method.");
+      RCLCPP_INFO(node.get_logger(), "Using the `setPosition(...)` method.");
     }
 
     // Work with temporary map in a loop.
-    GridMap tempMap(map);
-    Rate rate(10.0);
-    ros::Time startTime = ros::Time::now();
-    ros::Duration duration(0.0);
+    grid_map::GridMap tempMap(map);
+    rclcpp::Rate rate(10.0);
+    rclcpp::Time startTime = node.now();
+    rclcpp::Duration duration(0.0);
 
-    while (duration <= ros::Duration(10.0)) {
-      ros::Time time = ros::Time::now();
+    while (duration <= rclcpp::Duration::from_seconds(10.0)) {
+      rclcpp::Time time = node.now();
       duration = time - startTime;
 
       // Change position of the map with either the `move` or `setPosition` method.
-      const double t = duration.toSec();
-      Position newPosition = 0.03 * t * Position(cos(t), sin(t));
+      const double t = duration.seconds();
+      grid_map::Position newPosition = 0.03 * t * grid_map::Position(cos(t), sin(t));
 
       if (useMoveMethod) {
         tempMap.move(newPosition);
@@ -49,13 +54,13 @@ int main(int argc, char ** argv)
       }
 
       // Publish grid map.
-      tempMap.setTimestamp(time.toNSec());
-      grid_map_msgs::GridMap message;
-      GridMapRosConverter::toMessage(tempMap, message);
-      publisher.publish(message);
-      ROS_DEBUG(
+      tempMap.setTimestamp(time.nanoseconds());
+      auto message = grid_map::GridMapRosConverter::toMessage(tempMap);
+      publisher->publish(std::move(message));
+      RCLCPP_DEBUG(
+        node.get_logger(),
         "Grid map (duration %f) published with new position [%f, %f].",
-        duration.toSec(), tempMap.getPosition().x(), tempMap.getPosition().y());
+        duration.seconds(), tempMap.getPosition().x(), tempMap.getPosition().y());
       rate.sleep();
     }
 
