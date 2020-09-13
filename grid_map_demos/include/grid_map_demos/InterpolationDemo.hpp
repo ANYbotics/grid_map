@@ -9,17 +9,16 @@
 #ifndef GRID_MAP_DEMOS__INTERPOLATIONDEMO_HPP_
 #define GRID_MAP_DEMOS__INTERPOLATIONDEMO_HPP_
 
-#include <ros/ros.h>
+#include <grid_map_core/GridMap.hpp>
+#include <grid_map_core/TypeDefs.hpp>
+#include <grid_map_msgs/msg/grid_map.hpp>
+#include <rclcpp/rclcpp.hpp>
 
 #include <functional>
 #include <map>
 #include <string>
 #include <chrono>
 #include <utility>
-
-#include "grid_map_core/GridMap.hpp"
-#include "grid_map_core/TypeDefs.hpp"
-
 
 namespace grid_map_demos
 {
@@ -64,7 +63,7 @@ enum class Worlds: int
   NUM_WORLDS
 };
 
-static const char * demoLayer = "demo";
+static const std::string demoLayer = "demo";  // NOLINT
 
 struct AnalyticalFunctions
 {
@@ -149,7 +148,7 @@ static const std::map<std::string, grid_map::InterpolationMethods> interpolation
  * computes errors
  * measures times required for computation
  */
-class InterpolationDemo
+class InterpolationDemo : public rclcpp::Node
 {
 public:
   InterpolationDemo();
@@ -174,9 +173,9 @@ private:
   void printStatistics(const Statistics & stats) const;
   void publishGridMaps() const;
 
-  ros::Publisher groundTruthMapPub_;
-  ros::Publisher dataSparseMapPub_;
-  ros::Publisher interpolatedMapPub_;
+  rclcpp::Publisher<grid_map_msgs::msg::GridMap>::SharedPtr groundTruthMapPub_;
+  rclcpp::Publisher<grid_map_msgs::msg::GridMap>::SharedPtr dataSparseMapPub_;
+  rclcpp::Publisher<grid_map_msgs::msg::GridMap>::SharedPtr interpolatedMapPub_;
 
   grid_map::GridMap dataSparseMap_;
   grid_map::GridMap groundTruthMap_;

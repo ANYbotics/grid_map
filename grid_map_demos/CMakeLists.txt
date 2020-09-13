@@ -92,10 +92,10 @@ add_executable(
   src/opencv_demo_node.cpp
 )
 
-# add_executable(
-#   resolution_change_demo
-#   src/resolution_change_demo_node.cpp
-# )
+add_executable(
+  resolution_change_demo
+  src/resolution_change_demo_node.cpp
+)
 
 # add_executable(
 #   filters_demo
@@ -108,11 +108,11 @@ add_executable(
 #   src/normal_filter_comparison_node.cpp
 # )
 
-# add_executable(
-#   interpolation_demo
-#   src/interpolation_demo_node.cpp
-#   src/InterpolationDemo.cpp
-# )
+add_executable(
+  interpolation_demo
+  src/interpolation_demo_node.cpp
+  src/InterpolationDemo.cpp
+)
 
 ## Specify libraries to link a library or executable target against
 ament_target_dependencies(
@@ -171,10 +171,12 @@ ament_target_dependencies(
   "grid_map_cv"
 )
 
-# ament_target_dependencies(
-#   resolution_change_demo
-#   ${dependencies}
-# )
+ament_target_dependencies(
+  resolution_change_demo
+  "rclcpp"
+  "grid_map_ros"
+  "grid_map_msgs"
+)
 
 # ament_target_dependencies(
 #   filters_demo
@@ -186,10 +188,12 @@ ament_target_dependencies(
 #   ${dependencies}
 # )
 
-# ament_target_dependencies(
-#   interpolation_demo
-#   ${dependencies}
-# )
+ament_target_dependencies(
+  interpolation_demo
+  "rclcpp"
+  "grid_map_ros"
+  "grid_map_msgs"
+)
 
 #############
 ## Install ##
@@ -200,14 +204,14 @@ install(
   TARGETS
     # filters_demo
     image_to_gridmap_demo
-    # interpolation_demo
+    interpolation_demo
     iterator_benchmark
     iterators_demo
     move_demo
     # normal_filter_comparison_demo
     octomap_to_gridmap_demo
     opencv_demo
-    # resolution_change_demo
+    resolution_change_demo
     simple_demo
     tutorial_demo
   ARCHIVE DESTINATION lib

@@ -8,13 +8,13 @@
 
 #include "grid_map_demos/InterpolationDemo.hpp"
 
+#include <grid_map_core/iterators/GridMapIterator.hpp>
+#include <grid_map_msgs/msg/grid_map.hpp>
+#include <grid_map_ros/GridMapRosConverter.hpp>
+
 #include <map>
 #include <string>
 #include <utility>
-
-#include "grid_map_core/iterators/GridMapIterator.hpp"
-#include "grid_map_msgs/GridMap.h"
-#include "grid_map_ros/GridMapRosConverter.hpp"
 
 namespace grid_map_demos
 {
@@ -136,7 +136,7 @@ AnalyticalFunctions createGaussianWorld(grid_map::GridMap * map)
 
   func.f_ = [g](double x, double y) {
       double value = 0.0;
-      for (int i = 0; i < g.size(); ++i) {
+      for (std::size_t i = 0; i < g.size(); ++i) {
         const double x0 = g.at(i).x0;
         const double y0 = g.at(i).y0;
         const double varX = g.at(i).varX;
@@ -209,10 +209,6 @@ Error computeInterpolationError(
   const AnalyticalFunctions & groundTruth,
   const grid_map::GridMap & map)
 {
-  const double r = map.getResolution();
-  const double dimX = map.getLength().x() / 2.0 - 3.0 * r;
-  const double dimY = map.getLength().y() / 2.0 - 3.0 * r;
-
   unsigned int count = 0;
   Error error;
   const int nRow = map.getSize().x();
@@ -241,19 +237,34 @@ Error computeInterpolationError(
   return error;
 }
 
-InterpolationDemo::InterpolationDemo(ros::NodeHandle * nh)
+InterpolationDemo::InterpolationDemo()
+: Node("grid_map_interpolation_demo")
 {
-  nh->param<std::string>("interpolation_type", interpolationMethod_, "Nearest");
-  nh->param<std::string>("world", world_, "Sine");
-  nh->param<double>("groundtruth_resolution", groundTruthResolution_, 0.02);
-  nh->param<double>("interpolation/data_resolution", dataResolution_, 0.1);
-  nh->param<double>("interpolation/interpolated_resolution", interpolatedResolution_, 0.02);
-  nh->param<double>("world_size/length", worldLength_, 4.0);
-  nh->param<double>("world_size/width", worldWidth_, 4.0);
+  this->declare_parameter("interpolation_type", std::string("Nearest"));
+  this->declare_parameter("world", std::string("Sine"));
+  this->declare_parameter("groundtruth_resolution", rclcpp::ParameterValue(0.02));
+  this->declare_parameter("interpolation.data_resolution", rclcpp::ParameterValue(0.1));
+  this->declare_parameter("interpolation.interpolated_resolution", rclcpp::ParameterValue(0.02));
+  this->declare_parameter("world_size.length", rclcpp::ParameterValue(4.0));
+  this->declare_parameter("world_size.width", rclcpp::ParameterValue(4.0));
 
-  groundTruthMapPub_ = nh->advertise<grid_map_msgs::GridMap>("ground_truth", 1, true);
-  dataSparseMapPub_ = nh->advertise<grid_map_msgs::GridMap>("data_sparse", 1, true);
-  interpolatedMapPub_ = nh->advertise<grid_map_msgs::GridMap>("interpolated", 1, true);
+  this->get_parameter("interpolation_type", interpolationMethod_);
+  this->get_parameter("world", world_);
+  this->get_parameter("groundtruth_resolution", groundTruthResolution_);
+  this->get_parameter("interpolation/data_resolution", dataResolution_);
+  this->get_parameter("interpolation/interpolated_resolution", interpolatedResolution_);
+  this->get_parameter("world_size.length", worldLength_);
+  this->get_parameter("world_size.width", worldWidth_);
+
+  groundTruthMapPub_ = this->create_publisher<grid_map_msgs::msg::GridMap>(
+    "ground_truth", rclcpp::QoS(
+      1).transient_local());
+  dataSparseMapPub_ = this->create_publisher<grid_map_msgs::msg::GridMap>(
+    "data_sparse", rclcpp::QoS(
+      1).transient_local());
+  interpolatedMapPub_ = this->create_publisher<grid_map_msgs::msg::GridMap>(
+    "interpolated", rclcpp::QoS(
+      1).transient_local());
 
   runDemo();
 }
@@ -297,7 +308,7 @@ InterpolationDemo::Statistics InterpolationDemo::computeStatistics() const
     stats.insert({world->first, methodsStats});
   }
 
-  return std::move(stats);
+  return stats;
 }
 
 InterpolationDemo::ErrorAndDuration InterpolationDemo::interpolateAndComputeError(
@@ -348,13 +359,13 @@ void InterpolationDemo::printStatistics(const Statistics & stats) const
 
 void InterpolationDemo::publishGridMaps() const
 {
-  grid_map_msgs::GridMap highResMsg, lowResMsg, interpolatedMsg;
-  grid_map::GridMapRosConverter::toMessage(groundTruthMap_, highResMsg);
-  grid_map::GridMapRosConverter::toMessage(dataSparseMap_, lowResMsg);
-  grid_map::GridMapRosConverter::toMessage(interpolatedMap_, interpolatedMsg);
-  groundTruthMapPub_.publish(highResMsg);
-  dataSparseMapPub_.publish(lowResMsg);
-  interpolatedMapPub_.publish(interpolatedMsg);
+  auto highResMsg = grid_map::GridMapRosConverter::toMessage(groundTruthMap_);
+  auto lowResMsg = grid_map::GridMapRosConverter::toMessage(dataSparseMap_);
+  auto interpolatedMsg = grid_map::GridMapRosConverter::toMessage(interpolatedMap_);
+  std::cout << "LOOOL" << std::endl;
+  groundTruthMapPub_->publish(std::move(highResMsg));
+  dataSparseMapPub_->publish(std::move(lowResMsg));
+  interpolatedMapPub_->publish(std::move(interpolatedMsg));
 }
 
 }  // namespace grid_map_demos
