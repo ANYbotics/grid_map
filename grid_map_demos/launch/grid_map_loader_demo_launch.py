@@ -30,7 +30,7 @@ def generate_launch_description():
         'file_path': os.path.join(grid_map_demos_dir, 'data', 'grid_map_bag'),
         'bag_topic': '/grid_map',
         'publish_topic': '/grid_map',
-        'duratoin': 10.0
+        'duration': 10.0
     }]
 
     grid_map_loader_demo_node = Node(
