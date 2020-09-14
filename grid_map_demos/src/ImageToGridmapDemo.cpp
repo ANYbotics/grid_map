@@ -27,8 +27,7 @@ ImageToGridmapDemo::ImageToGridmapDemo()
     std::bind(&ImageToGridmapDemo::imageCallback, this, std::placeholders::_1));
 
   gridMapPublisher_ = this->create_publisher<grid_map_msgs::msg::GridMap>(
-    "grid_map", rclcpp::QoS(
-      1).transient_local());
+    "grid_map", rclcpp::QoS(1).transient_local());
 }
 
 ImageToGridmapDemo::~ImageToGridmapDemo()

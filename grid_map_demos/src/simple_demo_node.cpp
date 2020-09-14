@@ -10,7 +10,8 @@ int main(int argc, char ** argv)
   // Initialize node and publisher.
   rclcpp::init(argc, argv);
   rclcpp::Node node("grid_map_simple_demo");
-  auto publisher = node.create_publisher<grid_map_msgs::msg::GridMap>("grid_map", 1);
+  auto publisher = node.create_publisher<grid_map_msgs::msg::GridMap>(
+    "grid_map", rclcpp::QoS(1).transient_local());
 
   // Create grid map.
   grid_map::GridMap map({"elevation"});

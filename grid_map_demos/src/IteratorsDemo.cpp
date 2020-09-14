@@ -21,18 +21,17 @@ IteratorsDemo::IteratorsDemo()
   map_(std::vector<std::string>({"type"}))
 {
   RCLCPP_INFO(this->get_logger(), "Grid map iterators demo node started.");
-  gridMapPublisher_ = this->create_publisher<grid_map_msgs::msg::GridMap>("grid_map", 1);
+  gridMapPublisher_ = this->create_publisher<grid_map_msgs::msg::GridMap>(
+    "grid_map", rclcpp::QoS(1).transient_local());
   polygonPublisher_ = this->create_publisher<geometry_msgs::msg::PolygonStamped>(
-    "polygon", rclcpp::QoS(
-      1).transient_local());
+    "polygon", rclcpp::QoS(1).transient_local());
 
   // Setting up map.
   map_.setGeometry(grid_map::Length(1.0, 1.0), 0.05, grid_map::Position(0.0, 0.0));
   map_.setFrameId("map");
 
   publish();
-  auto sleep_duration = rclcpp::Duration::from_seconds(2.0);
-  rclcpp::sleep_for(std::chrono::nanoseconds(sleep_duration.nanoseconds()));
+  rclcpp::sleep_for(std::chrono::seconds(2));
 
   demoGridMapIterator();
   demoSubmapIterator();
@@ -60,12 +59,10 @@ void IteratorsDemo::demoGridMapIterator()
     const int i = iterator.getLinearIndex();
     data(i) = 1.0;
     publish();
-    auto sleep_duration = rclcpp::Duration::from_seconds(0.01);
-    rclcpp::sleep_for(std::chrono::nanoseconds(sleep_duration.nanoseconds()));
+    rclcpp::sleep_for(std::chrono::milliseconds(10));
   }
 
-  auto sleep_duration = rclcpp::Duration::from_seconds(1.0);
-  rclcpp::sleep_for(std::chrono::nanoseconds(sleep_duration.nanoseconds()));
+  rclcpp::sleep_for(std::chrono::seconds(1));
 }
 
 void IteratorsDemo::demoSubmapIterator()
@@ -82,12 +79,10 @@ void IteratorsDemo::demoSubmapIterator()
   {
     map_.at("type", *iterator) = 1.0;
     publish();
-    auto sleep_duration = rclcpp::Duration::from_seconds(0.02);
-    rclcpp::sleep_for(std::chrono::nanoseconds(sleep_duration.nanoseconds()));
+    rclcpp::sleep_for(std::chrono::milliseconds(20));
   }
 
-  auto sleep_duration = rclcpp::Duration::from_seconds(1.0);
-  rclcpp::sleep_for(std::chrono::nanoseconds(sleep_duration.nanoseconds()));
+  rclcpp::sleep_for(std::chrono::seconds(1));
 }
 
 void IteratorsDemo::demoCircleIterator()
@@ -104,12 +99,10 @@ void IteratorsDemo::demoCircleIterator()
   {
     map_.at("type", *iterator) = 1.0;
     publish();
-    auto sleep_duration = rclcpp::Duration::from_seconds(0.02);
-    rclcpp::sleep_for(std::chrono::nanoseconds(sleep_duration.nanoseconds()));
+    rclcpp::sleep_for(std::chrono::milliseconds(20));
   }
 
-  auto sleep_duration = rclcpp::Duration::from_seconds(1.0);
-  rclcpp::sleep_for(std::chrono::nanoseconds(sleep_duration.nanoseconds()));
+  rclcpp::sleep_for(std::chrono::seconds(1));
 }
 
 void IteratorsDemo::demoEllipseIterator()
@@ -126,12 +119,10 @@ void IteratorsDemo::demoEllipseIterator()
   {
     map_.at("type", *iterator) = 1.0;
     publish();
-    auto sleep_duration = rclcpp::Duration::from_seconds(0.02);
-    rclcpp::sleep_for(std::chrono::nanoseconds(sleep_duration.nanoseconds()));
+    rclcpp::sleep_for(std::chrono::milliseconds(20));
   }
 
-  auto sleep_duration = rclcpp::Duration::from_seconds(1.0);
-  rclcpp::sleep_for(std::chrono::nanoseconds(sleep_duration.nanoseconds()));
+  rclcpp::sleep_for(std::chrono::seconds(1));
 }
 
 void IteratorsDemo::demoSpiralIterator()
@@ -148,12 +139,10 @@ void IteratorsDemo::demoSpiralIterator()
   {
     map_.at("type", *iterator) = 1.0;
     publish();
-    auto sleep_duration = rclcpp::Duration::from_seconds(0.02);
-    rclcpp::sleep_for(std::chrono::nanoseconds(sleep_duration.nanoseconds()));
+    rclcpp::sleep_for(std::chrono::milliseconds(20));
   }
 
-  auto sleep_duration = rclcpp::Duration::from_seconds(1.0);
-  rclcpp::sleep_for(std::chrono::nanoseconds(sleep_duration.nanoseconds()));
+  rclcpp::sleep_for(std::chrono::seconds(1));
 }
 
 void IteratorsDemo::demoLineIterator()
@@ -170,12 +159,10 @@ void IteratorsDemo::demoLineIterator()
   {
     map_.at("type", *iterator) = 1.0;
     publish();
-    auto sleep_duration = rclcpp::Duration::from_seconds(0.02);
-    rclcpp::sleep_for(std::chrono::nanoseconds(sleep_duration.nanoseconds()));
+    rclcpp::sleep_for(std::chrono::milliseconds(20));
   }
 
-  auto sleep_duration = rclcpp::Duration::from_seconds(1.0);
-  rclcpp::sleep_for(std::chrono::nanoseconds(sleep_duration.nanoseconds()));
+  rclcpp::sleep_for(std::chrono::seconds(1));
 }
 
 void IteratorsDemo::demoPolygonIterator(const bool prepareForOtherDemos)
@@ -209,14 +196,12 @@ void IteratorsDemo::demoPolygonIterator(const bool prepareForOtherDemos)
     map_.at("type", *iterator) = 1.0;
     if (!prepareForOtherDemos) {
       publish();
-      auto sleep_duration = rclcpp::Duration::from_seconds(0.02);
-      rclcpp::sleep_for(std::chrono::nanoseconds(sleep_duration.nanoseconds()));
+      rclcpp::sleep_for(std::chrono::milliseconds(20));
     }
   }
 
   if (!prepareForOtherDemos) {
-    auto sleep_duration = rclcpp::Duration::from_seconds(1.0);
-    rclcpp::sleep_for(std::chrono::nanoseconds(sleep_duration.nanoseconds()));
+    rclcpp::sleep_for(std::chrono::seconds(1));
   }
 }
 
@@ -251,8 +236,7 @@ void IteratorsDemo::demoSlidingWindowIterator()
     grid_map::PolygonRosConverter::toMessage(polygon, message);
     polygonPublisher_->publish(message);
 
-    auto sleep_duration = rclcpp::Duration::from_seconds(0.02);
-    rclcpp::sleep_for(std::chrono::nanoseconds(sleep_duration.nanoseconds()));
+    rclcpp::sleep_for(std::chrono::milliseconds(20));
   }
 }
 
