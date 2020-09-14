@@ -143,6 +143,8 @@ if (CATKIN_ENABLE_TESTING)
     ${Boost_INCLUDE_DIRS}
   )
   target_link_libraries(${PROJECT_NAME}-test
+    gmock
+    gtest
     ${PROJECT_NAME}
     ${Boost_LIBRARIES}
   )
