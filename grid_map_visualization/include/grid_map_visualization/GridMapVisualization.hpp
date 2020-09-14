@@ -31,7 +31,7 @@ namespace grid_map_visualization
 /*!
  * Visualizes a grid map by publishing different topics that can be viewed in Rviz.
  */
-class GridMapVisualization : public rclcpp::Node
+class GridMapVisualization
 {
 public:
   /*!
@@ -50,6 +50,9 @@ public:
    * @param message the grid map message to be visualized.
    */
   void callback(const grid_map_msgs::msg::GridMap::SharedPtr message);
+
+  //! ROS node shared pointer
+  rclcpp::Node::SharedPtr node_ptr;
 
 private:
   /*!

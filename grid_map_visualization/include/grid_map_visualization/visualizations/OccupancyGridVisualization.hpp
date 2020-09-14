@@ -26,7 +26,7 @@ public:
    * Constructor.
    * @param name the name of the visualization.
    */
-  explicit OccupancyGridVisualization(const std::string & name);
+  explicit OccupancyGridVisualization(const std::string & name, rclcpp::Node::SharedPtr node_ptr);
 
   /*!
    * Destructor.

@@ -30,7 +30,7 @@ public:
    * Constructor.
    * @param name the name of the visualization.
    */
-  explicit GridCellsVisualization(const std::string & name);
+  explicit GridCellsVisualization(const std::string & name, rclcpp::Node::SharedPtr node_ptr);
 
   /*!
    * Destructor.
