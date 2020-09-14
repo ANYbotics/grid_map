@@ -103,11 +103,6 @@ install(
   DESTINATION share/${PROJECT_NAME}
 )
 
-install(
-  DIRECTORY test/test_data/
-  DESTINATION share/${PROJECT_NAME}/test_data/
-)
-
 #############
 ## Testing ##
 #############
@@ -138,6 +133,12 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 
   find_package(ament_cmake_gtest REQUIRED)
+
+  # Adding test data to the package share directory
+  install(
+    DIRECTORY test/test_data/
+    DESTINATION share/${PROJECT_NAME}/test_data/
+  )
 
   ## Add gtest based cpp test target and link libraries
   ament_add_gtest(${PROJECT_NAME}-test
