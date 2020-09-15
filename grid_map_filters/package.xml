@@ -19,7 +19,7 @@
   <depend>tbb</depend>
 <!--   <test_depend>cmake_code_coverage</test_depend> -->
   <test_depend>gtest</test_depend>
-  <test_depend>gmock</test_depend>
+  <test_depend>google-mock</test_depend>
   <export>
     <filters plugin="${prefix}/filter_plugins.xml" />
   </export>
