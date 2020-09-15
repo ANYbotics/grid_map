@@ -197,7 +197,7 @@ Pointcloud::Ptr createStepTerrain(
 std::string getTestPcdFilePath()
 {
   std::string filename = ament_index_cpp::get_package_share_directory("grid_map_pcl") +
-    "/test/test_data/plane_noisy.pcd";
+    "/test_data/plane_noisy.pcd";
   return filename;
 }
 
