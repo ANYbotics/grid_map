@@ -15,7 +15,7 @@ Features:
 * **Visualizations:** The *grid_map_rviz_plugin* renders grid maps as 3d surface plots (height maps) in [RViz]. Additionally, the *grid_map_visualization* package helps to visualize grid maps as point clouds, occupancy grids, grid cells etc.
 * **Filters:** The *grid_map_filters* provides are range of filters to process grid maps as a sequence of filters. Parsing of mathematical expressions allows to flexibly setup powerful computations such as thresholding, normal vectors, smoothening, variance, inpainting, and matrix kernel convolutions.
 
-The grid map package has been tested with [ROS] Indigo, Jade (under Ubuntu 14.04), Kinetic (under Ubuntu 16.04), and Melodic (under Ubuntu 18.04). This is research code, expect that it changes often and any fitness for a particular purpose is disclaimed.
+This is research code, expect that it changes often and any fitness for a particular purpose is disclaimed.
 
 The source code is released under a [BSD 3-Clause license](LICENSE).
 
