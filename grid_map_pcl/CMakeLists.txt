@@ -148,6 +148,7 @@ if(BUILD_TESTING)
     test/PointcloudProcessorTest.cpp
     test/test_helpers.cpp
     test/test_grid_map_pcl.cpp
+    TIMEOUT 120
   )
 endif()
 
