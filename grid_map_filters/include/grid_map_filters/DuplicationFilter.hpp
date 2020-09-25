@@ -6,13 +6,15 @@
  *   Institute: ETH Zurich, ANYbotics
  */
 
-#pragma once
+#ifndef GRID_MAP_FILTERS__DUPLICATIONFILTER_HPP_
+#define GRID_MAP_FILTERS__DUPLICATIONFILTER_HPP_
 
-#include <filters/filter_base.h>
+#include <filters/filter_base.hpp>
 
 #include <string>
 
-namespace grid_map {
+namespace grid_map
+{
 
 /*!
  * Duplication filter class duplicates a layer of a grid map.
@@ -20,8 +22,7 @@ namespace grid_map {
 template<typename T>
 class DuplicationFilter : public filters::FilterBase<T>
 {
-
- public:
+public:
   /*!
    * Constructor
    */
@@ -35,16 +36,16 @@ class DuplicationFilter : public filters::FilterBase<T>
   /*!
    * Configures the filter from parameters on the parameter server.
    */
-  virtual bool configure();
+  bool configure() override;
 
   /*!
    * Duplicates the specified layers of a grid map.
    * @param mapIn with the layer to duplicate.
    * @param mapOut with the layer duplicated.
    */
-  virtual bool update(const T& mapIn, T& mapOut);
+  bool update(const T & mapIn, T & mapOut) override;
 
- private:
+private:
   //! Name of the layer that is duplicated.
   std::string inputLayer_;
 
@@ -52,4 +53,5 @@ class DuplicationFilter : public filters::FilterBase<T>
   std::string outputLayer_;
 };
 
-} /* namespace */
+}  // namespace grid_map
+#endif  // GRID_MAP_FILTERS__DUPLICATIONFILTER_HPP_

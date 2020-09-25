@@ -9,11 +9,10 @@
 #include "grid_map_filters/BufferNormalizerFilter.hpp"
 
 #include <grid_map_core/GridMap.hpp>
-#include <pluginlib/class_list_macros.h>
+#include <pluginlib/class_list_macros.hpp>
 
-using namespace filters;
-
-namespace grid_map {
+namespace grid_map
+{
 
 template<typename T>
 BufferNormalizerFilter<T>::BufferNormalizerFilter()
@@ -32,13 +31,15 @@ bool BufferNormalizerFilter<T>::configure()
 }
 
 template<typename T>
-bool BufferNormalizerFilter<T>::update(const T& mapIn, T& mapOut)
+bool BufferNormalizerFilter<T>::update(const T & mapIn, T & mapOut)
 {
   mapOut = mapIn;
   mapOut.convertToDefaultStartIndex();
   return true;
 }
 
-} /* namespace */
+}  // namespace grid_map
 
-PLUGINLIB_EXPORT_CLASS(grid_map::BufferNormalizerFilter<grid_map::GridMap>, filters::FilterBase<grid_map::GridMap>)
+PLUGINLIB_EXPORT_CLASS(
+  grid_map::BufferNormalizerFilter<grid_map::GridMap>,
+  filters::FilterBase<grid_map::GridMap>)

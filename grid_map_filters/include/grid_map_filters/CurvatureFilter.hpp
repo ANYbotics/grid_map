@@ -6,14 +6,16 @@
  *   Institute: ETH Zurich, ANYbotics
  */
 
-#pragma once
+#ifndef GRID_MAP_FILTERS__CURVATUREFILTER_HPP_
+#define GRID_MAP_FILTERS__CURVATUREFILTER_HPP_
 
-#include <filters/filter_base.h>
+#include <filters/filter_base.hpp>
 
 #include <Eigen/Core>
 #include <string>
 
-namespace grid_map {
+namespace grid_map
+{
 
 /*!
  * Compute the curvature (second derivative) of a layer in the map.
@@ -21,8 +23,7 @@ namespace grid_map {
 template<typename T>
 class CurvatureFilter : public filters::FilterBase<T>
 {
-
- public:
+public:
   /*!
    * Constructor
    */
@@ -36,7 +37,7 @@ class CurvatureFilter : public filters::FilterBase<T>
   /*!
    * Configures the filter from parameters on the Parameter Server
    */
-  virtual bool configure();
+  bool configure() override;
 
   /*!
    * Compute the curvature of a layer in a map and
@@ -44,9 +45,9 @@ class CurvatureFilter : public filters::FilterBase<T>
    * @param mapIn grid map containing the layer for which the curvature is computed for.
    * @param mapOut grid map containing mapIn and the new layer for the curvature.
    */
-  virtual bool update(const T& mapIn, T& mapOut);
+  bool update(const T & mapIn, T & mapOut) override;
 
- private:
+private:
   //! Input layer name.
   std::string inputLayer_;
 
@@ -54,4 +55,5 @@ class CurvatureFilter : public filters::FilterBase<T>
   std::string outputLayer_;
 };
 
-} /* namespace */
+}  // namespace grid_map
+#endif  // GRID_MAP_FILTERS__CURVATUREFILTER_HPP_

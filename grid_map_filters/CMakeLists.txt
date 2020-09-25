@@ -1,59 +1,35 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.5)
 project(grid_map_filters)
 
-# Better with parallelized algorithms.
-#set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}  -ffast-math")
-
-# Better with serial algorithms.
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  -ffast-math")
-
-# Other possible options.
-#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native -mtune=native -ffast-math")
-#set(TARGET_ARCHITECTURE "kaby-lake")
-
-## Find catkin macros and libraries
-find_package(catkin REQUIRED COMPONENTS
-  grid_map_core
-  grid_map_ros
-  grid_map_msgs
-  filters
-)
+## Find ament_cmake macros and libraries
+find_package(ament_cmake REQUIRED)
+find_package(filters REQUIRED)
+find_package(grid_map_cmake_helpers REQUIRED)
+find_package(grid_map_core REQUIRED)
+find_package(grid_map_msgs REQUIRED)
+find_package(grid_map_ros REQUIRED)
 
 ## System dependencies are found with CMake's conventions
 find_package(PkgConfig REQUIRED)
 
 pkg_check_modules(TBB "tbb")
-if (TBB_FOUND)
-  add_definitions(
-    ${TBB_CFLAGS}
-    ${TBB_CFLAGS_OTHER}
-  )
+if(TBB_FOUND)
+add_definitions(
+  ${TBB_CFLAGS}
+  ${TBB_CFLAGS_OTHER}
+)
 else()
-  message([FATAL_ERROR] "tbb module not found")
-endif ()
+message([FATAL_ERROR] "tbb module not found")
+endif()
 
-###################################
-## catkin specific configuration ##
-###################################
-## The catkin_package macro generates cmake config files for your package
-## Declare things to be passed to dependent projects
-## INCLUDE_DIRS: uncomment this if you package contains header files
-## LIBRARIES: libraries you create in this project that dependent projects also need
-## CATKIN_DEPENDS: catkin_packages dependent projects also need
-## DEPENDS: system dependencies of this project that dependent projects also need
-catkin_package(
-  INCLUDE_DIRS
-    include
-    ${TBB_INCLUDE_DIRS}
-  LIBRARIES
-    ${PROJECT_NAME}
-  CATKIN_DEPENDS
-    grid_map_ros
-    grid_map_core
-    grid_map_msgs
-    filters
-  DEPENDS
+grid_map_package()
+
+set(dependencies
+  TBB
+  filters
+  grid_map_core
+  grid_map_msgs
+  grid_map_ros
 )
 
 ###########
@@ -64,7 +40,6 @@ catkin_package(
 include_directories(
   include
   SYSTEM
-    ${catkin_INCLUDE_DIRS}
     ${TBB_INCLUDE_DIRS}
 )
 
@@ -88,10 +63,12 @@ add_library(${PROJECT_NAME}
   src/BufferNormalizerFilter.cpp
 )
 
-target_link_libraries(${PROJECT_NAME}
-  ${catkin_LIBRARIES}
-  ${TBB_LIBRARIES}
+ament_target_dependencies(${PROJECT_NAME}
+  ${dependencies}
 )
+
+target_compile_options(${PROJECT_NAME} PRIVATE "SHELL:--param ggc-min-expand=1")
+target_compile_options(${PROJECT_NAME} PRIVATE "SHELL:--param ggc-min-heapsize=32768")
 
 #############
 ## Install ##
@@ -100,20 +77,58 @@ target_link_libraries(${PROJECT_NAME}
 # Mark executables and/or libraries for installation
 install(
   TARGETS ${PROJECT_NAME}
-  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION lib/${PROJECT_NAME}
 )
 
 # Mark cpp header files for installation
 install(
   DIRECTORY include/${PROJECT_NAME}/
-  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+  DESTINATION include/${PROJECT_NAME}
   FILES_MATCHING PATTERN "*.hpp"
 )
 
 # Mark other files for installation
 install(
   FILES filter_plugins.xml
-  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+  DESTINATION share/${PROJECT_NAME}
 )
+
+#############
+## Testing ##
+#############
+
+if(BUILD_TESTING)
+  # Linting is setup this way to add a filter
+  # to ament_cpplint to ignore the lack of
+  # copyright messages at the top of files.
+  # Copyright messages are being checked for by both
+  # ament_cmake_cpplint & ament_cmake_copyright.
+
+  find_package(ament_lint_auto REQUIRED)
+  find_package(ament_lint_auto QUIET)
+  if(ament_lint_auto_FOUND)
+    # exclude copyright checks
+    list(APPEND AMENT_LINT_AUTO_EXCLUDE
+      ament_cmake_cpplint
+      ament_cmake_copyright
+    )
+    ament_lint_auto_find_test_dependencies()
+
+    # run cpplint without copyright filter
+    find_package(ament_cmake_cpplint)
+    ament_cpplint(
+      FILTERS -legal/copyright
+    )
+  endif()
+  ament_lint_auto_find_test_dependencies()
+endif()
+
+ament_export_include_directories(
+  include
+  ${TBB_INCLUDE_DIRS}
+)
+ament_export_dependencies(${dependencies})
+ament_export_libraries(${PROJECT_NAME})
+ament_package()
