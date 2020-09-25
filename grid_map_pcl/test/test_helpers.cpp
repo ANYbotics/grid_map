@@ -92,7 +92,6 @@ Pointcloud::Ptr createNoisyPlanePointcloud(
   const double mean = meanZ;
   const double stdDev = stdDevZ;
   std::normal_distribution<double> normalDist(mean, stdDev);  // N
-  // std::cout << distr(generator) << '\n';
 
   Pointcloud::Ptr cloud(new Pointcloud());
   cloud->points.reserve(nPoints);

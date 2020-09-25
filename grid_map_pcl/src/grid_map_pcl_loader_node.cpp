@@ -1,5 +1,5 @@
 /*
- * grid_map_pcl_loader_node->cpp
+ * grid_map_pcl_loader_node.cpp
  *
  *  Created on: Aug 26, 2019
  *      Author: Edo Jelavic
@@ -26,8 +26,9 @@ int main(int argc, char ** argv)
   auto node = std::make_shared<rclcpp::Node>("grid_map_pcl_loader_node");
   gm::setVerbosityLevelToDebugIfFlagSet(node);
 
+  rclcpp::QoS custom_qos = rclcpp::QoS(1).transient_local();
   auto gridMapPub = node->create_publisher<grid_map_msgs::msg::GridMap>(
-    "grid_map_from_raw_pointcloud", rclcpp::QoS(1).transient_local());
+    "grid_map_from_raw_pointcloud", custom_qos);
 
   grid_map::GridMapPclLoader gridMapPclLoader(node->get_logger());
   const std::string pathToCloud = gm::getPcdFilePath(node);

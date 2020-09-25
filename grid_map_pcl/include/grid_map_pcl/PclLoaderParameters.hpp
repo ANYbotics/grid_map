@@ -42,12 +42,14 @@ class PclLoaderParameters
     unsigned int minNumPoints_ = 2;
     unsigned int maxNumPoints_ = 1000000;
   };
+
   struct OutlierRemovalParameters
   {
     bool isRemoveOutliers_ = false;
     double meanK_ = 10.0;
     double stddevThreshold_ = 1.0;
   };
+
   struct RigidBodyTransformation
   {
     Eigen::Vector3d translation_ {0.0, 0.0, 0.0};

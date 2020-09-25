@@ -18,7 +18,6 @@ int main(int _argc, char ** _argv)
 {
   argc = _argc;
   argv = _argv;
-  rclcpp::init(_argc, _argv);
   testing::InitGoogleTest(&_argc, _argv);
   srand(static_cast<int>(time(0)));
   return RUN_ALL_TESTS();

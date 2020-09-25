@@ -27,26 +27,24 @@ class GridMapPclLoaderTest : public ::testing::Test
 protected:
   void SetUp() override
   {
-    node = std::make_shared<rclcpp::Node>("GridMapPclLoaderTest");
-
     // Changing the logging verbosity to WARN
     auto ret = rcutils_logging_set_logger_level(
-      node->get_logger().get_name(), RCUTILS_LOG_SEVERITY_DEBUG);
+      test_logger_.get_name(), RCUTILS_LOG_SEVERITY_WARN);
     if (ret != RCUTILS_RET_OK) {
       RCLCPP_ERROR(
-        node->get_logger(), "Failed to change logging severity: %s",
+        test_logger_, "Failed to change logging severity: %s",
         rcutils_get_error_string().str);
       rcutils_reset_error();
     }
   }
 
-  rclcpp::Node::SharedPtr node;
+  rclcpp::Logger test_logger_ = rclcpp::get_logger("GridMapPclLoaderTest");
 };
 
 // cppcheck-suppress syntaxError
 TEST_F(GridMapPclLoaderTest, FlatGroundRealDataset)
 {
-  grid_map::GridMapPclLoader gridMapPclLoader(node->get_logger());
+  grid_map::GridMapPclLoader gridMapPclLoader(test_logger_);
   gridMapPclLoader.loadParameters(grid_map_pcl_test::getConfigFilePath());
   gridMapPclLoader.loadCloudFromPcdFile(grid_map_pcl_test::getTestPcdFilePath());
   gridMapPclLoader.preProcessInputCloud();
@@ -75,7 +73,7 @@ TEST_F(GridMapPclLoaderTest, PerfectPlane)
   for (int i = 0; i < numTests; ++i) {
     double height;
     auto cloud = grid_map_pcl_test::PointcloudCreator::createPerfectPlane(&height);
-    grid_map::GridMapPclLoader gridMapPclLoader(node->get_logger());
+    grid_map::GridMapPclLoader gridMapPclLoader(test_logger_);
     grid_map_pcl_test::runGridMapPclLoaderOnInputCloud(cloud, &gridMapPclLoader);
     const auto elevationValues = grid_map_pcl_test::getNonNanElevationValues(
       gridMapPclLoader.getGridMap());
@@ -102,7 +100,7 @@ TEST_F(GridMapPclLoaderTest, NoisyPlane)
   for (int i = 0; i < numTests; ++i) {
     double height, stdDevZ;
     auto cloud = grid_map_pcl_test::PointcloudCreator::createNoisyPlane(&height, &stdDevZ);
-    grid_map::GridMapPclLoader gridMapPclLoader(node->get_logger());
+    grid_map::GridMapPclLoader gridMapPclLoader(test_logger_);
     grid_map_pcl_test::runGridMapPclLoaderOnInputCloud(cloud, &gridMapPclLoader);
     const auto elevationValues = grid_map_pcl_test::getNonNanElevationValues(
       gridMapPclLoader.getGridMap());
@@ -125,7 +123,7 @@ TEST_F(GridMapPclLoaderTest, NoisyDoublePlane)
 
   double minZ, stdDevZ;
   auto cloud = grid_map_pcl_test::PointcloudCreator::createNoisyDoublePlane(&minZ, &stdDevZ);
-  grid_map::GridMapPclLoader gridMapPclLoader(node->get_logger());
+  grid_map::GridMapPclLoader gridMapPclLoader(test_logger_);
   grid_map_pcl_test::runGridMapPclLoaderOnInputCloud(cloud, &gridMapPclLoader);
   const auto elevationValues = grid_map_pcl_test::getNonNanElevationValues(
     gridMapPclLoader.getGridMap());
@@ -151,7 +149,7 @@ TEST_F(GridMapPclLoaderTest, InitializeGeometry)
     auto cloud = grid_map_pcl_test::PointcloudCreator::createVerticesOfASquare(
       &xLocation,
       &yLocation);
-    grid_map::GridMapPclLoader gridMapPclLoader(node->get_logger());
+    grid_map::GridMapPclLoader gridMapPclLoader(test_logger_);
     gridMapPclLoader.loadParameters(grid_map_pcl_test::getConfigFilePath());
     gridMapPclLoader.setInputCloud(cloud);
     gridMapPclLoader.initializeGridMapGeometryFromInputCloud();
@@ -183,7 +181,7 @@ TEST_F(GridMapPclLoaderTest, NoisyStepTerrain)
     double stepLocationX, zHigh, zLow, stdDevZ;
     const auto cloud = grid_map_pcl_test::PointcloudCreator::createNoisyPointcloudOfStepTerrain(
       &stepLocationX, &zHigh, &zLow, &stdDevZ);
-    grid_map::GridMapPclLoader gridMapPclLoader(node->get_logger());
+    grid_map::GridMapPclLoader gridMapPclLoader(test_logger_);
     grid_map_pcl_test::runGridMapPclLoaderOnInputCloud(cloud, &gridMapPclLoader);
     const auto coordinates = grid_map_pcl_test::getNonNanElevationValuesWithCoordinates(
       gridMapPclLoader.getGridMap());
@@ -216,7 +214,7 @@ TEST_F(GridMapPclLoaderTest, CalculateElevation)
     auto cloud = grid_map_pcl_test::PointcloudCreator::createNBlobsAboveEachOther(
       &minZ, &stdDevZ,
       &nBlobs);
-    grid_map::GridMapPclLoader gridMapPclLoader(node->get_logger());
+    grid_map::GridMapPclLoader gridMapPclLoader(test_logger_);
     gridMapPclLoader.loadParameters(grid_map_pcl_test::getConfigFilePath());
     gridMapPclLoader.setInputCloud(cloud);
     double elevation = gridMapPclLoader.calculateElevationFromPointsInsideGridMapCell(cloud);
@@ -240,7 +238,7 @@ TEST_F(GridMapPclLoaderTest, SavePointclouds)
   double dummyDouble1, dummyDouble2, dummyDouble3, dummyDouble4;
   int dummyInt;
 
-  grid_map::GridMapPclLoader gridMapPclLoader(node->get_logger());
+  grid_map::GridMapPclLoader gridMapPclLoader(test_logger_);
   gridMapPclLoader.loadParameters(grid_map_pcl_test::getConfigFilePath());
 
   // perfect plane

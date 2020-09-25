@@ -25,13 +25,13 @@ namespace grid_map_pcl_test
 
 TEST(PointcloudProcessorTest, ExtractClusters)
 {
-  rclcpp::Node node("PointcloudProcessorTest");
+  rclcpp::Logger logger = rclcpp::get_logger("PointcloudProcessorTest");
 
   auto ret = rcutils_logging_set_logger_level(
-    node.get_logger().get_name(), RCUTILS_LOG_SEVERITY_WARN);
+    logger.get_name(), RCUTILS_LOG_SEVERITY_WARN);
   if (ret != RCUTILS_RET_OK) {
     RCLCPP_ERROR(
-      node.get_logger(),
+      logger,
       "Failed to change logging severity: %s", rcutils_get_error_string().str);
     rcutils_reset_error();
   }
@@ -46,7 +46,7 @@ TEST(PointcloudProcessorTest, ExtractClusters)
     auto cloud = grid_map_pcl_test::PointcloudCreator::createNBlobsAboveEachOther(
       &minZ, &stdDevZ,
       &nBlobs);
-    grid_map::grid_map_pcl::PointcloudProcessor pointcloudProcessor(node.get_logger());
+    grid_map::grid_map_pcl::PointcloudProcessor pointcloudProcessor(logger);
     pointcloudProcessor.loadParameters(grid_map_pcl_test::getConfigFilePath());
     auto clusters = pointcloudProcessor.extractClusterCloudsFromPointcloud(cloud);
     EXPECT_EQ(clusters.size(), static_cast<uint64_t>(nBlobs));

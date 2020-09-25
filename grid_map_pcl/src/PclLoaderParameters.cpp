@@ -12,7 +12,6 @@
 
 #include <string>
 
-
 namespace grid_map
 {
 

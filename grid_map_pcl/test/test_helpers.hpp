@@ -15,6 +15,7 @@
 #include <string>
 #include <vector>
 #include <random>
+
 #include "grid_map_core/GridMap.hpp"
 #include "grid_map_core/iterators/GridMapIterator.hpp"
 

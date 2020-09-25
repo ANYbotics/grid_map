@@ -116,8 +116,8 @@ void GridMapPclLoader::initializeGridMapGeometryFromInputCloud()
 
   RCLCPP_INFO_STREAM(
     node_logger_,
-    "Grid map dimensions: " << workingGridMap_.getLength()(
-      0) << " x " << workingGridMap_.getLength()(1));
+    "Grid map dimensions: " << workingGridMap_.getLength()(0) <<
+      " x " << workingGridMap_.getLength()(1));
   RCLCPP_INFO_STREAM(
     node_logger_, "Grid map resolution: " << workingGridMap_.getResolution());
   RCLCPP_INFO_STREAM(
@@ -137,7 +137,9 @@ void GridMapPclLoader::addLayerFromInputCloud(const std::string & layer)
   unsigned int linearGridMapSize = workingGridMap_.getSize().prod();
 
 #ifndef GRID_MAP_PCL_OPENMP_FOUND
-  RCLCPP_WARN_STREAM("OpemMP not found, defaulting to single threaded implementation");
+  RCLCPP_WARN_STREAM(
+    node_logger_,
+    "OpemMP not found, defaulting to single threaded implementation");
 #else
   omp_set_num_threads(params_->get().numThreads_);
 #pragma omp parallel for schedule(dynamic, 10)

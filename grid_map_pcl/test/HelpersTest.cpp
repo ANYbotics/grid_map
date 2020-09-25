@@ -24,7 +24,6 @@ namespace grid_map_pcl_test
 
 TEST(HelpersTest, MeanPositionTest)
 {
-  // rcutils_logging_set_logger_level(get_logger().get_name(), RCUTILS_LOG_SEVERITY_WARN);
   const auto seed = std::rand();
   grid_map_pcl_test::rndGenerator.seed(seed);
 
