@@ -16,7 +16,7 @@ int main(int argc, char ** argv)
   rclcpp::init(argc, argv);
   auto node = std::make_shared<grid_map_visualization::GridMapVisualization>(
     "grid_map_visualizations");
-  rclcpp::spin(node->node_ptr);
+  rclcpp::spin(node->nodePtr);
   rclcpp::shutdown();
   return 0;
 }

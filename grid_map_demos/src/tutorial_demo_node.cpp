@@ -100,9 +100,6 @@ int main(int argc, char ** argv)
 
     // Show absolute difference and compute mean squared error.
     map.add("error", (map.get("elevation_filtered") - map.get("elevation")).cwiseAbs());
-    // unsigned int nCells = map.getSize().prod();  // unused variable
-    // unused variable
-    // double rootMeanSquaredError = sqrt((map["error"].array().pow(2).sum()) / nCells);
 
     // Publish grid map.
     map.setTimestamp(time.nanoseconds());

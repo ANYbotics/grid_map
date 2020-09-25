@@ -22,8 +22,8 @@
 namespace grid_map_visualization
 {
 
-VisualizationFactory::VisualizationFactory(rclcpp::Node::SharedPtr node_ptr)
-: node_ptr_(node_ptr)
+VisualizationFactory::VisualizationFactory(rclcpp::Node::SharedPtr nodePtr)
+: nodePtr_(nodePtr)
 {
   types_.push_back("point_cloud");
   types_.push_back("flat_point_cloud");
@@ -49,22 +49,22 @@ std::shared_ptr<VisualizationBase> VisualizationFactory::getInstance(
   // TODO(needs_assignment):
   // Make this nicer: http://stackoverflow.com/questions/9975672/c-automatic-factory-registration-of-derived-types
   if (type == "point_cloud") {
-    return std::shared_ptr<VisualizationBase>(new PointCloudVisualization(name, node_ptr_));
+    return std::shared_ptr<VisualizationBase>(new PointCloudVisualization(name, nodePtr_));
   }
   if (type == "flat_point_cloud") {
-    return std::shared_ptr<VisualizationBase>(new FlatPointCloudVisualization(name, node_ptr_));
+    return std::shared_ptr<VisualizationBase>(new FlatPointCloudVisualization(name, nodePtr_));
   }
   if (type == "vectors") {
-    return std::shared_ptr<VisualizationBase>(new VectorVisualization(name, node_ptr_));
+    return std::shared_ptr<VisualizationBase>(new VectorVisualization(name, nodePtr_));
   }
   if (type == "occupancy_grid") {
-    return std::shared_ptr<VisualizationBase>(new OccupancyGridVisualization(name, node_ptr_));
+    return std::shared_ptr<VisualizationBase>(new OccupancyGridVisualization(name, nodePtr_));
   }
   if (type == "grid_cells") {
-    return std::shared_ptr<VisualizationBase>(new GridCellsVisualization(name, node_ptr_));
+    return std::shared_ptr<VisualizationBase>(new GridCellsVisualization(name, nodePtr_));
   }
   if (type == "map_region") {
-    return std::shared_ptr<VisualizationBase>(new MapRegionVisualization(name, node_ptr_));
+    return std::shared_ptr<VisualizationBase>(new MapRegionVisualization(name, nodePtr_));
   }
   return std::shared_ptr<VisualizationBase>();
 }

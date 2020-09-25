@@ -35,7 +35,7 @@ public:
    * Constructor.
    * @param name the name of the visualization.
    */
-  explicit VectorVisualization(const std::string & name, rclcpp::Node::SharedPtr node_ptr);
+  explicit VectorVisualization(const std::string & name, rclcpp::Node::SharedPtr nodePtr);
 
   /*!
    * Destructor.

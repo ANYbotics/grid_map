@@ -28,7 +28,7 @@ public:
    * Constructor.
    * @param name the name of the visualization.
    */
-  explicit VisualizationBase(const std::string & name, rclcpp::Node::SharedPtr node_ptr);
+  explicit VisualizationBase(const std::string & name, rclcpp::Node::SharedPtr nodePtr);
 
   /*!
    * Destructor.
@@ -64,7 +64,7 @@ protected:
   std::string name_;
 
   //! ROS node shared pointer
-  rclcpp::Node::SharedPtr node_ptr_;
+  rclcpp::Node::SharedPtr nodePtr_;
 };
 
 }  // namespace grid_map_visualization

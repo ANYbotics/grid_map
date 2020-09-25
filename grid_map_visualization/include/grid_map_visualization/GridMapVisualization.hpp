@@ -52,7 +52,7 @@ public:
   void callback(const grid_map_msgs::msg::GridMap::SharedPtr message);
 
   //! ROS node shared pointer
-  rclcpp::Node::SharedPtr node_ptr;
+  rclcpp::Node::SharedPtr nodePtr;
 
 private:
   /*!

@@ -33,7 +33,7 @@ public:
    * Constructor.
    * @param name the name of the visualization.
    */
-  explicit MapRegionVisualization(const std::string & name, rclcpp::Node::SharedPtr node_ptr);
+  explicit MapRegionVisualization(const std::string & name, rclcpp::Node::SharedPtr nodePtr);
 
   /*!
    * Destructor.
