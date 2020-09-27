@@ -6,21 +6,23 @@
  *   Institute: ETH Zurich, ANYbotics
  */
 
-#pragma once
+#ifndef GRID_MAP_FILTERS__MININRADIUSFILTER_HPP_
+#define GRID_MAP_FILTERS__MININRADIUSFILTER_HPP_
 
-#include <filters/filter_base.h>
+#include <filters/filter_base.hpp>
 
 #include <string>
 
-namespace grid_map {
+namespace grid_map
+{
 
 /*!
  * Filter class to compute the minimal value inside a radius.
  */
 template<typename T>
-class MinInRadiusFilter : public filters::FilterBase<T> {
-
- public:
+class MinInRadiusFilter : public filters::FilterBase<T>
+{
+public:
   /*!
    * Constructor.
    */
@@ -34,7 +36,7 @@ class MinInRadiusFilter : public filters::FilterBase<T> {
   /*!
    * Configures the filter from parameters on the Parameter Server
    */
-  virtual bool configure();
+  bool configure() override;
 
   /*!
    * Computes for each value in the input layer the minimum of all values in a radius around it.
@@ -42,9 +44,9 @@ class MinInRadiusFilter : public filters::FilterBase<T> {
    * @param mapIn grid map containing the input layer.
    * @param mapOut grid map containing the original layers and the new layer with the minimal values.
    */
-  virtual bool update(const T& mapIn, T& mapOut);
+  bool update(const T & mapIn, T & mapOut) override;
 
- private:
+private:
   //! Radius to take the minimum in.
   double radius_;
 
@@ -55,4 +57,5 @@ class MinInRadiusFilter : public filters::FilterBase<T> {
   std::string outputLayer_;
 };
 
-} /* namespace */
+}  // namespace grid_map
+#endif  // GRID_MAP_FILTERS__MININRADIUSFILTER_HPP_

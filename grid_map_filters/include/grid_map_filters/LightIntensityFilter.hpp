@@ -6,14 +6,16 @@
  *   Institute: ETH Zurich, ANYbotics
  */
 
-#pragma once
+#ifndef GRID_MAP_FILTERS__LIGHTINTENSITYFILTER_HPP_
+#define GRID_MAP_FILTERS__LIGHTINTENSITYFILTER_HPP_
 
-#include <filters/filter_base.h>
+#include <filters/filter_base.hpp>
 
 #include <Eigen/Core>
 #include <string>
 
-namespace grid_map {
+namespace grid_map
+{
 
 /*!
  * Compute the diffuse lighting of a surface as new black and white color layer.
@@ -21,8 +23,7 @@ namespace grid_map {
 template<typename T>
 class LightIntensityFilter : public filters::FilterBase<T>
 {
-
- public:
+public:
   /*!
    * Constructor
    */
@@ -36,16 +37,16 @@ class LightIntensityFilter : public filters::FilterBase<T>
   /*!
    * Configures the filter from parameters on the Parameter Server
    */
-  virtual bool configure();
+  bool configure() override;
 
   /*!
    * Compute the diffuse lighting layer.
    * @param mapIn grid map containing the layers of the normal vectors.
    * @param mapOut grid map containing mapIn and the black and white lighting color layer.
    */
-  virtual bool update(const T& mapIn, T& mapOut);
+  bool update(const T & mapIn, T & mapOut) override;
 
- private:
+private:
   //! Input layers prefix.
   std::string inputLayersPrefix_;
 
@@ -56,4 +57,5 @@ class LightIntensityFilter : public filters::FilterBase<T>
   Eigen::Vector3f lightDirection_;
 };
 
-} /* namespace */
+}  // namespace grid_map
+#endif  // GRID_MAP_FILTERS__LIGHTINTENSITYFILTER_HPP_
