@@ -49,7 +49,7 @@ include_directories(
 )
 
 ## Declare a cpp library
-add_library(${PROJECT_NAME}
+add_library(${PROJECT_NAME} SHARED
   src/GridMapRosConverter.cpp
   src/GridMapMsgHelpers.cpp
   src/PolygonRosConverter.cpp
