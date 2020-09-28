@@ -20,23 +20,30 @@
 #include <pcl/point_types.h>
 #include <pcl/segmentation/extract_clusters.h>
 
-#include <ros/console.h>
+#include <rclcpp/rclcpp.hpp>
 
-namespace grid_map {
-namespace grid_map_pcl {
+#include <string>
+#include <vector>
+#include <memory>
 
-PointcloudProcessor::PointcloudProcessor()
+namespace grid_map
 {
-  params_ = std::make_unique<grid_map_pcl::PclLoaderParameters>();
+namespace grid_map_pcl
+{
+
+PointcloudProcessor::PointcloudProcessor(const rclcpp::Logger & node_logger)
+: node_logger_(node_logger)
+{
+  params_ = std::make_unique<grid_map_pcl::PclLoaderParameters>(node_logger_);
 }
 
-void PointcloudProcessor::loadParameters(const std::string& filename)
+void PointcloudProcessor::loadParameters(const std::string & filename)
 {
   params_->loadParameters(filename);
 }
 
 Pointcloud::Ptr PointcloudProcessor::removeOutliersFromInputCloud(
-    Pointcloud::ConstPtr inputCloud) const
+  Pointcloud::ConstPtr inputCloud) const
 {
   pcl::StatisticalOutlierRemoval<pcl::PointXYZ> sor;
   sor.setInputCloud(inputCloud);
@@ -48,12 +55,12 @@ Pointcloud::Ptr PointcloudProcessor::removeOutliersFromInputCloud(
 }
 
 std::vector<Pointcloud::Ptr> PointcloudProcessor::extractClusterCloudsFromPointcloud(
-    Pointcloud::ConstPtr inputCloud) const
+  Pointcloud::ConstPtr inputCloud) const
 {
   std::vector<pcl::PointIndices> clusterIndices = extractClusterIndicesFromPointcloud(inputCloud);
   std::vector<Pointcloud::Ptr> clusterClouds;
   clusterClouds.reserve(clusterIndices.size());
-  for (const auto& indicesSet : clusterIndices) {
+  for (const auto & indicesSet : clusterIndices) {
     Pointcloud::Ptr clusterCloud = makeCloudFromIndices(indicesSet.indices, inputCloud);
     clusterClouds.push_back(clusterCloud);
   }
@@ -63,7 +70,7 @@ std::vector<Pointcloud::Ptr> PointcloudProcessor::extractClusterCloudsFromPointc
 
 // todo (jelavice) maybe use the libpointmatcher for this?? faster?
 std::vector<pcl::PointIndices> PointcloudProcessor::extractClusterIndicesFromPointcloud(
-    Pointcloud::ConstPtr inputCloud) const
+  Pointcloud::ConstPtr inputCloud) const
 {
   // Create a kd tree to cluster the input point cloud
   pcl::search::KdTree<pcl::PointXYZ>::Ptr tree(new pcl::search::KdTree<pcl::PointXYZ>);
@@ -71,7 +78,7 @@ std::vector<pcl::PointIndices> PointcloudProcessor::extractClusterIndicesFromPoi
   std::vector<pcl::PointIndices> clusterIndices;
   pcl::EuclideanClusterExtraction<pcl::PointXYZ> euclideanClusterExtraction;
   euclideanClusterExtraction.setClusterTolerance(
-      params_->get().clusterExtraction_.clusterTolerance_);
+    params_->get().clusterExtraction_.clusterTolerance_);
   euclideanClusterExtraction.setMinClusterSize(params_->get().clusterExtraction_.minNumPoints_);
   euclideanClusterExtraction.setMaxClusterSize(params_->get().clusterExtraction_.maxNumPoints_);
   euclideanClusterExtraction.setSearchMethod(tree);
@@ -81,8 +88,9 @@ std::vector<pcl::PointIndices> PointcloudProcessor::extractClusterIndicesFromPoi
   return clusterIndices;
 }
 
-Pointcloud::Ptr PointcloudProcessor::makeCloudFromIndices(const std::vector<int>& indices,
-                                                          Pointcloud::ConstPtr inputCloud) const
+Pointcloud::Ptr PointcloudProcessor::makeCloudFromIndices(
+  const std::vector<int> & indices,
+  Pointcloud::ConstPtr inputCloud) const
 {
   Pointcloud::Ptr cloud(new Pointcloud());
 
@@ -100,35 +108,37 @@ Pointcloud::Ptr PointcloudProcessor::downsampleInputCloud(Pointcloud::ConstPtr i
 {
   pcl::VoxelGrid<pcl::PointXYZ> voxelGrid;
   voxelGrid.setInputCloud(inputCloud);
-  const auto& voxelSize = params_->get().downsampling_.voxelSize_;
+  const auto & voxelSize = params_->get().downsampling_.voxelSize_;
   voxelGrid.setLeafSize(voxelSize.x(), voxelSize.y(), voxelSize.z());
   Pointcloud::Ptr downsampledCloud(new Pointcloud());
   voxelGrid.filter(*downsampledCloud);
   return downsampledCloud;
 }
 
-void PointcloudProcessor::savePointCloudAsPcdFile(const std::string& filename,
-                                                  const Pointcloud &cloud) const
+void PointcloudProcessor::savePointCloudAsPcdFile(
+  const std::string & filename,
+  const Pointcloud & cloud) const
 {
   pcl::PCDWriter writer;
   pcl::PCLPointCloud2 pointCloud2;
   pcl::toPCLPointCloud2(cloud, pointCloud2);
-  writer.write(filename, pointCloud2, Eigen::Vector4f::Zero(), Eigen::Quaternionf::Identity(),
-               false);
+  writer.write(
+    filename, pointCloud2, Eigen::Vector4f::Zero(), Eigen::Quaternionf::Identity(),
+    false);
 }
 
 Pointcloud::Ptr PointcloudProcessor::applyRigidBodyTransformation(
-    Pointcloud::ConstPtr inputCloud) const
+  Pointcloud::ConstPtr inputCloud) const
 {
   auto transformedCloud = grid_map_pcl::transformCloud(
-      inputCloud,
-      grid_map_pcl::getRigidBodyTransform(params_->get().cloudTransformation_.translation_,
-                                          params_->get().cloudTransformation_.rpyIntrinsic_));
+    inputCloud,
+    grid_map_pcl::getRigidBodyTransform(
+      params_->get().cloudTransformation_.translation_,
+      params_->get().cloudTransformation_.rpyIntrinsic_,
+      node_logger_));
   return transformedCloud;
-
 }
 
-} /* namespace grid_map_pcl */
+}  // namespace grid_map_pcl
 
-} /* namespace grid_map*/
-
+}  // namespace grid_map

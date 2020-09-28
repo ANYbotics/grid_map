@@ -8,18 +8,17 @@
 
 // gtest
 #include <gtest/gtest.h>
-#include <ros/ros.h>
+#include <rclcpp/rclcpp.hpp>
 
 int argc;
-char **argv;
-
+char ** argv;
 
 // Run all the tests that were declared with TEST()
-int main(int _argc, char **_argv) {
-	ros::Time::init();
-	argc = _argc;
-	argv = _argv;
-	testing::InitGoogleTest(&_argc, _argv);
-	srand((int) time(0));
-	return RUN_ALL_TESTS();
+int main(int _argc, char ** _argv)
+{
+  argc = _argc;
+  argv = _argv;
+  testing::InitGoogleTest(&_argc, _argv);
+  srand(static_cast<int>(time(0)));
+  return RUN_ALL_TESTS();
 }
