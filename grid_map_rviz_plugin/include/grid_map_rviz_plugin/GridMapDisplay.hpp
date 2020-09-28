@@ -12,7 +12,7 @@
 #include <grid_map_ros/grid_map_ros.hpp>
 #include <grid_map_msgs/GridMap.h>
 #include <boost/circular_buffer.hpp>
-#include <rviz/message_filter_display.h>
+#include "grid_map_rviz_plugin/modified/message_filter_display.h"
 #endif
 
 namespace Ogre {
