@@ -37,7 +37,7 @@ int main(int argc, char** argv)
     grid_map_msgs::GridMap message;
     GridMapRosConverter::toMessage(map, message);
     publisher.publish(message);
-    ROS_INFO_THROTTLE(1.0, "Grid map (timestamp %f) published.", message.header.stamp.toSec());
+    ROS_INFO_THROTTLE(1.0, "Grid map (timestamp %f) published.", message.info.header.stamp.toSec());
 
     // Wait for next cycle.
     rate.sleep();

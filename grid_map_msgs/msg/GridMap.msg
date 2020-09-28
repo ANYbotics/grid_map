@@ -1,7 +1,4 @@
-# Header (time and frame)
-Header header
-
-# Grid map metadata
+# Grid map header
 GridMapInfo info
 
 # Grid map layer names.
