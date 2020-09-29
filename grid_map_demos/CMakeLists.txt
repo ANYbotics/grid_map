@@ -44,7 +44,7 @@ set(dependencies
 ## Your package locations should be listed before other locations
 include_directories(
   include
-  # ${EIGEN3_INCLUDE_DIR}
+  ${EIGEN3_INCLUDE_DIR}
   # ${OCTOMAP_INCLUDE_DIR}
 )
 
