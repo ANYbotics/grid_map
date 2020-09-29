@@ -23,8 +23,8 @@
 namespace grid_map_visualization
 {
 
-VectorVisualization::VectorVisualization(const std::string & name)
-: VisualizationBase(name)
+VectorVisualization::VectorVisualization(const std::string & name, rclcpp::Node::SharedPtr nodePtr)
+: VisualizationBase(name, nodePtr)
 {
 }
 
@@ -34,59 +34,57 @@ VectorVisualization::~VectorVisualization()
 
 bool VectorVisualization::readParameters()
 {
-  this->declare_parameter(std::string(this->get_name()) + ".params.layer_prefix", std::string(""));
-  this->declare_parameter(
-    std::string(this->get_name()) + ".params.position_layer",
-    std::string(""));
-  this->declare_parameter(std::string(this->get_name()) + ".params.scale", 1.0);
-  this->declare_parameter(std::string(this->get_name()) + ".params.line_width", 0.003);
-  this->declare_parameter(std::string(this->get_name()) + ".params.color", 65280);
+  nodePtr_->declare_parameter(name_ + ".params.layer_prefix", std::string(""));
+  nodePtr_->declare_parameter(name_ + ".params.position_layer", std::string(""));
+  nodePtr_->declare_parameter(name_ + ".params.scale", 1.0);
+  nodePtr_->declare_parameter(name_ + ".params.line_width", 0.003);
+  nodePtr_->declare_parameter(name_ + ".params.color", 65280);
 
   std::string typePrefix;
-  if (!this->get_parameter(std::string(this->get_name()) + ".params.layer_prefix", typePrefix)) {
+  if (!nodePtr_->get_parameter(name_ + ".params.layer_prefix", typePrefix)) {
     RCLCPP_ERROR(
-      this->get_logger(),
+      nodePtr_->get_logger(),
       "VectorVisualization with name '%s' did not find a 'layer_prefix' parameter.",
-      this->get_name());
+      name_);
     return false;
   }
   types_.push_back(typePrefix + "x");
   types_.push_back(typePrefix + "y");
   types_.push_back(typePrefix + "z");
 
-  if (!this->get_parameter(
-      std::string(this->get_name()) + ".params.position_layer",
+  if (!nodePtr_->get_parameter(
+      name_ + ".params.position_layer",
       positionLayer_))
   {
     RCLCPP_ERROR(
-      this->get_logger(),
+      nodePtr_->get_logger(),
       "VectorVisualization with name '%s' did not find a 'position_layer' parameter.",
-      this->get_name());
+      name_);
     return false;
   }
 
   scale_ = 1.0;
-  if (!this->get_parameter(std::string(this->get_name()) + ".params.scale", scale_)) {
+  if (!nodePtr_->get_parameter(name_ + ".params.scale", scale_)) {
     RCLCPP_INFO(
-      this->get_logger(),
+      nodePtr_->get_logger(),
       "VectorVisualization with name '%s' did not find a 'scale' parameter. Using default.",
-      this->get_name());
+      name_);
   }
 
   lineWidth_ = 0.003;
-  if (!this->get_parameter(std::string(this->get_name()) + ".params.line_width", lineWidth_)) {
+  if (!nodePtr_->get_parameter(name_ + ".params.line_width", lineWidth_)) {
     RCLCPP_INFO(
-      this->get_logger(),
+      nodePtr_->get_logger(),
       "VectorVisualization with name '%s' did not find a 'line_width' parameter. Using default.",
-      this->get_name());
+      name_);
   }
 
   int colorValue = 65280;  // green
-  if (!this->get_parameter(std::string(this->get_name()) + ".params.color", colorValue)) {
+  if (!nodePtr_->get_parameter(name_ + ".params.color", colorValue)) {
     RCLCPP_INFO(
-      this->get_logger(),
+      nodePtr_->get_logger(),
       "VectorVisualization with name '%s' did not find a 'color' parameter. Using default.",
-      this->get_name());
+      name_);
   }
   setColorFromColorValue(color_, colorValue, true);
 
@@ -100,8 +98,8 @@ bool VectorVisualization::initialize()
   marker_.action = visualization_msgs::msg::Marker::ADD;
   marker_.type = visualization_msgs::msg::Marker::LINE_LIST;
   marker_.scale.x = lineWidth_;
-  publisher_ = this->create_publisher<visualization_msgs::msg::Marker>(
-    this->get_name(),
+  publisher_ = nodePtr_->create_publisher<visualization_msgs::msg::Marker>(
+    name_,
     rclcpp::QoS(1).transient_local());
   return true;
 }
@@ -113,7 +111,7 @@ bool VectorVisualization::visualize(const grid_map::GridMap & map)
   for (const auto & type : types_) {
     if (!map.exists(type)) {
       RCLCPP_WARN_STREAM(
-        this->get_logger(),
+        nodePtr_->get_logger(),
         "VectorVisualization::visualize: No grid map layer with name '" << type << "' found.");
       return false;
     }

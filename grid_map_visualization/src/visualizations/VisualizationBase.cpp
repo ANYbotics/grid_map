@@ -13,8 +13,9 @@
 namespace grid_map_visualization
 {
 
-VisualizationBase::VisualizationBase(const std::string & name)
-: Node(name)
+VisualizationBase::VisualizationBase(const std::string & name, rclcpp::Node::SharedPtr nodePtr)
+: name_(name),
+  nodePtr_(nodePtr)
 {
 }
 
@@ -24,6 +25,6 @@ VisualizationBase::~VisualizationBase()
 
 bool VisualizationBase::isActive() const
 {
-  return static_cast<bool>(this->count_subscribers(this->get_name()));
+  return static_cast<bool>(nodePtr_->count_subscribers(name_));
 }
 }  // namespace grid_map_visualization

@@ -6,16 +6,14 @@
  *   Institute: ETH Zurich, ANYbotics
  */
 
-#include <ros/ros.h>
+#include <rclcpp/rclcpp.hpp>
+#include <memory>
 #include "grid_map_demos/IteratorsDemo.hpp"
 
-int main(int argc, char** argv)
+int main(int argc, char ** argv)
 {
-  ros::init(argc, argv, "grid_map_iterators_demo");
-
-  ros::NodeHandle nodeHandle("~");
-  grid_map_demos::IteratorsDemo iteratorsDemo(nodeHandle);
-
-  ros::requestShutdown();
+  rclcpp::init(argc, argv);
+  rclcpp::spin(std::make_shared<grid_map_demos::IteratorsDemo>());
+  rclcpp::shutdown();
   return 0;
 }

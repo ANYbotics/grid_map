@@ -8,30 +8,30 @@
 
 #include "grid_map_demos/IteratorsDemo.hpp"
 
-// ROS
-#include <geometry_msgs/PolygonStamped.h>
+#include <memory>
+#include <string>
+#include <utility>
+#include <vector>
 
-using namespace std;
-using namespace ros;
-using namespace grid_map;
-
-namespace grid_map_demos {
-
-IteratorsDemo::IteratorsDemo(ros::NodeHandle& nodeHandle)
-    : nodeHandle_(nodeHandle),
-      map_(vector<string>({"type"}))
+namespace grid_map_demos
 {
-  ROS_INFO("Grid map iterators demo node started.");
-  gridMapPublisher_ = nodeHandle_.advertise<grid_map_msgs::GridMap>("grid_map", 1, true);
-  polygonPublisher_ = nodeHandle_.advertise<geometry_msgs::PolygonStamped>("polygon", 1, true);
+
+IteratorsDemo::IteratorsDemo()
+: Node("grid_map_iterators_demo"),
+  map_(std::vector<std::string>({"type"}))
+{
+  RCLCPP_INFO(this->get_logger(), "Grid map iterators demo node started.");
+  gridMapPublisher_ = this->create_publisher<grid_map_msgs::msg::GridMap>(
+    "grid_map", rclcpp::QoS(1).transient_local());
+  polygonPublisher_ = this->create_publisher<geometry_msgs::msg::PolygonStamped>(
+    "polygon", rclcpp::QoS(1).transient_local());
 
   // Setting up map.
-  map_.setGeometry(Length(1.0, 1.0), 0.05, Position(0.0, 0.0));
+  map_.setGeometry(grid_map::Length(1.0, 1.0), 0.05, grid_map::Position(0.0, 0.0));
   map_.setFrameId("map");
 
   publish();
-  ros::Duration duration(2.0);
-  duration.sleep();
+  rclcpp::sleep_for(std::chrono::seconds(2));
 
   demoGridMapIterator();
   demoSubmapIterator();
@@ -47,212 +47,208 @@ IteratorsDemo::~IteratorsDemo() {}
 
 void IteratorsDemo::demoGridMapIterator()
 {
-  ROS_INFO("Running grid map iterator demo.");
+  RCLCPP_INFO(this->get_logger(), "Running grid map iterator demo.");
   map_.clearAll();
   publish();
 
   // Note: In this example we locally store a reference to the map data
   // for improved performance. See `iterator_benchmark.cpp` and the
   // README.md for a comparison and more information.
-  grid_map::Matrix& data = map_["type"];
+  grid_map::Matrix & data = map_["type"];
   for (grid_map::GridMapIterator iterator(map_); !iterator.isPastEnd(); ++iterator) {
     const int i = iterator.getLinearIndex();
     data(i) = 1.0;
     publish();
-    ros::Duration duration(0.01);
-    duration.sleep();
+    rclcpp::sleep_for(std::chrono::milliseconds(10));
   }
 
-  ros::Duration duration(1.0);
-  duration.sleep();
+  rclcpp::sleep_for(std::chrono::seconds(1));
 }
 
 void IteratorsDemo::demoSubmapIterator()
 {
-  ROS_INFO("Running submap iterator demo.");
+  RCLCPP_INFO(this->get_logger(), "Running submap iterator demo.");
   map_.clearAll();
   publish();
 
-  Index submapStartIndex(3, 5);
-  Index submapBufferSize(12, 7);
+  grid_map::Index submapStartIndex(3, 5);
+  grid_map::Index submapBufferSize(12, 7);
 
   for (grid_map::SubmapIterator iterator(map_, submapStartIndex, submapBufferSize);
-      !iterator.isPastEnd(); ++iterator) {
+    !iterator.isPastEnd(); ++iterator)
+  {
     map_.at("type", *iterator) = 1.0;
     publish();
-    ros::Duration duration(0.02);
-    duration.sleep();
+    rclcpp::sleep_for(std::chrono::milliseconds(20));
   }
 
-  ros::Duration duration(1.0);
-  duration.sleep();
+  rclcpp::sleep_for(std::chrono::seconds(1));
 }
 
 void IteratorsDemo::demoCircleIterator()
 {
-  ROS_INFO("Running circle iterator demo.");
+  RCLCPP_INFO(this->get_logger(), "Running circle iterator demo.");
   map_.clearAll();
   publish();
 
-  Position center(0.0, -0.15);
+  grid_map::Position center(0.0, -0.15);
   double radius = 0.4;
 
   for (grid_map::CircleIterator iterator(map_, center, radius);
-      !iterator.isPastEnd(); ++iterator) {
+    !iterator.isPastEnd(); ++iterator)
+  {
     map_.at("type", *iterator) = 1.0;
     publish();
-    ros::Duration duration(0.02);
-    duration.sleep();
+    rclcpp::sleep_for(std::chrono::milliseconds(20));
   }
 
-  ros::Duration duration(1.0);
-  duration.sleep();
+  rclcpp::sleep_for(std::chrono::seconds(1));
 }
 
 void IteratorsDemo::demoEllipseIterator()
 {
-  ROS_INFO("Running ellipse iterator demo.");
+  RCLCPP_INFO(this->get_logger(), "Running ellipse iterator demo.");
   map_.clearAll();
   publish();
 
-  Position center(0.0, -0.15);
-  Length length(0.45, 0.9);
+  grid_map::Position center(0.0, -0.15);
+  grid_map::Length length(0.45, 0.9);
 
   for (grid_map::EllipseIterator iterator(map_, center, length, M_PI_4);
-      !iterator.isPastEnd(); ++iterator) {
+    !iterator.isPastEnd(); ++iterator)
+  {
     map_.at("type", *iterator) = 1.0;
     publish();
-    ros::Duration duration(0.02);
-    duration.sleep();
+    rclcpp::sleep_for(std::chrono::milliseconds(20));
   }
 
-  ros::Duration duration(1.0);
-  duration.sleep();
+  rclcpp::sleep_for(std::chrono::seconds(1));
 }
 
 void IteratorsDemo::demoSpiralIterator()
 {
-  ROS_INFO("Running spiral iterator demo.");
+  RCLCPP_INFO(this->get_logger(), "Running spiral iterator demo.");
   map_.clearAll();
   publish();
 
-  Position center(0.0, -0.15);
+  grid_map::Position center(0.0, -0.15);
   double radius = 0.4;
 
   for (grid_map::SpiralIterator iterator(map_, center, radius);
-      !iterator.isPastEnd(); ++iterator) {
+    !iterator.isPastEnd(); ++iterator)
+  {
     map_.at("type", *iterator) = 1.0;
     publish();
-    ros::Duration duration(0.02);
-    duration.sleep();
+    rclcpp::sleep_for(std::chrono::milliseconds(20));
   }
 
-  ros::Duration duration(1.0);
-  duration.sleep();
+  rclcpp::sleep_for(std::chrono::seconds(1));
 }
 
 void IteratorsDemo::demoLineIterator()
 {
-  ROS_INFO("Running line iterator demo.");
+  RCLCPP_INFO(this->get_logger(), "Running line iterator demo.");
   map_.clearAll();
   publish();
 
-  Index start(18, 2);
-  Index end(2, 13);
+  grid_map::Index start(18, 2);
+  grid_map::Index end(2, 13);
 
   for (grid_map::LineIterator iterator(map_, start, end);
-      !iterator.isPastEnd(); ++iterator) {
+    !iterator.isPastEnd(); ++iterator)
+  {
     map_.at("type", *iterator) = 1.0;
     publish();
-    ros::Duration duration(0.02);
-    duration.sleep();
+    rclcpp::sleep_for(std::chrono::milliseconds(20));
   }
 
-  ros::Duration duration(1.0);
-  duration.sleep();
+  rclcpp::sleep_for(std::chrono::seconds(1));
 }
 
 void IteratorsDemo::demoPolygonIterator(const bool prepareForOtherDemos)
 {
-  ROS_INFO("Running polygon iterator demo.");
+  RCLCPP_INFO(this->get_logger(), "Running polygon iterator demo.");
   map_.clearAll();
-  if (prepareForOtherDemos) map_["type"].setZero();
+  if (prepareForOtherDemos) {map_["type"].setZero();}
   publish();
 
   grid_map::Polygon polygon;
   polygon.setFrameId(map_.getFrameId());
-  polygon.addVertex(Position( 0.480,  0.000));
-  polygon.addVertex(Position( 0.164,  0.155));
-  polygon.addVertex(Position( 0.116,  0.500));
-  polygon.addVertex(Position(-0.133,  0.250));
-  polygon.addVertex(Position(-0.480,  0.399));
-  polygon.addVertex(Position(-0.316,  0.000));
-  polygon.addVertex(Position(-0.480, -0.399));
-  polygon.addVertex(Position(-0.133, -0.250));
-  polygon.addVertex(Position( 0.116, -0.500));
-  polygon.addVertex(Position( 0.164, -0.155));
-  polygon.addVertex(Position( 0.480,  0.000));
+  polygon.addVertex(grid_map::Position(0.480, 0.000));
+  polygon.addVertex(grid_map::Position(0.164, 0.155));
+  polygon.addVertex(grid_map::Position(0.116, 0.500));
+  polygon.addVertex(grid_map::Position(-0.133, 0.250));
+  polygon.addVertex(grid_map::Position(-0.480, 0.399));
+  polygon.addVertex(grid_map::Position(-0.316, 0.000));
+  polygon.addVertex(grid_map::Position(-0.480, -0.399));
+  polygon.addVertex(grid_map::Position(-0.133, -0.250));
+  polygon.addVertex(grid_map::Position(0.116, -0.500));
+  polygon.addVertex(grid_map::Position(0.164, -0.155));
+  polygon.addVertex(grid_map::Position(0.480, 0.000));
 
-  geometry_msgs::PolygonStamped message;
+  geometry_msgs::msg::PolygonStamped message;
   grid_map::PolygonRosConverter::toMessage(polygon, message);
-  polygonPublisher_.publish(message);
+  polygonPublisher_->publish(message);
 
   for (grid_map::PolygonIterator iterator(map_, polygon);
-      !iterator.isPastEnd(); ++iterator) {
+    !iterator.isPastEnd(); ++iterator)
+  {
     map_.at("type", *iterator) = 1.0;
     if (!prepareForOtherDemos) {
       publish();
-      ros::Duration duration(0.02);
-      duration.sleep();
+      rclcpp::sleep_for(std::chrono::milliseconds(20));
     }
   }
 
   if (!prepareForOtherDemos) {
-    ros::Duration duration(1.0);
-    duration.sleep();
+    rclcpp::sleep_for(std::chrono::seconds(1));
   }
 }
 
 void IteratorsDemo::demoSlidingWindowIterator()
 {
-  ROS_INFO("Running sliding window iterator demo.");
+  RCLCPP_INFO(this->get_logger(), "Running sliding window iterator demo.");
   demoPolygonIterator(true);
   publish();
   const size_t windowSize = 3;
-  const grid_map::SlidingWindowIterator::EdgeHandling edgeHandling = grid_map::SlidingWindowIterator::EdgeHandling::CROP;
+  const grid_map::SlidingWindowIterator::EdgeHandling edgeHandling =
+    grid_map::SlidingWindowIterator::EdgeHandling::CROP;
   map_.add("copy", map_["type"]);
 
   for (grid_map::SlidingWindowIterator iterator(map_, "copy", edgeHandling, windowSize);
-      !iterator.isPastEnd(); ++iterator) {
-    map_.at("type", *iterator) = iterator.getData().meanOfFinites(); // Blurring.
+    !iterator.isPastEnd(); ++iterator)
+  {
+    map_.at("type", *iterator) = iterator.getData().meanOfFinites();  // Blurring.
     publish();
 
     // Visualize sliding window as polygon.
     grid_map::Polygon polygon;
-    Position center;
+    grid_map::Position center;
     map_.getPosition(*iterator, center);
-    const Length windowHalfLength(Length::Constant(0.5 * (double) windowSize * map_.getResolution()));
-    polygon.addVertex(center + (Eigen::Array2d(-1.0,-1.0) * windowHalfLength).matrix());
+    const grid_map::Length windowHalfLength(grid_map::Length::Constant(
+        0.5 * static_cast<double>(windowSize) * map_.getResolution()));
+    polygon.addVertex(center + (Eigen::Array2d(-1.0, -1.0) * windowHalfLength).matrix());
     polygon.addVertex(center + (Eigen::Array2d(-1.0, 1.0) * windowHalfLength).matrix());
-    polygon.addVertex(center + (Eigen::Array2d( 1.0, 1.0) * windowHalfLength).matrix());
-    polygon.addVertex(center + (Eigen::Array2d( 1.0,-1.0) * windowHalfLength).matrix());
+    polygon.addVertex(center + (Eigen::Array2d(1.0, 1.0) * windowHalfLength).matrix());
+    polygon.addVertex(center + (Eigen::Array2d(1.0, -1.0) * windowHalfLength).matrix());
     polygon.setFrameId(map_.getFrameId());
-    geometry_msgs::PolygonStamped message;
+    geometry_msgs::msg::PolygonStamped message;
     grid_map::PolygonRosConverter::toMessage(polygon, message);
-    polygonPublisher_.publish(message);
+    polygonPublisher_->publish(message);
 
-    ros::Duration duration(0.02);
-    duration.sleep();
+    rclcpp::sleep_for(std::chrono::milliseconds(20));
   }
 }
 
 void IteratorsDemo::publish()
 {
-  map_.setTimestamp(ros::Time::now().toNSec());
-  grid_map_msgs::GridMap message;
-  grid_map::GridMapRosConverter::toMessage(map_, message);
-  gridMapPublisher_.publish(message);
-  ROS_DEBUG("Grid map (timestamp %f) published.", message.info.header.stamp.toSec());
+  map_.setTimestamp(this->now().nanoseconds());
+  std::unique_ptr<grid_map_msgs::msg::GridMap> message;
+  message = grid_map::GridMapRosConverter::toMessage(map_);
+  RCLCPP_DEBUG(
+    this->get_logger(), "Publishing grid map (timestamp %f).",
+    rclcpp::Time(message->header.stamp).nanoseconds() * 1e-9);
+  gridMapPublisher_->publish(std::move(message));
 }
 
-} /* namespace */
+}  // namespace grid_map_demos

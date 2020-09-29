@@ -32,7 +32,7 @@ public:
    * Constructor.
    * @param name the name of the visualization.
    */
-  explicit PointCloudVisualization(const std::string & name);
+  explicit PointCloudVisualization(const std::string & name, rclcpp::Node::SharedPtr nodePtr);
 
   /*!
    * Destructor.

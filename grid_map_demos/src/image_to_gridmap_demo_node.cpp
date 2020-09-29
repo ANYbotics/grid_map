@@ -6,16 +6,14 @@
  *   Institute: ETH Zurich, ANYbotics
  */
 
-#include <ros/ros.h>
+#include <rclcpp/rclcpp.hpp>
+#include <memory>
 #include "grid_map_demos/ImageToGridmapDemo.hpp"
 
-int main(int argc, char** argv)
+int main(int argc, char ** argv)
 {
-  // Initialize node and publisher.
-  ros::init(argc, argv, "image_to_gridmap_demo");
-  ros::NodeHandle nh("~");
-  grid_map_demos::ImageToGridmapDemo imageToGridmapDemo(nh);
-
-  ros::spin();
+  rclcpp::init(argc, argv);
+  rclcpp::spin(std::make_shared<grid_map_demos::ImageToGridmapDemo>());
+  rclcpp::shutdown();
   return 0;
 }

@@ -15,11 +15,14 @@
 #include <octomap_msgs/conversions.h>
 #include <octomap_msgs/GetOctomap.h>
 
-namespace grid_map_demos {
+#include <string>
 
-OctomapToGridmapDemo::OctomapToGridmapDemo(ros::NodeHandle& nodeHandle)
-    : nodeHandle_(nodeHandle),
-      map_(grid_map::GridMap({"elevation"}))
+namespace grid_map_demos
+{
+
+OctomapToGridmapDemo::OctomapToGridmapDemo(ros::NodeHandle & nodeHandle)
+: nodeHandle_(nodeHandle),
+  map_(grid_map::GridMap({"elevation"}))
 {
   readParameters();
   client_ = nodeHandle_.serviceClient<octomap_msgs::GetOctomap>(octomapServiceTopic_);
@@ -53,10 +56,10 @@ void OctomapToGridmapDemo::convertAndPublishMap()
   }
 
   // creating octree
-  octomap::OcTree* octomap = nullptr;
-  octomap::AbstractOcTree* tree = octomap_msgs::msgToMap(srv.response.map);
+  octomap::OcTree * octomap = nullptr;
+  octomap::AbstractOcTree * tree = octomap_msgs::msgToMap(srv.response.map);
   if (tree) {
-    octomap = dynamic_cast<octomap::OcTree*>(tree);
+    octomap = dynamic_cast<octomap::OcTree *>(tree);
   } else {
     ROS_ERROR("Failed to call convert Octomap.");
     return;
@@ -66,19 +69,27 @@ void OctomapToGridmapDemo::convertAndPublishMap()
   grid_map::Position3 max_bound;
   octomap->getMetricMin(min_bound(0), min_bound(1), min_bound(2));
   octomap->getMetricMax(max_bound(0), max_bound(1), max_bound(2));
-  if(!std::isnan(minX_))
+  if (!std::isnan(minX_)) {
     min_bound(0) = minX_;
-  if(!std::isnan(maxX_))
+  }
+  if (!std::isnan(maxX_)) {
     max_bound(0) = maxX_;
-  if(!std::isnan(minY_))
+  }
+  if (!std::isnan(minY_)) {
     min_bound(1) = minY_;
-  if(!std::isnan(maxY_))
+  }
+  if (!std::isnan(maxY_)) {
     max_bound(1) = maxY_;
-  if(!std::isnan(minZ_))
+  }
+  if (!std::isnan(minZ_)) {
     min_bound(2) = minZ_;
-  if(!std::isnan(maxZ_))
+  }
+  if (!std::isnan(maxZ_)) {
     max_bound(2) = maxZ_;
-  bool res = grid_map::GridMapOctomapConverter::fromOctomap(*octomap, "elevation", map_, &min_bound, &max_bound);
+  }
+  bool res = grid_map::GridMapOctomapConverter::fromOctomap(
+    *octomap, "elevation", map_, &min_bound,
+    &max_bound);
   if (!res) {
     ROS_ERROR("Failed to call convert Octomap.");
     return;
@@ -97,4 +108,4 @@ void OctomapToGridmapDemo::convertAndPublishMap()
   octomapPublisher_.publish(octomapMessage);
 }
 
-} /* namespace */
+}  // namespace grid_map_demos
