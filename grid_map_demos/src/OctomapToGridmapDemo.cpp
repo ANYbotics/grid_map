@@ -131,7 +131,10 @@ void OctomapToGridmapDemo::convertAndPublishMap()
   octomap_msgs::msg::Octomap octomapMessage;
   octomap_msgs::fullMapToMsg(*octomap, octomapMessage);
   octomapMessage.header.frame_id = map_.getFrameId();
-  octomapPublisher_->publish(octomapMessage);
+
+  std::unique_ptr<octomap_msgs::msg::Octomap> octomapMessagePtr(new
+    octomap_msgs::msg::Octomap(octomapMessage));
+  octomapPublisher_->publish(std::move(octomapMessagePtr));
 }
 
 }  // namespace grid_map_demos
