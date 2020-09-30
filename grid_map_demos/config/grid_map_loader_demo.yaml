@@ -6,3 +6,4 @@ grid_map_visualization:
       type: point_cloud
       params:
        layer: elevation
+    transient_local: true

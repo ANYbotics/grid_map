@@ -45,9 +45,11 @@ bool GridMapVisualization::readParameters()
   nodePtr->declare_parameter("grid_map_topic", std::string("/grid_map"));
   nodePtr->declare_parameter("activity_check_rate", 2.0);
   nodePtr->declare_parameter(visualizationsParameter_, std::vector<std::string>());
+  nodePtr->declare_parameter("transient_local", rclcpp::ParameterValue(false));
 
   nodePtr->get_parameter("grid_map_topic", mapTopic_);
   nodePtr->get_parameter("activity_check_rate", activityCheckRate_);
+  nodePtr->get_parameter("transient_local", isGridMapSubLatched_);
 
   assert(activityCheckRate_);
 
@@ -138,8 +140,14 @@ void GridMapVisualization::updateSubscriptionCallback()
   }
 
   if (!isSubscribed_ && isActive) {
+    rclcpp::QoS qos_setting = rclcpp::SystemDefaultsQoS();
+
+    if (isGridMapSubLatched_) {
+      qos_setting = rclcpp::QoS(1).transient_local();
+    }
+
     mapSubscriber_ = nodePtr->create_subscription<grid_map_msgs::msg::GridMap>(
-      mapTopic_, rclcpp::SystemDefaultsQoS(),
+      mapTopic_, qos_setting,
       std::bind(&GridMapVisualization::callback, this, std::placeholders::_1));
 
     isSubscribed_ = true;
