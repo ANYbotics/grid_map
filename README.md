@@ -110,6 +110,7 @@ Clone the latest version from this repository and build it in a new grid_map wor
     cd ~/gridmap_ws/src
     git clone https://github.com/anybotics/grid_map.git --branch ros2
     cd ../
+    rosdep install -y --ignore-src --from-paths src
     colcon build --symlink-install
     
 
