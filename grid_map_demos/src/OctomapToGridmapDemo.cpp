@@ -28,12 +28,12 @@ OctomapToGridmapDemo::OctomapToGridmapDemo()
   map_(grid_map::GridMap({"elevation"}))
 {
   readParameters();
-  client_ = this->create_client<octomap_msgs::srv::GetOctomap>(octomapServiceTopic_);
+  client_ = this->create_client<GetOctomapSrv>(octomapServiceTopic_);
   map_.setBasicLayers({"elevation"});
   gridMapPublisher_ = this->create_publisher<grid_map_msgs::msg::GridMap>(
     "grid_map", rclcpp::QoS(
       1).transient_local());
-  octomapPublisher_ = this->create_publisher<octomap_msgs::msg::Octomap>(
+  octomapPublisher_ = this->create_publisher<OctomapMessage>(
     "octomap", rclcpp::QoS(
       1).transient_local());
 }
@@ -64,15 +64,17 @@ bool OctomapToGridmapDemo::readParameters()
 
 void OctomapToGridmapDemo::convertAndPublishMap()
 {
+  rclcpp::Clock clock;
+
   while (!client_->wait_for_service(std::chrono::seconds(1))) {
     if (!rclcpp::ok()) {
       RCLCPP_ERROR(this->get_logger(), "client interrupted while waiting for service to appear.");
       return;
     }
-    RCLCPP_INFO(this->get_logger(), "waiting for service to appear...");
+    RCLCPP_INFO_THROTTLE(this->get_logger(), clock, 1000, "waiting for service to appear...");
   }
 
-  auto request = std::make_shared<octomap_msgs::srv::GetOctomap::Request>();
+  auto request = std::make_shared<GetOctomapSrv::Request>();
   auto result_future = client_->async_send_request(request);
   if (rclcpp::spin_until_future_complete(this->get_node_base_interface(), result_future) !=
     rclcpp::FutureReturnCode::SUCCESS)
@@ -128,12 +130,12 @@ void OctomapToGridmapDemo::convertAndPublishMap()
   gridMapPublisher_->publish(std::move(gridMapMessage));
 
   // Also publish as an octomap msg for visualization
-  octomap_msgs::msg::Octomap octomapMessage;
+  OctomapMessage octomapMessage;
   octomap_msgs::fullMapToMsg(*octomap, octomapMessage);
   octomapMessage.header.frame_id = map_.getFrameId();
 
-  std::unique_ptr<octomap_msgs::msg::Octomap> octomapMessagePtr(new
-    octomap_msgs::msg::Octomap(octomapMessage));
+  std::unique_ptr<OctomapMessage> octomapMessagePtr(new
+    OctomapMessage(octomapMessage));
   octomapPublisher_->publish(std::move(octomapMessagePtr));
 }
 

@@ -24,6 +24,9 @@ namespace grid_map_demos
 class OctomapToGridmapDemo : public rclcpp::Node
 {
 public:
+  using GetOctomapSrv = octomap_msgs::srv::GetOctomap;
+  using OctomapMessage = octomap_msgs::msg::Octomap;
+
   /*!
    * Constructor.
    */
@@ -47,7 +50,7 @@ private:
   rclcpp::Publisher<grid_map_msgs::msg::GridMap>::SharedPtr gridMapPublisher_;
 
   //! Octomap publisher.
-  rclcpp::Publisher<octomap_msgs::msg::Octomap>::SharedPtr octomapPublisher_;
+  rclcpp::Publisher<OctomapMessage>::SharedPtr octomapPublisher_;
 
   //! Grid map data.
   grid_map::GridMap map_;
@@ -56,7 +59,7 @@ private:
   std::string octomapServiceTopic_;
 
   //! Octomap service client
-  rclcpp::Client<octomap_msgs::srv::GetOctomap>::SharedPtr client_;
+  rclcpp::Client<GetOctomapSrv>::SharedPtr client_;
 
   //! Bounding box of octomap to convert.
   float minX_;
