@@ -1,26 +1,26 @@
 Panels:
-  - Class: rviz/Displays
+  - Class: rviz_common/Displays
     Help Height: 0
     Name: Displays
     Property Tree Widget:
       Expanded: ~
       Splitter Ratio: 0.611464977
     Tree Height: 956
-  - Class: rviz/Selection
+  - Class: rviz_common/Selection
     Name: Selection
-  - Class: rviz/Tool Properties
+  - Class: rviz_common/Tool Properties
     Expanded:
       - /2D Pose Estimate1
       - /2D Nav Goal1
       - /Publish Point1
     Name: Tool Properties
     Splitter Ratio: 0.588679016
-  - Class: rviz/Views
+  - Class: rviz_common/Views
     Expanded:
       - /Current View1
     Name: Views
     Splitter Ratio: 0.5
-  - Class: rviz/Time
+  - Class: rviz_common/Time
     Experimental: false
     Name: Time
     SyncMode: 0
@@ -45,25 +45,25 @@ Visualization Manager:
       Min Intensity: 0
       Name: GridMap
       Show Grid Lines: true
-      Topic: /octomap_to_gridmap_demo/grid_map
+      Topic: /grid_map
       Unreliable: false
       Use Rainbow: true
       Value: true
-    - Class: rviz/Marker
+    - Class: rviz_default_plugins/Marker
       Enabled: true
-      Marker Topic: /grid_map_visualization/map_region
+      Marker Topic: /map_region
       Name: Map Region
       Namespaces:
         map_region: true
       Queue Size: 100
       Value: true
     - Alpha: 1
-      Class: rviz/Map
+      Class: rviz_default_plugins/Map
       Color Scheme: map
       Draw Behind: false
       Enabled: true
       Name: Elevation
-      Topic: /grid_map_visualization/elevation_grid
+      Topic: /elevation_grid
       Unreliable: false
       Value: true
     - Class: octomap_rviz_plugin/OccupancyGrid
@@ -72,7 +72,7 @@ Visualization Manager:
       Max. Octree Depth: 16
       Min. Height Display: -inf
       Name: OccupancyGrid
-      Octomap Topic: /octomap_to_gridmap_demo/octomap
+      Octomap Topic: /octomap
       Queue Size: 5
       Value: false
       Voxel Alpha: 1
@@ -85,23 +85,23 @@ Visualization Manager:
     Frame Rate: 30
   Name: root
   Tools:
-    - Class: rviz/Interact
+    - Class: rviz_default_plugins/Interact
       Hide Inactive Objects: true
-    - Class: rviz/MoveCamera
-    - Class: rviz/Select
-    - Class: rviz/FocusCamera
-    - Class: rviz/Measure
-    - Class: rviz/SetInitialPose
+    - Class: rviz_default_plugins/MoveCamera
+    - Class: rviz_default_plugins/Select
+    - Class: rviz_default_plugins/FocusCamera
+    - Class: rviz_default_plugins/Measure
+    - Class: rviz_default_plugins/SetInitialPose
       Topic: /initialpose
-    - Class: rviz/SetGoal
+    - Class: rviz_default_plugins/SetGoal
       Topic: /move_base_simple/goal
-    - Class: rviz/PublishPoint
+    - Class: rviz_default_plugins/PublishPoint
       Single click: true
       Topic: /clicked_point
   Value: true
   Views:
     Current:
-      Class: rviz/Orbit
+      Class: rviz_default_plugins/Orbit
       Distance: 8.02025986
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.0599999987

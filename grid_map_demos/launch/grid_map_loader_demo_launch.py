@@ -20,7 +20,7 @@ def generate_launch_description():
     declare_visualization_config_file_cmd = DeclareLaunchArgument(
         'visualization_config',
         default_value=os.path.join(
-            grid_map_demos_dir, 'config', 'simple_demo.yaml'),
+            grid_map_demos_dir, 'config', 'grid_map_loader_demo.yaml'),
         description='Full path to the Gridmap visualization config file to use')
 
     declare_rviz_config_file_cmd = DeclareLaunchArgument(
@@ -29,12 +29,21 @@ def generate_launch_description():
             grid_map_demos_dir, 'rviz', 'grid_map_demo.rviz'),
         description='Full path to the RVIZ config file to use')
 
+    # Declare paramters for the grid_map_loader node
+    loader_params = [{
+        'file_path': os.path.join(grid_map_demos_dir, 'data', 'grid_map_bag'),
+        'bag_topic': '/grid_map',
+        'publish_topic': '/grid_map',
+        'duration': 10.0
+    }]
+
     # Declare node actions
-    simple_demo_node = Node(
-        package='grid_map_demos',
-        executable='simple_demo',
-        name='grid_map_simple_demo',
-        output='screen'
+    grid_map_loader_demo_node = Node(
+        package='grid_map_loader',
+        executable='grid_map_loader',
+        name='grid_map_loader_demo',
+        output='screen',
+        parameters=loader_params
     )
 
     grid_map_visualization_node = Node(
@@ -61,7 +70,7 @@ def generate_launch_description():
     ld.add_action(declare_rviz_config_file_cmd)
 
     # Add node actions to the launch description
-    ld.add_action(simple_demo_node)
+    ld.add_action(grid_map_loader_demo_node)
     ld.add_action(grid_map_visualization_node)
     ld.add_action(rviz2_node)
 

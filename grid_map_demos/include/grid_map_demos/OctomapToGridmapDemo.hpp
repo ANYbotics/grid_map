@@ -9,11 +9,9 @@
 #ifndef GRID_MAP_DEMOS__OCTOMAPTOGRIDMAPDEMO_HPP_
 #define GRID_MAP_DEMOS__OCTOMAPTOGRIDMAPDEMO_HPP_
 
-// ROS
-#include <ros/ros.h>
-
 #include <grid_map_ros/grid_map_ros.hpp>
-
+#include <octomap_msgs/srv/get_octomap.hpp>
+#include <rclcpp/rclcpp.hpp>
 #include <string>
 
 namespace grid_map_demos
@@ -23,12 +21,14 @@ namespace grid_map_demos
  * Receives a volumetric OctoMap and converts it to a grid map with an elevation layer.
  * The grid map is published and can be viewed in Rviz.
  */
-class OctomapToGridmapDemo
+class OctomapToGridmapDemo : public rclcpp::Node
 {
 public:
+  using GetOctomapSrv = octomap_msgs::srv::GetOctomap;
+  using OctomapMessage = octomap_msgs::msg::Octomap;
+
   /*!
    * Constructor.
-   * @param nodeHandle the ROS node handle.
    */
   OctomapToGridmapDemo();
 
@@ -46,14 +46,11 @@ public:
   void convertAndPublishMap();
 
 private:
-  //! ROS nodehandle.
-  ros::NodeHandle & nodeHandle_;
-
   //! Grid map publisher.
-  ros::Publisher gridMapPublisher_;
+  rclcpp::Publisher<grid_map_msgs::msg::GridMap>::SharedPtr gridMapPublisher_;
 
   //! Octomap publisher.
-  ros::Publisher octomapPublisher_;
+  rclcpp::Publisher<OctomapMessage>::SharedPtr octomapPublisher_;
 
   //! Grid map data.
   grid_map::GridMap map_;
@@ -62,7 +59,7 @@ private:
   std::string octomapServiceTopic_;
 
   //! Octomap service client
-  ros::ServiceClient client_;
+  rclcpp::Client<GetOctomapSrv>::SharedPtr client_;
 
   //! Bounding box of octomap to convert.
   float minX_;

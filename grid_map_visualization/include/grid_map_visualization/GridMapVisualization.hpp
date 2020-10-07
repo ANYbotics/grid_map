@@ -98,6 +98,9 @@ private:
 
   //! If the grid map visualization is subscribed to the grid map.
   bool isSubscribed_;
+
+  //! If the grid map subscriber is Transient local.
+  bool isGridMapSubLatched_;
 };
 
 }  // namespace grid_map_visualization

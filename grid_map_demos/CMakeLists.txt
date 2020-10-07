@@ -71,26 +71,26 @@ add_executable(
   src/ImageToGridmapDemo.cpp
 )
 
-# add_executable(
-#   octomap_to_gridmap_demo
-#   src/octomap_to_gridmap_demo_node.cpp
-#   src/OctomapToGridmapDemo.cpp
-# )
+add_executable(
+  octomap_to_gridmap_demo
+  src/octomap_to_gridmap_demo_node.cpp
+  src/OctomapToGridmapDemo.cpp
+)
 
-# add_executable(
-#   move_demo
-#   src/move_demo_node.cpp
-# )
+add_executable(
+  move_demo
+  src/move_demo_node.cpp
+)
 
-# add_executable(
-#   iterator_benchmark
-#   src/iterator_benchmark.cpp
-# )
+add_executable(
+  iterator_benchmark
+  src/iterator_benchmark.cpp
+)
 
-# add_executable(
-#   opencv_demo
-#   src/opencv_demo_node.cpp
-# )
+add_executable(
+  opencv_demo
+  src/opencv_demo_node.cpp
+)
 
 # add_executable(
 #   resolution_change_demo
@@ -142,26 +142,34 @@ ament_target_dependencies(image_to_gridmap_demo
   "grid_map_msgs"
 )
 
-# ament_target_dependencies(
-#   octomap_to_gridmap_demo
-#   ${dependencies}
-#   ${OCTOMAP_LIBRARIES}
-# )
+ament_target_dependencies(
+  octomap_to_gridmap_demo
+  "rclcpp"
+  "grid_map_ros"
+  "grid_map_msgs"
+  "grid_map_octomap"
+  "octomap_msgs"
+)
 
-# ament_target_dependencies(
-#   move_demo
-# )
+ament_target_dependencies(
+  move_demo
+  "rclcpp"
+  "grid_map_ros"
+  "grid_map_msgs"
+)
 
-# ament_target_dependencies(
-#   iterator_benchmark
-#   ${dependencies}
-# )
+ament_target_dependencies(
+  iterator_benchmark
+  "grid_map_core"
+)
 
-# ament_target_dependencies(
-#   opencv_demo
-#   ${dependencies}
-#   ${OpenCV_LIBRARIES}
-# )
+ament_target_dependencies(
+  opencv_demo
+  "rclcpp"
+  "grid_map_ros"
+  "grid_map_msgs"
+  "grid_map_cv"
+)
 
 # ament_target_dependencies(
 #   resolution_change_demo
@@ -193,12 +201,12 @@ install(
     # filters_demo
     image_to_gridmap_demo
     # interpolation_demo
-    # iterator_benchmark
+    iterator_benchmark
     iterators_demo
-    # move_demo
+    move_demo
     # normal_filter_comparison_demo
-    # octomap_to_gridmap_demo
-    # opencv_demo
+    octomap_to_gridmap_demo
+    opencv_demo
     # resolution_change_demo
     simple_demo
     tutorial_demo

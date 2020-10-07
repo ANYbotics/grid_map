@@ -13,27 +13,39 @@ def generate_launch_description():
     grid_map_demos_dir = get_package_share_directory('grid_map_demos')
 
     # Declare launch configuration variables that can access the launch arguments values
-    visualization_config_file = LaunchConfiguration('visualization_config')
+    param_file = LaunchConfiguration('param_file')
     rviz_config_file = LaunchConfiguration('rviz_config')
 
     # Declare launch arguments
-    declare_visualization_config_file_cmd = DeclareLaunchArgument(
-        'visualization_config',
+    declare_param_file_cmd = DeclareLaunchArgument(
+        'param_file',
         default_value=os.path.join(
-            grid_map_demos_dir, 'config', 'simple_demo.yaml'),
-        description='Full path to the Gridmap visualization config file to use')
+            grid_map_demos_dir, 'config', 'octomap_to_gridmap_demo.yaml'),
+        description='Full path to the config file to use')
 
     declare_rviz_config_file_cmd = DeclareLaunchArgument(
         'rviz_config',
         default_value=os.path.join(
-            grid_map_demos_dir, 'rviz', 'grid_map_demo.rviz'),
+            grid_map_demos_dir, 'rviz', 'octomap_to_gridmap_demo.rviz'),
         description='Full path to the RVIZ config file to use')
 
     # Declare node actions
-    simple_demo_node = Node(
+
+    # TODO(marwan99): re-enable once octomap_mapping is ported to ROS2
+    # https://github.com/OctoMap/octomap_mapping/issues/76
+    # octomap_server_node = Node(
+    #     package='octomap_server',
+    #     executable='octomap_server_static',
+    #     name='octomap_server',
+    #     output='screen',
+    #     parameters=[param_file],
+    #     arguments=['-d', os.path.join(grid_map_demos_dir + 'data' + 'freiburg1_360.bt']
+    # )
+
+    octomap_to_gridmap_demo_node = Node(
         package='grid_map_demos',
-        executable='simple_demo',
-        name='grid_map_simple_demo',
+        executable='octomap_to_gridmap_demo',
+        name='octomap_to_gridmap_demo',
         output='screen'
     )
 
@@ -42,7 +54,7 @@ def generate_launch_description():
         executable='grid_map_visualization',
         name='grid_map_visualization',
         output='screen',
-        parameters=[visualization_config_file]
+        parameters=[param_file]
     )
 
     rviz2_node = Node(
@@ -57,11 +69,12 @@ def generate_launch_description():
     ld = LaunchDescription()
 
     # Add launch arguments to the launch description
-    ld.add_action(declare_visualization_config_file_cmd)
+    ld.add_action(declare_param_file_cmd)
     ld.add_action(declare_rviz_config_file_cmd)
 
     # Add node actions to the launch description
-    ld.add_action(simple_demo_node)
+    # ld.add_action(octomap_server_node)
+    ld.add_action(octomap_to_gridmap_demo_node)
     ld.add_action(grid_map_visualization_node)
     ld.add_action(rviz2_node)
 

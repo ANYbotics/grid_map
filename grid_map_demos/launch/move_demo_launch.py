@@ -20,20 +20,20 @@ def generate_launch_description():
     declare_visualization_config_file_cmd = DeclareLaunchArgument(
         'visualization_config',
         default_value=os.path.join(
-            grid_map_demos_dir, 'config', 'simple_demo.yaml'),
+            grid_map_demos_dir, 'config', 'move_demo.yaml'),
         description='Full path to the Gridmap visualization config file to use')
 
     declare_rviz_config_file_cmd = DeclareLaunchArgument(
         'rviz_config',
         default_value=os.path.join(
-            grid_map_demos_dir, 'rviz', 'grid_map_demo.rviz'),
+            grid_map_demos_dir, 'rviz', 'grid_map_iterators_demo.rviz'),
         description='Full path to the RVIZ config file to use')
 
     # Declare node actions
-    simple_demo_node = Node(
+    move_demo_node = Node(
         package='grid_map_demos',
-        executable='simple_demo',
-        name='grid_map_simple_demo',
+        executable='move_demo',
+        name='grid_map_move_demo',
         output='screen'
     )
 
@@ -61,7 +61,7 @@ def generate_launch_description():
     ld.add_action(declare_rviz_config_file_cmd)
 
     # Add node actions to the launch description
-    ld.add_action(simple_demo_node)
+    ld.add_action(move_demo_node)
     ld.add_action(grid_map_visualization_node)
     ld.add_action(rviz2_node)
 

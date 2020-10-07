@@ -28,6 +28,7 @@
   <depend>sensor_msgs</depend>
   <depend>cv_bridge</depend>
   <depend>octomap_msgs</depend>
+  <!-- <depend>octomap_server</depend> -->
 
   <exec_depend>rclpy</exec_depend>
 
