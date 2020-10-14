@@ -80,6 +80,7 @@ add_library(${PROJECT_NAME}
   src/MinInRadiusFilter.cpp
   src/MeanInRadiusFilter.cpp
   src/MedianFillFilter.cpp
+  src/MockFilter.cpp
   src/NormalVectorsFilter.cpp
   src/CurvatureFilter.cpp
   src/NormalColorMapFilter.cpp

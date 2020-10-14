@@ -1,5 +1,8 @@
 grid_map_filters:
-
+  - name: first
+    type: gridMapFilters/MockFilter
+    params:
+      processing_time: 100
   - name: buffer_normalizer
     type: gridMapFilters/BufferNormalizerFilter
 
