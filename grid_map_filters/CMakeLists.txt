@@ -44,7 +44,7 @@ include_directories(
 )
 
 ## Declare a cpp library
-add_library(${PROJECT_NAME}
+add_library(${PROJECT_NAME} SHARED
   src/ThresholdFilter.cpp
   src/MinInRadiusFilter.cpp
   src/MeanInRadiusFilter.cpp
@@ -79,7 +79,7 @@ install(
   TARGETS ${PROJECT_NAME}
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
-  RUNTIME DESTINATION lib/${PROJECT_NAME}
+  RUNTIME DESTINATION bin
 )
 
 # Mark cpp header files for installation
@@ -131,4 +131,5 @@ ament_export_include_directories(
 )
 ament_export_dependencies(${dependencies})
 ament_export_libraries(${PROJECT_NAME})
+pluginlib_export_plugin_description_file(filters filter_plugins.xml)
 ament_package()

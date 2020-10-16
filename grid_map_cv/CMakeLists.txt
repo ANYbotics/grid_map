@@ -36,7 +36,7 @@ set(dependencies
 ###########
 
 ## Declare a cpp library
-add_library(${PROJECT_NAME}
+add_library(${PROJECT_NAME} SHARED
   src/GridMapCvProcessing.cpp
   src/InpaintFilter.cpp
 )
@@ -54,7 +54,7 @@ install(
   TARGETS ${PROJECT_NAME}
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
-  RUNTIME DESTINATION lib/${PROJECT_NAME}
+  RUNTIME DESTINATION bin
 )
 
 # Mark cpp header files for installation
@@ -116,4 +116,5 @@ endif()
 ament_export_include_directories(include)
 ament_export_libraries(${PROJECT_NAME})
 ament_export_dependencies(${dependencies})
+pluginlib_export_plugin_description_file(filters filter_plugins.xml)
 ament_package()
