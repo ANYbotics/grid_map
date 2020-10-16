@@ -13,6 +13,8 @@
 
 #include <string>
 
+#include "grid_map_cv/utilities.hpp"
+
 namespace grid_map
 {
 
@@ -29,8 +31,10 @@ DeletionFilter<T>::~DeletionFilter()
 template<typename T>
 bool DeletionFilter<T>::configure()
 {
+  ParameterReader param_reader(this->param_prefix_, this->params_interface_);
+
   // Load Parameters
-  if (!filters::FilterBase<T>::getParam(std::string("layers"), layers_)) {
+  if (!param_reader.get(std::string("layers"), layers_)) {
     RCLCPP_ERROR(
       this->logging_interface_->get_logger(), "DeletionFilter did not find parameter 'layers'.");
     return false;

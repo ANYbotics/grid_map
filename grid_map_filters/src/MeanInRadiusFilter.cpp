@@ -13,6 +13,8 @@
 
 #include <string>
 
+#include "grid_map_cv/utilities.hpp"
+
 namespace grid_map
 {
 
@@ -30,7 +32,9 @@ MeanInRadiusFilter<T>::~MeanInRadiusFilter()
 template<typename T>
 bool MeanInRadiusFilter<T>::configure()
 {
-  if (!filters::FilterBase<T>::getParam(std::string("radius"), radius_)) {
+  ParameterReader param_reader(this->param_prefix_, this->params_interface_);
+
+  if (!param_reader.get(std::string("radius"), radius_)) {
     RCLCPP_ERROR(
       this->logging_interface_->get_logger(),
       "MeanInRadius filter did not find parameter `radius`.");
@@ -46,7 +50,7 @@ bool MeanInRadiusFilter<T>::configure()
 
   RCLCPP_DEBUG(this->logging_interface_->get_logger(), "Radius = %f.", radius_);
 
-  if (!filters::FilterBase<T>::getParam(std::string("input_layer"), inputLayer_)) {
+  if (!param_reader.get(std::string("input_layer"), inputLayer_)) {
     RCLCPP_ERROR(
       this->logging_interface_->get_logger(),
       "MeanInRadius filter did not find parameter `input_layer`.");
@@ -57,7 +61,7 @@ bool MeanInRadiusFilter<T>::configure()
     this->logging_interface_->get_logger(), "MeanInRadius input layer is = %s.",
     inputLayer_.c_str());
 
-  if (!filters::FilterBase<T>::getParam(std::string("output_layer"), outputLayer_)) {
+  if (!param_reader.get(std::string("output_layer"), outputLayer_)) {
     RCLCPP_ERROR(
       this->logging_interface_->get_logger(),
       "MeanInRadius filter did not find parameter `output_layer`.");

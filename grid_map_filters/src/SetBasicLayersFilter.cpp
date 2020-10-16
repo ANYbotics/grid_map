@@ -14,6 +14,8 @@
 #include <string>
 #include <vector>
 
+#include "grid_map_cv/utilities.hpp"
+
 namespace grid_map
 {
 
@@ -30,7 +32,9 @@ SetBasicLayersFilter<T>::~SetBasicLayersFilter()
 template<typename T>
 bool SetBasicLayersFilter<T>::configure()
 {
-  if (!filters::FilterBase<T>::getParam(std::string("layers"), layers_)) {
+  ParameterReader param_reader(this->param_prefix_, this->params_interface_);
+
+  if (!param_reader.get(std::string("layer"), layers_)) {
     RCLCPP_ERROR(
       this->logging_interface_->get_logger(),
       "SetBasicLayersFilters did not find parameter 'layers'.");

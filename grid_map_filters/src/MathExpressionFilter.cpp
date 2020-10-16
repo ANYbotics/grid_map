@@ -13,6 +13,8 @@
 
 #include <string>
 
+#include "grid_map_cv/utilities.hpp"
+
 namespace grid_map
 {
 
@@ -29,14 +31,16 @@ MathExpressionFilter<T>::~MathExpressionFilter()
 template<typename T>
 bool MathExpressionFilter<T>::configure()
 {
-  if (!filters::FilterBase<T>::getParam(std::string("expression"), expression_)) {
+  ParameterReader param_reader(this->param_prefix_, this->params_interface_);
+
+  if (!param_reader.get(std::string("expression"), expression_)) {
     RCLCPP_ERROR(
       this->logging_interface_->get_logger(),
       "MathExpressionFilter did not find parameter 'expression'.");
     return false;
   }
 
-  if (!filters::FilterBase<T>::getParam(std::string("output_layer"), outputLayer_)) {
+  if (!param_reader.get(std::string("output_layer"), outputLayer_)) {
     RCLCPP_ERROR(
       this->logging_interface_->get_logger(),
       "MathExpressionFilter did not find parameter 'output_layer'.");

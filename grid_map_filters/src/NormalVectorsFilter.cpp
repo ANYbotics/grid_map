@@ -20,6 +20,8 @@
 #include <string>
 #include <vector>
 
+#include "grid_map_cv/utilities.hpp"
+
 namespace grid_map
 {
 
@@ -34,9 +36,11 @@ NormalVectorsFilter<T>::~NormalVectorsFilter() = default;
 template<typename T>
 bool NormalVectorsFilter<T>::configure()
 {
+  ParameterReader param_reader(this->param_prefix_, this->params_interface_);
+
   // Read which algorithm is chosen: area or raster.
   std::string algorithm;
-  if (!filters::FilterBase<T>::getParam(std::string("algorithm"), algorithm)) {
+  if (!param_reader.get(std::string("algorithm"), algorithm)) {
     RCLCPP_WARN(
       this->logging_interface_->get_logger(),
       "Could not find the parameter: `algorithm`. Setting to default value: 'area'.");
@@ -49,7 +53,7 @@ bool NormalVectorsFilter<T>::configure()
   if (algorithm != "raster") {
     // Read radius, if found, its value will be used for area method.
     // If radius parameter is not found, raster method will be used.
-    if (!filters::FilterBase<T>::getParam(std::string("radius"), estimationRadius_)) {
+    if (!param_reader.get(std::string("radius"), estimationRadius_)) {
       RCLCPP_WARN(
         this->logging_interface_->get_logger(),
         "Could not find the parameter: `radius`. Switching to raster method.");
@@ -69,10 +73,7 @@ bool NormalVectorsFilter<T>::configure()
 
   // Read parallelization_enabled to decide whether parallelization has to be used,
   // if parameter is not found an error is thrown and the false default value will be used.
-  if (!filters::FilterBase<T>::getParam(
-      std::string("parallelization_enabled"),
-      parallelizationEnabled_))
-  {
+  if (!param_reader.get(std::string("parallelization_enabled"), parallelizationEnabled_)) {
     RCLCPP_WARN(
       this->logging_interface_->get_logger(),
       "Could not find the parameter:"
@@ -110,7 +111,7 @@ bool NormalVectorsFilter<T>::configure()
 
   // Read normal_vector_positive_axis, to define normal vector positive direction.
   std::string normalVectorPositiveAxis;
-  if (!filters::FilterBase<T>::getParam(
+  if (!param_reader.get(
       std::string("normal_vector_positive_axis"),
       normalVectorPositiveAxis))
   {
@@ -134,7 +135,7 @@ bool NormalVectorsFilter<T>::configure()
   }
 
   // Read input_layer, to define input grid map layer.
-  if (!filters::FilterBase<T>::getParam(std::string("input_layer"), inputLayer_)) {
+  if (!param_reader.get(std::string("input_layer"), inputLayer_)) {
     RCLCPP_ERROR(
       this->logging_interface_->get_logger(),
       "Normal vectors filter did not find parameter `input_layer`.");
@@ -145,7 +146,7 @@ bool NormalVectorsFilter<T>::configure()
     inputLayer_.c_str());
 
   // Read output_layers_prefix, to define output grid map layers prefix.
-  if (!filters::FilterBase<T>::getParam(std::string("output_layers_prefix"), outputLayersPrefix_)) {
+  if (!param_reader.get(std::string("output_layers_prefix"), outputLayersPrefix_)) {
     RCLCPP_ERROR(
       this->logging_interface_->get_logger(),
       "Normal vectors filter did not find parameter `output_layers_prefix`.");
