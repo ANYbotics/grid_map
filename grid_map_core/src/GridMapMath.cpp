@@ -658,7 +658,8 @@ bool colorVectorToValue(const Eigen::Vector3i & colorVector, uint64_t & colorVal
 void colorVectorToValue(const Eigen::Vector3i & colorVector, float & colorValue)
 {
   uint64_t color = (colorVector(0) << 16) + (colorVector(1) << 8) + colorVector(2);
-  colorValue = static_cast<float>(color);
+  float * temp = reinterpret_cast<float *>(&color);
+  colorValue = *temp;
 }
 
 void colorVectorToValue(const Eigen::Vector3f & colorVector, float & colorValue)
