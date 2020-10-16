@@ -10,7 +10,6 @@ find_package(grid_map_cmake_helpers REQUIRED)
 find_package(grid_map_core REQUIRED)
 find_package(grid_map_ros REQUIRED)
 find_package(grid_map_cv REQUIRED)
-# find_package(grid_map_filters REQUIRED)
 # find_package(grid_map_loader REQUIRED)
 find_package(grid_map_msgs REQUIRED)
 find_package(grid_map_octomap REQUIRED)
@@ -97,11 +96,11 @@ add_executable(
   src/resolution_change_demo_node.cpp
 )
 
-# add_executable(
-#   filters_demo
-#   src/filters_demo_node.cpp
-#   src/FiltersDemo.cpp
-# )
+add_executable(
+  filters_demo
+  src/filters_demo_node.cpp
+  src/FiltersDemo.cpp
+)
 
 # add_executable(
 #   normal_filter_comparison_demo
@@ -178,10 +177,13 @@ ament_target_dependencies(
   "grid_map_msgs"
 )
 
-# ament_target_dependencies(
-#   filters_demo
-#   ${dependencies}
-# )
+ament_target_dependencies(
+  filters_demo
+  "rclcpp"
+  "grid_map_ros"
+  "grid_map_msgs"
+  "filters"
+)
 
 # ament_target_dependencies(
 #   normal_filter_comparison_demo
@@ -202,7 +204,7 @@ ament_target_dependencies(
 # Mark executables and/or libraries for installation
 install(
   TARGETS
-    # filters_demo
+    filters_demo
     image_to_gridmap_demo
     interpolation_demo
     iterator_benchmark
