@@ -5,17 +5,12 @@ project(grid_map_demos)
 find_package(ament_cmake REQUIRED)
 find_package(cv_bridge REQUIRED)
 find_package(filters REQUIRED)
-find_package(geometry_msgs REQUIRED)
 find_package(grid_map_cmake_helpers REQUIRED)
 find_package(grid_map_core REQUIRED)
-find_package(grid_map_ros REQUIRED)
 find_package(grid_map_cv REQUIRED)
-# find_package(grid_map_loader REQUIRED)
 find_package(grid_map_msgs REQUIRED)
 find_package(grid_map_octomap REQUIRED)
 find_package(grid_map_ros REQUIRED)
-# find_package(grid_map_rviz_plugin REQUIRED)
-# find_package(grid_map_visualization REQUIRED)
 find_package(OCTOMAP REQUIRED)
 find_package(octomap_msgs REQUIRED)
 find_package(rclcpp REQUIRED)
@@ -30,9 +25,9 @@ find_package(OpenCV REQUIRED
 grid_map_package()
 
 set(dependencies
-  rclcpp
-  grid_map_ros
   grid_map_msgs
+  grid_map_ros
+  rclcpp
 )
 
 ###########
@@ -44,7 +39,6 @@ set(dependencies
 include_directories(
   include
   ${EIGEN3_INCLUDE_DIR}
-  # ${OCTOMAP_INCLUDE_DIR}
 )
 
 ## Declare a cpp executable
@@ -116,89 +110,66 @@ add_executable(
 ## Specify libraries to link a library or executable target against
 ament_target_dependencies(
   simple_demo
-  "rclcpp"
-  "grid_map_ros"
-  "grid_map_msgs"
+  ${dependencies}
 )
 
 ament_target_dependencies(
   tutorial_demo
-  "rclcpp"
-  "grid_map_ros"
-  "grid_map_msgs"
+  ${dependencies}
 )
 
 ament_target_dependencies(
   iterators_demo
-  "rclcpp"
-  "grid_map_ros"
-  "grid_map_msgs"
+  ${dependencies}
 )
 
 ament_target_dependencies(image_to_gridmap_demo
-  "rclcpp"
-  "grid_map_ros"
-  "grid_map_msgs"
+  ${dependencies}
 )
 
 ament_target_dependencies(
   octomap_to_gridmap_demo
-  "rclcpp"
-  "grid_map_ros"
-  "grid_map_msgs"
-  "grid_map_octomap"
-  "octomap_msgs"
+  ${dependencies}
+  grid_map_octomap
+  octomap_msgs
 )
 
 ament_target_dependencies(
   move_demo
-  "rclcpp"
-  "grid_map_ros"
-  "grid_map_msgs"
+  ${dependencies}
 )
 
 ament_target_dependencies(
   iterator_benchmark
-  "grid_map_core"
+  grid_map_core
 )
 
 ament_target_dependencies(
   opencv_demo
-  "rclcpp"
-  "grid_map_ros"
-  "grid_map_msgs"
-  "grid_map_cv"
+  ${dependencies}
+  grid_map_cv
 )
 
 ament_target_dependencies(
   resolution_change_demo
-  "rclcpp"
-  "grid_map_ros"
-  "grid_map_msgs"
+  ${dependencies}
 )
 
 ament_target_dependencies(
   filters_demo
-  "rclcpp"
-  "grid_map_ros"
-  "grid_map_msgs"
-  "filters"
+  ${dependencies}
+  filters
 )
 
 ament_target_dependencies(
   normal_filter_comparison_demo
-  "rclcpp"
-  "grid_map_ros"
-  "grid_map_msgs"
-  "filters"
+  ${dependencies}
+  filters
 )
-
 
 ament_target_dependencies(
   interpolation_demo
-  "rclcpp"
-  "grid_map_ros"
-  "grid_map_msgs"
+  ${dependencies}
 )
 
 #############
@@ -267,6 +238,5 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 endif()
 
-ament_export_include_directories(include ${OCTOMAP_INCLUDE_DIRS})
-# ament_export_libraries(${OCTOMAP_LIBRARIES})
+ament_export_include_directories(include ${EIGEN3_INCLUDE_DIR})
 ament_package()

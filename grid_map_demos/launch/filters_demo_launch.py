@@ -22,7 +22,7 @@ def generate_launch_description():
         'filters_config',
         default_value=os.path.join(
             grid_map_demos_dir, 'config', 'filters_demo_filter_chain.yaml'),
-        description='Full path to the Gridmap visualization config file to use')
+        description='Full path to the filter chain config file to use')
 
     declare_visualization_config_file_cmd = DeclareLaunchArgument(
         'visualization_config',
