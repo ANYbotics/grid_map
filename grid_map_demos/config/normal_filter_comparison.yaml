@@ -1,23 +1,30 @@
-grid_map_filters:
-  # Compute surface normals.
-  - name: surface_normals_area
-    type: gridMapFilters/NormalVectorsFilter
-    params:
-      input_layer: elevation_filtered
-      algorithm: area
-      output_layers_prefix: normal_area_
-      radius: 0.05
-      normal_vector_positive_axis: z
-      parallelization_enabled: true
-      thread_number: 4
-      # thread_number: -1 doesn't limit the number of threads to be used
+normal_filter_comparison:
+  ros__parameters:
+    noise_on_map: 0.015       # Noise is in meters 
+    outliers_percentage: 0.0  # Max percentage value is 1.0, all outliers
 
-  - name: surface_normals_raster
-    type: gridMapFilters/NormalVectorsFilter
-    params:
-      input_layer: elevation_filtered
-      algorithm: raster
-      output_layers_prefix: normal_raster_
-      normal_vector_positive_axis: z
-      parallelization_enabled: true
-      thread_number: 4
+    # Compute surface normals.
+    filters:
+      filter1:
+        name: surface_normals_area
+        type: gridMapFilters/NormalVectorsFilter
+        params:
+          input_layer: elevation_filtered
+          algorithm: area
+          output_layers_prefix: normal_area_
+          radius: 0.05
+          normal_vector_positive_axis: z
+          parallelization_enabled: true
+          thread_number: 4
+          # thread_number: -1 doesn't limit the number of threads to be used
+
+      filter2:
+        name: surface_normals_raster
+        type: gridMapFilters/NormalVectorsFilter
+        params:
+          input_layer: elevation_filtered
+          algorithm: raster
+          output_layers_prefix: normal_raster_
+          normal_vector_positive_axis: z
+          parallelization_enabled: true
+          thread_number: 4

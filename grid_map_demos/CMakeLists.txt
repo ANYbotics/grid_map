@@ -102,10 +102,10 @@ add_executable(
   src/FiltersDemo.cpp
 )
 
-# add_executable(
-#   normal_filter_comparison_demo
-#   src/normal_filter_comparison_node.cpp
-# )
+add_executable(
+  normal_filter_comparison_demo
+  src/normal_filter_comparison_node.cpp
+)
 
 add_executable(
   interpolation_demo
@@ -185,10 +185,14 @@ ament_target_dependencies(
   "filters"
 )
 
-# ament_target_dependencies(
-#   normal_filter_comparison_demo
-#   ${dependencies}
-# )
+ament_target_dependencies(
+  normal_filter_comparison_demo
+  "rclcpp"
+  "grid_map_ros"
+  "grid_map_msgs"
+  "filters"
+)
+
 
 ament_target_dependencies(
   interpolation_demo
@@ -210,7 +214,7 @@ install(
     iterator_benchmark
     iterators_demo
     move_demo
-    # normal_filter_comparison_demo
+    normal_filter_comparison_demo
     octomap_to_gridmap_demo
     opencv_demo
     resolution_change_demo
