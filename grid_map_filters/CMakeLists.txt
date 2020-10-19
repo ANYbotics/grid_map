@@ -8,6 +8,7 @@ find_package(grid_map_cmake_helpers REQUIRED)
 find_package(grid_map_core REQUIRED)
 find_package(grid_map_msgs REQUIRED)
 find_package(grid_map_ros REQUIRED)
+find_package(pluginlib REQUIRED)
 
 ## System dependencies are found with CMake's conventions
 find_package(PkgConfig REQUIRED)
@@ -30,6 +31,7 @@ set(dependencies
   grid_map_core
   grid_map_msgs
   grid_map_ros
+  pluginlib
 )
 
 ###########

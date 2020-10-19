@@ -3,12 +3,13 @@ project(grid_map_cv)
 
 ## Find ament packages
 find_package(ament_cmake REQUIRED)
-find_package(grid_map_cmake_helpers REQUIRED)
-find_package(grid_map_core REQUIRED)
 find_package(cv_bridge REQUIRED)
 find_package(filters REQUIRED)
-find_package(sensor_msgs REQUIRED)
+find_package(grid_map_cmake_helpers REQUIRED)
+find_package(grid_map_core REQUIRED)
+find_package(pluginlib REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(sensor_msgs REQUIRED)
 
 find_package(OpenCV REQUIRED
   COMPONENTS
@@ -23,12 +24,13 @@ include_directories(
 )
 
 set(dependencies
-  grid_map_core
   cv_bridge
   filters
-  sensor_msgs
-  rclcpp
+  grid_map_core
   OpenCV
+  pluginlib
+  rclcpp
+  sensor_msgs
 )
 
 ###########

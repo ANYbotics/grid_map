@@ -16,6 +16,7 @@
   <depend>grid_map_core</depend>
   <depend>cv_bridge</depend>
   <depend>filters</depend>
+  <depend>pluginlib</depend>
   <depend>rclcpp</depend>
   <depend>sensor_msgs</depend>
   
