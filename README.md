@@ -152,6 +152,10 @@ The *grid_map_demos* package contains several demonstration nodes. Use this code
         roslaunch grid_map_demos image_to_gridmap_demo.launch
 
     ![Image to grid map demo result](grid_map_demos/doc/image_to_grid_map_demo_result.png)
+    
+* *[grid_map_to_image_demo](grid_map_demos/src/GridmapToImageDemo.cpp)* demonstrates how to save a grid map layer to an image. Start the demonstration with
+
+        rosrun grid_map_demos grid_map_to_image_demo _grid_map_topic:=/grid_map _file:=/home/$USER/Desktop/grid_map_image.png
 
 * *[opencv_demo](grid_map_demos/src/opencv_demo_node.cpp)* demonstrates map manipulations with help of [OpenCV] functions. Start the demonstration with
 

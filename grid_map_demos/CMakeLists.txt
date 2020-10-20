@@ -78,6 +78,11 @@ add_executable(image_to_gridmap_demo
   src/ImageToGridmapDemo.cpp
 )
 
+add_executable(grid_map_to_image_demo
+  src/grid_map_to_image_demo_node.cpp
+  src/GridmapToImageDemo.cpp
+)
+
 add_executable(octomap_to_gridmap_demo
   src/octomap_to_gridmap_demo_node.cpp
   src/OctomapToGridmapDemo.cpp
@@ -131,6 +136,11 @@ target_link_libraries(
 
 target_link_libraries(
   image_to_gridmap_demo
+  ${catkin_LIBRARIES}
+)
+
+target_link_libraries(
+  grid_map_to_image_demo
   ${catkin_LIBRARIES}
 )
 
@@ -190,6 +200,7 @@ install(
   TARGETS 
     filters_demo
     image_to_gridmap_demo
+    grid_map_to_image_demo
     interpolation_demo
     iterator_benchmark
     iterators_demo
@@ -221,6 +232,7 @@ if(CATKIN_ENABLE_TESTING)
   add_dependencies(${PROJECT_NAME}-test
     filters_demo
     image_to_gridmap_demo
+    grid_map_to_image_demo
     interpolation_demo
     iterator_benchmark
     iterators_demo
