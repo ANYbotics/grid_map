@@ -47,7 +47,7 @@ bool MedianFillFilter<T>::configure() {
     filterExistingValues_ = false;
   }
 
-  ROS_DEBUG("filter_existing_values = %b.", filterExistingValues_);
+  ROS_DEBUG("Filter_existing_values = %s.", filterExistingValues_ ? "true" : "false");
 
   if (!FilterBase<T>::getParam(std::string("input_layer"), inputLayer_)) {
     ROS_ERROR("Median filter did not find parameter `input_layer`.");
@@ -93,7 +93,9 @@ bool MedianFillFilter<T>::update(const T& mapIn, T& mapOut) {
 
   // Copy input map and add new layer to it.
   mapOut = mapIn;
-  mapOut.add(outputLayer_);
+  if (!mapOut.exists(outputLayer_)) {
+    mapOut.add(outputLayer_);
+  }
   mapOut.convertToDefaultStartIndex();
 
   const auto radiusInPixels = static_cast<size_t>(fillHoleRadius_ / mapIn.getResolution());
@@ -101,7 +103,9 @@ bool MedianFillFilter<T>::update(const T& mapIn, T& mapOut) {
   const auto kernelLength = radiusInPixels * 2 + 1;
   const grid_map::Index& bufferSize = mapOut.getSize();
 
-  grid_map::Matrix& inputData = mapOut[inputLayer_];
+  grid_map::Matrix inputCopy;
+  const grid_map::Matrix& inputData = (inputLayer_ == outputLayer_) ? inputCopy = mapOut[inputLayer_] : mapOut[inputLayer_];
+
   grid_map::Matrix& outputData = mapOut[outputLayer_];
   grid_map::Matrix& varianceData = mapOut["variance"];
 
@@ -115,7 +119,8 @@ bool MedianFillFilter<T>::update(const T& mapIn, T& mapOut) {
    * index||_{inf} <= radiusInPixels.
    * @return A block view of the neighbourhood of the index cell, including itself.
    */
-  const auto getNeighbourhood = [&bufferSize](Eigen::Ref<Eigen::MatrixXf> inputData, const grid_map::Index& index, int radiusInPixels) {
+  const auto getNeighbourhood = [&bufferSize](Eigen::Ref<const Eigen::MatrixXf> inputData, const grid_map::Index& index,
+                                              const int radiusInPixels) {
     // Bound the median window to the GridMap boundaries. Calculate the neighbour patch.
     grid_map::Index topLeftIndex = index - grid_map::Index(radiusInPixels, radiusInPixels);
     grid_map::Index bottomRightIndex = index + grid_map::Index(radiusInPixels, radiusInPixels);
@@ -127,13 +132,12 @@ bool MedianFillFilter<T>::update(const T& mapIn, T& mapOut) {
     return inputData.block(topLeftIndex(0), topLeftIndex(1), neighbourPatchSize(0), neighbourPatchSize(1));
   };
 
-  const auto accumulateFinitesInNeighbourhood = [](const grid_map::Matrix& dataLayer,const  Eigen::Ref<Eigen::MatrixXf> neighbourhood,
-                                      MedianAccumulatorT& accumulator) {
+  const auto accumulateFinitesInNeighbourhood = [](Eigen::Ref<const Eigen::MatrixXf> neighbourhood, MedianAccumulatorT& accumulator) {
     // Iterate over the local neighbourhood.
     size_t cols = neighbourhood.cols();
-    for(size_t row=0; row<neighbourhood.rows(); row++){
+    for (size_t row = 0; row < neighbourhood.rows(); ++row) {
       const auto& currentRow = neighbourhood.row(row);
-      for(size_t col=0; col<cols; col++){
+      for (size_t col = 0; col < cols; ++col) {
         const float& neighbourValue = currentRow[col];
         if (std::isfinite(neighbourValue)) {  // Calculate the median of the finite neighbours.
           accumulator(neighbourValue);
@@ -142,6 +146,7 @@ bool MedianFillFilter<T>::update(const T& mapIn, T& mapOut) {
     }
   };
 
+  unsigned int numNans = 0;
   // Iterate through the entire GridMap and update NaN values with the median.
   for (GridMapIterator iterator(mapOut); !iterator.isPastEnd(); ++iterator) {
     const Index index(*iterator);
@@ -151,18 +156,18 @@ bool MedianFillFilter<T>::update(const T& mapIn, T& mapOut) {
 
     if (not std::isfinite(inputValue)) {  // Fill the NaN input value with the median.
       MedianAccumulatorT medianAccumulator;
-      const Eigen::Ref<Eigen::MatrixXf> neighbourhood = getNeighbourhood(inputData, index, radiusInPixels);
-      accumulateFinitesInNeighbourhood(inputData, neighbourhood, medianAccumulator);
+      Eigen::Ref<const Eigen::MatrixXf> neighbourhood = getNeighbourhood(inputData, index, radiusInPixels);
+      accumulateFinitesInNeighbourhood(neighbourhood, medianAccumulator);
 
       if (count(medianAccumulator) >= 1.0f) {  // If we have at least one valid input value in the neighbourhood we assign the median.
         outputValue = median(medianAccumulator);
         variance = 0.1;
       }
-
+      ++numNans;
     } else if (filterExistingValues_) {  // Value is already finite. Optionally add some filtering.
       MedianAccumulatorT medianAccumulator;
-      const Eigen::Ref<Eigen::MatrixXf> neighbourhood = getNeighbourhood(inputData, index, existingValueRadiusInPixels);
-      accumulateFinitesInNeighbourhood(inputData, neighbourhood, medianAccumulator);
+      Eigen::Ref<const Eigen::MatrixXf> neighbourhood = getNeighbourhood(inputData, index, existingValueRadiusInPixels);
+      accumulateFinitesInNeighbourhood(neighbourhood, medianAccumulator);
 
       if (count(medianAccumulator) >= 1.0f) {
         outputValue = median(medianAccumulator);
@@ -172,7 +177,7 @@ bool MedianFillFilter<T>::update(const T& mapIn, T& mapOut) {
       outputValue = inputValue;
     }
   }
-
+  ROS_DEBUG_STREAM("Median fill filter " << this->getName() << " observed " << numNans << " in input layer!");
   return true;
 }
 
