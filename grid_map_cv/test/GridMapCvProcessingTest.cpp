@@ -5,16 +5,13 @@
  *      Author: Peter Fankhauser
  */
 
-#include "grid_map_cv/grid_map_cv.hpp"
-
+#include <chrono>
+#include <cv_bridge/cv_bridge.h>
 #include <grid_map_core/grid_map_core.hpp>
 #include <grid_map_core/gtest_eigen.hpp>
-
-// gtest
 #include <gtest/gtest.h>
 
-// OpenCV
-#include <cv_bridge/cv_bridge.h>
+#include "grid_map_cv/grid_map_cv.hpp"
 
 using namespace std;
 using namespace grid_map;
