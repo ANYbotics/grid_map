@@ -32,6 +32,7 @@ class PclLoaderParameters {
 		double clusterTolerance_ = 0.3;
 		unsigned int minNumPoints_ = 2;
 		unsigned int maxNumPoints_ = 1000000;
+		bool useMaxHeightAsCellElevation_;
 	};
 	struct OutlierRemovalParameters {
 		bool isRemoveOutliers_ = false;

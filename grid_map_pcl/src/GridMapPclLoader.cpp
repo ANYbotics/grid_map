@@ -174,9 +174,10 @@ double GridMapPclLoader::calculateElevationFromPointsInsideGridMapCell(
   std::transform(clusterClouds.begin(), clusterClouds.end(), clusterHeights.begin(),
                  [this](Pointcloud::ConstPtr cloud) -> double {return grid_map_pcl::calculateMeanOfPointPositions(cloud).z();});
 
-  double minClusterHeight = *(std::min_element(clusterHeights.begin(), clusterHeights.end()));
+  const double clusterHeight = params_->get().clusterExtraction_.useMaxHeightAsCellElevation_ ? *(std::max_element(clusterHeights.begin(), clusterHeights.end()))
+                                                            : *(std::min_element(clusterHeights.begin(), clusterHeights.end()));
 
-  return minClusterHeight;
+  return clusterHeight;
 }
 
 GridMapPclLoader::Pointcloud::Ptr GridMapPclLoader::getPointcloudInsideGridMapCellBorder(

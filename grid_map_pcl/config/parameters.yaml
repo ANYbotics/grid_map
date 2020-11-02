@@ -13,6 +13,7 @@ pcl_grid_map_extraction:
     cluster_tolerance: 0.05
     min_num_points: 4
     max_num_points: 1000000
+    use_max_height_as_cell_elevation: false
   outlier_removal:
     is_remove_outliers: true
     mean_K: 10
