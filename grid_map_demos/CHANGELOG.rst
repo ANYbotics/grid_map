@@ -2,6 +2,10 @@
 Changelog for package grid_map_demos
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.6.3 (2020-10-19)
+------------------
+* Added GridMapToImageDemo. Saves the elevation layer of a grid_map to a file.
+
 1.6.2 (2019-10-14)
 ------------------
 

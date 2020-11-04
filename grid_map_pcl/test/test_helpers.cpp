@@ -23,7 +23,7 @@ std::string getConfigFilePath()
 
 std::string getTestDataFolderPath()
 {
-  std::string filename = ros::package::getPath("grid_map_pcl") + "/test/test_data";
+  std::string filename = ros::package::getPath("grid_map_pcl") + "/data";
   return filename;
 }
 
@@ -201,7 +201,7 @@ void setVerbosityLevel(ros::console::levels::Level level)
 
 std::string getTestPcdFilePath()
 {
-  std::string filename = ros::package::getPath("grid_map_pcl") + "/test/test_data/plane_noisy.pcd";
+  std::string filename = ros::package::getPath("grid_map_pcl") + "/data/plane_noisy.pcd";
   return filename;
 }
 

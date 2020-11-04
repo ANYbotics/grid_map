@@ -15,6 +15,16 @@
         Compute for each cell of a layer the mean value inside a radius.
       </description>
     </class>
+    <class name="gridMapFilters/MedianFillFilter" type="grid_map::MedianFillFilter<grid_map::GridMap>" base_class_type="filters::FilterBase<grid_map::GridMap>" >
+      <description>
+        Fill holes (NaNs) in a layer using the median value inside a radius. Optionally, apply median calculations for values that are already finite.
+      </description>
+    </class>
+    <class name="gridMapFilters/MockFilter" type="grid_map::MockFilter<grid_map::GridMap>" base_class_type="filters::FilterBase<grid_map::GridMap>" >
+      <description>
+        Does Identity, but allows to set a delay and debug prints. Used for testing purposes.
+      </description>
+    </class>
     <class name="gridMapFilters/NormalVectorsFilter" type="grid_map::NormalVectorsFilter<grid_map::GridMap>" base_class_type="filters::FilterBase<grid_map::GridMap>" >
       <description>
         Compute the normal vectors of a layer in a map.

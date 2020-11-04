@@ -36,6 +36,9 @@ void PclLoaderParameters::handleYamlNode(const YAML::Node &yamlNode) {
 	parameters_.cloudTransformation_.rpyIntrinsic_.z() =
 			yamlNode[prefix]["cloud_transform"]["rotation"]["y"].as<double>();
 
+	parameters_.clusterExtraction_.useMaxHeightAsCellElevation_ =
+			yamlNode[prefix]["cluster_extraction"]["use_max_height_as_cell_elevation"].as<
+					bool>();
 	parameters_.clusterExtraction_.clusterTolerance_ =
 			yamlNode[prefix]["cluster_extraction"]["cluster_tolerance"].as<
 					double>();

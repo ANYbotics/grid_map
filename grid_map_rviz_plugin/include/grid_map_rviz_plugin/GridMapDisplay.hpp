@@ -12,6 +12,7 @@
 #include <grid_map_ros/grid_map_ros.hpp>
 #include <grid_map_msgs/GridMap.h>
 #include <boost/circular_buffer.hpp>
+// The following replaces <rviz/message_filter_display.h>
 #include "grid_map_rviz_plugin/modified/message_filter_display.h"
 #endif
 
@@ -31,7 +32,7 @@ class EditableEnumProperty;
 namespace grid_map_rviz_plugin {
 
 class GridMapVisual;
-class GridMapDisplay : public MessageFilterDisplayMod<grid_map_msgs::GridMap>
+class GridMapDisplay : public rviz::MessageFilterDisplay<grid_map_msgs::GridMap>
 {
 Q_OBJECT
  public:
