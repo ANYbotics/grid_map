@@ -110,7 +110,6 @@ install(
 )
 install(
   DIRECTORY
-    data
     doc
     config
     launch

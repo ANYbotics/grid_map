@@ -21,14 +21,8 @@
 
 namespace grid_map {
 
-constexpr double kRadToDeg = 180.0 / M_PI;
+static constexpr double kRadToDeg = 180.0 / M_PI;
 
-GridMapPclLoader::GridMapPclLoader()
-{
-  params_ = std::make_unique<grid_map_pcl::PclLoaderParameters>();
-}
-
-GridMapPclLoader::~GridMapPclLoader() = default;
 
 const grid_map::GridMap& GridMapPclLoader::getGridMap() const
 {
@@ -69,12 +63,12 @@ void GridMapPclLoader::preProcessInputCloud()
   // Preprocess: Remove outliers, downsample cloud, transform cloud
   ROS_INFO_STREAM("Preprocessing of the pointcloud started");
 
-  if (params_->get().outlierRemoval_.isRemoveOutliers_) {
+  if (params_.get().outlierRemoval_.isRemoveOutliers_) {
     auto filteredCloud = pointcloudProcessor_.removeOutliersFromInputCloud(workingCloud_);
     setWorkingCloud(filteredCloud);
   }
 
-  if (params_->get().downsampling_.isDownsampleCloud_) {
+  if (params_.get().downsampling_.isDownsampleCloud_) {
     auto downsampledCloud = pointcloudProcessor_.downsampleInputCloud(workingCloud_);
     setWorkingCloud(downsampledCloud);
   }
@@ -88,7 +82,7 @@ void GridMapPclLoader::initializeGridMapGeometryFromInputCloud()
 {
 
   workingGridMap_.clearAll();
-  const double resolution = params_->get().gridMap_.resolution_;
+  const double resolution = params_.get().gridMap_.resolution_;
   if (resolution < 1e-4) {
     throw std::runtime_error("Desired grid map resolution is zero");
   }
@@ -127,7 +121,7 @@ void GridMapPclLoader::addLayerFromInputCloud(const std::string& layer)
 #ifndef GRID_MAP_PCL_OPENMP_FOUND
   ROS_WARN_STREAM("OpemMP not found, defaulting to single threaded implementation");
 #else
-  omp_set_num_threads(params_->get().numThreads_);
+  omp_set_num_threads(params_.get().numThreads_);
 #pragma omp parallel for schedule(dynamic, 10)
 #endif
   // Iterate through grid map and calculate the corresponding height based on the point cloud
@@ -138,7 +132,7 @@ void GridMapPclLoader::addLayerFromInputCloud(const std::string& layer)
 }
 
 void GridMapPclLoader::processGridMapCell(const unsigned int linearGridMapIndex,
-                                          grid_map::Matrix* gridMapData) const
+                                          grid_map::Matrix* gridMapData)
 {
   // Get grid map index from linear index and check if enough points lie within the cell
   const grid_map::Index index(
@@ -147,37 +141,40 @@ void GridMapPclLoader::processGridMapCell(const unsigned int linearGridMapIndex,
   Pointcloud::Ptr pointsInsideCellBorder(new Pointcloud());
   pointsInsideCellBorder = getPointcloudInsideGridMapCellBorder(index);
   const bool isTooFewPointsInCell = pointsInsideCellBorder->size()
-      < params_->get().gridMap_.minCloudPointsPerCell_;
+      < params_.get().gridMap_.minCloudPointsPerCell_;
   if (isTooFewPointsInCell) {
     ROS_WARN_STREAM_THROTTLE(
-        10.0, "Less than " << params_->get().gridMap_.minCloudPointsPerCell_ << " points in a cell");
+        10.0, "Less than " << params_.get().gridMap_.minCloudPointsPerCell_ << " points in a cell");
     return;
   }
-
-  (*gridMapData)(index(0), index(1)) = calculateElevationFromPointsInsideGridMapCell(
-      pointsInsideCellBorder);
+  auto& clusterHeights = clusterHeightsWithingGridMapCell_[index(0)][index(1)];
+  calculateElevationFromPointsInsideGridMapCell(pointsInsideCellBorder, clusterHeights);
+  if (clusterHeights.empty()) {
+    (*gridMapData)(index(0), index(1)) = std::nan("1");
+  } else {
+    (*gridMapData)(index(0), index(1)) = params_.get().clusterExtraction_.useMaxHeightAsCellElevation_
+                                             ? *(std::max_element(clusterHeights.begin(), clusterHeights.end()))
+                                             : *(std::min_element(clusterHeights.begin(), clusterHeights.end()));
+  }
 }
 
-double GridMapPclLoader::calculateElevationFromPointsInsideGridMapCell(
-    Pointcloud::ConstPtr cloud) const
+void GridMapPclLoader::calculateElevationFromPointsInsideGridMapCell(
+    Pointcloud::ConstPtr cloud, std::vector<float>& heights) const
 {
+  heights.clear();
   // Extract point cloud cluster from point cloud and return if none is found.
   std::vector<Pointcloud::Ptr> clusterClouds = pointcloudProcessor_.extractClusterCloudsFromPointcloud(cloud);
   const bool isNoClustersFound = clusterClouds.empty();
   if (isNoClustersFound) {
     ROS_WARN_STREAM_THROTTLE(10.0, "No clusters found in the grid map cell");
-    return std::nan("1");  // this will leave the grid map cell uninitialized
+    return;
   }
 
   // Extract mean z value of cluster vector and return smallest height value
-  std::vector<double> clusterHeights(clusterClouds.size());
-  std::transform(clusterClouds.begin(), clusterClouds.end(), clusterHeights.begin(),
+  heights.reserve(clusterClouds.size());
+
+  std::transform(clusterClouds.begin(), clusterClouds.end(), std::back_inserter(heights),
                  [this](Pointcloud::ConstPtr cloud) -> double {return grid_map_pcl::calculateMeanOfPointPositions(cloud).z();});
-
-  const double clusterHeight = params_->get().clusterExtraction_.useMaxHeightAsCellElevation_ ? *(std::max_element(clusterHeights.begin(), clusterHeights.end()))
-                                                            : *(std::min_element(clusterHeights.begin(), clusterHeights.end()));
-
-  return clusterHeight;
 }
 
 GridMapPclLoader::Pointcloud::Ptr GridMapPclLoader::getPointcloudInsideGridMapCellBorder(
@@ -188,7 +185,7 @@ GridMapPclLoader::Pointcloud::Ptr GridMapPclLoader::getPointcloudInsideGridMapCe
 
 void GridMapPclLoader::loadParameters(const std::string& filename)
 {
-  params_->loadParameters(filename);
+  params_.loadParameters(filename);
   pointcloudProcessor_.loadParameters(filename);
 }
 
@@ -210,12 +207,15 @@ void GridMapPclLoader::allocateSpaceForCloudsInsideCells()
 
   // resize vectors
   pointcloudWithinGridMapCell_.resize(dimX);
+  clusterHeightsWithingGridMapCell_.resize(dimX);
 
   // allocate pointClouds
   for (unsigned int i = 0; i < dimX; ++i) {
     pointcloudWithinGridMapCell_[i].resize(dimY);
+    clusterHeightsWithingGridMapCell_[i].resize(dimY);
     for (unsigned int j = 0; j < dimY; ++j) {
       pointcloudWithinGridMapCell_[i][j].reset(new Pointcloud());
+      clusterHeightsWithingGridMapCell_[i][j].clear();
     }
   }
 }
