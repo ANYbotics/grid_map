@@ -12,9 +12,11 @@
   <author email="jelavice@ethz.ch">Edo Jelavic</author>
   
   <buildtool_depend>catkin</buildtool_depend>
+<!--   <build_depend>cmake_clang_tools</build_depend> -->
   <depend>grid_map_core</depend>
   <depend>grid_map_msgs</depend>
   <depend>grid_map_ros</depend>
+  <depend>libpcl-all-dev</depend>
   <depend>pcl_ros</depend>
   <depend>roscpp</depend>
   <depend>yaml-cpp</depend>

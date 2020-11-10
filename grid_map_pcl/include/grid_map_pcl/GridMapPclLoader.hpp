@@ -7,13 +7,13 @@
  */
 
 #pragma once
+
 #include <array>
 #include <memory>
-#include <pcl/features/normal_3d.h>
-#include <pcl/surface/gp3.h>
 #include <string>
-#include "grid_map_core/GridMap.hpp"
-#include "grid_map_core/iterators/GridMapIterator.hpp"
+
+#include <grid_map_core/GridMap.hpp>
+
 #include "grid_map_pcl/PclLoaderParameters.hpp"
 #include "grid_map_pcl/PointcloudProcessor.hpp"
 
@@ -32,15 +32,8 @@ class GridMapPclLoaderTest_CalculateElevation_Test;
  * indoors. All the calculations are performed in the point cloud frame.
  */
 
-class GridMapPclLoader
-{
-
+class GridMapPclLoader {
   friend class grid_map_pcl_test::GridMapPclLoaderTest_CalculateElevation_Test;
-
-  struct ClusterParameters
-  {
-    Eigen::Vector3d mean_;
-  };
 
  public:
   using Point = ::pcl::PointXYZ;
@@ -88,7 +81,7 @@ class GridMapPclLoader
   const grid_map::GridMap& getGridMap() const;
 
   /*!
-   * Saves a point cloud to a pcd file. 
+   * Saves a point cloud to a pcd file.
    * @param[in] full path to the output cloud
    */
   void savePointCloudAsPcdFile(const std::string& filename) const;
@@ -100,18 +93,17 @@ class GridMapPclLoader
   void loadParameters(const std::string& filename);
 
   //! @return the parameters.
-  const grid_map_pcl::PclLoaderParameters::Parameters& getParameters() const {
-    return params_.get();
-  }
+  const grid_map_pcl::PclLoaderParameters::Parameters& getParameters() const { return params_.get(); }
 
   //! @return A reference to the internal gridMap.
   grid_map::GridMap& getWorkingGridMap() { return workingGridMap_; }
 
   //! @return A const reference to the internal multiple heights representation.
-  const std::vector<std::vector<std::vector<float>>>& getClusterHeightsWithingGridMapCell() const { return clusterHeightsWithingGridMapCell_; }
+  const std::vector<std::vector<std::vector<float>>>& getClusterHeightsWithingGridMapCell() const {
+    return clusterHeightsWithingGridMapCell_;
+  }
 
  protected:
-
   /*!
    * Copies the input cloud into the memory. This cloud is expected to be
    * changed if you run the pcl filters. For example if you run the
@@ -130,7 +122,7 @@ class GridMapPclLoader
    */
   void setRawInputCloud(Pointcloud::ConstPtr rawInputCloud);
 
-  //processing the grid map
+  // processing the grid map
 
   /*!
    * @param[in] index of a cell in the grid map
@@ -148,8 +140,7 @@ class GridMapPclLoader
    * @param[in] linear index of a grid map cell currently being processed
    * @param[out] matrix of elevation values which need to be computed
    */
-  void processGridMapCell(const unsigned int linearGridMapIndex,
-                          grid_map::Matrix* gridMapData);
+  void processGridMapCell(const unsigned int linearGridMapIndex, grid_map::Matrix* gridMapData);
 
   /*!
    * Given a point cloud it computes the elevation from it. The algorithm is suited for 2.5 D
@@ -186,7 +177,7 @@ class GridMapPclLoader
   void dispatchWorkingCloudToGridMapCells();
 
   // Matrix of point clouds. Each point cloud has only points that fall within a grid map cell.
-  std::vector<std::vector<Pointcloud::Ptr> > pointcloudWithinGridMapCell_;
+  std::vector<std::vector<Pointcloud::Ptr>> pointcloudWithinGridMapCell_;
 
   // Matrix of cluster-height-vectors. Dimensions: x, y, cluster_index.
   std::vector<std::vector<std::vector<float>>> clusterHeightsWithingGridMapCell_;
@@ -205,7 +196,6 @@ class GridMapPclLoader
 
   // Class that handles point cloud processing
   grid_map_pcl::PointcloudProcessor pointcloudProcessor_;
-
 };
 
 }  // namespace grid_map

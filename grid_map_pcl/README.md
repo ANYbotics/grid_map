@@ -50,7 +50,7 @@ The resulting grid map will be saved in the folder given by *folder_path* variab
 ##### Grid map parameters
 Resulting grid map parameters.
 * **pcl_grid_map_extraction/grid_map/min_num_points_per_cell** Minimum number of points in the point cloud that have to fall within any of the grid map cells. Otherwise the cell elevation will be set to NaN.
-* **pcl_grid_map_extraction/grid_map/resolution** Resolution of the grid map. Width and lengts are computed automatically.
+* **pcl_grid_map_extraction/grid_map/resolution** Resolution of the grid map. Width and lengths are computed automatically.
 
 ### Point Cloud Pre-processing Parameters
 

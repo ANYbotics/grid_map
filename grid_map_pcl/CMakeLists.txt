@@ -27,6 +27,17 @@ if (OpenMP_FOUND)
   add_definitions(-DGRID_MAP_PCL_OPENMP_FOUND=${OpenMP_FOUND})
 endif()
 
+find_package(PCL REQUIRED
+  COMPONENTS
+    common
+    features
+    filters
+    io
+    kdtree
+    segmentation
+    surface
+)
+
 ## Find catkin macros and libraries
 find_package(catkin REQUIRED 
   COMPONENTS
@@ -51,44 +62,59 @@ catkin_package(
   CATKIN_DEPENDS
     ${CATKIN_PACKAGE_DEPENDENCIES}
   DEPENDS
+    PCL
 )
 
 ###########
 ## Build ##
 ###########
 
-## Specify additional locations of header files
-include_directories(
-  include
-  SYSTEM
-    ${catkin_INCLUDE_DIRS}
-    ${EIGEN3_INCLUDE_DIR}
-    ${OpenMP_CXX_INCLUDE_DIRS}
-)
-
-## Declare a cpp library
+# Library.
 add_library(${PROJECT_NAME}
   ${SRC_FILES}
 )
-
+add_dependencies(${PROJECT_NAME}
+  ${catkin_EXPORTED_TARGETS}
+)
+target_include_directories(${PROJECT_NAME} PRIVATE
+  include
+)
+target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC
+  ${catkin_INCLUDE_DIRS}
+  ${EIGEN3_INCLUDE_DIR}
+  ${OpenMP_CXX_INCLUDE_DIRS}
+  ${PCL_COMMON_INCLUDE_DIRS}
+  ${PCL_FEATURES_INCLUDE_DIRS}
+  ${PCL_FILTERS_INCLUDE_DIRS}
+  ${PCL_IO_INCLUDE_DIRS}
+  ${PCL_KDTREE_INCLUDE_DIRS}
+  ${PCL_SEGMENTATION_INCLUDE_DIRS}
+  ${PCL_SURFACE_INCLUDE_DIRS}
+)
 target_link_libraries(${PROJECT_NAME}
   ${catkin_LIBRARIES}
   ${OpenMP_CXX_LIBRARIES}
   yaml-cpp
 )
 
-add_dependencies(${PROJECT_NAME}
-  ${catkin_EXPORTED_TARGETS}
-)
 
+# Node.
 add_executable(grid_map_pcl_loader_node
   src/grid_map_pcl_loader_node.cpp
 )
-
+add_dependencies(grid_map_pcl_loader_node
+  ${PROJECT_NAME}
+)
+target_include_directories(grid_map_pcl_loader_node PRIVATE
+  include
+)
+target_include_directories(grid_map_pcl_loader_node SYSTEM PUBLIC
+  ${catkin_INCLUDE_DIRS}
+  ${EIGEN3_INCLUDE_DIR}
+)
 target_link_libraries(grid_map_pcl_loader_node
   ${PROJECT_NAME}
   ${catkin_LIBRARIES}
-  ${OpenMP_CXX_LIBRARIES}
 )
 
 #############
@@ -162,3 +188,12 @@ if(CATKIN_ENABLE_TESTING)
     )
   endif()
 endif()
+
+###########
+## Clang ##
+###########
+
+find_package(cmake_clang_tools QUIET)
+if(cmake_clang_tools_FOUND)
+  add_default_clang_tooling()
+endif(cmake_clang_tools_FOUND)
