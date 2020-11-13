@@ -94,7 +94,7 @@ Clone and build grid_map ROS2 dependencies.
     wget https://raw.githubusercontent.com/ANYbotics/grid_map/ros2/tools/ros2_dependencies.repos
     vcs import src < ros2_dependencies.repos
     rosdep install -y --ignore-src --from-paths src
-    colcon build --symlink-install --packages-up-to rcpputils rosbag2_cpp pcl_ros
+    colcon build --symlink-install --packages-up-to pcl_ros
 
 The other packages depend additionally on the [ROS] standard installation (*rclcpp*, *tf*, *filters*, *sensor_msgs*, *nav_msgs*, and *cv_bridge*). Other format specific conversion packages (e.g. *grid_map_cv*, *grid_map_pcl* etc.) depend on packages described below in *Packages Overview*.
 
