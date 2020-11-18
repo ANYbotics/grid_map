@@ -11,6 +11,7 @@
   <author email="takahiro.miki1992@gmail.com">Takahiro Miki</author>
   <author email="pfankhauser@anybotics.com">Péter Fankhauser</author>
   <buildtool_depend>catkin</buildtool_depend>
+<!--   <build_depend>cmake_clang_tools</build_depend> -->
   <depend>grid_map_core</depend>
   <depend>pcl_ros</depend>
 <!--   <test_depend>cmake_code_coverage</test_depend> -->

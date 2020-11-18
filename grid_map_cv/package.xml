@@ -11,6 +11,7 @@
   <author email="pfankhauser@anybotics.com">Péter Fankhauser</author>
   <author email="mgaertner@anybotics.com">Magnus Gärtner</author>
   <buildtool_depend>catkin</buildtool_depend>
+<!--   <build_depend>cmake_clang_tools</build_depend> -->
   <depend>grid_map_core</depend>
   <depend>cv_bridge</depend>
   <depend>filters</depend>

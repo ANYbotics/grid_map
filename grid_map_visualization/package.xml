@@ -10,6 +10,7 @@
   <url type="bugtracker">http://github.com/anybotics/grid_map/issues</url>
   <author email="pfankhauser@anybotics.com">Péter Fankhauser</author>
   <buildtool_depend>catkin</buildtool_depend>
+<!--   <build_depend>cmake_clang_tools</build_depend> -->
   <depend>roscpp</depend>
   <depend>grid_map_core</depend>
   <depend>grid_map_ros</depend>

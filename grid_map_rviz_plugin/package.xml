@@ -10,6 +10,7 @@
   <author>Péter Fankhauser</author>
 
   <buildtool_depend>catkin</buildtool_depend>
+<!--   <build_depend>cmake_clang_tools</build_depend> -->
   <build_depend>qtbase5-dev</build_depend>
   <build_depend>rviz</build_depend>
   <build_depend>grid_map_ros</build_depend>

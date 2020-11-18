@@ -3,6 +3,7 @@ project(grid_map_pcl)
 
 set(CMAKE_CXX_STANDARD 14)
 add_compile_options(-Wall -Wextra -Wpedantic)
+
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(SRC_FILES
@@ -195,10 +196,9 @@ if(CATKIN_ENABLE_TESTING)
   endif()
 endif()
 
-###########
-## Clang ##
-###########
-
+#################
+## Clang_tools ##
+#################
 find_package(cmake_clang_tools QUIET)
 if(cmake_clang_tools_FOUND)
   add_default_clang_tooling()
