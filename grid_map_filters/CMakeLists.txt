@@ -12,8 +12,6 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ffast-math -fno-finite-math-only")
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-find_package(Boost REQUIRED)
-
 # Other possible options.
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native -mtune=native -ffast-math")
 #set(TARGET_ARCHITECTURE "kaby-lake")
@@ -59,8 +57,6 @@ catkin_package(
     grid_map_core
     grid_map_msgs
     filters
-  DEPENDS
-    Boost
 )
 
 ###########
@@ -73,7 +69,6 @@ include_directories(
   SYSTEM
     ${catkin_INCLUDE_DIRS}
     ${TBB_INCLUDE_DIRS}
-    ${Boost_INCLUDE_DIRS}
 )
 
 ## Declare a cpp library
@@ -101,7 +96,6 @@ add_library(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME}
   ${catkin_LIBRARIES}
   ${TBB_LIBRARIES}
-  ${Boost_LIBRARIES}
 )
 
 #############
@@ -143,13 +137,11 @@ if (CATKIN_ENABLE_TESTING)
   )
   target_include_directories(${PROJECT_NAME}-test SYSTEM PUBLIC
     ${catkin_INCLUDE_DIRS}
-    ${Boost_INCLUDE_DIRS}
   )
   target_link_libraries(${PROJECT_NAME}-test
     gmock
     gtest
     ${PROJECT_NAME}
-    ${Boost_LIBRARIES}
   )
 
   ###################

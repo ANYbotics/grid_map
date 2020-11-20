@@ -6,19 +6,21 @@
  *   Institute: ETH Zurich, ANYbotics
  */
 
-
 #pragma once
 
 #include <filters/filter_base.h>
 
+#include <Eigen/Core>
 #include <string>
+
+#include <grid_map_core/TypeDefs.hpp>
 
 namespace grid_map {
 
 /*!
  * Uses Boost accumulators to fill holes in the input layer by the median of the surrounding values.
  */
-template<typename T>
+template <typename T>
 class MedianFillFilter : public filters::FilterBase<T> {
  public:
   /*!
@@ -45,8 +47,21 @@ class MedianFillFilter : public filters::FilterBase<T> {
    */
   virtual bool update(const T& mapIn, T& mapOut);
 
- private:
+ protected:
+  /*!
+   * Returns the median of the values in inputData in the neighbourhood around the centerIndex. The size of the quadratic neighbourhood is
+   * specified by radiusInPixels. If the number of values is even the "lower center" value is taken, eg with four values the second lowest
+   * is taken as median.
+   * @param inputMap The data layer to compute a local median.
+   * @param centerIndex The center cell of the neighbourhood.
+   * @param radiusInPixels The maximum L_inf distance from index.
+   * @param bufferSize The buffer size of the input
+   * @return The median of finites in the specified neighbourhood.
+   */
+  float getMedian(Eigen::Ref<const grid_map::Matrix> inputMap, const grid_map::Index& centerIndex, const size_t radiusInPixels,
+                  const grid_map::Size bufferSize);
 
+ private:
   //! Median filtering radius of NaN values in the input.
   double fillHoleRadius_;
 
@@ -63,4 +78,4 @@ class MedianFillFilter : public filters::FilterBase<T> {
   std::string outputLayer_;
 };
 
-} /* namespace */
+}  // namespace grid_map
