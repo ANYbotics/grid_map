@@ -58,7 +58,7 @@ public:
     unreliable_property_ =
         new BoolProperty("Unreliable", false, "Prefer UDP topic transport", this, SLOT(updateTopic()));
     queue_size_property_ =
-        new IntProperty("Queue Size", 10,
+        new IntProperty("Queue Size", 1,
                         "Size of TF message filter queue.\n"
                         "Increasing this is useful if your TF data is delayed significantly "
                         "w.r.t. your data, but it can greatly increase memory usage as well.",
