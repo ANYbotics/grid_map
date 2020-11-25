@@ -104,7 +104,7 @@ void GridMapVisual::computeVisualization(float alpha, bool showGridLines, bool f
   // Compute the display heights for each cell.
   Eigen::ArrayXXf heightOrFlatData;
   if (flatTerrain) {
-    heightOrFlatData = Eigen::ArrayXXf::Zero(heightData.cols(), heightData.rows());
+    heightOrFlatData = Eigen::ArrayXXf::Zero(heightData.rows(), heightData.cols());
   } else {
     heightOrFlatData = heightData.array();
   }
@@ -129,7 +129,7 @@ void GridMapVisual::computeVisualization(float alpha, bool showGridLines, bool f
   map_.getPosition(grid_map::Index(0, 0), topLeft);
 
   Eigen::ArrayXXi indexToOgreIndex;
-  indexToOgreIndex.setConstant(cols, rows, -1);
+  indexToOgreIndex.setConstant(rows, cols, -1);
 
   int ogreIndex = 0;
 
@@ -266,7 +266,7 @@ GridMapVisual::ColorArray GridMapVisual::computeColorValues(Eigen::Ref<const gri
 
   switch (coloringMethod) {
     case ColoringMethod::FLAT:
-      return ColorArray::Constant(heightData.cols(), heightData.rows(), flatColor);
+      return ColorArray::Constant(heightData.rows(), heightData.cols(), flatColor);
     case ColoringMethod::COLOR_LAYER:
       return colorData.unaryExpr([](float color) {
         Eigen::Vector3f colorVectorRGB;
