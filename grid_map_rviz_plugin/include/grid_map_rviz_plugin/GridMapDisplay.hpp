@@ -32,7 +32,7 @@ class EditableEnumProperty;
 namespace grid_map_rviz_plugin {
 
 class GridMapVisual;
-class GridMapDisplay : public rviz::MessageFilterDisplay<grid_map_msgs::GridMap>
+class GridMapDisplay : public MessageFilterDisplay<grid_map_msgs::GridMap>
 {
 Q_OBJECT
  public:

@@ -36,9 +36,8 @@ set(CMAKE_AUTOMOC ON)
 
 set(INCLUDE_FILES_QT
   include/grid_map_rviz_plugin/GridMapDisplay.hpp
-)
-set(INCLUDE_FILES
-  include/grid_map_rviz_plugin/GridMapVisual.hpp
+  include/grid_map_rviz_plugin/modified/message_filter_display.h
+  include/grid_map_rviz_plugin/modified/frame_manager.h
 )
 
 ## This plugin includes Qt widgets, so we must include Qt.
