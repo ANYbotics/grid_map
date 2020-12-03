@@ -3,6 +3,8 @@
 #include <memory>
 #include <utility>
 
+using namespace std::chrono_literals;
+
 int main(int argc, char ** argv)
 {
   // Initialize node and publisher.
@@ -38,7 +40,7 @@ int main(int argc, char ** argv)
     grid_map::GridMap tempMap(map);
     rclcpp::Rate rate(10.0);
     rclcpp::Time startTime = node->now();
-    rclcpp::Duration duration(0.0);
+    rclcpp::Duration duration(0.0ns);
 
     while (duration <= rclcpp::Duration::from_seconds(10.0)) {
       rclcpp::Time time = node->now();
