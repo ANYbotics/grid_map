@@ -78,8 +78,8 @@ TEST(RosbagHandling, saveLoad)
 
   // Cleaning in case the previous bag was not removed
   rcpputils::fs::path dir(pathToBag);
-  rcpputils::fs::remove_all(dir);
-  rcpputils::fs::create_directories(dir);
+  EXPECT_TRUE(!dir.exists() || rcpputils::fs::remove_all(dir));
+  EXPECT_TRUE(!dir.exists() || rcpputils::fs::create_directories(dir));
 
   EXPECT_TRUE(GridMapRosConverter::saveToBag(gridMapIn, pathToBag, topic));
   EXPECT_TRUE(GridMapRosConverter::loadFromBag(pathToBag, topic, gridMapOut));
@@ -116,8 +116,8 @@ TEST(RosbagHandling, saveLoadWithTime)
 
   // Cleaning in case the previous bag was not removed
   rcpputils::fs::path dir(pathToBag);
-  rcpputils::fs::remove_all(dir);
-  rcpputils::fs::create_directories(dir);
+  EXPECT_TRUE(!dir.exists() || rcpputils::fs::remove_all(dir));
+  EXPECT_TRUE(!dir.exists() || rcpputils::fs::create_directories(dir));
 
   EXPECT_TRUE(GridMapRosConverter::saveToBag(gridMapIn, pathToBag, topic));
   EXPECT_TRUE(GridMapRosConverter::loadFromBag(pathToBag, topic, gridMapOut));
