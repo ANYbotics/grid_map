@@ -131,6 +131,7 @@ if (CATKIN_ENABLE_TESTING)
   catkin_add_gtest(${PROJECT_NAME}-test
     test/test_grid_map_filters.cpp
     test/median_fill_filter_test.cpp
+    test/threshold_filter_test.cpp
   )
   target_include_directories(${PROJECT_NAME}-test PRIVATE
     include

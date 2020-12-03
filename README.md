@@ -376,12 +376,13 @@ Several basic filters are provided in the *grid_map_filters* package:
 
 * **`gridMapFilters/ThresholdFilter`**
 
-    Set values below/above a threshold to a specified value.
+    Set values in the output layer to a specified value _if_ the condition_layer is exceeding either the upper or lower threshold (only one threshold at a time).
 
         name: lower_threshold
         type: gridMapFilters/ThresholdFilter
         params:
-          layer: layer_name
+          condition_layer: layer_name
+          output_layer: layer_name
           lower_threshold: 0.0 # alternative: upper_threshold
           set_to: 0.0 # # Other uses: .nan, .inf
 
