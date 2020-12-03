@@ -20,6 +20,8 @@
 
 #include <string>
 
+using namespace std::chrono_literals;
+
 namespace grid_map_visualization
 {
 
@@ -94,7 +96,7 @@ bool VectorVisualization::readParameters()
 bool VectorVisualization::initialize()
 {
   marker_.ns = "vector";
-  marker_.lifetime = rclcpp::Duration(0);  // setting lifetime forever
+  marker_.lifetime = rclcpp::Duration(0ns);  // setting lifetime forever
   marker_.action = visualization_msgs::msg::Marker::ADD;
   marker_.type = visualization_msgs::msg::Marker::LINE_LIST;
   marker_.scale.x = lineWidth_;

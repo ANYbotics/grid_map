@@ -14,6 +14,8 @@
 
 #include <string>
 
+using namespace std::chrono_literals;
+
 namespace grid_map_visualization
 {
 
@@ -58,7 +60,7 @@ bool MapRegionVisualization::readParameters()
 bool MapRegionVisualization::initialize()
 {
   marker_.ns = "map_region";
-  marker_.lifetime = rclcpp::Duration(0);  // Setting lifetime to forever
+  marker_.lifetime = rclcpp::Duration(0ns);  // Setting lifetime to forever
   marker_.action = visualization_msgs::msg::Marker::ADD;
   marker_.type = visualization_msgs::msg::Marker::LINE_STRIP;
   marker_.scale.x = lineWidth_;
