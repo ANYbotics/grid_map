@@ -9,6 +9,7 @@ find_package(cv_bridge REQUIRED)
 find_package(filters REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(pluginlib REQUIRED)
 
 find_package(OpenCV REQUIRED
   COMPONENTS
@@ -29,6 +30,7 @@ set(dependencies
   sensor_msgs
   rclcpp
   OpenCV
+  pluginlib
 )
 
 ###########
