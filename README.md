@@ -400,6 +400,7 @@ Several basic filters are provided in the *grid_map_filters* package:
 
     Compute for each _NaN_ cell of a layer the median (of finites) inside a patch with radius. 
     Optionally, apply median calculations for values that are already finite, the patch radius for these points is given by existing_value_radius. 
+    Note that the fill computation is only performed if the fill_mask is valid for that point.  
 
         name: median
         type: gridMapFilters/MedianFillFilter
@@ -409,6 +410,9 @@ Several basic filters are provided in the *grid_map_filters* package:
           fill_hole_radius: 0.11 # in m. 
           filter_existing_values: false # Default is false. If enabled it also does a median computation for existing values. 
           existing_value_radius: 0.2 # in m. Note that this option only has an effect if filter_existing_values is set true. 
+          fill_mask_layer: fill_mask # A layer that is used to compute which areas to fill. If not present in the input it is automatically computed. 
+          debug: false # If enabled, the additional debug_infill_mask_layer is published. 
+          debug_infill_mask_layer: infill_mask # Layer used to visualize the intermediate, sparse-outlier removed fill mask. Only published if debug is enabled.
     
 * **`gridMapFilters/NormalVectorsFilter`**
 

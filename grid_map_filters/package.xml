@@ -17,6 +17,7 @@
   <depend>grid_map_ros</depend>
   <depend>grid_map_msgs</depend>
   <depend>tbb</depend>
+  <depend>libopencv-dev</depend>
 <!--   <test_depend>cmake_code_coverage</test_depend> -->
   <test_depend>gtest</test_depend>
   <test_depend>google-mock</test_depend>

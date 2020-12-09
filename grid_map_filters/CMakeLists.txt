@@ -37,6 +37,8 @@ else()
   message([FATAL_ERROR] "tbb module not found")
 endif ()
 
+find_package(OpenCV REQUIRED)
+
 ###################################
 ## catkin specific configuration ##
 ###################################
@@ -57,6 +59,8 @@ catkin_package(
     grid_map_core
     grid_map_msgs
     filters
+  DEPENDS
+    OpenCV
 )
 
 ###########
@@ -69,6 +73,7 @@ include_directories(
   SYSTEM
     ${catkin_INCLUDE_DIRS}
     ${TBB_INCLUDE_DIRS}
+    ${OpenCV_INCLUDE_DIRS}
 )
 
 ## Declare a cpp library
@@ -96,6 +101,7 @@ add_library(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME}
   ${catkin_LIBRARIES}
   ${TBB_LIBRARIES}
+  ${OpenCV_LIBRARIES}
 )
 
 #############
