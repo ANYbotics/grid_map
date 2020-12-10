@@ -11,6 +11,8 @@
 // Wrap as ROS Filter
 #include <pluginlib/class_list_macros.h>
 
+#include <cmath>
+
 // Grid Map
 #include <grid_map_core/grid_map_core.hpp>
 
@@ -190,7 +192,7 @@ Eigen::MatrixXf MedianFillFilter<T>::computeAndAddFillMask(const Eigen::MatrixXf
   Eigen::MatrixXf shouldFill;
   // Precompute mask of valid height values
   using MaskMatrix = Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic>;
-  const MaskMatrix isValid{inputMap.array().unaryExpr([&](float v) { return isfinite(v); })};
+  const MaskMatrix isValid{inputMap.array().unaryExpr([&](float v) { return std::isfinite(v); })};
 
   // Remove sparse valid values and fill holes.
   cv::Mat isValidCV;
