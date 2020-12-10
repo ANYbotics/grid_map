@@ -113,6 +113,8 @@ void GridMapVisual::computeVisualization(float alpha, bool showGridLines, bool f
   ColoringMethod coloringMethod;
   if (flatColor) {
     coloringMethod = ColoringMethod::FLAT;
+  } else if(mapLayerColor) {
+    coloringMethod = ColoringMethod::COLOR_LAYER;
   } else if (!useRainbow) {
     coloringMethod = ColoringMethod::INTENSITY_LAYER_MANUAL;
   } else if (!invertRainbow) {
