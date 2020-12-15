@@ -751,23 +751,13 @@ void GridMap::clearAll() {
 }
 
 void GridMap::clearRows(unsigned int index, unsigned int nRows) {
-  std::vector<std::string> layersToClear;
-  if (basicLayers_.size() > 0)
-    layersToClear = basicLayers_;
-  else
-    layersToClear = layers_;
-  for (auto& layer : layersToClear) {
+  for (auto& layer : layers_) {
     data_.at(layer).block(index, 0, nRows, getSize()(1)).setConstant(NAN);
   }
 }
 
 void GridMap::clearCols(unsigned int index, unsigned int nCols) {
-  std::vector<std::string> layersToClear;
-  if (basicLayers_.size() > 0)
-    layersToClear = basicLayers_;
-  else
-    layersToClear = layers_;
-  for (auto& layer : layersToClear) {
+  for (auto& layer : layers_) {
     data_.at(layer).block(0, index, getSize()(0), nCols).setConstant(NAN);
   }
 }
