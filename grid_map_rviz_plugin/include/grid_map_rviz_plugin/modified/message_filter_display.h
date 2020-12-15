@@ -39,7 +39,6 @@
 #include <rviz/properties/ros_topic_property.h>
 
 #include <rviz/display.h>
-#include <rviz/rviz_export.h>
 
 namespace grid_map_rviz_plugin {
 /** @brief Helper superclass for MessageFilterDisplay, needed because
