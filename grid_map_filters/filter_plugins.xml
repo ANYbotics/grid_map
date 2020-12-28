@@ -1,81 +1,126 @@
 <class_libraries>
-  <library path="grid_map_filters">
-    <!-- "<" is replaced with "&lt;" & ">" is replaced with "&gt" -->
+  <!-- "<" is replaced with "&lt;" & ">" is replaced with "&gt" -->
+  <library path="threshold_filter">
     <class name="gridMapFilters/ThresholdFilter" type="grid_map::ThresholdFilter&lt;grid_map::GridMap&gt;" base_class_type="filters::FilterBase&lt;grid_map::GridMap&gt;">
       <description>
         Set values below/above a threshold to a specified value.
       </description>
     </class>
+  </library>
+
+  <library path="min_in_radius_filter">
     <class name="gridMapFilters/MinInRadiusFilter" type="grid_map::MinInRadiusFilter&lt;grid_map::GridMap&gt;" base_class_type="filters::FilterBase&lt;grid_map::GridMap&gt;">
       <description>
         Compute for each cell of a layer the minimal value inside a radius.
       </description>
     </class>
+  </library>
+
+  <library path="mean_in_radius_filter">
     <class name="gridMapFilters/MeanInRadiusFilter" type="grid_map::MeanInRadiusFilter&lt;grid_map::GridMap&gt;" base_class_type="filters::FilterBase&lt;grid_map::GridMap&gt;">
       <description>
         Compute for each cell of a layer the mean value inside a radius.
       </description>
     </class>
+  </library>
+
+  <library path="normal_vectors_filter">
     <class name="gridMapFilters/NormalVectorsFilter" type="grid_map::NormalVectorsFilter&lt;grid_map::GridMap&gt;" base_class_type="filters::FilterBase&lt;grid_map::GridMap&gt;">
       <description>
         Compute the normal vectors of a layer in a map.
       </description>
     </class>
+  </library>
+
+  <library path="curvature_filter">
     <class name="gridMapFilters/CurvatureFilter" type="grid_map::CurvatureFilter&lt;grid_map::GridMap&gt;" base_class_type="filters::FilterBase&lt;grid_map::GridMap&gt;">
       <description>
         Compute the curvature (second derivative) of a layer in the map.
       </description>
     </class>
+  </library>
+
+  <library path="normal_color_map_filter">
     <class name="gridMapFilters/NormalColorMapFilter" type="grid_map::NormalColorMapFilter&lt;grid_map::GridMap&gt;" base_class_type="filters::FilterBase&lt;grid_map::GridMap&gt;">
       <description>
         Compute a new color layer based on normal vectors layers.
       </description>
     </class>
+  </library>
+
+  <library path="light_intensity_filter">
     <class name="gridMapFilters/LightIntensityFilter" type="grid_map::LightIntensityFilter&lt;grid_map::GridMap&gt;" base_class_type="filters::FilterBase&lt;grid_map::GridMap&gt;">
       <description>
         Compute the diffuse lighting of a surface as new black and white color layer.
       </description>
     </class>
+  </library>
+
+  <library path="math_expression_filter">
     <class name="gridMapFilters/MathExpressionFilter" type="grid_map::MathExpressionFilter&lt;grid_map::GridMap&gt;" base_class_type="filters::FilterBase&lt;grid_map::GridMap&gt;">
       <description>
         Parse and evaluate a mathematical matrix expression with layers of a grid map.
       </description>
     </class>
+  </library>
+
+  <library path="sliding_window_math_expression_filter">
     <class name="gridMapFilters/SlidingWindowMathExpressionFilter" type="grid_map::SlidingWindowMathExpressionFilter&lt;grid_map::GridMap&gt;" base_class_type="filters::FilterBase&lt;grid_map::GridMap&gt;">
       <description>
         Parse and evaluate a mathematical matrix expression within a sliding window on a layer of a grid map.
       </description>
     </class>
+  </library>
+
+  <library path="duplication_filter">
     <class name="gridMapFilters/DuplicationFilter" type="grid_map::DuplicationFilter&lt;grid_map::GridMap&gt;" base_class_type="filters::FilterBase&lt;grid_map::GridMap&gt;">
       <description>
         Duplicate a layer of a grid map.
       </description>
     </class>
+  </library>
+
+  <library path="deletion_filter">
     <class name="gridMapFilters/DeletionFilter" type="grid_map::DeletionFilter&lt;grid_map::GridMap&gt;" base_class_type="filters::FilterBase&lt;grid_map::GridMap&gt;">
       <description>
         Delete layers from a grid map.
       </description>
     </class>
+  </library>
+
+  <library path="color_fill_filter_filter">
     <class name="gridMapFilters/ColorFillFilter" type="grid_map::ColorFillFilter&lt;grid_map::GridMap&gt;" base_class_type="filters::FilterBase&lt;grid_map::GridMap&gt;">
       <description>
         Creates a new color layer.
       </description>
     </class>
+  </library>
+
+  <library path="color_map_filter">
     <class name="gridMapFilters/ColorMapFilter" type="grid_map::ColorMapFilter&lt;grid_map::GridMap&gt;" base_class_type="filters::FilterBase&lt;grid_map::GridMap&gt;">
       <description>
         Creates a new color layer with the color mapped between min. and max. value.
       </description>
     </class>
+  </library>
+
+  <library path="color_blending_filter">
     <class name="gridMapFilters/ColorBlendingFilter" type="grid_map::ColorBlendingFilter&lt;grid_map::GridMap&gt;" base_class_type="filters::FilterBase&lt;grid_map::GridMap&gt;">
       <description>
         Blend two color layers.
       </description>
     </class>
+  </library>
+
+  <library path="set_basic_layers_filter">
     <class name="gridMapFilters/SetBasicLayersFilter" type="grid_map::SetBasicLayersFilter&lt;grid_map::GridMap&gt;" base_class_type="filters::FilterBase&lt;grid_map::GridMap&gt;">
       <description>
         Set specified layers of a grid map as basic layers.
       </description>
     </class>
+  </library>
+
+  <library path="buffer_normalizer_filter">
     <class name="gridMapFilters/BufferNormalizerFilter" type="grid_map::BufferNormalizerFilter&lt;grid_map::GridMap&gt;" base_class_type="filters::FilterBase&lt;grid_map::GridMap&gt;">
       <description>
         Normalizes the buffer of a map such that it has default (zero) start index.

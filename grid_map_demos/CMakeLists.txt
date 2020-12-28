@@ -93,6 +93,9 @@ add_executable(
 add_executable(
   filters_demo
   src/filters_demo_node.cpp
+)
+
+add_library(filters_demo_lib SHARED
   src/FiltersDemo.cpp
 )
 
@@ -153,6 +156,14 @@ ament_target_dependencies(
 ament_target_dependencies(
   resolution_change_demo
   ${dependencies}
+)
+
+target_link_libraries(filters_demo filters_demo_lib)
+
+ament_target_dependencies(
+  filters_demo_lib
+  ${dependencies}
+  filters
 )
 
 ament_target_dependencies(
