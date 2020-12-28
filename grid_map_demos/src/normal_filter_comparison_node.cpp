@@ -125,7 +125,8 @@ int main(int argc, char ** argv)
     grid_map::Length(mapLength, mapWidth), mapResolution,
     grid_map::Position(0.0, 0.0));
   const grid_map::Size gridMapSize = map.getSize();
-  RCLCPP_INFO(node.get_logger(),
+  RCLCPP_INFO(
+    node.get_logger(),
     "Created map with size %f x %f m (%i x %i cells).\n"
     " The center of the map is located at (%f, %f) in the %s frame.",
     map.getLength().x(), map.getLength().y(), map.getSize()(0), map.getSize()(1),
