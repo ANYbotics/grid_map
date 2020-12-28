@@ -183,25 +183,34 @@ ament_target_dependencies(
   ${dependencies}
 )
 
+set(targets_list
+  filters_demo
+  filters_demo_lib
+  image_to_gridmap_demo
+  interpolation_demo
+  iterator_benchmark
+  iterators_demo
+  move_demo
+  normal_filter_comparison_demo
+  octomap_to_gridmap_demo
+  opencv_demo
+  resolution_change_demo
+  simple_demo
+  tutorial_demo
+)
+
+foreach(target ${targets_list})
+  target_compile_options(${target} PRIVATE "SHELL:--param ggc-min-expand=1")
+  target_compile_options(${target} PRIVATE "SHELL:--param ggc-min-heapsize=32768")
+endforeach()
+
 #############
 ## Install ##
 #############
 
 # Mark executables and/or libraries for installation
 install(
-  TARGETS
-    filters_demo
-    image_to_gridmap_demo
-    interpolation_demo
-    iterator_benchmark
-    iterators_demo
-    move_demo
-    normal_filter_comparison_demo
-    octomap_to_gridmap_demo
-    opencv_demo
-    resolution_change_demo
-    simple_demo
-    tutorial_demo
+  TARGETS ${targets_list}
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION lib/${PROJECT_NAME}
