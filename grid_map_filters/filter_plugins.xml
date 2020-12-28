@@ -88,7 +88,7 @@
     </class>
   </library>
 
-  <library path="color_fill_filter_filter">
+  <library path="color_fill_filter">
     <class name="gridMapFilters/ColorFillFilter" type="grid_map::ColorFillFilter&lt;grid_map::GridMap&gt;" base_class_type="filters::FilterBase&lt;grid_map::GridMap&gt;">
       <description>
         Creates a new color layer.
