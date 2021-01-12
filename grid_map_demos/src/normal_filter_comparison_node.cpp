@@ -77,39 +77,39 @@ int main(int argc, char ** argv)
 {
   // Initialize node and publisher.
   rclcpp::init(argc, argv);
-  rclcpp::Node node("normal_filter_comparison_demo");
+  rclcpp::Node::SharedPtr node = std::make_shared<rclcpp::Node>("normal_filter_comparison_demo");
 
-  auto publisher = node.create_publisher<grid_map_msgs::msg::GridMap>(
+  auto publisher = node->create_publisher<grid_map_msgs::msg::GridMap>(
     "grid_map", rclcpp::QoS(1).transient_local());
 
   // Start time.
-  double begin = node.now().seconds();
+  double begin = node->now().seconds();
 
   // Load filter chain, defined in grid_map_demos/config/normal_filter_comparison.yaml.
   filters::FilterChain<grid_map::GridMap> filterChain_("grid_map::GridMap");
 
-  node.declare_parameter("filter_chain_parameter_name", "filters");
-  node.declare_parameter("noise_on_map", 0.015);
-  node.declare_parameter("outliers_percentage", 0.0);
+  node->declare_parameter("filter_chain_parameter_name", "filters");
+  node->declare_parameter("noise_on_map", 0.015);
+  node->declare_parameter("outliers_percentage", 0.0);
 
   std::string filterChainParametersName_;
-  node.get_parameter("filter_chain_parameter_name", filterChainParametersName_);
+  node->get_parameter("filter_chain_parameter_name", filterChainParametersName_);
 
   // Read noise amount, in meters, from parameters server.
   double noise_on_map;
-  node.get_parameter("noise_on_map", noise_on_map);
-  RCLCPP_INFO(node.get_logger(), "noise_on_map = %f", noise_on_map);
+  node->get_parameter("noise_on_map", noise_on_map);
+  RCLCPP_INFO(node->get_logger(), "noise_on_map = %f", noise_on_map);
 
   double outliers_percentage;
-  node.get_parameter("outliers_percentage", outliers_percentage);
-  RCLCPP_INFO(node.get_logger(), "outliers_percentage = %f", outliers_percentage);
+  node->get_parameter("outliers_percentage", outliers_percentage);
+  RCLCPP_INFO(node->get_logger(), "outliers_percentage = %f", outliers_percentage);
 
   // Configuration of chain filter.
   if (!filterChain_.configure(
-      filterChainParametersName_, node.get_node_logging_interface(),
-      node.get_node_parameters_interface()))
+      filterChainParametersName_, node->get_node_logging_interface(),
+      node->get_node_parameters_interface()))
   {
-    RCLCPP_ERROR(node.get_logger(), "Could not configure the filter chain!");
+    RCLCPP_ERROR(node->get_logger(), "Could not configure the filter chain!");
   }
 
   // Parameters for grid map dimensions.
@@ -126,7 +126,7 @@ int main(int argc, char ** argv)
     grid_map::Position(0.0, 0.0));
   const grid_map::Size gridMapSize = map.getSize();
   RCLCPP_INFO(
-    node.get_logger(),
+    node->get_logger(),
     "Created map with size %f x %f m (%i x %i cells).\n"
     " The center of the map is located at (%f, %f) in the %s frame.",
     map.getLength().x(), map.getLength().y(), map.getSize()(0), map.getSize()(1),
@@ -147,7 +147,7 @@ int main(int argc, char ** argv)
   // Grid map and analytic normals are continuously generated using exact functions.
   rclcpp::Rate rate(10.0);
   while (rclcpp::ok()) {
-    rclcpp::Time time = node.now();
+    rclcpp::Time time = node->now();
 
     // Calculate wave shaped elevation and analytic surface normal.
     for (grid_map::GridMapIterator it(map); !it.isPastEnd(); ++it) {
@@ -184,7 +184,7 @@ int main(int argc, char ** argv)
 
     // Computation of normals using filterChain_.update function.
     if (!filterChain_.update(map, map)) {
-      RCLCPP_ERROR(node.get_logger(), "Could not update the grid map filter chain!");
+      RCLCPP_ERROR(node->get_logger(), "Could not update the grid map filter chain!");
     }
 
     // Normals error computation
@@ -193,16 +193,16 @@ int main(int argc, char ** argv)
       directionalErrorRasterSum);
     rclcpp::Clock clock;
     RCLCPP_INFO_THROTTLE(
-      node.get_logger(), clock, 2000, "directionalErrorArea = %f", directionalErrorAreaSum);
+      node->get_logger(), clock, 2000, "directionalErrorArea = %f", directionalErrorAreaSum);
     RCLCPP_INFO_THROTTLE(
-      node.get_logger(), clock, 2000, "directionalErrorRaster = %f", directionalErrorRasterSum);
+      node->get_logger(), clock, 2000, "directionalErrorRaster = %f", directionalErrorRasterSum);
 
     // Publish grid map.
     map.setTimestamp(time.nanoseconds());
     std::unique_ptr<grid_map_msgs::msg::GridMap> message;
     message = grid_map::GridMapRosConverter::toMessage(map);
     publisher->publish(std::move(message));
-    double end = node.now().seconds();
+    double end = node->now().seconds();
 
     // Limit simulation length to 1 minute.
     if ((end - begin) > 60) {

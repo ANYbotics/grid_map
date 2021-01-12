@@ -11,8 +11,8 @@ int main(int argc, char ** argv)
 {
   // Initialize node and publisher.
   rclcpp::init(argc, argv);
-  rclcpp::Node node("grid_map_tutorial_demo");
-  auto publisher = node.create_publisher<grid_map_msgs::msg::GridMap>(
+  rclcpp::Node::SharedPtr node = std::make_shared<rclcpp::Node>("grid_map_tutorial_demo");
+  auto publisher = node->create_publisher<grid_map_msgs::msg::GridMap>(
     "grid_map", rclcpp::QoS(1).transient_local());
 
   // Create grid map.
@@ -20,7 +20,7 @@ int main(int argc, char ** argv)
   map.setFrameId("map");
   map.setGeometry(grid_map::Length(1.2, 2.0), 0.03, grid_map::Position(0.0, -0.1));
   RCLCPP_INFO(
-    node.get_logger(),
+    node->get_logger(),
     "Created map with size %f x %f m (%i x %i cells).\n"
     " The center of the map is located at (%f, %f) in the %s frame.",
     map.getLength().x(), map.getLength().y(),
@@ -31,7 +31,7 @@ int main(int argc, char ** argv)
   rclcpp::Rate rate(30.0);
   rclcpp::Clock clock;
   while (rclcpp::ok()) {
-    rclcpp::Time time = node.now();
+    rclcpp::Time time = node->now();
 
     // Add elevation and surface normal (iterating through grid map and adding data).
     for (grid_map::GridMapIterator it(map); !it.isPastEnd(); ++it) {
@@ -67,7 +67,7 @@ int main(int argc, char ** argv)
     grid_map::Index startIndex;
     map.getIndex(topLeftCorner, startIndex);
     RCLCPP_INFO_ONCE(
-      node.get_logger(),
+      node->get_logger(),
       "Top left corner was limited from (1.0, 0.2) to (%f, %f) and corresponds to index (%i, %i).",
       topLeftCorner.x(), topLeftCorner.y(), startIndex(0), startIndex(1));
 
@@ -106,9 +106,9 @@ int main(int argc, char ** argv)
     std::unique_ptr<grid_map_msgs::msg::GridMap> message;
     message = grid_map::GridMapRosConverter::toMessage(map);
     publisher->publish(std::move(message));
-    RCLCPP_INFO_THROTTLE(node.get_logger(), clock, 1000, "Grid map published.");
+    RCLCPP_INFO_THROTTLE(node->get_logger(), clock, 1000, "Grid map published.");
 
-    rclcpp::spin_some(node.get_node_base_interface());
+    rclcpp::spin_some(node->get_node_base_interface());
     rate.sleep();
   }
 

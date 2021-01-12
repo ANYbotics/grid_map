@@ -9,8 +9,8 @@ int main(int argc, char ** argv)
 {
   // Initialize node and publisher.
   rclcpp::init(argc, argv);
-  rclcpp::Node node("grid_map_simple_demo");
-  auto publisher = node.create_publisher<grid_map_msgs::msg::GridMap>(
+  rclcpp::Node::SharedPtr node = std::make_shared<rclcpp::Node>("grid_map_simple_demo");
+  auto publisher = node->create_publisher<grid_map_msgs::msg::GridMap>(
     "grid_map", rclcpp::QoS(1).transient_local());
 
   // Create grid map.
@@ -18,7 +18,7 @@ int main(int argc, char ** argv)
   map.setFrameId("map");
   map.setGeometry(grid_map::Length(1.2, 2.0), 0.03);
   RCLCPP_INFO(
-    node.get_logger(),
+    node->get_logger(),
     "Created map with size %f x %f m (%i x %i cells).",
     map.getLength().x(), map.getLength().y(),
     map.getSize()(0), map.getSize()(1));
@@ -28,7 +28,7 @@ int main(int argc, char ** argv)
   rclcpp::Clock clock;
   while (rclcpp::ok()) {
     // Add data to grid map.
-    rclcpp::Time time = node.now();
+    rclcpp::Time time = node->now();
     for (grid_map::GridMapIterator it(map); !it.isPastEnd(); ++it) {
       grid_map::Position position;
       map.getPosition(*it, position);
@@ -42,7 +42,7 @@ int main(int argc, char ** argv)
     std::unique_ptr<grid_map_msgs::msg::GridMap> message;
     message = grid_map::GridMapRosConverter::toMessage(map);
     publisher->publish(std::move(message));
-    RCLCPP_INFO_THROTTLE(node.get_logger(), clock, 1000, "Grid map published.");
+    RCLCPP_INFO_THROTTLE(node->get_logger(), clock, 1000, "Grid map published.");
 
     // Wait for next cycle.
     rate.sleep();

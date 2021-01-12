@@ -1,14 +1,15 @@
 #include <rclcpp/rclcpp.hpp>
 #include <grid_map_ros/grid_map_ros.hpp>
+#include <memory>
 #include <utility>
 
 int main(int argc, char ** argv)
 {
   // Initialize node and publisher.
   rclcpp::init(argc, argv);
-  rclcpp::Node node("move_demo");
+  rclcpp::Node::SharedPtr node = std::make_shared<rclcpp::Node>("move_demo");
 
-  auto publisher = node.create_publisher<grid_map_msgs::msg::GridMap>(
+  auto publisher = node->create_publisher<grid_map_msgs::msg::GridMap>(
     "grid_map", rclcpp::QoS(
       1).transient_local());
 
@@ -17,7 +18,7 @@ int main(int argc, char ** argv)
   map.setFrameId("map");
   map.setGeometry(grid_map::Length(0.7, 0.7), 0.01, grid_map::Position(0.0, 0.0));
   RCLCPP_INFO(
-    node.get_logger(),
+    node->get_logger(),
     "Created map with size %f x %f m (%i x %i cells).\n"
     " The center of the map is located at (%f, %f) in the %s frame.",
     map.getLength().x(), map.getLength().y(),
@@ -28,19 +29,19 @@ int main(int argc, char ** argv)
   bool useMoveMethod = true;
   while (rclcpp::ok()) {
     if (useMoveMethod) {
-      RCLCPP_INFO(node.get_logger(), "Using the `move(...)` method.");
+      RCLCPP_INFO(node->get_logger(), "Using the `move(...)` method.");
     } else {
-      RCLCPP_INFO(node.get_logger(), "Using the `setPosition(...)` method.");
+      RCLCPP_INFO(node->get_logger(), "Using the `setPosition(...)` method.");
     }
 
     // Work with temporary map in a loop.
     grid_map::GridMap tempMap(map);
     rclcpp::Rate rate(10.0);
-    rclcpp::Time startTime = node.now();
+    rclcpp::Time startTime = node->now();
     rclcpp::Duration duration(0.0);
 
     while (duration <= rclcpp::Duration::from_seconds(10.0)) {
-      rclcpp::Time time = node.now();
+      rclcpp::Time time = node->now();
       duration = time - startTime;
 
       // Change position of the map with either the `move` or `setPosition` method.
@@ -58,7 +59,7 @@ int main(int argc, char ** argv)
       auto message = grid_map::GridMapRosConverter::toMessage(tempMap);
       publisher->publish(std::move(message));
       RCLCPP_DEBUG(
-        node.get_logger(),
+        node->get_logger(),
         "Grid map (duration %f) published with new position [%f, %f].",
         duration.seconds(), tempMap.getPosition().x(), tempMap.getPosition().y());
       rate.sleep();
