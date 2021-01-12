@@ -14,27 +14,27 @@
   <buildtool_depend>ament_cmake</buildtool_depend>
   <build_depend>grid_map_cmake_helpers</build_depend>
   
-  <depend>rclcpp</depend>
+  <depend>cv_bridge</depend>
+  <depend>geometry_msgs</depend>
   <depend>grid_map_core</depend>
-  <depend>grid_map_ros</depend>
   <depend>grid_map_cv</depend>
   <depend>grid_map_filters</depend>
   <depend>grid_map_loader</depend>
   <depend>grid_map_msgs</depend>
   <depend>grid_map_octomap</depend>
+  <depend>grid_map_ros</depend>
   <depend>grid_map_rviz_plugin</depend>
   <depend>grid_map_visualization</depend>
-  <depend>geometry_msgs</depend>
-  <depend>sensor_msgs</depend>
-  <depend>cv_bridge</depend>
   <depend>octomap_msgs</depend>
   <!-- <depend>octomap_server</depend> -->
+  <depend>rclcpp</depend>
+  <depend>sensor_msgs</depend>
 
   <exec_depend>rclpy</exec_depend>
 
   <test_depend>ament_cmake_gtest</test_depend>
-  <test_depend>ament_lint_common</test_depend>
   <test_depend>ament_lint_auto</test_depend>
+  <test_depend>ament_lint_common</test_depend>
 
   <export>
     <build_type>ament_cmake</build_type>

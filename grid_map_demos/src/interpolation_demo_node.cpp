@@ -5,14 +5,14 @@
  *      Author: jelavice
  */
 
-#include <ros/ros.h>
+#include <rclcpp/rclcpp.hpp>
+#include <memory>
 #include "grid_map_demos/InterpolationDemo.hpp"
 
 int main(int argc, char ** argv)
 {
-  ros::init(argc, argv, "grid_map_interpolation_demo");
-  ros::NodeHandle nodeHandle("~");
-  grid_map_demos::InterpolationDemo interpolationDemo(&nodeHandle);
-  ros::spin();
+  rclcpp::init(argc, argv);
+  rclcpp::spin(std::make_shared<grid_map_demos::InterpolationDemo>());
+  rclcpp::shutdown();
   return 0;
 }

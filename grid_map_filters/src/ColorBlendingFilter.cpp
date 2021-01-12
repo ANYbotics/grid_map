@@ -16,6 +16,8 @@
 
 #include <string>
 
+#include "grid_map_cv/utilities.hpp"
+
 namespace grid_map
 {
 
@@ -34,7 +36,9 @@ ColorBlendingFilter<T>::~ColorBlendingFilter()
 template<typename T>
 bool ColorBlendingFilter<T>::configure()
 {
-  if (!filters::FilterBase<T>::getParam(std::string("background_layer"), backgroundLayer_)) {
+  ParameterReader param_reader(this->param_prefix_, this->params_interface_);
+
+  if (!param_reader.get(std::string("background_layer"), backgroundLayer_)) {
     RCLCPP_ERROR(
       this->logging_interface_->get_logger(),
       "Color blending filter did not find parameter `background_layer`.");
@@ -44,7 +48,7 @@ bool ColorBlendingFilter<T>::configure()
     this->logging_interface_->get_logger(), "Color blending filter background layer is = %s.",
     backgroundLayer_.c_str());
 
-  if (!filters::FilterBase<T>::getParam(std::string("foreground_layer"), foregroundLayer_)) {
+  if (!param_reader.get(std::string("foreground_layer"), foregroundLayer_)) {
     RCLCPP_ERROR(
       this->logging_interface_->get_logger(),
       "Color blending filter did not find parameter `foreground_layer`.");
@@ -55,7 +59,7 @@ bool ColorBlendingFilter<T>::configure()
     foregroundLayer_.c_str());
 
   std::string blendMode;
-  if (!filters::FilterBase<T>::getParam(std::string("blend_mode"), blendMode)) {
+  if (!param_reader.get(std::string("blend_mode"), blendMode)) {
     blendMode = "normal";
   }
   RCLCPP_DEBUG(
@@ -72,7 +76,7 @@ bool ColorBlendingFilter<T>::configure()
     return false;
   }
 
-  if (!filters::FilterBase<T>::getParam(std::string("opacity"), opacity_)) {
+  if (!param_reader.get(std::string("opacity"), opacity_)) {
     RCLCPP_ERROR(
       this->logging_interface_->get_logger(),
       "Color blending filter did not find parameter `opacity`.");
@@ -81,7 +85,7 @@ bool ColorBlendingFilter<T>::configure()
   RCLCPP_DEBUG(
     this->logging_interface_->get_logger(), "Color blending filter opacity is = %f.", opacity_);
 
-  if (!filters::FilterBase<T>::getParam(std::string("output_layer"), outputLayer_)) {
+  if (!param_reader.get(std::string("output_layer"), outputLayer_)) {
     RCLCPP_ERROR(
       this->logging_interface_->get_logger(),
       "Color blending filter did not find parameter `output_layer`.");

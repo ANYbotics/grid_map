@@ -17,6 +17,8 @@
 #include <vector>
 #include <algorithm>
 
+#include "grid_map_cv/utilities.hpp"
+
 namespace grid_map
 {
 
@@ -33,7 +35,9 @@ LightIntensityFilter<T>::~LightIntensityFilter()
 template<typename T>
 bool LightIntensityFilter<T>::configure()
 {
-  if (!filters::FilterBase<T>::getParam(std::string("input_layers_prefix"), inputLayersPrefix_)) {
+  ParameterReader param_reader(this->param_prefix_, this->params_interface_);
+
+  if (!param_reader.get(std::string("input_layers_prefix"), inputLayersPrefix_)) {
     RCLCPP_ERROR(
       this->logging_interface_->get_logger(),
       "Light intensity filter did not find parameter `input_layers_prefix`.");
@@ -43,7 +47,7 @@ bool LightIntensityFilter<T>::configure()
     this->logging_interface_->get_logger(), "Light intensity filter input layers prefix is = %s.",
     inputLayersPrefix_.c_str());
 
-  if (!filters::FilterBase<T>::getParam(std::string("output_layer"), outputLayer_)) {
+  if (!param_reader.get(std::string("output_layer"), outputLayer_)) {
     RCLCPP_ERROR(
       this->logging_interface_->get_logger(),
       "Light intensity filter did not find parameter `output_layer`.");
@@ -54,7 +58,7 @@ bool LightIntensityFilter<T>::configure()
     outputLayer_.c_str());
 
   std::vector<double> lightDirection;
-  if (!filters::FilterBase<T>::getParam(std::string("light_direction"), lightDirection)) {
+  if (!param_reader.get(std::string("light_direction"), lightDirection)) {
     RCLCPP_ERROR(
       this->logging_interface_->get_logger(),
       "Light intensity filter did not find parameter `light_direction`.");

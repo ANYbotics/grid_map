@@ -12,6 +12,8 @@
 
 #include <string>
 
+#include "grid_map_cv/utilities.hpp"
+
 namespace grid_map
 {
 
@@ -33,34 +35,36 @@ SlidingWindowMathExpressionFilter<T>::~SlidingWindowMathExpressionFilter()
 template<typename T>
 bool SlidingWindowMathExpressionFilter<T>::configure()
 {
-  if (!filters::FilterBase<T>::getParam(std::string("input_layer"), inputLayer_)) {
+  ParameterReader param_reader(this->param_prefix_, this->params_interface_);
+
+  if (!param_reader.get(std::string("input_layer"), inputLayer_)) {
     RCLCPP_ERROR(
       this->logging_interface_->get_logger(),
       "SlidingWindowMathExpressionFilter did not find parameter 'input_layer'.");
     return false;
   }
 
-  if (!filters::FilterBase<T>::getParam(std::string("output_layer"), outputLayer_)) {
+  if (!param_reader.get(std::string("output_layer"), outputLayer_)) {
     RCLCPP_ERROR(
       this->logging_interface_->get_logger(),
       "SlidingWindowMathExpressionFilter did not find parameter 'output_layer'.");
     return false;
   }
 
-  if (!filters::FilterBase<T>::getParam(std::string("expression"), expression_)) {
+  if (!param_reader.get(std::string("expression"), expression_)) {
     RCLCPP_ERROR(
       this->logging_interface_->get_logger(),
       "SlidingWindowMathExpressionFilter did not find parameter 'expression'.");
     return false;
   }
 
-  if (!filters::FilterBase<T>::getParam(std::string("window_size"), windowSize_)) {
-    if (filters::FilterBase<T>::getParam(std::string("window_length"), windowLength_)) {
+  if (!param_reader.get(std::string("window_size"), windowSize_)) {
+    if (param_reader.get(std::string("window_length"), windowLength_)) {
       useWindowLength_ = true;
     }
   }
 
-  if (!filters::FilterBase<T>::getParam(std::string("compute_empty_cells"), isComputeEmptyCells_)) {
+  if (!param_reader.get(std::string("compute_empty_cells"), isComputeEmptyCells_)) {
     RCLCPP_ERROR(
       this->logging_interface_->get_logger(),
       "SlidingWindowMathExpressionFilter did not find parameter 'compute_empty_cells'.");
@@ -68,7 +72,7 @@ bool SlidingWindowMathExpressionFilter<T>::configure()
   }
 
   std::string edgeHandlingMethod;
-  if (!filters::FilterBase<T>::getParam(std::string("edge_handling"), edgeHandlingMethod)) {
+  if (!param_reader.get(std::string("edge_handling"), edgeHandlingMethod)) {
     RCLCPP_ERROR(
       this->logging_interface_->get_logger(),
       "SlidingWindowMathExpressionFilter did not find parameter 'edge_handling'.");

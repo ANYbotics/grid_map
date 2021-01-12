@@ -19,6 +19,7 @@
   <depend>grid_map_core</depend>
   <depend>grid_map_msgs</depend>
   <depend>grid_map_ros</depend>
+  <depend>pluginlib</depend>
   <depend>tbb</depend>
 
   <test_depend>ament_cmake_gtest</test_depend>

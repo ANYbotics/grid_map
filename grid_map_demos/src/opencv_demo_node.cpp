@@ -3,14 +3,15 @@
 #include <grid_map_cv/grid_map_cv.hpp>
 #include <cv_bridge/cv_bridge.h>
 #include <opencv2/highgui/highgui.hpp>
+#include <memory>
 #include <utility>
 
 int main(int argc, char ** argv)
 {
   // Initialize node and publisher.
   rclcpp::init(argc, argv);
-  rclcpp::Node node("opencv_demo");
-  auto publisher = node.create_publisher<grid_map_msgs::msg::GridMap>(
+  rclcpp::Node::SharedPtr node = std::make_shared<rclcpp::Node>("opencv_demo");
+  auto publisher = node->create_publisher<grid_map_msgs::msg::GridMap>(
     "grid_map", rclcpp::QoS(
       1).transient_local());
   const bool useTransparency = false;
@@ -20,7 +21,7 @@ int main(int argc, char ** argv)
   map.setFrameId("map");
   map.setGeometry(grid_map::Length(1.2, 2.0), 0.01);
   RCLCPP_INFO(
-    node.get_logger(),
+    node->get_logger(),
     "Created map with size %f x %f m (%i x %i cells).",
     map.getLength().x(), map.getLength().y(),
     map.getSize()(0), map.getSize()(1));
@@ -65,7 +66,7 @@ int main(int argc, char ** argv)
   // Work with copy of image in a loop.
   while (rclcpp::ok()) {
     // Initialize.
-    rclcpp::Time time = node.now();
+    rclcpp::Time time = node->now();
     map.setTimestamp(time.nanoseconds());
     cv::Mat modifiedImage;
     int blurRadius = 200 - abs(static_cast<int>(200.0 * sin(time.seconds())));
@@ -93,7 +94,7 @@ int main(int argc, char ** argv)
     auto message = grid_map::GridMapRosConverter::toMessage(map);
     publisher->publish(std::move(message));
     RCLCPP_INFO_STREAM(
-      node.get_logger(), "Published image and grid map with blur radius " << blurRadius << ".");
+      node->get_logger(), "Published image and grid map with blur radius " << blurRadius << ".");
   }
 
   return 0;

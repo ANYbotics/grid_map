@@ -15,6 +15,8 @@
 
 #include <string>
 
+#include "grid_map_cv/utilities.hpp"
+
 namespace grid_map
 {
 
@@ -34,14 +36,16 @@ ColorFillFilter<T>::~ColorFillFilter()
 template<typename T>
 bool ColorFillFilter<T>::configure()
 {
-  if (!filters::FilterBase<T>::getParam(std::string("red"), r_)) {
+  ParameterReader param_reader(this->param_prefix_, this->params_interface_);
+
+  if (!param_reader.get(std::string("red"), r_)) {
     RCLCPP_ERROR(
       this->logging_interface_->get_logger(), "Color fill filter did not find parameter `red`.");
     return false;
   }
   RCLCPP_DEBUG(this->logging_interface_->get_logger(), "Color fill filter red is = %f.", r_);
 
-  if (!filters::FilterBase<T>::getParam(std::string("green"), g_)) {
+  if (!param_reader.get(std::string("green"), g_)) {
     RCLCPP_ERROR(
       this->logging_interface_->get_logger(),
       "Color fill filter did not find parameter `green`.");
@@ -49,14 +53,14 @@ bool ColorFillFilter<T>::configure()
   }
   RCLCPP_DEBUG(this->logging_interface_->get_logger(), "Color fill filter green is = %f.", g_);
 
-  if (!filters::FilterBase<T>::getParam(std::string("blue"), b_)) {
+  if (!param_reader.get(std::string("blue"), b_)) {
     RCLCPP_ERROR(
       this->logging_interface_->get_logger(), "Color fill filter did not find parameter `blue`.");
     return false;
   }
   RCLCPP_DEBUG(this->logging_interface_->get_logger(), "Color fill filter blue is = %f.", b_);
 
-  if (!filters::FilterBase<T>::getParam(std::string("mask_layer"), maskLayer_)) {
+  if (!param_reader.get(std::string("mask_layer"), maskLayer_)) {
     RCLCPP_ERROR(
       this->logging_interface_->get_logger(),
       "Color fill filter did not find parameter `mask_layer`.");
@@ -66,7 +70,7 @@ bool ColorFillFilter<T>::configure()
     this->logging_interface_->get_logger(), "Color fill filter mask_layer = %s.",
     maskLayer_.c_str());
 
-  if (!filters::FilterBase<T>::getParam(std::string("output_layer"), outputLayer_)) {
+  if (!param_reader.get(std::string("output_layer"), outputLayer_)) {
     RCLCPP_ERROR(
       this->logging_interface_->get_logger(),
       "Color fill filter did not find parameter `output_layer`.");

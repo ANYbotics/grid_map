@@ -1,14 +1,16 @@
-image_to_gridmap_demo:
-  image_topic: "/image_publisher/image"
-  resolution: 0.02
-  map_frame_id: "map"
-  min_height: -0.5
-  max_height: 1.0
+image_to_gridmap:
+  ros__parameters:
+    image_topic: "/image"
+    resolution: 0.02
+    map_frame_id: "map"
+    min_height: -0.5
+    max_height: 1.0
 
 grid_map_visualization:
-  grid_map_topic: /grid_map_filter_demo/filtered_map
-  grid_map_visualizations:
-    - name: surface_normals
+  ros__parameters:
+    grid_map_topic: /filtered_map
+    grid_map_visualizations: [surface_normals, traversability_grid] 
+    surface_normals:
       type: vectors
       params:
         layer_prefix: normal_vectors_
@@ -16,7 +18,7 @@ grid_map_visualization:
         scale: 0.06
         line_width: 0.005
         color: 15600153 # red
-    - name: traversability_grid
+    traversability_grid:
       type: occupancy_grid
       params:
         layer: traversability

@@ -13,6 +13,8 @@
 
 #include <string>
 
+#include "grid_map_cv/utilities.hpp"
+
 namespace grid_map
 {
 
@@ -29,14 +31,16 @@ DuplicationFilter<T>::~DuplicationFilter()
 template<typename T>
 bool DuplicationFilter<T>::configure()
 {
-  if (!filters::FilterBase<T>::getParam(std::string("input_layer"), inputLayer_)) {
+  ParameterReader param_reader(this->param_prefix_, this->params_interface_);
+
+  if (!param_reader.get(std::string("input_layer"), inputLayer_)) {
     RCLCPP_ERROR(
       this->logging_interface_->get_logger(),
       "DuplicationFilter did not find parameter 'input_layer'.");
     return false;
   }
 
-  if (!filters::FilterBase<T>::getParam(std::string("output_layer"), outputLayer_)) {
+  if (!param_reader.get(std::string("output_layer"), outputLayer_)) {
     RCLCPP_ERROR(
       this->logging_interface_->get_logger(),
       "DuplicationFilter did not find parameter 'output_layer'.");

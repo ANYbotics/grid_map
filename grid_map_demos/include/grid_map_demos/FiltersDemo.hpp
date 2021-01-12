@@ -12,8 +12,8 @@
 
 #include <grid_map_ros/grid_map_ros.hpp>
 
-#include <filters/filter_chain.h>
-#include <ros/ros.h>
+#include <filters/filter_chain.hpp>
+#include <rclcpp/rclcpp.hpp>
 #include <string>
 
 namespace grid_map_demos
@@ -23,15 +23,13 @@ namespace grid_map_demos
  * Applies a chain of grid map filters to a topic and
  * republishes the resulting grid map.
  */
-class FiltersDemo
+class FiltersDemo : public rclcpp::Node
 {
 public:
   /*!
    * Constructor.
-   * @param nodeHandle the ROS node handle.
-   * @param success signalizes if filter is configured ok or not.
    */
-  FiltersDemo(ros::NodeHandle & nodeHandle, bool & success);
+  FiltersDemo();
 
   /*!
    * Destructor.
@@ -48,12 +46,9 @@ public:
    * Callback method for the incoming grid map message.
    * @param message the incoming message.
    */
-  void callback(const grid_map_msgs::GridMap & message);
+  void callback(const grid_map_msgs::msg::GridMap::SharedPtr message);
 
 private:
-  //! ROS nodehandle.
-  ros::NodeHandle & nodeHandle_;
-
   //! Name of the input grid map topic.
   std::string inputTopic_;
 
@@ -61,10 +56,10 @@ private:
   std::string outputTopic_;
 
   //! Grid map subscriber
-  ros::Subscriber subscriber_;
+  rclcpp::Subscription<grid_map_msgs::msg::GridMap>::SharedPtr subscriber_;
 
   //! Grid map publisher.
-  ros::Publisher publisher_;
+  rclcpp::Publisher<grid_map_msgs::msg::GridMap>::SharedPtr publisher_;
 
   //! Filter chain.
   filters::FilterChain<grid_map::GridMap> filterChain_;

@@ -15,6 +15,8 @@
 
 #include <string>
 
+#include "grid_map_cv/utilities.hpp"
+
 namespace grid_map
 {
 
@@ -31,7 +33,9 @@ CurvatureFilter<T>::~CurvatureFilter()
 template<typename T>
 bool CurvatureFilter<T>::configure()
 {
-  if (!filters::FilterBase<T>::getParam(std::string("input_layer"), inputLayer_)) {
+  ParameterReader param_reader(this->param_prefix_, this->params_interface_);
+
+  if (!param_reader.get(std::string("input_layer"), inputLayer_)) {
     RCLCPP_ERROR(
       this->logging_interface_->get_logger(),
       "Curvature filter did not find parameter `input_layer`.");
@@ -41,7 +45,7 @@ bool CurvatureFilter<T>::configure()
     this->logging_interface_->get_logger(), "Curvature filter input layer is = %s.",
     inputLayer_.c_str());
 
-  if (!filters::FilterBase<T>::getParam(std::string("output_layer"), outputLayer_)) {
+  if (!param_reader.get(std::string("output_layer"), outputLayer_)) {
     RCLCPP_ERROR(
       this->logging_interface_->get_logger(),
       "Curvature filter did not find parameter `output_layer`.");

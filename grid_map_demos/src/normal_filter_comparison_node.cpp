@@ -4,8 +4,8 @@
  * @brief       Node for comparing different normal filters performances.
  */
 
-#include <filters/filter_chain.h>
-#include <ros/ros.h>
+#include <filters/filter_chain.hpp>
+#include <rclcpp/rclcpp.hpp>
 
 #include <grid_map_core/grid_map_core.hpp>
 #include <grid_map_ros/grid_map_ros.hpp>
@@ -13,9 +13,11 @@
 #include <Eigen/Core>
 #include <cmath>
 
-#include <vector>
-#include <string>
 #include <limits>
+#include <memory>
+#include <string>
+#include <utility>
+#include <vector>
 
 // Function headers
 namespace grid_map
@@ -74,32 +76,40 @@ void mapAverageFiltering(
 int main(int argc, char ** argv)
 {
   // Initialize node and publisher.
-  ros::init(argc, argv, "normal_filter_comparison_demo");
-  ros::NodeHandle nh("~");
-  ros::Publisher publisher = nh.advertise<grid_map_msgs::GridMap>("grid_map", 1, true);
+  rclcpp::init(argc, argv);
+  rclcpp::Node::SharedPtr node = std::make_shared<rclcpp::Node>("normal_filter_comparison_demo");
+
+  auto publisher = node->create_publisher<grid_map_msgs::msg::GridMap>(
+    "grid_map", rclcpp::QoS(1).transient_local());
 
   // Start time.
-  double begin = ros::Time::now().toSec();
+  double begin = node->now().seconds();
 
   // Load filter chain, defined in grid_map_demos/config/normal_filter_comparison.yaml.
   filters::FilterChain<grid_map::GridMap> filterChain_("grid_map::GridMap");
+
+  node->declare_parameter("filter_chain_parameter_name", "filters");
+  node->declare_parameter("noise_on_map", 0.015);
+  node->declare_parameter("outliers_percentage", 0.0);
+
   std::string filterChainParametersName_;
-  nh.param(
-    "filter_chain_parameter_name", filterChainParametersName_, std::string(
-      "grid_map_filters"));
+  node->get_parameter("filter_chain_parameter_name", filterChainParametersName_);
 
   // Read noise amount, in meters, from parameters server.
   double noise_on_map;
-  nh.param("noise_on_map", noise_on_map, 0.015);
-  ROS_INFO("noise_on_map = %f", noise_on_map);
+  node->get_parameter("noise_on_map", noise_on_map);
+  RCLCPP_INFO(node->get_logger(), "noise_on_map = %f", noise_on_map);
 
   double outliers_percentage;
-  nh.param("outliers_percentage", outliers_percentage, 0.0);
-  ROS_INFO("outliers_percentage = %f", outliers_percentage);
+  node->get_parameter("outliers_percentage", outliers_percentage);
+  RCLCPP_INFO(node->get_logger(), "outliers_percentage = %f", outliers_percentage);
 
   // Configuration of chain filter.
-  if (!filterChain_.configure(filterChainParametersName_, nh)) {
-    ROS_ERROR("Could not configure the filter chain!");
+  if (!filterChain_.configure(
+      filterChainParametersName_, node->get_node_logging_interface(),
+      node->get_node_parameters_interface()))
+  {
+    RCLCPP_ERROR(node->get_logger(), "Could not configure the filter chain!");
   }
 
   // Parameters for grid map dimensions.
@@ -115,7 +125,8 @@ int main(int argc, char ** argv)
     grid_map::Length(mapLength, mapWidth), mapResolution,
     grid_map::Position(0.0, 0.0));
   const grid_map::Size gridMapSize = map.getSize();
-  ROS_INFO(
+  RCLCPP_INFO(
+    node->get_logger(),
     "Created map with size %f x %f m (%i x %i cells).\n"
     " The center of the map is located at (%f, %f) in the %s frame.",
     map.getLength().x(), map.getLength().y(), map.getSize()(0), map.getSize()(1),
@@ -134,9 +145,9 @@ int main(int argc, char ** argv)
 
   // Work with grid map in a loop.
   // Grid map and analytic normals are continuously generated using exact functions.
-  ros::Rate rate(10.0);
-  while (nh.ok()) {
-    ros::Time time = ros::Time::now();
+  rclcpp::Rate rate(10.0);
+  while (rclcpp::ok()) {
+    rclcpp::Time time = node->now();
 
     // Calculate wave shaped elevation and analytic surface normal.
     for (grid_map::GridMapIterator it(map); !it.isPastEnd(); ++it) {
@@ -144,12 +155,12 @@ int main(int argc, char ** argv)
       map.getPosition(*it, position);
       map.at("elevation", *it) =
         surfaceBias + surfaceSlope * std::sin(
-        surfaceSpeed * time.toSec() + wavePeriod * position.y()) * position.x();
+        surfaceSpeed * time.seconds() + wavePeriod * position.y()) * position.x();
 
       // Analytic normals computation.
       grid_map::Vector3 normalAnalytic(-surfaceSlope * std::sin(
-          surfaceSpeed * time.toSec() + wavePeriod * position.y()),
-        -position.x() * std::cos(surfaceSpeed * time.toSec() + wavePeriod * position.y()), 1.0);
+          surfaceSpeed * time.seconds() + wavePeriod * position.y()),
+        -position.x() * std::cos(surfaceSpeed * time.seconds() + wavePeriod * position.y()), 1.0);
       normalAnalytic.normalize();
       map.at("normal_analytic_x", *it) = normalAnalytic.x();
       map.at("normal_analytic_y", *it) = normalAnalytic.y();
@@ -173,22 +184,25 @@ int main(int argc, char ** argv)
 
     // Computation of normals using filterChain_.update function.
     if (!filterChain_.update(map, map)) {
-      ROS_ERROR("Could not update the grid map filter chain!");
+      RCLCPP_ERROR(node->get_logger(), "Could not update the grid map filter chain!");
     }
 
     // Normals error computation
     grid_map::normalsErrorCalculation(
       map, gridMapSize, directionalErrorAreaSum,
       directionalErrorRasterSum);
-    ROS_INFO_THROTTLE(2.0, "directionalErrorArea = %f", directionalErrorAreaSum);
-    ROS_INFO_THROTTLE(2.0, "directionalErrorRaster = %f", directionalErrorRasterSum);
+    rclcpp::Clock clock;
+    RCLCPP_INFO_THROTTLE(
+      node->get_logger(), clock, 2000, "directionalErrorArea = %f", directionalErrorAreaSum);
+    RCLCPP_INFO_THROTTLE(
+      node->get_logger(), clock, 2000, "directionalErrorRaster = %f", directionalErrorRasterSum);
 
     // Publish grid map.
-    map.setTimestamp(time.toNSec());
-    grid_map_msgs::GridMap message;
-    grid_map::GridMapRosConverter::toMessage(map, message);
-    publisher.publish(message);
-    double end = ros::Time::now().toSec();
+    map.setTimestamp(time.nanoseconds());
+    std::unique_ptr<grid_map_msgs::msg::GridMap> message;
+    message = grid_map::GridMapRosConverter::toMessage(map);
+    publisher->publish(std::move(message));
+    double end = node->now().seconds();
 
     // Limit simulation length to 1 minute.
     if ((end - begin) > 60) {

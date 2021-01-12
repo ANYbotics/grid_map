@@ -13,6 +13,8 @@
 
 #include <string>
 
+#include "grid_map_cv/utilities.hpp"
+
 namespace grid_map
 {
 
@@ -34,19 +36,14 @@ ThresholdFilter<T>::~ThresholdFilter()
 template<typename T>
 bool ThresholdFilter<T>::configure()
 {
-  // Load Parameters
-  if (filters::FilterBase<T>::getParam(
-      std::string("lower_threshold"),
-      lowerThreshold_))
-  {
+  ParameterReader param_reader(this->param_prefix_, this->params_interface_);
+
+  if (param_reader.get(std::string("lower_threshold"), lowerThreshold_)) {
     useLowerThreshold_ = true;
     RCLCPP_DEBUG(this->logging_interface_->get_logger(), "lower threshold = %f", lowerThreshold_);
   }
 
-  if (filters::FilterBase<T>::getParam(
-      std::string("upper_threshold"),
-      upperThreshold_))
-  {
+  if (param_reader.get(std::string("upper_threshold"), upperThreshold_)) {
     useUpperThreshold_ = true;
     RCLCPP_DEBUG(this->logging_interface_->get_logger(), "upper threshold = %f", upperThreshold_);
   }
@@ -65,13 +62,13 @@ bool ThresholdFilter<T>::configure()
     return false;
   }
 
-  if (!filters::FilterBase<T>::getParam(std::string("set_to"), setTo_)) {
+  if (!param_reader.get(std::string("set_to"), setTo_)) {
     RCLCPP_ERROR(
       this->logging_interface_->get_logger(), "ThresholdFilter did not find parameter 'set_to'.");
     return false;
   }
 
-  if (!filters::FilterBase<T>::getParam(std::string("layer"), layer_)) {
+  if (!param_reader.get(std::string("layer"), layer_)) {
     RCLCPP_ERROR(
       this->logging_interface_->get_logger(), "ThresholdFilter did not find parameter 'layer'.");
     return false;

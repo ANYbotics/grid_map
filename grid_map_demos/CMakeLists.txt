@@ -5,18 +5,12 @@ project(grid_map_demos)
 find_package(ament_cmake REQUIRED)
 find_package(cv_bridge REQUIRED)
 find_package(filters REQUIRED)
-find_package(geometry_msgs REQUIRED)
 find_package(grid_map_cmake_helpers REQUIRED)
 find_package(grid_map_core REQUIRED)
-find_package(grid_map_ros REQUIRED)
 find_package(grid_map_cv REQUIRED)
-# find_package(grid_map_filters REQUIRED)
-# find_package(grid_map_loader REQUIRED)
 find_package(grid_map_msgs REQUIRED)
 find_package(grid_map_octomap REQUIRED)
 find_package(grid_map_ros REQUIRED)
-# find_package(grid_map_rviz_plugin REQUIRED)
-# find_package(grid_map_visualization REQUIRED)
 find_package(OCTOMAP REQUIRED)
 find_package(octomap_msgs REQUIRED)
 find_package(rclcpp REQUIRED)
@@ -31,9 +25,9 @@ find_package(OpenCV REQUIRED
 grid_map_package()
 
 set(dependencies
-  rclcpp
-  grid_map_ros
   grid_map_msgs
+  grid_map_ros
+  rclcpp
 )
 
 ###########
@@ -45,7 +39,6 @@ set(dependencies
 include_directories(
   include
   ${EIGEN3_INCLUDE_DIR}
-  # ${OCTOMAP_INCLUDE_DIR}
 )
 
 ## Declare a cpp executable
@@ -92,104 +85,124 @@ add_executable(
   src/opencv_demo_node.cpp
 )
 
-# add_executable(
-#   resolution_change_demo
-#   src/resolution_change_demo_node.cpp
-# )
+add_executable(
+  resolution_change_demo
+  src/resolution_change_demo_node.cpp
+)
 
-# add_executable(
-#   filters_demo
-#   src/filters_demo_node.cpp
-#   src/FiltersDemo.cpp
-# )
+add_executable(
+  filters_demo
+  src/filters_demo_node.cpp
+)
 
-# add_executable(
-#   normal_filter_comparison_demo
-#   src/normal_filter_comparison_node.cpp
-# )
+add_library(filters_demo_lib SHARED
+  src/FiltersDemo.cpp
+)
 
-# add_executable(
-#   interpolation_demo
-#   src/interpolation_demo_node.cpp
-#   src/InterpolationDemo.cpp
-# )
+add_executable(
+  normal_filter_comparison_demo
+  src/normal_filter_comparison_node.cpp
+)
+
+add_executable(
+  interpolation_demo
+  src/interpolation_demo_node.cpp
+  src/InterpolationDemo.cpp
+)
 
 ## Specify libraries to link a library or executable target against
 ament_target_dependencies(
   simple_demo
-  "rclcpp"
-  "grid_map_ros"
-  "grid_map_msgs"
+  ${dependencies}
 )
 
 ament_target_dependencies(
   tutorial_demo
-  "rclcpp"
-  "grid_map_ros"
-  "grid_map_msgs"
+  ${dependencies}
 )
 
 ament_target_dependencies(
   iterators_demo
-  "rclcpp"
-  "grid_map_ros"
-  "grid_map_msgs"
+  ${dependencies}
 )
 
 ament_target_dependencies(image_to_gridmap_demo
-  "rclcpp"
-  "grid_map_ros"
-  "grid_map_msgs"
+  ${dependencies}
 )
 
 ament_target_dependencies(
   octomap_to_gridmap_demo
-  "rclcpp"
-  "grid_map_ros"
-  "grid_map_msgs"
-  "grid_map_octomap"
-  "octomap_msgs"
+  ${dependencies}
+  grid_map_octomap
+  octomap_msgs
 )
 
 ament_target_dependencies(
   move_demo
-  "rclcpp"
-  "grid_map_ros"
-  "grid_map_msgs"
+  ${dependencies}
 )
 
 ament_target_dependencies(
   iterator_benchmark
-  "grid_map_core"
+  grid_map_core
 )
 
 ament_target_dependencies(
   opencv_demo
-  "rclcpp"
-  "grid_map_ros"
-  "grid_map_msgs"
-  "grid_map_cv"
+  ${dependencies}
+  grid_map_cv
 )
 
-# ament_target_dependencies(
-#   resolution_change_demo
-#   ${dependencies}
-# )
+ament_target_dependencies(
+  resolution_change_demo
+  ${dependencies}
+)
 
-# ament_target_dependencies(
-#   filters_demo
-#   ${dependencies}
-# )
+target_link_libraries(filters_demo filters_demo_lib)
 
-# ament_target_dependencies(
-#   normal_filter_comparison_demo
-#   ${dependencies}
-# )
+ament_target_dependencies(
+  filters_demo_lib
+  ${dependencies}
+  filters
+)
 
-# ament_target_dependencies(
-#   interpolation_demo
-#   ${dependencies}
-# )
+ament_target_dependencies(
+  filters_demo
+  ${dependencies}
+  filters
+)
+
+ament_target_dependencies(
+  normal_filter_comparison_demo
+  ${dependencies}
+  filters
+)
+
+ament_target_dependencies(
+  interpolation_demo
+  ${dependencies}
+)
+
+set(targets_list
+  filters_demo
+  filters_demo_lib
+  image_to_gridmap_demo
+  interpolation_demo
+  iterator_benchmark
+  iterators_demo
+  move_demo
+  normal_filter_comparison_demo
+  octomap_to_gridmap_demo
+  opencv_demo
+  resolution_change_demo
+  simple_demo
+  tutorial_demo
+)
+
+foreach(target ${targets_list})
+  target_compile_options(${target} PRIVATE "SHELL:--param ggc-min-expand=1")
+  target_compile_options(${target} PRIVATE "SHELL:--param ggc-min-heapsize=32768")
+endforeach()
 
 #############
 ## Install ##
@@ -197,19 +210,7 @@ ament_target_dependencies(
 
 # Mark executables and/or libraries for installation
 install(
-  TARGETS
-    # filters_demo
-    image_to_gridmap_demo
-    # interpolation_demo
-    iterator_benchmark
-    iterators_demo
-    move_demo
-    # normal_filter_comparison_demo
-    octomap_to_gridmap_demo
-    opencv_demo
-    # resolution_change_demo
-    simple_demo
-    tutorial_demo
+  TARGETS ${targets_list}
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION lib/${PROJECT_NAME}
@@ -257,6 +258,5 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 endif()
 
-ament_export_include_directories(include ${OCTOMAP_INCLUDE_DIRS})
-# ament_export_libraries(${OCTOMAP_LIBRARIES})
+ament_export_include_directories(include ${EIGEN3_INCLUDE_DIR})
 ament_package()

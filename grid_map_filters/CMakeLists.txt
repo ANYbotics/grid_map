@@ -8,6 +8,7 @@ find_package(grid_map_cmake_helpers REQUIRED)
 find_package(grid_map_core REQUIRED)
 find_package(grid_map_msgs REQUIRED)
 find_package(grid_map_ros REQUIRED)
+find_package(pluginlib REQUIRED)
 
 ## System dependencies are found with CMake's conventions
 find_package(PkgConfig REQUIRED)
@@ -30,6 +31,26 @@ set(dependencies
   grid_map_core
   grid_map_msgs
   grid_map_ros
+  pluginlib
+)
+
+set(filter_libs
+  threshold_filter
+  min_in_radius_filter
+  mean_in_radius_filter
+  normal_vectors_filter
+  curvature_filter
+  normal_color_map_filter
+  light_intensity_filter
+  math_expression_filter
+  sliding_window_math_expression_filter
+  duplication_filter
+  deletion_filter
+  color_fill_filter
+  color_map_filter
+  color_blending_filter
+  set_basic_layers_filter
+  buffer_normalizer_filter
 )
 
 ###########
@@ -43,32 +64,32 @@ include_directories(
     ${TBB_INCLUDE_DIRS}
 )
 
-## Declare a cpp library
-add_library(${PROJECT_NAME}
-  src/ThresholdFilter.cpp
-  src/MinInRadiusFilter.cpp
-  src/MeanInRadiusFilter.cpp
-  src/NormalVectorsFilter.cpp
-  src/CurvatureFilter.cpp
-  src/NormalColorMapFilter.cpp
-  src/LightIntensityFilter.cpp
-  src/MathExpressionFilter.cpp
-  src/SlidingWindowMathExpressionFilter.cpp
-  src/DuplicationFilter.cpp
-  src/DeletionFilter.cpp
-  src/ColorFillFilter.cpp
-  src/ColorMapFilter.cpp
-  src/ColorBlendingFilter.cpp
-  src/SetBasicLayersFilter.cpp
-  src/BufferNormalizerFilter.cpp
-)
+## Declare cpp libraries
+add_library(threshold_filter SHARED src/ThresholdFilter.cpp)
+add_library(min_in_radius_filter SHARED src/MinInRadiusFilter.cpp)
+add_library(mean_in_radius_filter SHARED src/MeanInRadiusFilter.cpp)
+add_library(normal_vectors_filter SHARED src/NormalVectorsFilter.cpp)
+add_library(curvature_filter SHARED src/CurvatureFilter.cpp)
+add_library(normal_color_map_filter SHARED src/NormalColorMapFilter.cpp)
+add_library(light_intensity_filter SHARED src/LightIntensityFilter.cpp)
+add_library(math_expression_filter SHARED src/MathExpressionFilter.cpp)
+add_library(sliding_window_math_expression_filter SHARED src/SlidingWindowMathExpressionFilter.cpp)
+add_library(duplication_filter SHARED src/DuplicationFilter.cpp)
+add_library(deletion_filter SHARED src/DeletionFilter.cpp)
+add_library(color_fill_filter SHARED src/ColorFillFilter.cpp)
+add_library(color_map_filter SHARED src/ColorMapFilter.cpp)
+add_library(color_blending_filter SHARED src/ColorBlendingFilter.cpp)
+add_library(set_basic_layers_filter SHARED src/SetBasicLayersFilter.cpp)
+add_library(buffer_normalizer_filter SHARED src/BufferNormalizerFilter.cpp)
 
-ament_target_dependencies(${PROJECT_NAME}
-  ${dependencies}
-)
+foreach(lib_name ${filter_libs})
+  ament_target_dependencies(${lib_name}
+    ${dependencies}
+  )
 
-target_compile_options(${PROJECT_NAME} PRIVATE "SHELL:--param ggc-min-expand=1")
-target_compile_options(${PROJECT_NAME} PRIVATE "SHELL:--param ggc-min-heapsize=32768")
+  target_compile_options(${lib_name} PRIVATE "SHELL:--param ggc-min-expand=1")
+  target_compile_options(${lib_name} PRIVATE "SHELL:--param ggc-min-heapsize=32768")
+endforeach()
 
 #############
 ## Install ##
@@ -76,10 +97,10 @@ target_compile_options(${PROJECT_NAME} PRIVATE "SHELL:--param ggc-min-heapsize=3
 
 # Mark executables and/or libraries for installation
 install(
-  TARGETS ${PROJECT_NAME}
+  TARGETS ${filter_libs}
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
-  RUNTIME DESTINATION lib/${PROJECT_NAME}
+  RUNTIME DESTINATION bin
 )
 
 # Mark cpp header files for installation
@@ -130,5 +151,6 @@ ament_export_include_directories(
   ${TBB_INCLUDE_DIRS}
 )
 ament_export_dependencies(${dependencies})
-ament_export_libraries(${PROJECT_NAME})
+ament_export_libraries(${filter_libs})
+pluginlib_export_plugin_description_file(filters filter_plugins.xml)
 ament_package()

@@ -21,7 +21,7 @@ jobs:
             mkdir -p $UNDERLAY_WS/src && cp $OVERLAY_WS/src/grid_map/tools/ros2_dependencies.repos \
               $UNDERLAY_WS/ros2_dependencies.repos
             cd $UNDERLAY_WS && vcs import src < ros2_dependencies.repos
-            DEBIAN_FRONTEND=noninteractive  rosdep install -y --ignore-src --from-paths src
+            DEBIAN_FRONTEND=noninteractive  rosdep install -y --ignore-src --skip-keys "pybind11_vendor" --from-paths src
             colcon build --symlink-install --parallel-workers 1 --packages-up-to \
               pcl_ros
             source $UNDERLAY_WS/install/setup.bash

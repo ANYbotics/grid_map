@@ -17,6 +17,8 @@
 #include <vector>
 #include <algorithm>
 
+#include "grid_map_cv/utilities.hpp"
+
 namespace grid_map
 {
 
@@ -35,7 +37,9 @@ ColorMapFilter<T>::~ColorMapFilter()
 template<typename T>
 bool ColorMapFilter<T>::configure()
 {
-  if (!filters::FilterBase<T>::getParam(std::string("input_layer"), inputLayer_)) {
+  ParameterReader param_reader(this->param_prefix_, this->params_interface_);
+
+  if (!param_reader.get(std::string("input_layer"), inputLayer_)) {
     RCLCPP_ERROR(
       this->logging_interface_->get_logger(),
       "Color map filter did not find parameter `input_layer`.");
@@ -45,7 +49,7 @@ bool ColorMapFilter<T>::configure()
     this->logging_interface_->get_logger(), "Color map filter input_layer = %s.",
     inputLayer_.c_str());
 
-  if (!filters::FilterBase<T>::getParam(std::string("output_layer"), outputLayer_)) {
+  if (!param_reader.get(std::string("output_layer"), outputLayer_)) {
     RCLCPP_ERROR(
       this->logging_interface_->get_logger(),
       "Color map filter did not find parameter `output_layer`.");
@@ -55,13 +59,13 @@ bool ColorMapFilter<T>::configure()
     this->logging_interface_->get_logger(), "Color map filter output_layer = %s.",
     outputLayer_.c_str());
 
-  if (!filters::FilterBase<T>::getParam(std::string("min/value"), min_)) {
+  if (!param_reader.get(std::string("min/value"), min_)) {
     RCLCPP_ERROR(
       this->logging_interface_->get_logger(),
       "Color map filter did not find parameter `min/value`.");
     return false;
   }
-  if (!filters::FilterBase<T>::getParam(std::string("max/value"), max_)) {
+  if (!param_reader.get(std::string("max/value"), max_)) {
     RCLCPP_ERROR(
       this->logging_interface_->get_logger(),
       "Color map filter did not find parameter `max/value`.");
@@ -69,7 +73,7 @@ bool ColorMapFilter<T>::configure()
   }
 
   std::vector<double> minColor;
-  if (!filters::FilterBase<T>::getParam(std::string("min/color"), minColor)) {
+  if (!param_reader.get(std::string("min/color"), minColor)) {
     RCLCPP_ERROR(
       this->logging_interface_->get_logger(),
       "Color map filter did not find parameter `min/color`.");
@@ -84,7 +88,7 @@ bool ColorMapFilter<T>::configure()
   minColor_ << minColor[0], minColor[1], minColor[2];
 
   std::vector<double> maxColor;
-  if (!filters::FilterBase<T>::getParam(std::string("max/color"), maxColor)) {
+  if (!param_reader.get(std::string("max/color"), maxColor)) {
     RCLCPP_ERROR(
       this->logging_interface_->get_logger(),
       "Color map filter did not find parameter `max/color`.");
