@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package format="2">
   <name>grid_map_cv</name>
-  <version>1.6.2</version>
+  <version>1.6.3</version>
   <description>Conversions between grid maps and OpenCV images.</description>
   <maintainer email="mwulf@anybotics.com">Maximilian Wulf</maintainer>
   <maintainer email="ynava@anybotics.com">Yoshua Nava</maintainer>
@@ -9,6 +9,7 @@
   <url type="website">http://github.com/anybotics/grid_map</url>
   <url type="bugtracker">http://github.com/anybotics/grid_map/issues</url>
   <author email="pfankhauser@anybotics.com">Péter Fankhauser</author>
+  <author email="mgaertner@anybotics.com">Magnus Gärtner</author>
   <buildtool_depend>catkin</buildtool_depend>
   <depend>grid_map_core</depend>
   <depend>cv_bridge</depend>

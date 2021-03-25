@@ -15,14 +15,14 @@ Features:
 * **Visualizations:** The *grid_map_rviz_plugin* renders grid maps as 3d surface plots (height maps) in [RViz]. Additionally, the *grid_map_visualization* package helps to visualize grid maps as point clouds, occupancy grids, grid cells etc.
 * **Filters:** The *grid_map_filters* provides are range of filters to process grid maps as a sequence of filters. Parsing of mathematical expressions allows to flexibly setup powerful computations such as thresholding, normal vectors, smoothening, variance, inpainting, and matrix kernel convolutions.
 
-The grid map package has been tested with [ROS] Indigo, Jade (under Ubuntu 14.04), Kinetic (under Ubuntu 16.04), and Melodic (under Ubuntu 18.04). This is research code, expect that it changes often and any fitness for a particular purpose is disclaimed.
+This is research code, expect that it changes often and any fitness for a particular purpose is disclaimed.
 
 The source code is released under a [BSD 3-Clause license](LICENSE).
 
 **Author: Péter Fankhauser<br />
 Affiliation: [ANYbotics](https://www.anybotics.com/)<br />
 Maintainer: Péter Fankhauser, pfankhauser@anybotics.com<br />**
-With contributions by: Tanja Baumann, Jeff Delmerico, Remo Diethelm, Perry Franklin, Dominic Jud, Ralph Kaestner, Philipp Krüsi, Alex Millane, Daniel Stonier, Elena Stumm, Martin Wermelinger, Christos Zalidis, Edo Jelavic, Ruben Grandia, Simone Arreghini
+With contributions by: Tanja Baumann, Jeff Delmerico, Remo Diethelm, Perry Franklin, Dominic Jud, Ralph Kaestner, Philipp Krüsi, Alex Millane, Daniel Stonier, Elena Stumm, Martin Wermelinger, Christos Zalidis, Edo Jelavic, Ruben Grandia, Simone Arreghini, Magnus Gärtner
 
 This projected was initially developed at ETH Zurich (Autonomous Systems Lab & Robotic Systems Lab).
 
@@ -152,6 +152,10 @@ The *grid_map_demos* package contains several demonstration nodes. Use this code
         roslaunch grid_map_demos image_to_gridmap_demo.launch
 
     ![Image to grid map demo result](grid_map_demos/doc/image_to_grid_map_demo_result.png)
+    
+* *[grid_map_to_image_demo](grid_map_demos/src/GridmapToImageDemo.cpp)* demonstrates how to save a grid map layer to an image. Start the demonstration with
+
+        rosrun grid_map_demos grid_map_to_image_demo _grid_map_topic:=/grid_map _file:=/home/$USER/Desktop/grid_map_image.png
 
 * *[opencv_demo](grid_map_demos/src/opencv_demo_node.cpp)* demonstrates map manipulations with help of [OpenCV] functions. Start the demonstration with
 
@@ -391,7 +395,20 @@ Several basic filters are provided in the *grid_map_filters* package:
           input_layer: input
           output_layer: output
           radius: 0.06 # in m.
+* **`gridMapFilters/MedianFillFilter`**
 
+    Compute for each _NaN_ cell of a layer the median (of finites) inside a patch with radius. 
+    Optionally, apply median calculations for values that are already finite, the patch radius for these points is given by existing_value_radius. 
+
+        name: median
+        type: gridMapFilters/MedianFillFilter
+        params:
+          input_layer: input
+          output_layer: output
+          fill_hole_radius: 0.11 # in m. 
+          filter_existing_values: false # Default is false. If enabled it also does a median computation for existing values. 
+          existing_value_radius: 0.2 # in m. Note that this option only has an effect if filter_existing_values is set true. 
+    
 * **`gridMapFilters/NormalVectorsFilter`**
 
     Compute the normal vectors of a layer in a map.

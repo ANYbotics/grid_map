@@ -8,6 +8,7 @@
 
 #include "grid_map_rviz_plugin/GridMapVisual.hpp"
 #include "grid_map_rviz_plugin/GridMapDisplay.hpp"
+// The following replaces <rviz/frame_manager.h>
 #include "grid_map_rviz_plugin/modified/frame_manager.h"
 
 #include <OGRE/OgreSceneNode.h>

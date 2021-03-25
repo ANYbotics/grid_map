@@ -99,7 +99,7 @@ void GridMapVisual::computeVisualization(float alpha, bool showGridLines, bool f
 
     ss << "Material";
     materialName_ = ss.str();
-    material_ = Ogre::MaterialManager::getSingleton().create(materialName_, "rviz");
+    material_ = Ogre::MaterialManager::getSingleton().create(materialName_, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
     material_->setReceiveShadows(false);
     material_->getTechnique(0)->setLightingEnabled(true);
     material_->setCullingMode(Ogre::CULL_NONE);

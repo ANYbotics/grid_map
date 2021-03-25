@@ -8,7 +8,7 @@ This is a C++ package integrated with ROS for computing 2.5D elevation maps from
 The elevation is computed by raytracing lines coming from the grid map cells and computing their intersection with the mesh.
 
 #### Converting a raw pointcloud to a grid map
-The elevation is computed by slicing the point cloud in the x-y plane into columns. Column location and size correspond to the location and size of grid map cells in the point cloud coordinate frame. Subsequently, the clustering of points inside each column is performed and the elevation of the lowest cluster (min z coordinate) is assumed to be the terrain elevation. The elevation of the cluster is computed as a mean of all positions from the points that belong to a cluster. All calculations are performed in the pointcloud frame.
+The elevation is computed by slicing the point cloud in the x-y plane into columns. Column location and size correspond to the location and size of grid map cells in the point cloud coordinate frame. Subsequently, the clustering of points inside each column is performed and the elevation of the lowest or highest cluster (min/max z coordinate) is assumed to be the terrain elevation. The elevation of the cluster is computed as a mean of all positions from the points that belong to a cluster. All calculations are performed in the pointcloud frame.
 
 
 **Authors: Edo Jelavic, Dominic Jud<br />
@@ -65,6 +65,7 @@ Cluster extraction is based on pcl algorithms. See: http://pointclouds.org/docum
 * **pcl_grid_map_extraction/cluster_extraction/cluster_tolerance** Distance between points below which they will still be considered part of one cluster. 
 * **pcl_grid_map_extraction/cluster_extraction/min_num_points** Min number of points that a cluster needs to have (otherwise it will be discarded). 
 * **pcl_grid_map_extraction/cluster_extraction/max_num_points** Max number of points that a cluster can have (otherwise it will be discarded). 
+* **pcl_grid_map_extraction/cluster_extraction/use_max_height_as_cell_elevation** Use the maximum cluster to extract the cell height. If false (default), the lowest cluster is taken. 
 
 ##### Outlier removal parameters
 See http://pointclouds.org/documentation/tutorials/statistical_outlier.php for more explanation on outlier removal.
