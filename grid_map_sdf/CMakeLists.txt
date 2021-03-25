@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.5.1)
 project(grid_map_sdf)
 
 set(CMAKE_CXX_FLAGS "-std=c++14 ${CMAKE_CXX_FLAGS}")
+add_compile_options(-Wall -Wextra -Wpedantic)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 ## Find catkin macros and libraries
 find_package(catkin REQUIRED COMPONENTS
@@ -66,7 +68,9 @@ install(
 install(
   DIRECTORY include/${PROJECT_NAME}/
   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
-  FILES_MATCHING PATTERN "*.hpp"
+  FILES_MATCHING 
+    PATTERN "*.hpp"
+    PATTERN "*.h"
 )
 
 #############
@@ -103,3 +107,13 @@ if(CATKIN_ENABLE_TESTING)
     )
   endif()
 endif()
+
+#################
+## Clang_tools ##
+#################
+find_package(cmake_clang_tools QUIET)
+if(cmake_clang_tools_FOUND)
+  add_default_clang_tooling(
+    DISABLE_CLANG_FORMAT
+  )
+endif(cmake_clang_tools_FOUND)

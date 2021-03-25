@@ -9,8 +9,8 @@ set(CMAKE_CXX_STANDARD 11)
 # We want performance (fast-math) but also need a representation for NaN values to represent missing values. 
 # Therefore, we disable the finite-math-only flag that was set by fast-math.  
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ffast-math -fno-finite-math-only")
-
-find_package(Boost REQUIRED)
+add_compile_options(-Wall -Wextra -Wpedantic)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Other possible options.
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native -mtune=native -ffast-math")
@@ -37,6 +37,8 @@ else()
   message([FATAL_ERROR] "tbb module not found")
 endif ()
 
+find_package(OpenCV REQUIRED)
+
 ###################################
 ## catkin specific configuration ##
 ###################################
@@ -58,7 +60,7 @@ catkin_package(
     grid_map_msgs
     filters
   DEPENDS
-    Boost
+    OpenCV
 )
 
 ###########
@@ -71,7 +73,7 @@ include_directories(
   SYSTEM
     ${catkin_INCLUDE_DIRS}
     ${TBB_INCLUDE_DIRS}
-    ${Boost_INCLUDE_DIRS}
+    ${OpenCV_INCLUDE_DIRS}
 )
 
 ## Declare a cpp library
@@ -99,7 +101,7 @@ add_library(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME}
   ${catkin_LIBRARIES}
   ${TBB_LIBRARIES}
-  ${Boost_LIBRARIES}
+  ${OpenCV_LIBRARIES}
 )
 
 #############
@@ -135,19 +137,18 @@ if (CATKIN_ENABLE_TESTING)
   catkin_add_gtest(${PROJECT_NAME}-test
     test/test_grid_map_filters.cpp
     test/median_fill_filter_test.cpp
+    test/threshold_filter_test.cpp
   )
   target_include_directories(${PROJECT_NAME}-test PRIVATE
     include
   )
   target_include_directories(${PROJECT_NAME}-test SYSTEM PUBLIC
     ${catkin_INCLUDE_DIRS}
-    ${Boost_INCLUDE_DIRS}
   )
   target_link_libraries(${PROJECT_NAME}-test
     gmock
     gtest
     ${PROJECT_NAME}
-    ${Boost_LIBRARIES}
   )
 
   ###################
@@ -161,3 +162,13 @@ if (CATKIN_ENABLE_TESTING)
     )
   endif()
 endif()
+
+#################
+## Clang_tools ##
+#################
+find_package(cmake_clang_tools QUIET)
+if(cmake_clang_tools_FOUND)
+  add_default_clang_tooling(
+    DISABLE_CLANG_FORMAT
+  )
+endif(cmake_clang_tools_FOUND)

@@ -720,12 +720,13 @@ Position GridMap::getClosestPositionInMap(const Position& position) const {
   const double maxY = bottomLeftCorner.y();
   const double minY = bottomRightCorner.y();
 
-  // Clip to box constraints.
-  positionInMap.x() = std::fmin(positionInMap.x(), maxX);
-  positionInMap.y() = std::fmin(positionInMap.y(), maxY);
+  // Clip to box constraints and correct for indexing precision.
+  // Points on the border can lead to invalid indices because the cells represent half open intervals, i.e. [...).
+  positionInMap.x() = std::fmin(positionInMap.x(), maxX - std::numeric_limits<double>::epsilon());
+  positionInMap.y() = std::fmin(positionInMap.y(), maxY - std::numeric_limits<double>::epsilon());
 
-  positionInMap.x() = std::fmax(positionInMap.x(), minX);
-  positionInMap.y() = std::fmax(positionInMap.y(), minY);
+  positionInMap.x() = std::fmax(positionInMap.x(), minX + std::numeric_limits<double>::epsilon());
+  positionInMap.y() = std::fmax(positionInMap.y(), minY + std::numeric_limits<double>::epsilon());
 
   return positionInMap;
 }
@@ -751,23 +752,13 @@ void GridMap::clearAll() {
 }
 
 void GridMap::clearRows(unsigned int index, unsigned int nRows) {
-  std::vector<std::string> layersToClear;
-  if (basicLayers_.size() > 0)
-    layersToClear = basicLayers_;
-  else
-    layersToClear = layers_;
-  for (auto& layer : layersToClear) {
+  for (auto& layer : layers_) {
     data_.at(layer).block(index, 0, nRows, getSize()(1)).setConstant(NAN);
   }
 }
 
 void GridMap::clearCols(unsigned int index, unsigned int nCols) {
-  std::vector<std::string> layersToClear;
-  if (basicLayers_.size() > 0)
-    layersToClear = basicLayers_;
-  else
-    layersToClear = layers_;
-  for (auto& layer : layersToClear) {
+  for (auto& layer : layers_) {
     data_.at(layer).block(0, index, getSize()(0), nCols).setConstant(NAN);
   }
 }

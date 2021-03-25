@@ -8,8 +8,9 @@
 
 #include <ros/ros.h>
 
-#include "grid_map_core/GridMap.hpp"
-#include "grid_map_ros/GridMapRosConverter.hpp"
+#include <grid_map_core/GridMap.hpp>
+#include <grid_map_ros/GridMapRosConverter.hpp>
+
 #include "grid_map_pcl/GridMapPclLoader.hpp"
 #include "grid_map_pcl/helpers.hpp"
 
@@ -35,12 +36,11 @@ int main(int argc, char** argv) {
 
   gm::saveGridMap(gridMap, nh, gm::getMapRosbagTopic(nh));
 
-  //publish grid map
+  // publish grid map
 
   grid_map_msgs::GridMap msg;
   grid_map::GridMapRosConverter::toMessage(gridMap, msg);
   gridMapPub.publish(msg);
-
 
   // run
   ros::spin();

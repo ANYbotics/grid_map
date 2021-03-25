@@ -2,6 +2,9 @@
 Changelog for package grid_map_core
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.6.4 (2020-12-04)
+------------------
+
 1.6.2 (2019-10-14)
 ------------------
 * Implements a grid map transformation from one map frame to another map frame given the transform between the frames.

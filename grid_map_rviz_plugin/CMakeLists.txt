@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.5.1)
 project(grid_map_rviz_plugin)
 
 set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
+add_compile_options(-Wall -Wextra -Wpedantic)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 find_package(catkin REQUIRED
   COMPONENTS
@@ -34,9 +36,8 @@ set(CMAKE_AUTOMOC ON)
 
 set(INCLUDE_FILES_QT
   include/grid_map_rviz_plugin/GridMapDisplay.hpp
-)
-set(INCLUDE_FILES
-  include/grid_map_rviz_plugin/GridMapVisual.hpp
+  include/grid_map_rviz_plugin/modified/message_filter_display.h
+  include/grid_map_rviz_plugin/modified/frame_manager.h
 )
 
 ## This plugin includes Qt widgets, so we must include Qt.
@@ -146,3 +147,13 @@ if (CATKIN_ENABLE_TESTING)
     )
   endif()
 endif()
+
+#################
+## Clang_tools ##
+#################
+find_package(cmake_clang_tools QUIET)
+if(cmake_clang_tools_FOUND)
+  add_default_clang_tooling(
+    DISABLE_CLANG_FORMAT
+  )
+endif(cmake_clang_tools_FOUND)

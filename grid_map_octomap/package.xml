@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package format="2">
   <name>grid_map_octomap</name>
-  <version>1.6.2</version>
+  <version>1.6.4</version>
   <description>Conversions between grid maps and OctoMap types.</description>
   <maintainer email="mwulf@anybotics.com">Maximilian Wulf</maintainer>
   <maintainer email="ynava@anybotics.com">Yoshua Nava</maintainer>
@@ -11,6 +11,7 @@
   <author email="jeffdelmerico@ifi.uzh.ch">Jeff Delmerico</author>
   <author email="pfankhauser@anybotics.com">Péter Fankhauser</author>
   <buildtool_depend>catkin</buildtool_depend>
+<!--   <build_depend>cmake_clang_tools</build_depend> -->
   <depend>grid_map_core</depend>
   <depend>octomap</depend>
 <!--   <test_depend>cmake_code_coverage</test_depend> -->

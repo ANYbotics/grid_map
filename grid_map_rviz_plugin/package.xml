@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>grid_map_rviz_plugin</name>
-  <version>1.6.2</version>
+  <version>1.6.4</version>
   <description>RViz plugin for displaying grid map messages.</description>
   <maintainer email="mwulf@anybotics.com">Maximilian Wulf</maintainer>
   <maintainer email="ynava@anybotics.com">Yoshua Nava</maintainer>
@@ -10,6 +10,7 @@
   <author>Péter Fankhauser</author>
 
   <buildtool_depend>catkin</buildtool_depend>
+<!--   <build_depend>cmake_clang_tools</build_depend> -->
   <build_depend>qtbase5-dev</build_depend>
   <build_depend>rviz</build_depend>
   <build_depend>grid_map_ros</build_depend>

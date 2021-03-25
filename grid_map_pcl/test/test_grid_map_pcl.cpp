@@ -11,15 +11,14 @@
 #include <ros/ros.h>
 
 int argc;
-char **argv;
-
+char** argv;
 
 // Run all the tests that were declared with TEST()
-int main(int _argc, char **_argv) {
-	ros::Time::init();
-	argc = _argc;
-	argv = _argv;
-	testing::InitGoogleTest(&_argc, _argv);
-	srand((int) time(0));
-	return RUN_ALL_TESTS();
+int main(int _argc, char** _argv) {
+  ros::Time::init();
+  argc = _argc;
+  argv = _argv;
+  testing::InitGoogleTest(&_argc, _argv);
+  srand((int)time(nullptr));
+  return RUN_ALL_TESTS();
 }

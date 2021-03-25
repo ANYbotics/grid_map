@@ -36,8 +36,8 @@ bool MockFilter<T>::configure()
   }
 
   if (!FilterBase<T>::getParam(std::string("print_name"), printName_)) {
-    ROS_ERROR("MockFilter did not find parameter 'print_name'.");
-    return false;
+    ROS_INFO("MockFilter did not find parameter 'print_name'. Not printing the name. ");
+    printName_ = false;
   }
 
   return true;

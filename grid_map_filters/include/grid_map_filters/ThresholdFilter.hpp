@@ -49,8 +49,11 @@ class ThresholdFilter : public filters::FilterBase<T>
 
  private:
 
+  //! Layer the threshold will be evaluated.
+  std::string conditionLayer_;
+
   //! Layer the threshold should be applied to.
-  std::string layer_;
+  std::string outputLayer_;
 
   //! Lower Threshold
   double lowerThreshold_;
