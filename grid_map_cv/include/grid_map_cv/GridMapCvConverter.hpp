@@ -116,7 +116,7 @@ class GridMapCvConverter
     }
 
     return true;
-  };
+  }
 
   /*!
    * Adds a color layer with data from an image.
@@ -177,7 +177,7 @@ class GridMapCvConverter
     const float minValue = gridMap.get(layer).minCoeffOfFinites();
     const float maxValue = gridMap.get(layer).maxCoeffOfFinites();
     return toImage<Type_, NChannels_>(gridMap, layer, encoding, minValue, maxValue, image);
-  };
+  }
 
   /*!
    * Creates a cv mat from a grid map layer.
@@ -244,7 +244,7 @@ class GridMapCvConverter
     }
 
     return true;
-  };
+  }
 
 };
 
