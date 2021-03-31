@@ -62,7 +62,7 @@ bool GridMapVisualization::readParameters()
   }
 
   // Iterate over all visualizations (may be just one),
-  for (unsigned int i = 0; i < config.size(); ++i) {
+  for (int i = 0; i < config.size(); ++i) {
     if (config[i].getType() != XmlRpc::XmlRpcValue::TypeStruct) {
       ROS_ERROR("%s: Visualizations must be specified as maps, but they are XmlRpcType:%d",
                 visualizationsParameter_.c_str(), config[i].getType());
