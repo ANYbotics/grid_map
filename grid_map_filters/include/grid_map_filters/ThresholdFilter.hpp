@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include <filters/filter_base.h>
+#include <filters/filter_base.hpp>
 
 #include <string>
 #include <vector>
@@ -61,11 +61,11 @@ class ThresholdFilter : public filters::FilterBase<T>
   //! Upper Threshold
   double upperThreshold_;
 
-  //! If threshold triggered set to this value
-  double setTo_;
-
   //! Booleans to decide which threshold should be used.
   bool useLowerThreshold_, useUpperThreshold_;
+
+  //! If threshold triggered set to this value
+  double setTo_;
 };
 
 } /* namespace */

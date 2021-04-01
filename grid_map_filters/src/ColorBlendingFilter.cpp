@@ -83,7 +83,7 @@ bool ColorBlendingFilter<T>::update(const T& mapIn, T& mapOut)
   auto& output = mapOut[outputLayer_];
 
   // For each cell in map.
-  for (size_t i = 0; i < output.size(); ++i) {
+  for (Eigen::Index i = 0; i < output.size(); ++i) {
     if (std::isnan(background(i))) {
       output(i) = foreground(i);
     } else if (std::isnan(foreground(i))) {

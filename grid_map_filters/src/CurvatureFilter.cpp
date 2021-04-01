@@ -57,8 +57,8 @@ bool CurvatureFilter<T>::update(const T& mapIn, T& mapOut)
   auto& curvature = mapOut[outputLayer_];
   const float L2 = mapOut.getResolution() * mapOut.getResolution();
 
-  for (size_t j = 0; j < input.cols(); ++j) {
-    for (size_t i = 0; i < input.rows(); ++i) {
+  for (Eigen::Index j{0}; j < input.cols(); ++j) {
+    for (Eigen::Index i{0}; i < input.rows(); ++i) {
       // http://help.arcgis.com/en/arcgisdesktop/10.0/help/index.html#/How_Curvature_works/00q90000000t000000/
       if (!std::isfinite(input(i, j))) continue;
       float D = ((input(i, j==0 ? j : j-1) + input(i, j==input.cols()-1 ? j : j + 1)) / 2.0 - input(i, j)) / L2;

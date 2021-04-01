@@ -12,7 +12,7 @@
 
 #include <grid_map_core/grid_map_core.hpp>
 
-#include <filters/filter_base.h>
+#include <filters/filter_base.hpp>
 
 #include <Eigen/Core>
 #include <string>

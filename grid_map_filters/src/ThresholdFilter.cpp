@@ -17,10 +17,10 @@ namespace grid_map {
 
 template<typename T>
 ThresholdFilter<T>::ThresholdFilter()
-    : useLowerThreshold_(false),
-      useUpperThreshold_(false),
-      lowerThreshold_(0.0),
+    : lowerThreshold_(0.0),
       upperThreshold_(1.0),
+      useLowerThreshold_(false),
+      useUpperThreshold_(false),
       setTo_(0.5)
 {
 }

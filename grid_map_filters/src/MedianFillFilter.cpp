@@ -169,7 +169,7 @@ float MedianFillFilter<T>::getMedian(Eigen::Ref<const grid_map::Matrix> inputMap
   std::vector<float> cellValues;
   cellValues.reserve(neighbourhood.rows() * neighbourhood.cols());
 
-  for (size_t row = 0; row < neighbourhood.rows(); ++row) {
+  for (Eigen::Index row = 0; row < neighbourhood.rows(); ++row) {
     const auto& currentRow{neighbourhood.row(row)};
     for (size_t col = 0; col < cols; ++col) {
       const float& cellValue{currentRow[col]};

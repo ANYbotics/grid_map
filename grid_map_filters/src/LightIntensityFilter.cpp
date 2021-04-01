@@ -70,7 +70,7 @@ bool LightIntensityFilter<T>::update(const T& mapIn, T& mapOut)
   auto& color = mapOut[outputLayer_];
 
   // For each cell in map.
-  for (size_t i = 0; i < color.size(); ++i) {
+  for (Eigen::Index i = 0; i < color.size(); ++i) {
     if (!std::isfinite(normalZ(i))) {
       color(i) = NAN;
       continue;

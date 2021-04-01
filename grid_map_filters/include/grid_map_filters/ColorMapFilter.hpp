@@ -9,7 +9,7 @@
 #pragma once
 
 #include <grid_map_core/TypeDefs.hpp>
-#include <filters/filter_base.h>
+#include <filters/filter_base.hpp>
 
 #include <Eigen/Core>
 #include <string>
