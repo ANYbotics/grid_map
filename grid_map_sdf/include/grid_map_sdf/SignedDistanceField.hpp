@@ -33,12 +33,12 @@ class SignedDistanceField
  private:
   Matrix getPlanarSignedDistanceField(Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic>& data) const;
 
-  double resolution_;
   Size size_;
   Position position_;
   std::vector<Matrix> data_;
-  float zIndexStartHeight_;
   float maxDistance_;
+  float zIndexStartHeight_;
+  double resolution_;
   const float lowestHeight_;
 };
 

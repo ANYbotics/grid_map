@@ -44,7 +44,7 @@ void SignedDistanceField::calculateSignedDistanceField(const GridMap& gridMap, c
   if (!std::isfinite(maxHeight)) maxHeight = lowestHeight_;
 
   const float valueForEmptyCells = lowestHeight_; // maxHeight, minHeight (TODO Make this an option).
-  for (size_t i = 0; i < map.size(); ++i) {
+  for (Eigen::Index i{0}; i < map.size(); ++i) {
     if (std::isnan(map(i))) map(i) = valueForEmptyCells;
   }
 
@@ -68,7 +68,7 @@ void SignedDistanceField::calculateSignedDistanceField(const GridMap& gridMap, c
     if ((sdfObstacleFree.array() >= INF).any()) sdf2d = sdfObstacle;
     else sdf2d = sdfObstacle - sdfObstacleFree;
     sdf2d *= resolution_;
-    for (size_t i = 0; i < sdfElevationAbove.size(); ++i) {
+    for (Eigen::Index i{0}; i < sdfElevationAbove.size(); ++i) {
       if(sdfElevationAbove(i) == maxDistance_ && map(i) <= h) sdfElevationAbove(i) = h - map(i);
       else if(sdfElevationAbove(i) != maxDistance_ && map(i) <= h) sdfElevationAbove(i) = sdfLayer(i) + resolution_;
       if (sdf2d(i) == 0) sdfLayer(i) = h - map(i);
@@ -163,7 +163,7 @@ void SignedDistanceField::convertToPointCloud(pcl::PointCloud<pcl::PointXYZI>& p
 {
   double xCenter = size_.x() / 2.0;
   double yCenter = size_.y() / 2.0;
-  for (int z = 0; z < data_.size(); z++){
+  for (size_t z = 0; z < data_.size(); z++){  
     for (int y = 0; y < size_.y(); y++) {
       for (int x = 0; x < size_.x(); x++) {
         double xp = position_.x() + ((size_.x() - x) - xCenter) * resolution_;
