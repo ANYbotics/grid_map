@@ -241,7 +241,7 @@ bool GridMapRosConverter::fromOccupancyGrid(const nav_msgs::OccupancyGrid& occup
     return false;
   }
 
-  if (size.prod() != occupancyGrid.data.size()) {
+  if (static_cast<size_t>(size.prod()) != occupancyGrid.data.size()) {
     ROS_WARN_STREAM("Conversion of occupancy grid: Size of data does not correspond to width * height.");
     return false;
   }
