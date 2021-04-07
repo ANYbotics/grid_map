@@ -177,6 +177,7 @@ float GridMap::atPosition(const std::string& layer, const Position& position, In
         interpolationMethod = InterpolationMethods::INTER_LINEAR;
         skipNextSwitchCase = true;
       }
+      [[fallthrough]];
     }
     case InterpolationMethods::INTER_CUBIC: {
       if (!skipNextSwitchCase) {
@@ -187,13 +188,16 @@ float GridMap::atPosition(const std::string& layer, const Position& position, In
           interpolationMethod = InterpolationMethods::INTER_LINEAR;
         }
       }
+      [[fallthrough]];
     }
     case InterpolationMethods::INTER_LINEAR: {
       float value;
       if (atPositionLinearInterpolated(layer, position, value))
         return value;
-      else
+      else {
         interpolationMethod = InterpolationMethods::INTER_NEAREST;
+      }
+      [[fallthrough]];
     }
     case InterpolationMethods::INTER_NEAREST: {
       Index index;
@@ -289,7 +293,7 @@ GridMap GridMap::getSubmap(const Position& position, const Length& length, bool&
   return getSubmap(position, length, index, isSuccess);
 }
 
-GridMap GridMap::getSubmap(const Position& position, const Length& length, Index& indexInSubmap, bool& isSuccess) const {
+GridMap GridMap::getSubmap(const Position& position, const Length& length, Index& /*indexInSubmap*/, bool& isSuccess) const {
   // Submap the generate.
   GridMap submap(layers_);
   submap.setBasicLayers(basicLayers_);
@@ -696,7 +700,7 @@ void GridMap::convertToDefaultStartIndex() {
 }
 
 Position GridMap::getClosestPositionInMap(const Position& position) const {
-  if (getSize().x() < 1u || getSize().y() < 1u) {
+  if (getSize().x() < 1 || getSize().y() < 1) {
     return position_;
   }
 

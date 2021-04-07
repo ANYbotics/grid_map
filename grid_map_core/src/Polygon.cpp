@@ -32,7 +32,7 @@ Polygon::~Polygon() {}
 bool Polygon::isInside(const Position& point) const
 {
   int cross = 0;
-  for (int i = 0, j = vertices_.size() - 1; i < vertices_.size(); j = i++) {
+  for (size_t i = 0, j = vertices_.size() - 1; i < vertices_.size(); j = i++) {
     if ( ((vertices_[i].y() > point.y()) != (vertices_[j].y() > point.y()))
            && (point.x() < (vertices_[j].x() - vertices_[i].x()) * (point.y() - vertices_[i].y()) /
             (vertices_[j].y() - vertices_[i].y()) + vertices_[i].x()) )
@@ -102,7 +102,7 @@ double Polygon::getArea() const
 {
   double area = 0.0;
   int j = vertices_.size() - 1;
-  for (int i = 0; i < vertices_.size(); i++) {
+  for (size_t i = 0; i < vertices_.size(); i++) {
     area += (vertices_.at(j).x() + vertices_.at(i).x())
         * (vertices_.at(j).y() - vertices_.at(i).y());
     j = i;
@@ -116,7 +116,7 @@ Position Polygon::getCentroid() const
   std::vector<Position> vertices = getVertices();
   vertices.push_back(vertices.at(0));
   double area = 0.0;
-  for (int i = 0; i < vertices.size() - 1; i++) {
+  for (size_t i = 0; i < vertices.size() - 1; i++) {
     const double a = vertices[i].x() * vertices[i+1].y() - vertices[i+1].x() * vertices[i].y();
     area += a;
     centroid.x() += a * (vertices[i].x() + vertices[i+1].x());
@@ -220,7 +220,7 @@ bool Polygon::offsetInward(const double margin)
   return true;
 }
 
-std::vector<Polygon> Polygon::triangulate(const TriangulationMethods& method) const
+std::vector<Polygon> Polygon::triangulate(const TriangulationMethods& /*method*/) const
 {
   // TODO Add more triangulation methods.
   // https://en.wikipedia.org/wiki/Polygon_triangulation
@@ -311,7 +311,7 @@ Polygon Polygon::monotoneChainConvexHullOfPoints(const std::vector<Position>& po
 
   int k = 0;
   // Build lower hull
-  for (int i = 0; i < sortedPoints.size(); ++i) {
+  for (size_t i = 0; i < sortedPoints.size(); ++i) {
     while (k >= 2 && vectorsMakeClockwiseTurn(pointsConvexHull.at(k - 2), pointsConvexHull.at(k - 1), sortedPoints.at(i))) {
       k--;
     }

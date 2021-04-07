@@ -74,7 +74,7 @@ bool PolygonIterator::isInside() const
   return polygon_.isInside(position);
 }
 
-void PolygonIterator::findSubmapParameters(const grid_map::Polygon& polygon, Index& startIndex, Size& bufferSize) const
+void PolygonIterator::findSubmapParameters(const grid_map::Polygon& /*polygon*/, Index& startIndex, Size& bufferSize) const
 {
   Position topLeft = polygon_.getVertices()[0];
   Position bottomRight = topLeft;

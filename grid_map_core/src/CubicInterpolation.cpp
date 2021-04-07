@@ -18,7 +18,7 @@ unsigned int bindIndexToRange(int idReq, unsigned int nElem)
   if (idReq < 0) {
     return 0;
   }
-  if (idReq >= nElem) {
+  if (static_cast<unsigned int>(idReq) >= nElem) {
     return static_cast<unsigned int>(nElem - 1);
   }
   return static_cast<unsigned int>(idReq);
