@@ -100,6 +100,8 @@ grid_map::Matrix SignedDistanceField::getPlanarSignedDistanceField(Eigen::Matrix
       result(x, y) = sqrt(imRef(out, x, y));
     }
   }
+  delete input;
+  delete out;
   return result;
 }
 
