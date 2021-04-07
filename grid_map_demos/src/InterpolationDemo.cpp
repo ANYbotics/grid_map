@@ -138,7 +138,7 @@ AnalyticalFunctions createGaussianWorld(grid_map::GridMap *map)
 
   func.f_ = [g](double x,double y) {
     double value = 0.0;
-    for (int i = 0; i < g.size(); ++i) {
+    for (size_t i{0}; i < g.size(); ++i) {
       const double x0 = g.at(i).x0;
       const double y0 = g.at(i).y0;
       const double varX = g.at(i).varX;
@@ -206,10 +206,6 @@ void interpolateInputMap(const grid_map::GridMap &dataMap,
 Error computeInterpolationError(const AnalyticalFunctions &groundTruth,
                                 const grid_map::GridMap &map)
 {
-  const double r = map.getResolution();
-  const double dimX = map.getLength().x() / 2.0 - 3.0 * r;
-  const double dimY = map.getLength().y() / 2.0 - 3.0 * r;
-
   unsigned int count = 0;
   Error error;
   const int nRow = map.getSize().x();
@@ -295,7 +291,7 @@ InterpolationDemo::Statistics InterpolationDemo::computeStatistics() const
     stats.insert( { world->first, methodsStats });
   }
 
-  return std::move(stats);
+  return stats;
 }
 
 InterpolationDemo::ErrorAndDuration InterpolationDemo::interpolateAndComputeError(
