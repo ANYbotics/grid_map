@@ -37,7 +37,7 @@ bool FlatPointCloudVisualization::readParameters()
     RCLCPP_INFO(
       nodePtr_->get_logger(),
       "FlatPointCloudVisualization with name '%s' "
-      "did not find a 'height' parameter. Using default.", name_);
+      "did not find a 'height' parameter. Using default.", name_.c_str());
   }
 
   return true;

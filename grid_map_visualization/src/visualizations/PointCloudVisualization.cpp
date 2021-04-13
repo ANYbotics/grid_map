@@ -32,7 +32,7 @@ bool PointCloudVisualization::readParameters()
     RCLCPP_ERROR(
       nodePtr_->get_logger(),
       "PointCloudVisualization with name '%s' did not find a 'layer' parameter.",
-      name_);
+      name_.c_str());
     return false;
   }
   return true;

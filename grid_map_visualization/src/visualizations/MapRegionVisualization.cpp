@@ -41,7 +41,7 @@ bool MapRegionVisualization::readParameters()
     RCLCPP_INFO(
       nodePtr_->get_logger(),
       "MapRegionVisualization with name '%s' did not find a 'line_width' parameter. Using default.",
-      name_);
+      name_.c_str());
     return false;
   }
 
@@ -50,7 +50,7 @@ bool MapRegionVisualization::readParameters()
     RCLCPP_INFO(
       nodePtr_->get_logger(),
       "MapRegionVisualization with name '%s' did not find a 'color' parameter. Using default.",
-      name_);
+      name_.c_str());
   }
   setColorFromColorValue(color_, colorValue, true);
 

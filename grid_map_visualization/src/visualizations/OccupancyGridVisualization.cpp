@@ -38,7 +38,7 @@ bool OccupancyGridVisualization::readParameters()
     RCLCPP_ERROR(
       nodePtr_->get_logger(),
       "OccupancyGridVisualization with name '%s' did not find a 'layer' parameter.",
-      name_);
+      name_.c_str());
     return false;
   }
 
@@ -46,7 +46,7 @@ bool OccupancyGridVisualization::readParameters()
     RCLCPP_ERROR(
       nodePtr_->get_logger(),
       "OccupancyGridVisualization with name '%s' did not find a 'data_min' parameter.",
-      name_);
+      name_.c_str());
     return false;
   }
 
@@ -54,7 +54,7 @@ bool OccupancyGridVisualization::readParameters()
     RCLCPP_ERROR(
       nodePtr_->get_logger(),
       "OccupancyGridVisualization with name '%s' did not find a 'data_max' parameter.",
-      name_);
+      name_.c_str());
     return false;
   }
 

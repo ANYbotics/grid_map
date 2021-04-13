@@ -274,7 +274,8 @@ bool GridMapRosConverter::fromOccupancyGrid(
       "Conversion of occupancy grid: Grid maps do not support orientation.");
     RCLCPP_INFO(
       rclcpp::get_logger("fromOccupancyGrid"),
-      "Orientation of occupancy grid: \n%s", occupancyGrid.info.origin.orientation);
+      "Orientation of occupancy grid: \n%s",
+      rosidl_generator_traits::to_yaml(occupancyGrid.info.origin.orientation).c_str());
     return false;
   }
 
@@ -372,7 +373,8 @@ bool GridMapRosConverter::fromCostmap(
       "Conversion of costmap: Grid maps do not support orientation.");
     RCLCPP_INFO(
       rclcpp::get_logger("fromcostmap"),
-      "Orientation of costmap: \n%s", costmap.metadata.origin.orientation);
+      "Orientation of costmap: \n%s",
+      rosidl_generator_traits::to_yaml(costmap.metadata.origin.orientation).c_str());
     return false;
   }
 
@@ -733,7 +735,9 @@ bool GridMapRosConverter::loadFromBag(
     }
   }
   if (!isDataFound) {
-    RCLCPP_WARN(rclcpp::get_logger("loadFromBag"), "No data under the topic %s was found.", topic);
+    RCLCPP_WARN(
+      rclcpp::get_logger(
+        "loadFromBag"), "No data under the topic %s was found.", topic.c_str());
   }
   return true;
 }
