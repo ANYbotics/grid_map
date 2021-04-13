@@ -52,7 +52,7 @@ FiltersDemo::~FiltersDemo()
 
 bool FiltersDemo::readParameters()
 {
-  this->declare_parameter("input_topic");
+  this->declare_parameter<std::string>("input_topic");
   this->declare_parameter("output_topic", std::string("output"));
   this->declare_parameter("filter_chain_parameter_name", std::string("filters"));
 
