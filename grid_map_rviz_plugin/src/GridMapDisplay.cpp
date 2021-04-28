@@ -65,7 +65,7 @@ GridMapDisplay::GridMapDisplay()
       SLOT(updateVisualization()));
 
   colorMapProperty_ = new rviz::EditableEnumProperty(
-      "ColorMap", "gist_rainbow", "Select the colormap to be used.", this,
+      "ColorMap", "turbo", "Select the colormap to be used.", this,
       SLOT(updateVisualization()));
 
   colorProperty_ = new rviz::ColorProperty("Color", QColor(200, 200, 200),
