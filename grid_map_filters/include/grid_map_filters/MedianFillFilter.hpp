@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include <filters/filter_base.hpp>
+#include <filters/filter_base.h>
 
 #include <Eigen/Core>
 #include <string>
