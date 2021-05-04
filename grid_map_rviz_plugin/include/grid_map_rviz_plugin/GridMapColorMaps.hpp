@@ -51,12 +51,9 @@ static Ogre::ColourValue getColorMap(float intensity, std::string cmap) {
   idx = std::min(idx, 255);
   idx = std::max(idx, 0);
 
-  std::vector<float> rgb;
-  try{
-    rgb = colorMap.at(cmap).at(idx);
-  } catch (const std::out_of_range& e) {
-    rgb = colorMap.at("gist_rainbow").at(idx);
-  }
+  // Get color from table
+  std::vector<float> rgb = colorMap.at(cmap).at(idx);
+
   Ogre::ColourValue color;
   color.r = rgb[0];
   color.g = rgb[1];
