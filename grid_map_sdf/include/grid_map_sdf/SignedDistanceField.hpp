@@ -13,8 +13,8 @@
 
 #include <grid_map_core/GridMap.hpp>
 
-// #include <pcl/point_types.h>
-// #include <pcl/conversions.h>
+#include <pcl/point_cloud.h>
+#include <pcl/point_types.h>
 
 #include <string>
 #include <vector>
@@ -34,7 +34,7 @@ public:
   double getDistanceAt(const Position3 & position) const;
   Vector3 getDistanceGradientAt(const Position3 & position) const;
   double getInterpolatedDistanceAt(const Position3 & position) const;
-  // void convertToPointCloud(pcl::PointCloud<pcl::PointXYZI> & points) const;
+  void convertToPointCloud(pcl::PointCloud<pcl::PointXYZI> & points) const;
 
 private:
   Matrix getPlanarSignedDistanceField(

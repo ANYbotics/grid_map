@@ -6,7 +6,7 @@ project(grid_map_sdf)
 find_package(ament_cmake REQUIRED)
 find_package(grid_map_cmake_helpers REQUIRED)
 find_package(grid_map_core REQUIRED)
-#find_package(pcl_ros REQUIRED)
+find_package(PCL REQUIRED COMPONENTS common)
 
 ## System dependencies are found with CMake's conventions
 #find_package(Eigen3 REQUIRED)
@@ -28,7 +28,7 @@ include_directories(
 
 set(dependencies
   grid_map_core
-  #pcl_ros
+  PCL
 )
 
 ###########
