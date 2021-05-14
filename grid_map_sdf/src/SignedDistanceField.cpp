@@ -174,26 +174,25 @@ Vector3 SignedDistanceField::getDistanceGradientAt(const Position3 & position) c
   return Vector3(dx, dy, dz);
 }
 
-// TODO(stevemacenski): port once pcl_ros is complete
-// void SignedDistanceField::convertToPointCloud(pcl::PointCloud<pcl::PointXYZI> & points) const
-// {
-//   double xCenter = size_.x() / 2.0;
-//   double yCenter = size_.y() / 2.0;
-//   for (int z = 0; z < data_.size(); z++) {
-//     for (int y = 0; y < size_.y(); y++) {
-//       for (int x = 0; x < size_.x(); x++) {
-//         double xp = position_.x() + ((size_.x() - x) - xCenter) * resolution_;
-//         double yp = position_.y() + ((size_.y() - y) - yCenter) * resolution_;
-//         double zp = zIndexStartHeight_ + z * resolution_;
-//         pcl::PointXYZI p;
-//         p.x = xp;
-//         p.y = yp;
-//         p.z = zp;
-//         p.intensity = data_[z](x, y);
-//         points.push_back(p);
-//       }
-//     }
-//   }
-// }
+void SignedDistanceField::convertToPointCloud(pcl::PointCloud<pcl::PointXYZI> & points) const
+{
+  double xCenter = size_.x() / 2.0;
+  double yCenter = size_.y() / 2.0;
+  for (int z = 0; z < static_cast<int>(data_.size()); z++) {
+    for (int y = 0; y < static_cast<int>(size_.y()); y++) {
+      for (int x = 0; x < static_cast<int>(size_.x()); x++) {
+        double xp = position_.x() + ((size_.x() - x) - xCenter) * resolution_;
+        double yp = position_.y() + ((size_.y() - y) - yCenter) * resolution_;
+        double zp = zIndexStartHeight_ + z * resolution_;
+        pcl::PointXYZI p;
+        p.x = xp;
+        p.y = yp;
+        p.z = zp;
+        p.intensity = data_[z](x, y);
+        points.push_back(p);
+      }
+    }
+  }
+}
 
 }  // namespace grid_map
