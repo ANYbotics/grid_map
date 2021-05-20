@@ -274,7 +274,8 @@ bool GridMapRosConverter::fromOccupancyGrid(
       "Conversion of occupancy grid: Grid maps do not support orientation.");
     RCLCPP_INFO(
       rclcpp::get_logger("fromOccupancyGrid"),
-      "Orientation of occupancy grid: \n%s", occupancyGrid.info.origin.orientation);
+      "Orientation of occupancy grid: \n%s",
+      rosidl_generator_traits::to_yaml(occupancyGrid.info.origin.orientation).c_str());
     return false;
   }
 
@@ -372,7 +373,8 @@ bool GridMapRosConverter::fromCostmap(
       "Conversion of costmap: Grid maps do not support orientation.");
     RCLCPP_INFO(
       rclcpp::get_logger("fromcostmap"),
-      "Orientation of costmap: \n%s", costmap.metadata.origin.orientation);
+      "Orientation of costmap: \n%s",
+      rosidl_generator_traits::to_yaml(costmap.metadata.origin.orientation).c_str());
     return false;
   }
 
@@ -667,7 +669,7 @@ bool GridMapRosConverter::saveToBag(
   rclcpp::Serialization<grid_map_msgs::msg::GridMap> serialization;
   serialization.serialize_message(message.get(), &serialized_msg);
 
-  rosbag2_cpp::StorageOptions storage_options;
+  rosbag2_storage::StorageOptions storage_options;
   storage_options.uri = pathToBag;
   storage_options.storage_id = "sqlite3";
 
@@ -703,7 +705,7 @@ bool GridMapRosConverter::loadFromBag(
   const std::string & pathToBag, const std::string & topic,
   grid_map::GridMap & gridMap)
 {
-  rosbag2_cpp::StorageOptions storage_options;
+  rosbag2_storage::StorageOptions storage_options;
   storage_options.uri = pathToBag;
   storage_options.storage_id = "sqlite3";
 
@@ -733,7 +735,9 @@ bool GridMapRosConverter::loadFromBag(
     }
   }
   if (!isDataFound) {
-    RCLCPP_WARN(rclcpp::get_logger("loadFromBag"), "No data under the topic %s was found.", topic);
+    RCLCPP_WARN(
+      rclcpp::get_logger(
+        "loadFromBag"), "No data under the topic %s was found.", topic.c_str());
   }
   return true;
 }

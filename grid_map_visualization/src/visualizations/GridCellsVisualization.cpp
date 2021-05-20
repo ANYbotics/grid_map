@@ -42,7 +42,7 @@ bool GridCellsVisualization::readParameters()
     RCLCPP_ERROR(
       nodePtr_->get_logger(),
       "GridCellsVisualization with name '%s' did not find a 'layer' parameter.",
-      name_);
+      name_.c_str());
     return false;
   }
 
@@ -51,14 +51,15 @@ bool GridCellsVisualization::readParameters()
       nodePtr_->get_logger(),
       "GridCellsVisualization with name '%s' "
       "did not find a 'lower_threshold' parameter. Using negative infinity.",
-      name_);
+      name_.c_str());
   }
 
   if (!nodePtr_->get_parameter(name_ + ".params.upper_threshold", upperThreshold_)) {
     RCLCPP_INFO(
       nodePtr_->get_logger(),
       "GridCellsVisualization with name '%s' "
-      "did not find a 'upper_threshold' parameter. Using infinity.", name_);
+      "did not find a 'upper_threshold' parameter. Using infinity.",
+      name_.c_str());
   }
 
   return true;

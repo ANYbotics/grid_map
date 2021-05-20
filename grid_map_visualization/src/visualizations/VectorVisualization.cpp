@@ -20,6 +20,8 @@
 
 #include <string>
 
+using namespace std::chrono_literals;
+
 namespace grid_map_visualization
 {
 
@@ -45,7 +47,7 @@ bool VectorVisualization::readParameters()
     RCLCPP_ERROR(
       nodePtr_->get_logger(),
       "VectorVisualization with name '%s' did not find a 'layer_prefix' parameter.",
-      name_);
+      name_.c_str());
     return false;
   }
   types_.push_back(typePrefix + "x");
@@ -59,7 +61,7 @@ bool VectorVisualization::readParameters()
     RCLCPP_ERROR(
       nodePtr_->get_logger(),
       "VectorVisualization with name '%s' did not find a 'position_layer' parameter.",
-      name_);
+      name_.c_str());
     return false;
   }
 
@@ -68,7 +70,7 @@ bool VectorVisualization::readParameters()
     RCLCPP_INFO(
       nodePtr_->get_logger(),
       "VectorVisualization with name '%s' did not find a 'scale' parameter. Using default.",
-      name_);
+      name_.c_str());
   }
 
   lineWidth_ = 0.003;
@@ -76,7 +78,7 @@ bool VectorVisualization::readParameters()
     RCLCPP_INFO(
       nodePtr_->get_logger(),
       "VectorVisualization with name '%s' did not find a 'line_width' parameter. Using default.",
-      name_);
+      name_.c_str());
   }
 
   int colorValue = 65280;  // green
@@ -84,7 +86,7 @@ bool VectorVisualization::readParameters()
     RCLCPP_INFO(
       nodePtr_->get_logger(),
       "VectorVisualization with name '%s' did not find a 'color' parameter. Using default.",
-      name_);
+      name_.c_str());
   }
   setColorFromColorValue(color_, colorValue, true);
 
@@ -94,7 +96,7 @@ bool VectorVisualization::readParameters()
 bool VectorVisualization::initialize()
 {
   marker_.ns = "vector";
-  marker_.lifetime = rclcpp::Duration(0);  // setting lifetime forever
+  marker_.lifetime = rclcpp::Duration(0ns);  // setting lifetime forever
   marker_.action = visualization_msgs::msg::Marker::ADD;
   marker_.type = visualization_msgs::msg::Marker::LINE_LIST;
   marker_.scale.x = lineWidth_;
