@@ -89,7 +89,7 @@ target_link_libraries(${PROJECT_NAME}
 
 ## Install rules
 install(
-  DIRECTORY include/${PROJECT_NAME}
+  DIRECTORY include/${PROJECT_NAME}/
   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
 )
 
