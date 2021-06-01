@@ -10,7 +10,7 @@
 
 #include "EigenLab/EigenLab.h"
 
-#include <filters/filter_base.hpp>
+#include <filters/filter_base.h>
 
 #include <string>
 
