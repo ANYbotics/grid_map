@@ -719,18 +719,18 @@ Position GridMap::getClosestPositionInMap(const Position& position) const {
   const Position3 bottomRightCorner(position_.x() - halfLengthX, position_.y() - halfLengthY, 0.0);
 
   // Find constraints.
-  const double maxX = topRightCorner.x();
+  const double maxX = topLeftCorner.x();
   const double minX = bottomRightCorner.x();
-  const double maxY = bottomLeftCorner.y();
+  const double maxY = topLeftCorner.y();
   const double minY = bottomRightCorner.y();
 
   // Clip to box constraints and correct for indexing precision.
   // Points on the border can lead to invalid indices because the cells represent half open intervals, i.e. [...).
-  positionInMap.x() = std::fmin(positionInMap.x(), maxX - std::numeric_limits<double>::epsilon());
-  positionInMap.y() = std::fmin(positionInMap.y(), maxY - std::numeric_limits<double>::epsilon());
+  positionInMap.x() = std::fmin(positionInMap.x(), maxX - 10.0 * std::numeric_limits<double>::epsilon());
+  positionInMap.y() = std::fmin(positionInMap.y(), maxY - 10.0 * std::numeric_limits<double>::epsilon());
 
-  positionInMap.x() = std::fmax(positionInMap.x(), minX + std::numeric_limits<double>::epsilon());
-  positionInMap.y() = std::fmax(positionInMap.y(), minY + std::numeric_limits<double>::epsilon());
+  positionInMap.x() = std::fmax(positionInMap.x(), minX + 10.0 * std::numeric_limits<double>::epsilon());
+  positionInMap.y() = std::fmax(positionInMap.y(), minY + 10.0 * std::numeric_limits<double>::epsilon());
 
   return positionInMap;
 }
