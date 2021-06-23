@@ -7,7 +7,7 @@ find_package(grid_map_cmake_helpers REQUIRED)
 find_package(grid_map_core REQUIRED)
 find_package(grid_map_msgs REQUIRED)
 find_package(grid_map_ros REQUIRED)
-find_package(PCL 1.10 REQUIRED)
+find_package(PCL REQUIRED) ## See ROS REP2000 for expected PCL version
 find_package(rclcpp REQUIRED)
 find_package(rcutils REQUIRED)
 
