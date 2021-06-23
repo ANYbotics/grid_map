@@ -7,7 +7,7 @@ find_package(grid_map_cmake_helpers REQUIRED)
 find_package(grid_map_core REQUIRED)
 find_package(grid_map_msgs REQUIRED)
 find_package(grid_map_ros REQUIRED)
-find_package(pcl_ros REQUIRED)
+find_package(PCL 1.10 REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rcutils REQUIRED)
 
@@ -16,6 +16,11 @@ if(OpenMP_FOUND)
   add_compile_options("${OpenMP_CXX_FLAGS}")
   add_definitions(-DGRID_MAP_PCL_OPENMP_FOUND=${OpenMP_FOUND})
 endif()
+
+# Add links to PCL definitons and directories
+include_directories(${PCL_INCLUDE_DIRS})
+link_directories(${PCL_LIBRARY_DIRS})
+add_definitions(${PCL_DEFINITIONS})
 
 grid_map_package()
 
@@ -31,7 +36,6 @@ set(dependencies
   grid_map_core
   grid_map_msgs
   grid_map_ros
-  pcl_ros
   rclcpp
   rcutils
 )
@@ -55,6 +59,7 @@ add_library(${PROJECT_NAME} SHARED
 
 target_link_libraries(${PROJECT_NAME}
   ${OpenMP_CXX_LIBRARIES}
+  ${PCL_LIBRARIES}
   yaml-cpp
 )
 
