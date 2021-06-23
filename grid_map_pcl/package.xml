@@ -18,7 +18,6 @@
   <depend>grid_map_core</depend>
   <depend>grid_map_msgs</depend>
   <depend>grid_map_ros</depend>
-  <depend>pcl_ros</depend>
   <depend>rclcpp</depend>
   <depend>rcutils</depend>
   <depend>yaml-cpp</depend>
