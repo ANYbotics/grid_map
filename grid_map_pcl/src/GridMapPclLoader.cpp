@@ -14,6 +14,7 @@
 
 #include <pcl/common/io.h>
 #include <ros/console.h>
+#include <pcl_ros/point_cloud.h>
 
 #include <grid_map_core/GridMapMath.hpp>
 
@@ -29,6 +30,12 @@ const grid_map::GridMap& GridMapPclLoader::getGridMap() const {
 void GridMapPclLoader::loadCloudFromPcdFile(const std::string& filename) {
   Pointcloud::Ptr inputCloud(new pcl::PointCloud<pcl::PointXYZ>);
   inputCloud = grid_map_pcl::loadPointcloudFromPcd(filename);
+  setInputCloud(inputCloud);
+}
+
+void GridMapPclLoader::loadCloudFromMessage(const sensor_msgs::PointCloud2& msg) {
+  Pointcloud::Ptr inputCloud (new pcl::PointCloud<pcl::PointXYZ>);
+  pcl::fromROSMsg(msg, *inputCloud);
   setInputCloud(inputCloud);
 }
 
