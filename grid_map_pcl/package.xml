@@ -18,10 +18,10 @@
   <depend>grid_map_core</depend>
   <depend>grid_map_msgs</depend>
   <depend>grid_map_ros</depend>
-  <depend>pcl_ros</depend>
   <depend>rclcpp</depend>
   <depend>rcutils</depend>
   <depend>yaml-cpp</depend>
+  <depend>libpcl-all</depend>
 
   <test_depend>ament_cmake_gtest</test_depend>
   <test_depend>ament_lint_auto</test_depend>
