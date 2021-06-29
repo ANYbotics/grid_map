@@ -2,6 +2,11 @@
 Changelog for package grid_map_pcl
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+unreleased (2021-06-24)
+------------------
+* Replaced pcl_ros dependency with PCL
+* Contributors: Matthew Young (Trimble Inc) 
+
 1.6.2 (2019-10-14)
 ------------------
 
