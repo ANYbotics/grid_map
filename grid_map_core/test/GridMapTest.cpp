@@ -352,6 +352,225 @@ TEST(GridMap, ClipToMap2)
                         << insideIndex << std::endl;
 }
 
+TEST(GridMap, ClipToMap3)
+{
+  GridMap map({"types"});
+  map.setGeometry(Length(4.0, 4.0), 0.02, Position(0.0, 0.0)); 
+  // Resolution of 0.05 does not show apparent problems
+
+  // Test 8 points slightly outside of map.
+  /*
+   * A  B  C
+   *  +---+
+   *  |   |         X
+   * D|   |E        ^
+   *  |   |         |
+   *  +---+     Y<--+
+   * F  G  H
+   *
+   * Note: Position to index alignment is an half open interval.
+   *       An example position of 0.5 is assigned to the upper index.
+   *       The interval in the current example is: 
+   *       Position: [...)[0.485 ... 0.5)[0.5 ... 0.505)[...)
+   *       Index:      8          9           10          11
+   */
+
+  // testOffset is a small number to test corner cases
+  double testOffset = 0.1;
+
+  Index insideIndex;
+  Position outsidePosition;
+
+  // Point A
+  auto expectedPosition = Position(2.0, 2.0);
+  auto expectedIndex = Index(0, 0);
+  outsidePosition = expectedPosition;
+  outsidePosition.x() += testOffset;
+  outsidePosition.y() += testOffset;
+
+  auto closestInsidePosition = map.getClosestPositionInMap(outsidePosition);
+  bool isInside = map.getIndex(closestInsidePosition, insideIndex);
+
+  // Check position.
+  EXPECT_DOUBLE_EQ(expectedPosition.x(), closestInsidePosition.x());
+  EXPECT_DOUBLE_EQ(expectedPosition.y(), closestInsidePosition.y());
+  
+  // Check index.
+  EXPECT_EQ(expectedIndex.x(), insideIndex.x()) << "closestInsidePosition" << closestInsidePosition;
+  EXPECT_EQ(expectedIndex.y(), insideIndex.y()) << "closestInsidePosition" << closestInsidePosition;
+  
+  // Check if index is inside.
+  EXPECT_TRUE(isInside) << "position is: " << std::endl
+                        << closestInsidePosition << std::endl 
+                        << " index is: " << std::endl
+                        << insideIndex << std::endl;
+
+  // Point B
+  expectedPosition = Position(2.0, 0.0);
+  expectedIndex = Index(0, 100);
+  outsidePosition = expectedPosition;
+  outsidePosition.x() += testOffset;
+
+  closestInsidePosition = map.getClosestPositionInMap(outsidePosition);
+  isInside = map.getIndex(closestInsidePosition, insideIndex);
+
+  // Check position.
+  EXPECT_DOUBLE_EQ(expectedPosition.x(), closestInsidePosition.x());
+  EXPECT_DOUBLE_EQ(expectedPosition.y(), closestInsidePosition.y());
+  
+  // Check index.
+  EXPECT_EQ(expectedIndex.x(), insideIndex.x()) << "closestInsidePosition" << closestInsidePosition;
+  EXPECT_EQ(expectedIndex.y(), insideIndex.y()) << "closestInsidePosition" << closestInsidePosition;
+  
+  // Check if index is inside.
+  EXPECT_TRUE(isInside) << "position is: " << std::endl
+                        << closestInsidePosition << std::endl 
+                        << " index is: " << std::endl
+                        << insideIndex << std::endl;
+
+  // Point C
+  expectedPosition = Position(2.0, -2.0);
+  expectedIndex = Index(0, 199);
+  outsidePosition = expectedPosition;
+  outsidePosition.x() += testOffset;
+  outsidePosition.y() -= testOffset;
+
+  closestInsidePosition = map.getClosestPositionInMap(outsidePosition);
+  isInside = map.getIndex(closestInsidePosition, insideIndex);
+
+  // Check position.
+  EXPECT_DOUBLE_EQ(expectedPosition.x(), closestInsidePosition.x());
+  EXPECT_DOUBLE_EQ(expectedPosition.y(), closestInsidePosition.y());
+  
+  // Check index.
+  EXPECT_EQ(expectedIndex.x(), insideIndex.x()) << "closestInsidePosition" << closestInsidePosition;
+  EXPECT_EQ(expectedIndex.y(), insideIndex.y()) << "closestInsidePosition" << closestInsidePosition;
+  
+  // Check if index is inside.
+  EXPECT_TRUE(isInside) << "position is: " << std::endl
+                        << closestInsidePosition << std::endl 
+                        << " index is: " << std::endl
+                        << insideIndex << std::endl;
+
+  // Point D
+  expectedPosition = Position(0.0, 2.0);
+  expectedIndex = Index(100, 0);
+  outsidePosition = expectedPosition;
+  outsidePosition.y() += testOffset;
+
+  closestInsidePosition = map.getClosestPositionInMap(outsidePosition);
+  isInside = map.getIndex(closestInsidePosition, insideIndex);
+
+  // Check position.
+  EXPECT_DOUBLE_EQ(expectedPosition.x(), closestInsidePosition.x());
+  EXPECT_DOUBLE_EQ(expectedPosition.y(), closestInsidePosition.y());
+  
+  // Check index.
+  EXPECT_EQ(expectedIndex.x(), insideIndex.x()) << "closestInsidePosition" << closestInsidePosition;
+  EXPECT_EQ(expectedIndex.y(), insideIndex.y()) << "closestInsidePosition" << closestInsidePosition;
+  
+  // Check if index is inside.
+  EXPECT_TRUE(isInside) << "position is: " << std::endl
+                        << closestInsidePosition << std::endl 
+                        << " index is: " << std::endl
+                        << insideIndex << std::endl;
+
+  // Point E
+  expectedPosition = Position(0.0, -2.0);
+  expectedIndex = Index(100, 199);
+  outsidePosition = expectedPosition;
+  outsidePosition.y() -= testOffset;
+
+  closestInsidePosition = map.getClosestPositionInMap(outsidePosition);
+  isInside = map.getIndex(closestInsidePosition, insideIndex);  
+
+  // Check position.
+  EXPECT_DOUBLE_EQ(expectedPosition.x(), closestInsidePosition.x());
+  EXPECT_DOUBLE_EQ(expectedPosition.y(), closestInsidePosition.y());
+  
+  // Check index.
+  EXPECT_EQ(expectedIndex.x(), insideIndex.x()) << "closestInsidePosition" << closestInsidePosition;
+  EXPECT_EQ(expectedIndex.y(), insideIndex.y()) << "closestInsidePosition" << closestInsidePosition;
+  
+  // Check if index is inside.
+  EXPECT_TRUE(isInside) << "position is: " << std::endl
+                        << closestInsidePosition << std::endl 
+                        << " index is: " << std::endl
+                        << insideIndex << std::endl;
+
+  // Point F
+  expectedPosition = Position(-2.0, 2.0);
+  expectedIndex = Index(199, 0);
+  outsidePosition = expectedPosition;
+  outsidePosition.x() -= testOffset;
+  outsidePosition.y() += testOffset;
+
+  closestInsidePosition = map.getClosestPositionInMap(outsidePosition);
+  isInside = map.getIndex(closestInsidePosition, insideIndex);
+
+  // Check position.
+  EXPECT_DOUBLE_EQ(expectedPosition.x(), closestInsidePosition.x());
+  EXPECT_DOUBLE_EQ(expectedPosition.y(), closestInsidePosition.y());
+  
+  // Check index.
+  EXPECT_EQ(expectedIndex.x(), insideIndex.x()) << "closestInsidePosition" << closestInsidePosition;
+  EXPECT_EQ(expectedIndex.y(), insideIndex.y()) << "closestInsidePosition" << closestInsidePosition;
+  
+  // Check if index is inside.
+  EXPECT_TRUE(isInside) << "position is: " << std::endl
+                        << closestInsidePosition << std::endl 
+                        << " index is: " << std::endl
+                        << insideIndex << std::endl;
+
+  // Point G
+  expectedPosition = Position(-2.0, 0.0);
+  expectedIndex = Index(199, 100);
+  outsidePosition = expectedPosition;
+  outsidePosition.x() -= testOffset;
+
+  closestInsidePosition = map.getClosestPositionInMap(outsidePosition);
+  isInside = map.getIndex(closestInsidePosition, insideIndex);
+
+  // Check position.
+  EXPECT_DOUBLE_EQ(expectedPosition.x(), closestInsidePosition.x());
+  EXPECT_DOUBLE_EQ(expectedPosition.y(), closestInsidePosition.y());
+  
+  // Check index.
+  EXPECT_EQ(expectedIndex.x(), insideIndex.x()) << "closestInsidePosition" << closestInsidePosition;
+  EXPECT_EQ(expectedIndex.y(), insideIndex.y()) << "closestInsidePosition" << closestInsidePosition;
+  
+  // Check if index is inside.
+  EXPECT_TRUE(isInside) << "position is: " << std::endl
+                        << closestInsidePosition << std::endl 
+                        << " index is: " << std::endl
+                        << insideIndex << std::endl;
+
+  // Point H
+  expectedPosition = Position(-2.0, -2.0);
+  expectedIndex = Index(199, 199);
+  outsidePosition = expectedPosition;
+  outsidePosition.x() -= testOffset;
+  outsidePosition.y() -= testOffset;
+
+  closestInsidePosition = map.getClosestPositionInMap(outsidePosition);
+  isInside = map.getIndex(closestInsidePosition, insideIndex);
+
+  // Check position.
+  EXPECT_DOUBLE_EQ(expectedPosition.x(), closestInsidePosition.x());
+  EXPECT_DOUBLE_EQ(expectedPosition.y(), closestInsidePosition.y());
+  
+  // Check index.
+  EXPECT_EQ(expectedIndex.x(), insideIndex.x()) << "closestInsidePosition" << closestInsidePosition;
+  EXPECT_EQ(expectedIndex.y(), insideIndex.y()) << "closestInsidePosition" << closestInsidePosition;
+  
+  // Check if index is inside.
+  EXPECT_TRUE(isInside) << "position is: " << std::endl
+                        << closestInsidePosition << std::endl 
+                        << " index is: " << std::endl
+                        << insideIndex << std::endl;
+}
+
+
 TEST(AddDataFrom, ExtendMapAligned)
 {
   GridMap map1, map2;
