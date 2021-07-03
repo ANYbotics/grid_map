@@ -24,7 +24,7 @@ class PointCloud2ToGridMapMsgNode
         * Callback function for the point cloud 2.
         * @param message the point cloud2 message to be converted to a grid map msg
         */
-        void callback(const sensor_msgs::PointCloud2 & msg);
+        void sub_callback(const sensor_msgs::PointCloud2 & msg);
 
     private:
         std::string gridMapTopic_;

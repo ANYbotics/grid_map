@@ -31,14 +31,19 @@ PointCloud2ToGridMapMsgNode::PointCloud2ToGridMapMsgNode(ros::NodeHandle& nodeHa
   pub_ = nodeHandle_.advertise<grid_map_msgs::GridMap>(gridMapTopic_, 1, true);
 
   // // Subscriber
-  // nodeHandle_.param<std::string>("point_cloud_topic", pointCloudTopic_, "point_cloud");
-  // sub_ = nodeHandle_.subscribe(pointCloudTopic_, 1, callback);
+  nodeHandle_.param<std::string>("point_cloud_topic", pointCloudTopic_, "point_cloud");
+  sub_ = nodeHandle_.subscribe(pointCloudTopic_, 1, &PointCloud2ToGridMapMsgNode::sub_callback, this);
 
 }
 
 PointCloud2ToGridMapMsgNode::~PointCloud2ToGridMapMsgNode()
 {
   ROS_INFO("PointCloud2ToGridMapMsgNode deconstructed.");
+}
+
+void PointCloud2ToGridMapMsgNode::sub_callback(const sensor_msgs::PointCloud2 & msg) 
+{
+
 }
 
 // void callback(const sensor_msgs::PointCloud2::ConstPtr& msg) {
