@@ -45,6 +45,7 @@ void PointCloud2ToGridMapMsgNode::sub_callback(const sensor_msgs::PointCloud2 & 
 
   // load PCL point cloud from message
   gridMapPclLoader.loadCloudFromMessage(point_cloud_msg);
+  gm::processPointcloud(&gridMapPclLoader, nodeHandle_);
 
   // create grid map
   grid_map::GridMap gridMap = gridMapPclLoader.getGridMap();
