@@ -35,10 +35,15 @@ The algorithm will open the .pcd file, convert the point cloud to a grid map and
 1.  Place .pcd files in the package folder or anywhere on the system (e.g. grid_map_pcl/data/example.pcd).
 2.  Modify the *folder_path* inside the launch file such that the folder file points to the folder containing .pcd files (e.g. /*"path to the grid_map_pcl folder"*/data).
 3.  Change the *pcd_filename* to the point cloud file that you want to process
-4.  You can run the algorithm with: *roslaunch grid_map_pcl grid_map_pcl_loader_node.launch* 
+4.  You can run the algorithm with: `roslaunch grid_map_pcl grid_map_pcl_loader_node.launch`
 5.  Once the algorithm is done you will see the output in the console, then you can run rviz in a separate terminal (make sure that you have sourced your workspace, **DO NOT CLOSE** the terminal where *grid_map_pcl_loader_node* is running ) and visualize the resulting grid map. Instructions on how to visualize a grid map are in the grid map [README](../README.md).
 
 The resulting grid map will be saved in the folder given by *folder_path* variable in the launch file and will be named with a string contained inside the *output_grid_map* variable. For large point clouds (100M-140M points) the algorithm takes about 30-60 min to finish (with 6 threads). For sizes that are in the range of 40M to 60M points, the runtime varies between 5 and 15 min, depending on the number of points. Point cloud with around 10M points or less can be processed in a minute or two.
+
+Alternatively, you can also convert ROS `sensor_msgs::PointCloud2` to `grid_map_msgs::GridMap` messages by running:
+```bash
+roslaunch grid_map_pcl PointCloud2_to_GridMap_msg_node.launch
+```
 
 ## Parameters
 
