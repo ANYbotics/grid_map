@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <launch>
-  <arg name="point_cloud_topic"      default="point_cloud" />
-  <arg name="grid_map_topic"         default="grid_map" />
+  <arg name="point_cloud_topic"      default="/omni_stitched_cloud"/>
+  <arg name="grid_map_topic"         default="/grid_map" />
   <arg name="map_frame"              default="map" />
   <arg name="map_layer_name"         default="elevation" />
   <arg name="prefix"                 default=""/>
