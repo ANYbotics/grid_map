@@ -19,7 +19,7 @@ namespace gm = ::grid_map::grid_map_pcl;
 
 PointCloud2ToGridMapMsgNode::PointCloud2ToGridMapMsgNode(ros::NodeHandle& nodeHandle)
 {
-  ROS_INFO("PointCloud2ToGridMapMsgNode started.");
+  ROS_INFO("PointCloud2ToGridMapMsgNode started");
   nodeHandle_ = nodeHandle;
 
   // Publisher
@@ -34,11 +34,12 @@ PointCloud2ToGridMapMsgNode::PointCloud2ToGridMapMsgNode(ros::NodeHandle& nodeHa
 
 PointCloud2ToGridMapMsgNode::~PointCloud2ToGridMapMsgNode()
 {
-  ROS_INFO("PointCloud2ToGridMapMsgNode deconstructed.");
+  ROS_INFO("PointCloud2ToGridMapMsgNode deconstructed");
 }
 
 void PointCloud2ToGridMapMsgNode::sub_callback(const sensor_msgs::PointCloud2 & point_cloud_msg) 
 {
+  ROS_INFO("Received PointCloud2 message");
   // init GridMapPclLoader
   grid_map::GridMapPclLoader gridMapPclLoader;
 
