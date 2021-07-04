@@ -42,6 +42,7 @@ void PointCloud2ToGridMapMsgNode::sub_callback(const sensor_msgs::PointCloud2 & 
   ROS_INFO("Received PointCloud2 message");
   // init GridMapPclLoader
   grid_map::GridMapPclLoader gridMapPclLoader;
+  gridMapPclLoader.loadParameters(gm::getParameterPath());
 
   // load PCL point cloud from message
   gridMapPclLoader.loadCloudFromMessage(point_cloud_msg);
