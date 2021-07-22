@@ -44,6 +44,10 @@ Q_OBJECT
 
   virtual void reset();
 
+ Q_SIGNALS:
+  // Signal to ensure that the rendering happens in the ui thread.
+  void process(const grid_map_msgs::GridMap::ConstPtr& msg);
+
  private Q_SLOTS:
   void updateHistoryLength();
   void updateHeightMode();
@@ -51,6 +55,8 @@ Q_OBJECT
   void updateUseRainbow();
   void updateAutocomputeIntensityBounds();
   void updateVisualization();
+  // Slot to ensure that the rendering happens in the ui thread.
+  void onProcessMessage(const grid_map_msgs::GridMap::ConstPtr& msg);
 
  private:
   // Callback for incoming ROS messages

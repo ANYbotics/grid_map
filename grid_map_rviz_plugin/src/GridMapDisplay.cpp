@@ -28,6 +28,8 @@ namespace grid_map_rviz_plugin {
 
 GridMapDisplay::GridMapDisplay()
 {
+  qRegisterMetaType<grid_map_msgs::GridMap::ConstPtr>("grid_map_msgs::GridMap::ConstPtr");
+
   alphaProperty_ = new rviz::FloatProperty("Alpha", 1.0,
                                            "0 is fully transparent, 1.0 is fully opaque.", this,
                                            SLOT(updateVisualization()));
@@ -108,6 +110,9 @@ GridMapDisplay::GridMapDisplay()
 
   historyLengthProperty_->setMin(1);
   historyLengthProperty_->setMax(100);
+
+  // Ensure that the rendering happens in the gui thread.
+  connect(this, &GridMapDisplay::process, this, &GridMapDisplay::onProcessMessage);
 }
 
 GridMapDisplay::~GridMapDisplay()
@@ -200,6 +205,11 @@ void GridMapDisplay::updateVisualization()
 }
 
 void GridMapDisplay::processMessage(const grid_map_msgs::GridMap::ConstPtr& msg)
+{
+  process(msg);
+}
+
+void GridMapDisplay::onProcessMessage(const grid_map_msgs::GridMap::ConstPtr& msg)
 {
   // Check if transform between the message's frame and the fixed frame exists.
   Ogre::Quaternion orientation;
