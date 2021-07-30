@@ -110,9 +110,6 @@ GridMapDisplay::GridMapDisplay()
 
   historyLengthProperty_->setMin(1);
   historyLengthProperty_->setMax(100);
-
-  // Ensure that the rendering happens in the gui thread.
-  connect(this, &GridMapDisplay::process, this, &GridMapDisplay::onProcessMessage);
 }
 
 GridMapDisplay::~GridMapDisplay()
@@ -125,8 +122,17 @@ void GridMapDisplay::onInitialize()
   updateHistoryLength();
 }
 
+void GridMapDisplay::onEnable()
+{
+  isReset_ = false;
+  connect(this, &GridMapDisplay::process, this, &GridMapDisplay::onProcessMessage);
+  MessageFilterDisplay<grid_map_msgs::GridMap>::onEnable();
+}
+
 void GridMapDisplay::reset()
 {
+  isReset_ = true;
+  disconnect(this, &GridMapDisplay::process, this, &GridMapDisplay::onProcessMessage);
   MFDClass::reset();
   visuals_.clear();
 }
@@ -211,6 +217,11 @@ void GridMapDisplay::processMessage(const grid_map_msgs::GridMap::ConstPtr& msg)
 
 void GridMapDisplay::onProcessMessage(const grid_map_msgs::GridMap::ConstPtr& msg)
 {
+  // Check if the display was already reset.
+  if (isReset_) {
+    return;
+  }
+
   // Check if transform between the message's frame and the fixed frame exists.
   Ogre::Quaternion orientation;
   Ogre::Vector3 position;

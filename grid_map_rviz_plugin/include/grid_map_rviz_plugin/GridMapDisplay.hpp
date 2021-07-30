@@ -42,6 +42,8 @@ Q_OBJECT
  protected:
   virtual void onInitialize();
 
+  virtual void onEnable();
+
   virtual void reset();
 
  Q_SIGNALS:
@@ -61,6 +63,9 @@ Q_OBJECT
  private:
   // Callback for incoming ROS messages
   void processMessage(const grid_map_msgs::GridMap::ConstPtr& msg);
+
+  // Flag to ensure that after the reset the scene is not updated again.
+  std::atomic<bool> isReset_{false};
 
   // Circular buffer for visuals
   boost::circular_buffer<boost::shared_ptr<GridMapVisual> > visuals_;
