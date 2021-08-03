@@ -35,33 +35,22 @@
 #include <QObject>
 
 #include <ros/time.h>
+#include <tf2_ros/buffer.h>
+#include <geometry_msgs/Pose.h>
 
 #include <OgreVector3.h>
 #include <OgreQuaternion.h>
 
 #include <boost/thread/mutex.hpp>
 
-#include <geometry_msgs/Pose.h>
-
-#include <tf2_ros/message_filter.h>
-#include <tf/message_filter.h>
-
-#include <type_traits>
-
 #ifndef Q_MOC_RUN
+#include <tf2_ros/message_filter.h>
 #endif
 
-#if ROS_VERSION_MINIMUM(1,14,0)
 namespace tf2_ros
 {
 class TransformListener;
 }
-#else
-namespace tf
-{
-class TransformListener;
-}
-#endif
 
 namespace rviz
 {
@@ -69,69 +58,69 @@ class Display;
 
 /** @brief Helper class for transforming data into Ogre's world frame (the fixed frame).
  *
- * During one frame update (nominally 33ms), the tf tree stays consistent and queries are cached for speedup.
+ * During one frame update (nominally 33ms), the tf tree stays consistent and queries are cached for
+ * speedup.
  */
-class FrameManager: public QObject
+class FrameManager : public QObject
 {
-Q_OBJECT
+  Q_OBJECT
 public:
-
- using TransformListener = std::conditional<ROS_VERSION_MINIMUM(1,14,0), tf2_ros::TransformListener, tf::TransformListener>::type;
- using FilterFailureReason = std::conditional<ROS_VERSION_MINIMUM(1,14,0), tf2_ros::FilterFailureReason, tf::FilterFailureReason>::type;
-#if ROS_VERSION_MINIMUM(1,14,0)
- template <class message_type>
- using MessageFilter = tf2_ros::MessageFilter<message_type>;
-#else
- template <class message_type>
- using MessageFilter = tf::MessageFilter<message_type>;
-#endif
-
-  enum SyncMode {
+  enum SyncMode
+  {
     SyncOff = 0,
     SyncExact,
     SyncApprox
   };
 
-  /** @brief Constructor
-   * @param tf a pointer to tf::TransformListener (should not be used anywhere else because of thread safety)
-   */
-  FrameManager(boost::shared_ptr<TransformListener> tf = boost::shared_ptr<TransformListener>());
+  /// Constructor, will create a TransformListener (and Buffer) automatically if not provided
+  explicit FrameManager(std::shared_ptr<tf2_ros::Buffer> tf_buffer = std::shared_ptr<tf2_ros::Buffer>(),
+                        std::shared_ptr<tf2_ros::TransformListener> tf_listener =
+                            std::shared_ptr<tf2_ros::TransformListener>());
 
   /** @brief Destructor.
    *
    * FrameManager should not need to be destroyed by hand, just
    * destroy the boost::shared_ptr returned by instance(), and it will
    * be deleted when the last reference is removed. */
-  ~FrameManager();
+  ~FrameManager() override;
 
   /** @brief Set the frame to consider "fixed", into which incoming data is transformed.
    *
    * The fixed frame serves as the reference for all getTransform()
    * and transform() functions in FrameManager. */
-   void setFixedFrame(const std::string& frame);
+  void setFixedFrame(const std::string& frame);
 
-   /** @brief Enable/disable pause mode */
-   void setPause( bool pause );
+  /** @brief Enable/disable pause mode */
+  void setPause(bool pause);
 
-   bool getPause() { return pause_; }
+  bool getPause()
+  {
+    return pause_;
+  }
 
-   /** @brief Set synchronization mode (off/exact/approximate) */
-   void setSyncMode( SyncMode mode );
+  /** @brief Set synchronization mode (off/exact/approximate) */
+  void setSyncMode(SyncMode mode);
 
-   SyncMode getSyncMode() { return sync_mode_; }
+  SyncMode getSyncMode()
+  {
+    return sync_mode_;
+  }
 
-   /** @brief Synchronize with given time. */
-   void syncTime( ros::Time time );
+  /** @brief Synchronize with given time. */
+  void syncTime(ros::Time time);
 
-   /** @brief Get current time, depending on the sync mode. */
-   ros::Time getTime() { return sync_time_; }
+  /** @brief Get current time, depending on the sync mode. */
+  ros::Time getTime()
+  {
+    return sync_time_;
+  }
 
   /** @brief Return the pose for a header, relative to the fixed frame, in Ogre classes.
    * @param[in] header The source of the frame name and time.
    * @param[out] position The position of the header frame relative to the fixed frame.
    * @param[out] orientation The orientation of the header frame relative to the fixed frame.
    * @return true on success, false on failure. */
-  template<typename Header>
+  template <typename Header>
   bool getTransform(const Header& header, Ogre::Vector3& position, Ogre::Quaternion& orientation)
   {
     return getTransform(header.frame_id, header.stamp, position, orientation);
@@ -143,7 +132,10 @@ public:
    * @param[out] position The position of the frame relative to the fixed frame.
    * @param[out] orientation The orientation of the frame relative to the fixed frame.
    * @return true on success, false on failure. */
-  bool getTransform(const std::string& frame, ros::Time time, Ogre::Vector3& position, Ogre::Quaternion& orientation);
+  bool getTransform(const std::string& frame,
+                    ros::Time time,
+                    Ogre::Vector3& position,
+                    Ogre::Quaternion& orientation);
 
   /** @brief Transform a pose from a frame into the fixed frame.
    * @param[in] header The source of the input frame and time.
@@ -151,8 +143,11 @@ public:
    * @param[out] position Position part of pose relative to the fixed frame.
    * @param[out] orientation: Orientation part of pose relative to the fixed frame.
    * @return true on success, false on failure. */
-  template<typename Header>
-  bool transform(const Header& header, const geometry_msgs::Pose& pose, Ogre::Vector3& position, Ogre::Quaternion& orientation)
+  template <typename Header>
+  bool transform(const Header& header,
+                 const geometry_msgs::Pose& pose,
+                 Ogre::Vector3& position,
+                 Ogre::Quaternion& orientation)
   {
     return transform(header.frame_id, header.stamp, pose, position, orientation);
   }
@@ -164,12 +159,16 @@ public:
    * @param[out] position Position part of pose relative to the fixed frame.
    * @param[out] orientation: Orientation part of pose relative to the fixed frame.
    * @return true on success, false on failure. */
-  bool transform(const std::string& frame, ros::Time time, const geometry_msgs::Pose& pose, Ogre::Vector3& position, Ogre::Quaternion& orientation);
+  bool transform(const std::string& frame,
+                 ros::Time time,
+                 const geometry_msgs::Pose& pose,
+                 Ogre::Vector3& position,
+                 Ogre::Quaternion& orientation);
 
   /** @brief Clear the internal cache. */
   void update();
 
-  /** @brief Check to see if a frame exists in the TransformListener.
+  /** @brief Check to see if a frame exists in our tf buffer.
    * @param[in] frame The name of the frame to check.
    * @param[in] time Dummy parameter, not actually used.
    * @param[out] error If the frame does not exist, an error message is stored here.
@@ -183,35 +182,37 @@ public:
    * @return true if the transform is not known, false if it is. */
   bool transformHasProblems(const std::string& frame, ros::Time time, std::string& error);
 
-  /** @brief Connect a MessageFilter's callbacks to success and failure handler functions in this FrameManager.
-   * @param filter The MessageFilter to connect to.
+  /** Connect success and failure callbacks to a tf2_ros::MessageFilter.
+   * @param filter The tf2_ros::MessageFilter to connect to.
    * @param display The Display using the filter.
    *
-   * FrameManager has internal functions for handling success and
-   * failure of MessageFilters which call Display::setStatus()
-   * based on success or failure of the filter, including appropriate
+   * FrameManager has internal functions for handling success and failure of tf2_ros::MessageFilters,
+   * which call Display::setStatus() based on success or failure of the filter, including appropriate
    * error messages. */
-  template<class M>
-  void registerFilterForTransformStatusCheck(MessageFilter<M>* filter, Display* display)
+  template <class M>
+  void registerFilterForTransformStatusCheck(tf2_ros::MessageFilter<M>* filter, Display* display)
   {
     filter->registerCallback(boost::bind(&FrameManager::messageCallback<M>, this, _1, display));
-    filter->registerFailureCallback(boost::bind(&FrameManager::failureCallback<M>, this, _1, _2, display));
+    filter->registerFailureCallback(boost::bind(
+        &FrameManager::failureCallback<M, tf2_ros::FilterFailureReason>, this, _1, _2, display));
   }
 
   /** @brief Return the current fixed frame name. */
-  const std::string& getFixedFrame() { return fixed_frame_; }
+  const std::string& getFixedFrame()
+  {
+    return fixed_frame_;
+  }
 
-  /** @brief Return the TransformListener used to receive transform data. */
-  TransformListener* getTFClient() { return tf_.get(); }
+  const std::shared_ptr<tf2_ros::Buffer> getTF2BufferPtr()
+  {
+    return tf_buffer_;
+  }
 
-  /** @brief Return a boost shared pointer to the TransformListener used to receive transform data. */
-  const boost::shared_ptr<TransformListener>& getTFClientPtr() { return tf_; }
-
-  /** @brief Create a description of a transform problem.
+  /** Create a description of a transform problem.
    * @param frame_id The name of the frame with issues.
    * @param stamp The time for which the problem was detected.
    * @param caller_id Dummy parameter, not used.
-   * @param reason The reason given by the MessageFilter in its failure callback.
+   * @param reason The reason given by the tf2_ros::MessageFilter in its failure callback.
    * @return An error message describing the problem.
    *
    * Once a problem has been detected with a given frame or transform,
@@ -219,43 +220,60 @@ public:
   std::string discoverFailureReason(const std::string& frame_id,
                                     const ros::Time& stamp,
                                     const std::string& caller_id,
-                                    FilterFailureReason reason);
+                                    tf2_ros::FilterFailureReason reason);
 
 Q_SIGNALS:
   /** @brief Emitted whenever the fixed frame changes. */
   void fixedFrameChanged();
 
 private:
+  bool adjustTime(const std::string& frame, ros::Time& time);
 
-  bool adjustTime( const std::string &frame, ros::Time &time );
-
-  template<class M>
+  template <class M>
   void messageCallback(const ros::MessageEvent<M const>& msg_evt, Display* display)
   {
-    boost::shared_ptr<M const> const &msg = msg_evt.getConstMessage();
-    std::string authority = msg_evt.getPublisherName();
-
+    boost::shared_ptr<M const> const& msg = msg_evt.getConstMessage();
+    const std::string& authority = msg_evt.getPublisherName();
+    
+    // the following diverges from original rviz sources (noetic) for backward compatibility
     messageArrived(msg->info.header.frame_id, msg->info.header.stamp, authority, display);
   }
 
-  template<class M>
-  void failureCallback(const ros::MessageEvent<M const>& msg_evt, FilterFailureReason reason, Display* display)
+  template <class M, class TfFilterFailureReasonType>
+  void failureCallback(const ros::MessageEvent<M const>& msg_evt,
+                       TfFilterFailureReasonType reason,
+                       Display* display)
   {
-    boost::shared_ptr<M const> const &msg = msg_evt.getConstMessage();
-    std::string authority = msg_evt.getPublisherName();
+    boost::shared_ptr<M const> const& msg = msg_evt.getConstMessage();
+    const std::string& authority = msg_evt.getPublisherName();
 
+    // the following diverges from original rviz sources (noetic) for backward compatibility
     messageFailed(msg->info.header.frame_id, msg->info.header.stamp, authority, reason, display);
   }
 
-  void messageArrived(const std::string& frame_id, const ros::Time& stamp, const std::string& caller_id, Display* display);
-  void messageFailed(const std::string& frame_id, const ros::Time& stamp, const std::string& caller_id, FilterFailureReason reason, Display* display);
+  void messageArrived(const std::string& frame_id,
+                      const ros::Time& stamp,
+                      const std::string& caller_id,
+                      Display* display);
+
+  void messageFailedImpl(const std::string& caller_id, const std::string& status_text, Display* display);
+
+  template <class TfFilterFailureReasonType>
+  void messageFailed(const std::string& frame_id,
+                     const ros::Time& stamp,
+                     const std::string& caller_id,
+                     TfFilterFailureReasonType reason,
+                     Display* display)
+  {
+    std::string status_text = discoverFailureReason(frame_id, stamp, caller_id, reason);
+    messageFailedImpl(caller_id, status_text, display);
+  }
 
   struct CacheKey
   {
-    CacheKey(const std::string& f, ros::Time t)
-    : frame(f)
-    , time(t)
-    {}
+    CacheKey(const std::string& f, ros::Time t) : frame(f), time(t)
+    {
+    }
 
     bool operator<(const CacheKey& rhs) const
     {
@@ -273,21 +291,22 @@ private:
 
   struct CacheEntry
   {
-    CacheEntry(const Ogre::Vector3& p, const Ogre::Quaternion& o)
-    : position(p)
-    , orientation(o)
-    {}
+    CacheEntry(const Ogre::Vector3& p, const Ogre::Quaternion& o) : position(p), orientation(o)
+    {
+    }
 
     Ogre::Vector3 position;
     Ogre::Quaternion orientation;
   };
-  typedef std::map<CacheKey, CacheEntry > M_Cache;
+  typedef std::map<CacheKey, CacheEntry> M_Cache;
 
   boost::mutex cache_mutex_;
   M_Cache cache_;
 
-  boost::shared_ptr<TransformListener> tf_;
+  std::shared_ptr<tf2_ros::Buffer> tf_buffer_;
+  std::shared_ptr<tf2_ros::TransformListener> tf_listener_;
   std::string fixed_frame_;
+  tf2::CompactFrameID fixed_frame_id_;
 
   bool pause_;
 
@@ -301,6 +320,6 @@ private:
   double current_delta_;
 };
 
-}
+} // namespace rviz
 
 #endif // RVIZ_FRAME_MANAGER_H

@@ -60,7 +60,7 @@ bool NormalColorMapFilter<T>::update(const T& mapIn, T& mapOut)
   // Z:  0 to  1 : Blue: 128 to 255
 
   // For each cell in map.
-  for (size_t i = 0; i < color.size(); ++i) {
+  for (Eigen::Index i = 0; i < color.size(); ++i) {
     const Eigen::Vector3f colorVector((normalX(i) + 1.0) / 2.0,
                                       (normalY(i) + 1.0) / 2.0,
                                       (normalZ(i) / 2.0) + 0.5);

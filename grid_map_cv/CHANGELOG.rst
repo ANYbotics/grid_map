@@ -2,6 +2,16 @@
 Changelog for package grid_map_cv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.6.4 (2020-12-04)
+------------------
+
+1.6.3 (2020-09-30)
+------------------
+* Added getTransformedMap.
+
+1.6.2 (2019-10-14)
+------------------
+
 1.6.1 (2019-02-27)
 ------------------
 * Updated host changes.
@@ -10,11 +20,11 @@ Changelog for package grid_map_cv
 
 1.6.0 (2017-11-24)
 ------------------
-* Fixed compatibility issue with OpenCV 3 (`#140 <https://github.com/ethz-asl/grid_map/issues/140>`_).
+* Fixed compatibility issue with OpenCV 3 (`#140 <https://github.com/anybotics/grid_map/issues/140>`_).
 * Makes the OpenCV include a bit more specific and adds in a dependency into the catkin_package call.
 * Moved inpaint filter to grid_map_cv, extended filter demo, cleanups.
-* Fixed problem where clamp changes were disregarded (`#115 <https://github.com/ethz-asl/grid_map/issues/115>`_ from Le-Fix/fix/toImageClamp).
-* Contributors: Péter Fankhauser, Perry Franklin, Le-Fix 
+* Fixed problem where clamp changes were disregarded (`#115 <https://github.com/anybotics/grid_map/issues/115>`_ from Le-Fix/fix/toImageClamp).
+* Contributors: Péter Fankhauser, Perry Franklin, Le-Fix
 
 1.5.2 (2017-07-25)
 ------------------
@@ -24,7 +34,7 @@ Changelog for package grid_map_cv
 
 1.5.0 (2017-07-18)
 ------------------
-* Fixed bug for change resolution function in OpenCV processing class (including unit tests). (`#91 <https://github.com/ethz-asl/grid_map/issues/91>`_).
+* Fixed bug for change resolution function in OpenCV processing class (including unit tests). (`#91 <https://github.com/anybotics/grid_map/issues/91>`_).
 * Extend grid_map_cv unit test for transparent pixels/nan-values.
 * Remove constructor and destructor declaration in GridMapCvConverter.
 * Contributors: Peter Fankhauser, Marco Camurri, Sascha

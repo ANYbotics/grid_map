@@ -1,7 +1,9 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.5.1)
 project(grid_map_demos)
 
-set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
+set(CMAKE_CXX_STANDARD 11)
+add_compile_options(-Wall -Wextra -Wpedantic)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 ## Find catkin macros and libraries
 find_package(catkin REQUIRED COMPONENTS
@@ -60,58 +62,62 @@ include_directories(
 )
 
 ## Declare a cpp executable
-add_executable(
-  simple_demo
+add_executable(simple_demo
   src/simple_demo_node.cpp
 )
 
-add_executable(
-  tutorial_demo
+add_executable(tutorial_demo
   src/tutorial_demo_node.cpp
 )
 
-add_executable(
-  iterators_demo
+add_executable(iterators_demo
   src/iterators_demo_node.cpp
   src/IteratorsDemo.cpp
 )
 
-add_executable(
-  image_to_gridmap_demo
+add_executable(image_to_gridmap_demo
   src/image_to_gridmap_demo_node.cpp
   src/ImageToGridmapDemo.cpp
 )
 
-add_executable(
-  octomap_to_gridmap_demo
+add_executable(grid_map_to_image_demo
+  src/grid_map_to_image_demo_node.cpp
+  src/GridmapToImageDemo.cpp
+)
+
+add_executable(octomap_to_gridmap_demo
   src/octomap_to_gridmap_demo_node.cpp
   src/OctomapToGridmapDemo.cpp
 )
 
-add_executable(
-  move_demo
+add_executable(move_demo
   src/move_demo_node.cpp
 )
 
-add_executable(
-  iterator_benchmark
+add_executable(iterator_benchmark
   src/iterator_benchmark.cpp
 )
 
-add_executable(
-  opencv_demo
+add_executable(opencv_demo
   src/opencv_demo_node.cpp
 )
 
-add_executable(
-  resolution_change_demo
+add_executable(resolution_change_demo
   src/resolution_change_demo_node.cpp
 )
 
-add_executable(
-  filters_demo
+add_executable(filters_demo
   src/filters_demo_node.cpp
   src/FiltersDemo.cpp
+)
+
+add_executable(normal_filter_comparison_demo
+  src/normal_filter_comparison_node.cpp
+)
+
+add_executable(interpolation_demo
+  src/interpolation_demo_node.cpp
+  src/InterpolationDemo.cpp
 )
 
 ## Specify libraries to link a library or executable target against
@@ -132,6 +138,11 @@ target_link_libraries(
 
 target_link_libraries(
   image_to_gridmap_demo
+  ${catkin_LIBRARIES}
+)
+
+target_link_libraries(
+  grid_map_to_image_demo
   ${catkin_LIBRARIES}
 )
 
@@ -167,6 +178,16 @@ target_link_libraries(
   ${catkin_LIBRARIES}
 )
 
+target_link_libraries(
+  normal_filter_comparison_demo
+  ${catkin_LIBRARIES}
+)
+
+target_link_libraries(
+  interpolation_demo
+  ${catkin_LIBRARIES}
+)
+
 #############
 ## Install ##
 #############
@@ -178,7 +199,20 @@ catkin_install_python(
 
 # Mark executables and/or libraries for installation
 install(
-  TARGETS simple_demo tutorial_demo iterators_demo image_to_gridmap_demo octomap_to_gridmap_demo move_demo iterator_benchmark opencv_demo resolution_change_demo filters_demo
+  TARGETS 
+    filters_demo
+    image_to_gridmap_demo
+    grid_map_to_image_demo
+    interpolation_demo
+    iterator_benchmark
+    iterators_demo
+    move_demo
+    normal_filter_comparison_demo
+    octomap_to_gridmap_demo
+    opencv_demo
+    resolution_change_demo
+    simple_demo
+    tutorial_demo
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
@@ -189,3 +223,58 @@ install(
   DIRECTORY config data doc launch rviz scripts
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
+
+##############
+##   Test   ##
+##############
+if(CATKIN_ENABLE_TESTING)
+  catkin_add_gtest(${PROJECT_NAME}-test
+    test/empty_test.cpp
+  )
+  add_dependencies(${PROJECT_NAME}-test
+    filters_demo
+    image_to_gridmap_demo
+    grid_map_to_image_demo
+    interpolation_demo
+    iterator_benchmark
+    iterators_demo
+    move_demo
+    normal_filter_comparison_demo
+    octomap_to_gridmap_demo
+    opencv_demo
+    resolution_change_demo
+    simple_demo
+    tutorial_demo
+  )
+  target_include_directories(${PROJECT_NAME}-test PRIVATE
+    include
+  )
+  target_include_directories(${PROJECT_NAME}-test SYSTEM PUBLIC
+    ${catkin_INCLUDE_DIRS}
+  )
+  target_link_libraries(${PROJECT_NAME}-test
+    gtest_main
+    ${catkin_LIBRARIES}
+  )
+
+  ###################
+  ## Code_coverage ##
+  ###################
+  find_package(cmake_code_coverage QUIET)
+  if(cmake_code_coverage_FOUND)
+    add_gtest_coverage(
+      TEST_BUILD_TARGETS
+        ${PROJECT_NAME}-test
+    )
+  endif()
+endif()
+
+#################
+## Clang_tools ##
+#################
+find_package(cmake_clang_tools QUIET)
+if(cmake_clang_tools_FOUND)
+  add_default_clang_tooling(
+    DISABLE_CLANG_FORMAT
+  )
+endif(cmake_clang_tools_FOUND)

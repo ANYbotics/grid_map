@@ -28,6 +28,7 @@ public:
    * @param gridMap the grid map to iterate on.
    * @param start the starting point of the line.
    * @param end the ending point of the line.
+   * @throw std::invalid_argument if start and end impose an ill conditioned line iteration.
    */
   LineIterator(const grid_map::GridMap& gridMap, const Position& start, const Position& end);
 
@@ -108,10 +109,10 @@ private:
   Index end_;
 
   //! Current cell number.
-  unsigned int iCell_;
+  unsigned int iCell_ = 0;
 
   //! Number of cells in the line.
-  unsigned int nCells_;
+  unsigned int nCells_ = 0;
 
   //! Helper variables for Bresenham Line Drawing algorithm.
   Size increment1_, increment2_;

@@ -17,10 +17,10 @@ namespace grid_map {
 
 template<typename T>
 ThresholdFilter<T>::ThresholdFilter()
-    : useLowerThreshold_(false),
-      useUpperThreshold_(false),
-      lowerThreshold_(0.0),
+    : lowerThreshold_(0.0),
       upperThreshold_(1.0),
+      useLowerThreshold_(false),
+      useUpperThreshold_(false),
       setTo_(0.5)
 {
 }
@@ -63,8 +63,13 @@ bool ThresholdFilter<T>::configure()
     return false;
   }
 
-  if (!FilterBase<T>::getParam(std::string("layer"), layer_)) {
-    ROS_ERROR("ThresholdFilter did not find parameter 'layer'.");
+  if (!FilterBase<T>::getParam(std::string("condition_layer"), conditionLayer_)) {
+    ROS_ERROR("ThresholdFilter did not find parameter 'condition_layer'.");
+    return false;
+  }
+
+  if (!FilterBase<T>::getParam(std::string("output_layer"), outputLayer_)) {
+    ROS_ERROR("ThresholdFilter did not find parameter 'ouput_layer'.");
     return false;
   }
 
@@ -77,19 +82,30 @@ bool ThresholdFilter<T>::update(const T& mapIn, T& mapOut)
   mapOut = mapIn;
 
   // Check if layer exists.
-  if (!mapOut.exists(layer_)) {
-    ROS_ERROR("Check your threshold types! Type %s does not exist", layer_.c_str());
+  if (!mapOut.exists(conditionLayer_)) {
+    ROS_ERROR("Check your condition_layer! Layer %s does not exist", conditionLayer_.c_str());
+    return false;
+  }
+
+  if (!mapOut.exists(outputLayer_)) {
+    ROS_ERROR("Check your output_layer! Layer %s does not exist", outputLayer_.c_str());
     return false;
   }
 
   // For each cell in map.
-  auto& data = mapOut[layer_];
+  const auto& condition = mapOut[conditionLayer_];
+  auto& data = mapOut[outputLayer_];
   for (grid_map::GridMapIterator iterator(mapOut); !iterator.isPastEnd(); ++iterator) {
-    if (!mapOut.isValid(*iterator, layer_)) continue;
     const size_t i = iterator.getLinearIndex();
-    float& value = data(i);
-    if (useLowerThreshold_) if (value < lowerThreshold_) value = setTo_;
-    if (useUpperThreshold_) if (value > upperThreshold_) value = setTo_;
+    const float& conditionValue = condition(i);
+    float& outputValue = data(i);
+    // If the condition_value is nan, the output will also be set to the setTo value (NaN comparisons evaluate to false).
+    if (useLowerThreshold_ && !(conditionValue >= lowerThreshold_)) {
+      outputValue = setTo_;
+    }
+    if (useUpperThreshold_ && !(conditionValue <= upperThreshold_)) {
+      outputValue = setTo_;
+    }
   }
 
   return true;
@@ -97,4 +113,7 @@ bool ThresholdFilter<T>::update(const T& mapIn, T& mapOut)
 
 } /* namespace */
 
+// Explicitly define the specialization for GridMap to have the filter implementation available for testing.
+template class grid_map::ThresholdFilter<grid_map::GridMap>;
+// Export the filter.
 PLUGINLIB_EXPORT_CLASS(grid_map::ThresholdFilter<grid_map::GridMap>, filters::FilterBase<grid_map::GridMap>)

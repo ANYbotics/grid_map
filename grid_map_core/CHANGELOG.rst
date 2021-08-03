@@ -2,6 +2,16 @@
 Changelog for package grid_map_core
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.6.4 (2020-12-04)
+------------------
+
+1.6.2 (2019-10-14)
+------------------
+* Implements a grid map transformation from one map frame to another map frame given the transform between the frames.
+  Authors:
+  Co-authored-by: fabianje <fabian.jenelten@mavt.ethz.ch>
+* Contributors: fabianje
+
 1.6.1 (2019-02-27)
 ------------------
 * Updated host changes.
@@ -14,8 +24,8 @@ Changelog for package grid_map_core
 * Added new `thickenLine()`, triangulation, and bounding box method to polygon.
 * Added unit tests for LineIterator with using move function.
 * Fixed cpp-check warnings and errors.
-* Fixed line iterator for moved maps (`#119 <https://github.com/ethz-asl/grid_map/issues/119>`_).
-* Fixed error in SpiralIterator when center is outside the map (`#114 <https://github.com/ethz-asl/grid_map/issues/114>`_).
+* Fixed line iterator for moved maps (`#119 <https://github.com/anybotics/grid_map/issues/119>`_).
+* Fixed error in SpiralIterator when center is outside the map (`#114 <https://github.com/anybotics/grid_map/issues/114>`_).
 * Contributors: Péter Fankhauser, 2scholz, Remo Diethelm, Takahiro Miki, Tanja Baumann
 
 1.5.2 (2017-07-25)
@@ -27,7 +37,7 @@ Changelog for package grid_map_core
 1.5.0 (2017-07-18)
 ------------------
 * Added new function for polygon triangulation.
-* Added Eigen macro for bit-alignment (`#88 <https://github.com/ethz-asl/grid_map/issues/88>`_).
+* Added Eigen macro for bit-alignment (`#88 <https://github.com/anybotics/grid_map/issues/88>`_).
 * Added default copy constructor and assign operator methods after the rule of five.
 * Fixing return value in `getQuadrant` member function.
 * Fixing buffer handling bug for circular and ellipse iterators.
@@ -47,7 +57,7 @@ Changelog for package grid_map_core
 * Improved line iterator with start and end positions.
 * Added method to retrieve submap size for iterators.
 * Improved transformation of images to color grid map layers.
-* Fixing issues with order of include with Eigen (`#67 <https://github.com/ethz-asl/grid_map/issues/67>`_).
+* Fixing issues with order of include with Eigen (`#67 <https://github.com/anybotics/grid_map/issues/67>`_).
 * Contributors: Peter Fankhauser, Dominic Jud
 
 1.4.0 (2016-08-22)
@@ -79,11 +89,11 @@ Changelog for package grid_map_core
 
 1.2.0 (2016-03-03)
 ------------------
-* Improved efficiency for the Grid Map iterator (speed increase of 10x for large maps) (`#45 <https://github.com/ethz-asl/grid_map/issues/45>`_).
-* New iterator_benchmark demo to exemplify the usage of the iterators and their computational performance (`#45 <https://github.com/ethz-asl/grid_map/issues/45>`_).
-* Added new method to set the position of a grid map (`#42 <https://github.com/ethz-asl/grid_map/pull/42>`_).
+* Improved efficiency for the Grid Map iterator (speed increase of 10x for large maps) (`#45 <https://github.com/anybotics/grid_map/issues/45>`_).
+* New iterator_benchmark demo to exemplify the usage of the iterators and their computational performance (`#45 <https://github.com/anybotics/grid_map/issues/45>`_).
+* Added new method to set the position of a grid map (`#42 <https://github.com/anybotics/grid_map/pull/42>`_).
 * Added new move_demo to illustrate the difference between the `move` and `setPosition` method.
-* Fixed behavior of checkIfPositionWithinMap() in edge cases (`#41 <https://github.com/ethz-asl/grid_map/issues/41>`_).
+* Fixed behavior of checkIfPositionWithinMap() in edge cases (`#41 <https://github.com/anybotics/grid_map/issues/41>`_).
 * Updated documentation for spiral and ellipse iterator, and iterator performance.
 * const correctness for grid's getSubmap.
 * Cleanup of arguments and return types.

@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include <filters/filter_base.h>
+#include <filters/filter_base.hpp>
 
 //OpenCV
 #include "grid_map_cv/grid_map_cv.hpp"

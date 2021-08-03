@@ -60,12 +60,12 @@ void interpolateBetweenColors(std_msgs::ColorRGBA& color, const std_msgs::ColorR
   setColorChannelFromValue(color.b, value, lowerValueBound, upperValueBound, false, colorForLowerValue.b, colorForUpperValue.b);
 }
 
-void setSaturationFromValue(std_msgs::ColorRGBA& color, const double value, const double lowerValueBound,
+void setSaturationFromValue(std_msgs::ColorRGBA& color, const double value, const double /*lowerValueBound*/,
                             const double upperValueBound, const double maxSaturation, const double minSaturation)
 {
   // Based on "changeSaturation" function by Darel Rex Finley.
   const Eigen::Array3f HspFactors(.299, .587, .114); // see http://alienryderflex.com/hsp.html
-  float saturationChange = static_cast<float>(computeLinearMapping(value, value, upperValueBound, maxSaturation, minSaturation));
+  const float saturationChange{static_cast<float>(computeLinearMapping(value, value, upperValueBound, maxSaturation, minSaturation))};
   Vector3f colorVector;
   getColorVectorFromColorMessage(colorVector, color);
   float perceivedBrightness = sqrt((colorVector.array().square() * HspFactors).sum());

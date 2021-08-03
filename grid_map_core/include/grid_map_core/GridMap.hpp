@@ -18,6 +18,7 @@
 
 // Eigen
 #include <Eigen/Core>
+#include <Eigen/Geometry>
 
 namespace grid_map {
 
@@ -65,7 +66,7 @@ class GridMap
   /*!
    * Destructor.
    */
-  virtual ~GridMap();
+  virtual ~GridMap() = default;
 
   /*!
    * Set the geometry of the grid map. Clears all the data.
@@ -311,6 +312,23 @@ class GridMap
   GridMap getSubmap(const Position& position, const Length& length, Index& indexInSubmap,
                     bool& isSuccess) const;
 
+  /*!
+   * Apply isometric transformation (rotation + offset) to grid map and returns the transformed map.
+   * Note: The returned map may not have the same length since it's geometric description contains
+   * the original map.
+   * @param[in] transform the requested transformation to apply.
+   * @param[in] heightLayerName the height layer of the map.
+   * @param[in] newFrameId frame index of the new map.
+   * @param[in] sampleRatio if zero or negative, no in-painting is used to fill missing points due to sparsity of the map. Otherwise,
+   *            four points are sampled around each grid cell to make sure that at least one of those points map to a new grid cell.
+   *            A sampleRatio of 1 corresponds to the the resolution of the grid map.
+   * @return transformed map.
+   * @throw std::out_of_range if no map layer with name `heightLayerName` is present.
+   */
+  GridMap getTransformedMap(const Eigen::Isometry3d& transform, const std::string& heightLayerName,
+                            const std::string& newFrameId,
+                            const double sampleRatio = 0.0) const;
+
    /*!
     * Set the position of the grid map.
     * Note: This method does not change the data stored in the grid map and
@@ -458,7 +476,21 @@ class GridMap
    */
   void convertToDefaultStartIndex();
 
+  /*!
+   * Calculates the closest point to positionOutMap that is in the grid map.
+   * If positionOutMap is already in the grid map, that position is returned.
+   * @param[in] position position that should be approached as close as possible.
+   * @return position in map.
+   */
+  Position getClosestPositionInMap(const Position& position) const;
+
  private:
+  /**
+   * Defines data validation check
+   * @param value
+   * @return true if value is valid
+   */
+  bool isValid(DataType value) const;
 
   /*!
    * Clear a number of columns of the grid map.
@@ -482,6 +514,36 @@ class GridMap
    * @return true if linear interpolation was successful.
    */
   bool atPositionLinearInterpolated(const std::string& layer, const Position& position, float& value) const;
+
+
+  /*!
+   * Get cell data at requested position, cubic convolution
+   * interpolated from 4x4 cells. At the edge of the map,
+   * the algorithm assumes that height continues with the slope 0.
+   * I.e. the border cells just repeat outside of the map
+   * Taken from: https://en.wikipedia.org/wiki/Bicubic_interpolation
+   * @param[in] layer the name of the layer to be accessed.
+   * @param[in] position the requested position.
+   * @param[out] value the data of the cell.
+   * @return true if bicubic convolution interpolation was successful.
+   */
+  bool atPositionBicubicConvolutionInterpolated(const std::string& layer, const Position& position,
+                                             float& value) const;
+
+  /*!
+   * Get cell data at requested position, cubic interpolated
+   * on a square. At the edge of the map,
+   * the algorithm assumes that height continues with the slope 0.
+   * I.e. the border cells just repeat outside of the map
+   * Taken from: https://en.wikipedia.org/wiki/Bicubic_interpolation
+   * @param[in] layer the name of the layer to be accessed.
+   * @param[in] position the requested position.
+   * @param[out] value the data of the cell.
+   * @return true if bicubic interpolation was successful.
+   */
+  bool atPositionBicubicInterpolated(const std::string& layer, const Position& position,
+                                             float& value) const;
+
 
   /*!
    * Resize the buffer.

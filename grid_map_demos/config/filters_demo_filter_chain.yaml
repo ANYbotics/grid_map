@@ -1,5 +1,8 @@
 grid_map_filters:
-
+  - name: first
+    type: gridMapFilters/MockFilter
+    params:
+      processing_time: 100
   - name: buffer_normalizer
     type: gridMapFilters/BufferNormalizerFilter
 
@@ -107,7 +110,8 @@ grid_map_filters:
   - name: traversability_lower_threshold
     type: gridMapFilters/ThresholdFilter
     params:
-      layer: traversability
+      condition_layer: traversability
+      output_layer: traversability
       lower_threshold: 0.0
       set_to: 0.0
 
@@ -115,6 +119,7 @@ grid_map_filters:
   - name: traversability_upper_threshold
     type: gridMapFilters/ThresholdFilter
     params:
-      layer: traversability
+      condition_layer: traversability
+      output_layer: traversability
       upper_threshold: 1.0
       set_to: 1.0 # Other uses: .nan, .inf

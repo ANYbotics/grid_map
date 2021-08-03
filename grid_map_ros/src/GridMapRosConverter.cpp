@@ -35,7 +35,7 @@ GridMapRosConverter::~GridMapRosConverter()
 {
 }
 
-bool GridMapRosConverter::fromMessage(const grid_map_msgs::GridMap& message, grid_map::GridMap& gridMap)
+bool GridMapRosConverter::fromMessage(const grid_map_msgs::GridMap& message, grid_map::GridMap& gridMap, const std::vector<std::string>& layers, bool copyBasicLayers, bool copyAllNonBasicLayers)
 {
   gridMap.setTimestamp(message.info.header.stamp.toNSec());
   gridMap.setFrameId(message.info.header.frame_id);
@@ -47,16 +47,36 @@ bool GridMapRosConverter::fromMessage(const grid_map_msgs::GridMap& message, gri
     return false;
   }
 
-  for (unsigned int i = 0; i < message.layers.size(); i++) {
+  // Copy non-basic layers.
+  for (unsigned int i = 0u; i < message.layers.size(); ++i) {
+
+    // check if layer should be copied.
+    if (!copyAllNonBasicLayers && std::find(layers.begin(), layers.end(), message.layers[i]) == layers.end()) {
+      continue;
+    }
+
+    // TODO Could we use the data mapping (instead of copying) method here?
     Matrix data;
-    multiArrayMessageCopyToMatrixEigen(message.data[i], data); // TODO Could we use the data mapping (instead of copying) method here?
+    if(!multiArrayMessageCopyToMatrixEigen(message.data[i], data)) {
+      return false;
+    }
+
     // TODO Check if size is good.   size_ << getRows(message.data[0]), getCols(message.data[0]);
     gridMap.add(message.layers[i], data);
   }
 
-  gridMap.setBasicLayers(message.basic_layers);
+  // Copy basic layers.
+  if (copyBasicLayers) {
+    gridMap.setBasicLayers(message.basic_layers);
+  }
+
   gridMap.setStartIndex(Index(message.outer_start_index, message.inner_start_index));
   return true;
+}
+
+bool GridMapRosConverter::fromMessage(const grid_map_msgs::GridMap& message, grid_map::GridMap& gridMap)
+{
+  return fromMessage(message, gridMap, std::vector<std::string>(), true, true);
 }
 
 void GridMapRosConverter::toMessage(const grid_map::GridMap& gridMap, grid_map_msgs::GridMap& message)
@@ -221,7 +241,7 @@ bool GridMapRosConverter::fromOccupancyGrid(const nav_msgs::OccupancyGrid& occup
     return false;
   }
 
-  if (size.prod() != occupancyGrid.data.size()) {
+  if (static_cast<size_t>(size.prod()) != occupancyGrid.data.size()) {
     ROS_WARN_STREAM("Conversion of occupancy grid: Size of data does not correspond to width * height.");
     return false;
   }

@@ -13,7 +13,7 @@
 
 namespace grid_map {
 
-const int nDimensions()
+int nDimensions()
 {
   return 2;
 }

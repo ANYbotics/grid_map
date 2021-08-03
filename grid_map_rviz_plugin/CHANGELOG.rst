@@ -2,6 +2,12 @@
 Changelog for package grid_map_rviz_plugin
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.6.4 (2020-12-04)
+------------------
+
+1.6.2 (2019-10-14)
+------------------
+
 1.6.1 (2019-02-27)
 ------------------
 * Made FrameManager and MessageFilterDisplay ROS version dependent.
@@ -28,7 +34,7 @@ Changelog for package grid_map_rviz_plugin
 1.5.0 (2017-07-18)
 ------------------
 * Improved visualization to support triangles in all directions.
-* Fixes transparency issue for grid maps in RViz. (`#68 <https://github.com/ethz-asl/grid_map/issues/68>`_).
+* Fixes transparency issue for grid maps in RViz. (`#68 <https://github.com/anybotics/grid_map/issues/68>`_).
 * Fixed package XML tag.
 * Contributors: Perry Franklin, Stefan Fabian, Peter Fankhauser
 

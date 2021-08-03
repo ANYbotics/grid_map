@@ -8,6 +8,7 @@
 
 #include "grid_map_rviz_plugin/GridMapVisual.hpp"
 #include "grid_map_rviz_plugin/GridMapDisplay.hpp"
+// The following replaces <rviz/frame_manager.h>
 #include "grid_map_rviz_plugin/modified/frame_manager.h"
 
 #include <OGRE/OgreSceneNode.h>
@@ -27,6 +28,8 @@ namespace grid_map_rviz_plugin {
 
 GridMapDisplay::GridMapDisplay()
 {
+  qRegisterMetaType<grid_map_msgs::GridMap::ConstPtr>("grid_map_msgs::GridMap::ConstPtr");
+
   alphaProperty_ = new rviz::FloatProperty("Alpha", 1.0,
                                            "0 is fully transparent, 1.0 is fully opaque.", this,
                                            SLOT(updateVisualization()));
@@ -119,8 +122,17 @@ void GridMapDisplay::onInitialize()
   updateHistoryLength();
 }
 
+void GridMapDisplay::onEnable()
+{
+  isReset_ = false;
+  connect(this, &GridMapDisplay::process, this, &GridMapDisplay::onProcessMessage);
+  MessageFilterDisplay<grid_map_msgs::GridMap>::onEnable();
+}
+
 void GridMapDisplay::reset()
 {
+  isReset_ = true;
+  disconnect(this, &GridMapDisplay::process, this, &GridMapDisplay::onProcessMessage);
   MFDClass::reset();
   visuals_.clear();
 }
@@ -200,6 +212,16 @@ void GridMapDisplay::updateVisualization()
 
 void GridMapDisplay::processMessage(const grid_map_msgs::GridMap::ConstPtr& msg)
 {
+  process(msg);
+}
+
+void GridMapDisplay::onProcessMessage(const grid_map_msgs::GridMap::ConstPtr& msg)
+{
+  // Check if the display was already reset.
+  if (isReset_) {
+    return;
+  }
+
   // Check if transform between the message's frame and the fixed frame exists.
   Ogre::Quaternion orientation;
   Ogre::Vector3 position;

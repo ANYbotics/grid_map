@@ -24,10 +24,23 @@ namespace grid_map {
   typedef Eigen::Array2d Length;
   typedef uint64_t Time;
 
+  /*
+   * Interpolations are ordered in the order
+   * of increasing accuracy and computational complexity.
+   * INTER_NEAREST - fastest, but least accurate,
+   * INTER_CUBIC - slowest, but the most accurate.
+   * see:
+   * https://en.wikipedia.org/wiki/Bicubic_interpolation
+   * https://web.archive.org/web/20051024202307/http://www.geovista.psu.edu/sites/geocomp99/Gc99/082/gc_082.htm
+   * for more info. Cubic convolution algorithm is also known as piecewise cubic
+   * interpolation and in general does not guarantee continuous
+   * first derivatives.
+   */
   enum class InterpolationMethods{
       INTER_NEAREST, // nearest neighbor interpolation
-      INTER_LINEAR   // bilinear interpolation
-      // ToDo: INTER_CUBIC
+      INTER_LINEAR,   // bilinear interpolation
+      INTER_CUBIC_CONVOLUTION, //piecewise bicubic interpolation using convolution algorithm
+      INTER_CUBIC // standard bicubic interpolation
   };
 
 } /* namespace */

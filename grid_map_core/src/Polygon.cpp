@@ -12,6 +12,7 @@
 #include <Eigen/Geometry>
 
 #include <limits>
+#include <algorithm>
 
 namespace grid_map {
 
@@ -31,7 +32,7 @@ Polygon::~Polygon() {}
 bool Polygon::isInside(const Position& point) const
 {
   int cross = 0;
-  for (int i = 0, j = vertices_.size() - 1; i < vertices_.size(); j = i++) {
+  for (size_t i = 0, j = vertices_.size() - 1; i < vertices_.size(); j = i++) {
     if ( ((vertices_[i].y() > point.y()) != (vertices_[j].y() > point.y()))
            && (point.x() < (vertices_[j].x() - vertices_[i].x()) * (point.y() - vertices_[i].y()) /
             (vertices_[j].y() - vertices_[i].y()) + vertices_[i].x()) )
@@ -101,7 +102,7 @@ double Polygon::getArea() const
 {
   double area = 0.0;
   int j = vertices_.size() - 1;
-  for (int i = 0; i < vertices_.size(); i++) {
+  for (size_t i = 0; i < vertices_.size(); i++) {
     area += (vertices_.at(j).x() + vertices_.at(i).x())
         * (vertices_.at(j).y() - vertices_.at(i).y());
     j = i;
@@ -115,7 +116,7 @@ Position Polygon::getCentroid() const
   std::vector<Position> vertices = getVertices();
   vertices.push_back(vertices.at(0));
   double area = 0.0;
-  for (int i = 0; i < vertices.size() - 1; i++) {
+  for (size_t i = 0; i < vertices.size() - 1; i++) {
     const double a = vertices[i].x() * vertices[i+1].y() - vertices[i+1].x() * vertices[i].y();
     area += a;
     centroid.x() += a * (vertices[i].x() + vertices[i+1].x());
@@ -219,7 +220,7 @@ bool Polygon::offsetInward(const double margin)
   return true;
 }
 
-std::vector<Polygon> Polygon::triangulate(const TriangulationMethods& method) const
+std::vector<Polygon> Polygon::triangulate(const TriangulationMethods& /*method*/) const
 {
   // TODO Add more triangulation methods.
   // https://en.wikipedia.org/wiki/Polygon_triangulation
@@ -292,32 +293,41 @@ Polygon Polygon::convexHull(Polygon& polygon1, Polygon& polygon2)
   vertices.insert(vertices.end(), polygon1.getVertices().begin(), polygon1.getVertices().end());
   vertices.insert(vertices.end(), polygon2.getVertices().begin(), polygon2.getVertices().end());
 
-  std::vector<Position> hull(vertices.size()+1);
+  return monotoneChainConvexHullOfPoints(vertices);
+}
+
+Polygon Polygon::monotoneChainConvexHullOfPoints(const std::vector<Position>& points)
+{
+  // Adapted from https://en.wikibooks.org/wiki/Algorithm_Implementation/Geometry/Convex_hull/Monotone_chain
+  if (points.size() <= 3) {
+    return Polygon(points);
+  }
+  std::vector<Position> pointsConvexHull(2 * points.size());
 
   // Sort points lexicographically.
-  std::sort(vertices.begin(), vertices.end(), sortVertices);
+  auto sortedPoints(points);
+  std::sort(sortedPoints.begin(), sortedPoints.end(), sortVertices);
+
 
   int k = 0;
   // Build lower hull
-  for (int i = 0; i < vertices.size(); ++i) {
-    while (k >= 2
-        && computeCrossProduct2D(hull.at(k - 1) - hull.at(k - 2),
-                                 vertices.at(i) - hull.at(k - 2)) <= 0)
+  for (size_t i = 0; i < sortedPoints.size(); ++i) {
+    while (k >= 2 && vectorsMakeClockwiseTurn(pointsConvexHull.at(k - 2), pointsConvexHull.at(k - 1), sortedPoints.at(i))) {
       k--;
-    hull.at(k++) = vertices.at(i);
+    }
+    pointsConvexHull.at(k++) = sortedPoints.at(i);
   }
 
   // Build upper hull.
-  for (int i = vertices.size() - 2, t = k + 1; i >= 0; i--) {
-    while (k >= t
-        && computeCrossProduct2D(hull.at(k - 1) - hull.at(k - 2),
-                                 vertices.at(i) - hull.at(k - 2)) <= 0)
+  for (int i = sortedPoints.size() - 2, t = k + 1; i >= 0; i--) {
+    while (k >= t && vectorsMakeClockwiseTurn(pointsConvexHull.at(k - 2), pointsConvexHull.at(k - 1), sortedPoints.at(i))) {
       k--;
-    hull.at(k++) = vertices.at(i);
+    }
+    pointsConvexHull.at(k++) = sortedPoints.at(i);
   }
-  hull.resize(k - 1);
+  pointsConvexHull.resize(k - 1);
 
-  Polygon polygon(hull);
+  Polygon polygon(pointsConvexHull);
   return polygon;
 }
 
@@ -334,5 +344,11 @@ double Polygon::computeCrossProduct2D(const Eigen::Vector2d& vector1,
   return (vector1.x() * vector2.y() - vector1.y() * vector2.x());
 }
 
-} /* namespace grid_map */
+double Polygon::vectorsMakeClockwiseTurn(const Eigen::Vector2d &pointOrigin,
+                                         const Eigen::Vector2d &pointA,
+                                         const Eigen::Vector2d &pointB)
+{
+  return computeCrossProduct2D(pointA - pointOrigin, pointB - pointOrigin) <= 0;
+}
 
+} /* namespace grid_map */

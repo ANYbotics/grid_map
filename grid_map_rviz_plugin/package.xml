@@ -1,14 +1,16 @@
 <?xml version="1.0"?>
 <package>
   <name>grid_map_rviz_plugin</name>
-  <version>1.6.1</version>
+  <version>1.6.4</version>
   <description>RViz plugin for displaying grid map messages.</description>
-  <maintainer email="pfankhauser@anybotics.com">Péter Fankhauser</maintainer>
+  <maintainer email="mwulf@anybotics.com">Maximilian Wulf</maintainer>
+  <maintainer email="ynava@anybotics.com">Yoshua Nava</maintainer>
   <license>BSD</license>
-  <author>Philipp Krüsi</author>
+  <author email="philipp.kruesi@mavt.ethz.ch">Philipp Krüsi</author>
   <author>Péter Fankhauser</author>
 
   <buildtool_depend>catkin</buildtool_depend>
+<!--   <build_depend>cmake_clang_tools</build_depend> -->
   <build_depend>qtbase5-dev</build_depend>
   <build_depend>rviz</build_depend>
   <build_depend>grid_map_ros</build_depend>
@@ -19,6 +21,8 @@
   <run_depend>rviz</run_depend>
   <run_depend>grid_map_ros</run_depend>
   <run_depend>grid_map_msgs</run_depend>
+<!--   <test_depend>cmake_code_coverage</test_depend> -->
+  <test_depend>gtest</test_depend>
   <export>
       <rviz plugin="${prefix}/plugin_description.xml"/>
   </export>

@@ -74,8 +74,8 @@ void runCustomIndexIteration(GridMap& map, const string& layer_from, const strin
 {
   const auto& data_from = map[layer_from];
   auto& data_to = map[layer_to];
-  for (size_t j = 0; j < data_to.cols(); ++j) {
-    for (size_t i = 0; i < data_to.rows(); ++i) {
+  for (Eigen::Index j{0}; j < data_to.cols(); ++j) {
+    for (Eigen::Index i{0}; i < data_to.rows(); ++i) {
       const float value_from = data_from(i, j);
       float& value_to = data_to(i, j);
       value_to = value_to > value_from ? value_to : value_from;
@@ -90,12 +90,12 @@ void runCustomLinearIndexIteration(GridMap& map, const string& layer_from, const
 {
   const auto& data_from = map[layer_from];
   auto& data_to = map[layer_to];
-  for (size_t i = 0; i < data_to.size(); ++i) {
+  for (Eigen::Index i = 0; i < data_to.size(); ++i) {
     data_to(i) = data_to(i) > data_from(i) ? data_to(i) : data_from(i);
   }
 }
 
-int main(int argc, char* argv[])
+int main()
 {
   GridMap map;
   map.setGeometry(Length(20.0, 20.0), 0.004, Position(0.0, 0.0));

@@ -1,7 +1,9 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.5.1)
 project(grid_map_loader)
 
 set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
+add_compile_options(-Wall -Wextra -Wpedantic)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 ## Find catkin macros and libraries
 find_package(catkin REQUIRED COMPONENTS
@@ -37,13 +39,13 @@ catkin_package(
 ## Your package locations should be listed before other locations
 include_directories(
   include
-  ${catkin_INCLUDE_DIRS}
-  ${EIGEN3_INCLUDE_DIR}
+  SYSTEM
+    ${catkin_INCLUDE_DIRS}
+    ${EIGEN3_INCLUDE_DIR}
 )
 
 ## Declare a cpp executable
-add_executable(
-  ${PROJECT_NAME}
+add_executable(${PROJECT_NAME}
   src/grid_map_loader_node.cpp
   src/GridMapLoader.cpp
 )
@@ -66,3 +68,43 @@ install(
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
+#############
+## Testing ##
+#############
+
+if (CATKIN_ENABLE_TESTING)
+  catkin_add_gtest(${PROJECT_NAME}-test
+    test/test_grid_map_loader.cpp
+  )
+  add_dependencies(${PROJECT_NAME}-test
+    ${PROJECT_NAME}
+  )
+  target_include_directories(${PROJECT_NAME}-test PRIVATE
+    include
+  )
+  target_include_directories(${PROJECT_NAME}-test SYSTEM PUBLIC
+    ${catkin_INCLUDE_DIRS}
+    ${EIGEN3_INCLUDE_DIRS}
+  )
+
+  ###################
+  ## Code_coverage ##
+  ###################
+  find_package(cmake_code_coverage QUIET)
+  if(cmake_code_coverage_FOUND)
+    add_gtest_coverage(
+      TEST_BUILD_TARGETS
+        ${PROJECT_NAME}-test
+    )
+  endif()
+endif()
+
+#################
+## Clang_tools ##
+#################
+find_package(cmake_clang_tools QUIET)
+if(cmake_clang_tools_FOUND)
+  add_default_clang_tooling(
+    DISABLE_CLANG_FORMAT
+  )
+endif(cmake_clang_tools_FOUND)

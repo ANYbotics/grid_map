@@ -35,3 +35,5 @@
 
 # OS X
 .DS_Store
+
+grid_map_pcl/data/

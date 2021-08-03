@@ -18,8 +18,12 @@ LineIterator::LineIterator(const grid_map::GridMap& gridMap, const Position& sta
 {
   Index startIndex, endIndex;
   if (getIndexLimitedToMapRange(gridMap, start, end, startIndex)
-      && getIndexLimitedToMapRange(gridMap, end, start, endIndex))
+      && getIndexLimitedToMapRange(gridMap, end, start, endIndex)) {
     initialize(gridMap, startIndex, endIndex);
+  }
+  else {
+    throw std::invalid_argument("Failed to construct LineIterator.");
+  }
 }
 
 LineIterator::LineIterator(const grid_map::GridMap& gridMap, const Index& start, const Index& end)

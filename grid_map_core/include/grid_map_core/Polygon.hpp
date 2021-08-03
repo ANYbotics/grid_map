@@ -203,6 +203,13 @@ class Polygon
    */
   static Polygon convexHull(Polygon& polygon1, Polygon& polygon2);
 
+  /*!
+   * Computes the convex hull of given points, using Andrew's monotone chain convex hull algorithm, and returns it as polygon.
+   * @param[in] points points to use to compute the convex hull used to create the polygon.
+   * @return convex hull as polygon.
+   */
+  static Polygon monotoneChainConvexHullOfPoints(const std::vector<Position>& points);
+
  protected:
 
   /*!
@@ -220,6 +227,16 @@ class Polygon
    */
   static double computeCrossProduct2D(const Eigen::Vector2d& vector1,
                                       const Eigen::Vector2d& vector2);
+
+  /*!
+   * Returns true if OAB makes a clockwise turn or if the OA and OB vectors are collinear.
+   * @param[in] pointO point of the origin O, used to compute OA and OB.
+   * @param[in] pointA input point A, used to compute OA.
+   * @param[in] pointB input point B, used to compute OB.
+   */
+  static double vectorsMakeClockwiseTurn(const Eigen::Vector2d& pointO,
+                                         const Eigen::Vector2d& pointA,
+                                         const Eigen::Vector2d& pointB);
 
   //! Frame id of the polygon.
   std::string frameId_;

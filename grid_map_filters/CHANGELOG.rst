@@ -2,6 +2,24 @@
 Changelog for package grid_map_filters
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.6.4 (2020-12-04)
+------------------
+* Extended the ThresholdFilter:
+* - The layer parameter was replaced by condition_layer and output_layer.
+* - The previous behavior can be restored by setting both new parameters to the same value.
+* Contributors: Magnus Gärtner
+
+1.6.3 (2020-09-08)
+------------------
+* Implemented a new filter:
+* - MedianFillFilter
+* Contributors: Magnus Gärtner
+
+1.6.2 (2019-10-14)
+------------------
+* Update MinInRadiusFilter.cpp
+* Contributors: Sascha Wirges
+
 1.6.1 (2019-02-27)
 ------------------
 * Updated host changes.

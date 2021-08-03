@@ -12,6 +12,7 @@
 #include <grid_map_ros/grid_map_ros.hpp>
 #include <grid_map_msgs/GridMap.h>
 #include <boost/circular_buffer.hpp>
+// The following replaces <rviz/message_filter_display.h>
 #include "grid_map_rviz_plugin/modified/message_filter_display.h"
 #endif
 
@@ -31,7 +32,7 @@ class EditableEnumProperty;
 namespace grid_map_rviz_plugin {
 
 class GridMapVisual;
-class GridMapDisplay : public MessageFilterDisplayMod<grid_map_msgs::GridMap>
+class GridMapDisplay : public MessageFilterDisplay<grid_map_msgs::GridMap>
 {
 Q_OBJECT
  public:
@@ -41,7 +42,13 @@ Q_OBJECT
  protected:
   virtual void onInitialize();
 
+  virtual void onEnable();
+
   virtual void reset();
+
+ Q_SIGNALS:
+  // Signal to ensure that the rendering happens in the ui thread.
+  void process(const grid_map_msgs::GridMap::ConstPtr& msg);
 
  private Q_SLOTS:
   void updateHistoryLength();
@@ -50,10 +57,15 @@ Q_OBJECT
   void updateUseRainbow();
   void updateAutocomputeIntensityBounds();
   void updateVisualization();
+  // Slot to ensure that the rendering happens in the ui thread.
+  void onProcessMessage(const grid_map_msgs::GridMap::ConstPtr& msg);
 
  private:
   // Callback for incoming ROS messages
   void processMessage(const grid_map_msgs::GridMap::ConstPtr& msg);
+
+  // Flag to ensure that after the reset the scene is not updated again.
+  std::atomic<bool> isReset_{false};
 
   // Circular buffer for visuals
   boost::circular_buffer<boost::shared_ptr<GridMapVisual> > visuals_;

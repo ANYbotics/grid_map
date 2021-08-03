@@ -1,15 +1,19 @@
 <?xml version="1.0"?>
 <package format="2">
   <name>grid_map_sdf</name>
-  <version>1.6.1</version>
+  <version>1.6.4</version>
   <description>Generates signed distance fields from grid maps.</description>
-  <maintainer email="pfankhauser@anybotics.com">Péter Fankhauser</maintainer>
+  <maintainer email="mwulf@anybotics.com">Maximilian Wulf</maintainer>
+  <maintainer email="ynava@anybotics.com">Yoshua Nava</maintainer>
   <license>BSD</license>
-  <url type="website">http://github.com/ethz-asl/grid_map</url>
-  <url type="bugtracker">http://github.com/ethz-asl/grid_map/issues</url>
+  <url type="website">http://github.com/anybotics/grid_map</url>
+  <url type="bugtracker">http://github.com/anybotics/grid_map/issues</url>
   <author email="takahiro.miki1992@gmail.com">Takahiro Miki</author>
   <author email="pfankhauser@anybotics.com">Péter Fankhauser</author>
   <buildtool_depend>catkin</buildtool_depend>
+<!--   <build_depend>cmake_clang_tools</build_depend> -->
   <depend>grid_map_core</depend>
   <depend>pcl_ros</depend>
+<!--   <test_depend>cmake_code_coverage</test_depend> -->
+  <test_depend>gtest</test_depend>
 </package>

@@ -1,19 +1,26 @@
 <?xml version="1.0"?>
 <package format="2">
   <name>grid_map_filters</name>
-  <version>1.6.1</version>
+  <version>1.6.4</version>
   <description>Processing grid maps as a sequence of ROS filters.</description>
-  <maintainer email="pfankhauser@anybotics.com">Péter Fankhauser</maintainer>
+  <maintainer email="mwulf@anybotics.com">Maximilian Wulf</maintainer>
+  <maintainer email="ynava@anybotics.com">Yoshua Nava</maintainer>
   <license>BSD</license>
-  <url type="website">http://github.com/ethz-asl/grid_map</url>
-  <url type="bugtracker">http://github.com/ethz-asl/grid_map/issues</url>
+  <url type="website">http://github.com/anybotics/grid_map</url>
+  <url type="bugtracker">http://github.com/anybotics/grid_map/issues</url>
   <author email="pfankhauser@anybotics.com">Péter Fankhauser</author>
   <author email="martiwer@student.ethz.ch">Martin Wermelinger</author>
   <buildtool_depend>catkin</buildtool_depend>
+<!--   <build_depend>cmake_clang_tools</build_depend> -->
+  <depend>filters</depend>
   <depend>grid_map_core</depend>
   <depend>grid_map_ros</depend>
   <depend>grid_map_msgs</depend>
-  <depend>filters</depend>
+  <depend>tbb</depend>
+  <depend>libopencv-dev</depend>
+<!--   <test_depend>cmake_code_coverage</test_depend> -->
+  <test_depend>gtest</test_depend>
+  <test_depend>google-mock</test_depend>
   <export>
     <filters plugin="${prefix}/filter_plugins.xml" />
   </export>

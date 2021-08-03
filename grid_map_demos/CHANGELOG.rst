@@ -2,6 +2,16 @@
 Changelog for package grid_map_demos
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.6.4 (2020-12-04)
+------------------
+
+1.6.3 (2020-10-19)
+------------------
+* Added GridMapToImageDemo. Saves the elevation layer of a grid_map to a file.
+
+1.6.2 (2019-10-14)
+------------------
+
 1.6.1 (2019-02-27)
 ------------------
 * Updated host changes.
@@ -10,7 +20,7 @@ Changelog for package grid_map_demos
 
 1.6.0 (2017-11-24)
 ------------------
-* Fixed compatibility issue with OpenCV 3 (`#140 <https://github.com/ethz-asl/grid_map/issues/140>`_).
+* Fixed compatibility issue with OpenCV 3 (`#140 <https://github.com/anybotics/grid_map/issues/140>`_).
 * Fixing cpp-check warnings and errors.
 * Fixed dependencies for grid_map_demos.
 * Updated terrain for filters demo.
@@ -62,7 +72,7 @@ Changelog for package grid_map_demos
 ------------------
 * Added new demonstrators for OpenCV based operations.
 * Resolving build errors for OpenCV.
-* Added comment on iterator performance (`#45 <https://github.com/ethz-asl/grid_map/issues/45>`_).
+* Added comment on iterator performance (`#45 <https://github.com/anybotics/grid_map/issues/45>`_).
 * Contributors: Peter Fankhauser
 
 1.2.0 (2016-03-03)

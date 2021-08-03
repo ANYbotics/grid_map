@@ -2,6 +2,12 @@
 Changelog for package grid_map_ros
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.6.4 (2020-12-04)
+------------------
+
+1.6.2 (2019-10-14)
+------------------
+
 1.6.1 (2019-02-27)
 ------------------
 * Updated host changes.
@@ -20,7 +26,7 @@ Changelog for package grid_map_ros
 
 1.5.1 (2017-07-25)
 ------------------
-* Added backwards compatibility for costmap_2d conversion in grid_map_ros (`#111 <https://github.com/ethz-asl/grid_map/issues/111>`_).
+* Added backwards compatibility for costmap_2d conversion in grid_map_ros (`#111 <https://github.com/anybotics/grid_map/issues/111>`_).
 * Contributors: Peter Fankhauser
 
 1.5.0 (2017-07-18)
@@ -31,8 +37,8 @@ Changelog for package grid_map_ros
 
 1.4.2 (2017-01-24)
 ------------------
-* Added conversion for Costmap2D from ROS Navigation (`#84 <https://github.com/ethz-asl/grid_map/issues/84>`_).
-* Added Grid Map message traits to simplify code of the Grid Map RViz plugin (`#87 <https://github.com/ethz-asl/grid_map/issues/87>`_).
+* Added conversion for Costmap2D from ROS Navigation (`#84 <https://github.com/anybotics/grid_map/issues/84>`_).
+* Added Grid Map message traits to simplify code of the Grid Map RViz plugin (`#87 <https://github.com/anybotics/grid_map/issues/87>`_).
 * Contributors: Peter Fankhauser, Stefan Kohlbrecher, Daniel Stonier
 
 1.4.1 (2016-10-23)
@@ -56,8 +62,8 @@ Changelog for package grid_map_ros
 
 1.3.0 (2016-04-26)
 ------------------
-* Added new convenience function to change the resolution of grid maps with help of OpenCV interpolation methods (`#60 <https://github.com/ethz-asl/grid_map/issues/60>`_).
-* Separated OpenCV to grid map conversions to grid_map_cv package (also fixes `#56 <https://github.com/ethz-asl/grid_map/issues/56>`_)
+* Added new convenience function to change the resolution of grid maps with help of OpenCV interpolation methods (`#60 <https://github.com/anybotics/grid_map/issues/60>`_).
+* Separated OpenCV to grid map conversions to grid_map_cv package (also fixes `#56 <https://github.com/anybotics/grid_map/issues/56>`_)
 * Improved efficiency and generalized image to grid map conversion.
 * Added image conversion for different encodings and depth resolutions.
 * Fix scaling of image value to height conversion.
@@ -66,8 +72,8 @@ Changelog for package grid_map_ros
 
 1.2.0 (2016-03-03)
 ------------------
-* Changed the package name from `grid_map` to `grid_map_ros` and made `grid_map` a metapackage (`#34 <https://github.com/ethz-asl/grid_map/issues/34>`_).
-* Added new occupancy grid to grid map converter (`#33 <https://github.com/ethz-asl/grid_map/issues/33>`_).
+* Changed the package name from `grid_map` to `grid_map_ros` and made `grid_map` a metapackage (`#34 <https://github.com/anybotics/grid_map/issues/34>`_).
+* Added new occupancy grid to grid map converter (`#33 <https://github.com/anybotics/grid_map/issues/33>`_).
 * Contributors: Peter Fankhauser
 
 1.1.3 (2016-01-11)
