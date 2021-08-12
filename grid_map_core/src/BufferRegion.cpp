@@ -26,10 +26,6 @@ BufferRegion::BufferRegion(
 {
 }
 
-BufferRegion::~BufferRegion()
-{
-}
-
 const Index & BufferRegion::getStartIndex() const
 {
   return staretIndex_;
