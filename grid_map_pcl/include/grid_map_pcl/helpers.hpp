@@ -44,7 +44,13 @@ void saveGridMap(
 inline void printTimeElapsedToRosInfoStream(
   const std::chrono::system_clock::time_point & start,
   const std::string & prefix,
-  const rclcpp::Logger & node_logger);
+  const rclcpp::Logger & node_logger)
+{
+  const auto stop = std::chrono::high_resolution_clock::now();
+  const auto duration =
+    std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count() / 1000.0;
+  RCLCPP_INFO_STREAM(node_logger, prefix << duration << " sec");
+}
 
 void processPointcloud(
   grid_map::GridMapPclLoader * gridMapPclLoader,
