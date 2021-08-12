@@ -26,8 +26,6 @@
 namespace grid_map
 {
 
-constexpr double kRadToDeg = 180.0 / M_PI;
-
 GridMapPclLoader::GridMapPclLoader(const rclcpp::Logger & node_logger)
 : node_logger_(node_logger),
   pointcloudProcessor_(node_logger_)
