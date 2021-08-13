@@ -1,0 +1,43 @@
+name: Build and test
+
+on:
+  pull_request:
+  schedule:
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        ros_distribution:
+          - galactic
+          - rolling
+        include:
+          # Galactic Geochelone (May 2021 - November 2022)
+          - docker_image: rostooling/setup-ros-docker:ubuntu-focal-ros-galactic-ros-base-latest
+            ros_distribution: galactic
+            ros_version: 2
+          # Rolling Ridley  (June 2020 - Present)
+          - docker_image: rostooling/setup-ros-docker:ubuntu-focal-ros-rolling-ros-base-latest
+            ros_distribution: rolling
+            ros_version: 2
+    container:
+      image: ${{ matrix.docker_image }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Search packages in this repository
+        id: list_packages
+        run: |
+          echo ::set-output name=package_list::$(colcon list --names-only)
+
+      - name: Run action-ros-ci
+        uses: ros-tooling/action-ros-ci@v0.2
+        with:
+          package-name: ${{ steps.list_packages.outputs.package_list }}
+          target-ros2-distro: ${{ matrix.ros_distribution }}
