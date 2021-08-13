@@ -41,3 +41,4 @@ jobs:
         with:
           package-name: ${{ steps.list_packages.outputs.package_list }}
           target-ros2-distro: ${{ matrix.ros_distribution }}
+          vcs-repo-file-url: build_depends.${{ matrix.ros_distribution }}.repos

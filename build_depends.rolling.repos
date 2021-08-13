@@ -1,0 +1,5 @@
+repositories:
+  ros-planning/navigation2:
+    type: git
+    url: https://github.com/ros-planning/navigation2.git
+    version: main
