@@ -118,7 +118,7 @@ void expectNear(const M1 & A, const M2 & B, T tolerance, std::string const & mes
 }
 
 template<typename M1>
-void assertFinite(const M1 & A, std::string const & /* message */ = "")
+void assertFinite(const M1 & A, std::string const & /* message */)
 {
   for (int r = 0; r < A.rows(); r++) {
     for (int c = 0; c < A.cols(); c++) {
