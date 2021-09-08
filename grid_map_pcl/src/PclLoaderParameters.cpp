@@ -61,6 +61,8 @@ void PclLoaderParameters::handleYamlNode(const YAML::Node & yamlNode)
     yamlNode[prefix]["grid_map"]["resolution"].as<double>();
   parameters_.gridMap_.minCloudPointsPerCell_ =
     yamlNode[prefix]["grid_map"]["min_num_points_per_cell"].as<int>();
+  parameters_.gridMap_.height_type_ =
+    yamlNode[prefix]["grid_map"]["height_type"].as<int>();
 
   parameters_.downsampling_.isDownsampleCloud_ =
     yamlNode[prefix]["downsampling"]["is_downsample_cloud"].as<bool>();

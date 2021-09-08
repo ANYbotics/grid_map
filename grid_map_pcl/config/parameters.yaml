@@ -26,6 +26,9 @@ pcl_grid_map_extraction:
   grid_map:
     min_num_points_per_cell: 4
     resolution: 0.1
+    # 0: Smallest value among the average values ​​of each cluster
+    # 1: Mean value of the cluster with the most points
+    height_type: 0
 
     
        
