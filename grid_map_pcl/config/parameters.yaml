@@ -29,6 +29,8 @@ pcl_grid_map_extraction:
     # 0: Smallest value among the average values ​​of each cluster
     # 1: Mean value of the cluster with the most points
     height_type: 0
+    # For height_type 1
+    height_thresh: 1.0
 
     
        
