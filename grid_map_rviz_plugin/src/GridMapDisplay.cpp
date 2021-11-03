@@ -38,9 +38,13 @@ GridMapDisplay::GridMapDisplay()
                                                  "Number of prior grid maps to display.", this,
                                                  SLOT(updateHistoryLength()));
 
-  showGridLinesProperty_ = new rviz::BoolProperty(
-      "Show Grid Lines", true, "Whether to show the lines connecting the grid cells.", this,
-      SLOT(updateVisualization()));
+  showGridLinesProperty_ = new rviz::BoolProperty("Show Grid Lines", true, "Whether to show the lines connecting the grid cells.", this,
+                                                  SLOT(updateGridLines()));
+
+  gridLinesThicknessProperty_ =
+      new rviz::FloatProperty("Grid Line Thickness", 0.1, "Set thickness for the grid lines.", this, SLOT(updateVisualization()));
+  gridCellDecimationProperty_ = new rviz::IntProperty("Grid Cell Decimation", 1, "Decimation factor for the grid map cell display.", this,
+                                                      SLOT(updateVisualization()));
 
   heightModeProperty_ = new rviz::EnumProperty("Height Transformer", "GridMapLayer",
                                                "Select the transformer to use to set the height.",
@@ -177,6 +181,14 @@ void GridMapDisplay::updateUseRainbow()
   invertRainbowProperty_->setHidden(!useRainbow);
 }
 
+void GridMapDisplay::updateGridLines()
+{
+  updateVisualization();
+  const bool isShowGridLines = showGridLinesProperty_->getBool();
+  gridLinesThicknessProperty_->setHidden(!isShowGridLines);
+  gridCellDecimationProperty_->setHidden(!isShowGridLines);
+}
+
 void GridMapDisplay::updateAutocomputeIntensityBounds()
 {
   updateVisualization();
@@ -202,11 +214,13 @@ void GridMapDisplay::updateVisualization()
   bool autocomputeIntensity = autocomputeIntensityBoundsProperty_->getBool();
   float minIntensity = minIntensityProperty_->getFloat();
   float maxIntensity = maxIntensityProperty_->getFloat();
+  const float gridLineThickness = gridLinesThicknessProperty_->getFloat();
+  const int gridCellDecimation = gridCellDecimationProperty_->getInt();
 
   for (size_t i = 0; i < visuals_.size(); i++) {
-    visuals_[i]->computeVisualization(alpha, showGridLines, flatTerrain, heightLayer, flatColor, noColor, meshColor,
-                                      mapLayerColor, colorLayer, useRainbow, invertRainbow, minColor, maxColor,
-                                      autocomputeIntensity, minIntensity, maxIntensity);
+    visuals_[i]->computeVisualization(alpha, showGridLines, flatTerrain, heightLayer, flatColor, noColor, meshColor, mapLayerColor,
+                                      colorLayer, useRainbow, invertRainbow, minColor, maxColor, autocomputeIntensity, minIntensity,
+                                      maxIntensity, gridLineThickness, gridCellDecimation);
   }
 }
 
@@ -250,7 +264,8 @@ void GridMapDisplay::onProcessMessage(const grid_map_msgs::GridMap::ConstPtr& ms
                                colorTransformerProperty_->getStdString(), useRainbowProperty_->getBool(),
                                invertRainbowProperty_->getBool(), minColorProperty_->getOgreColor(),
                                maxColorProperty_->getOgreColor(), autocomputeIntensityBoundsProperty_->getBool(),
-                               minIntensityProperty_->getFloat(), maxIntensityProperty_->getFloat());
+                               minIntensityProperty_->getFloat(), maxIntensityProperty_->getFloat(),
+                               gridLinesThicknessProperty_->getFloat(), gridCellDecimationProperty_->getInt());
 
   std::vector<std::string> layer_names = visual->getLayerNames();
   heightTransformerProperty_->clearOptions();

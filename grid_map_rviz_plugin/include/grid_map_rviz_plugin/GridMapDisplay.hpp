@@ -57,6 +57,7 @@ Q_OBJECT
   void updateUseRainbow();
   void updateAutocomputeIntensityBounds();
   void updateVisualization();
+  void updateGridLines();
   // Slot to ensure that the rendering happens in the ui thread.
   void onProcessMessage(const grid_map_msgs::GridMap::ConstPtr& msg);
 
@@ -86,6 +87,8 @@ Q_OBJECT
   rviz::BoolProperty* autocomputeIntensityBoundsProperty_;
   rviz::FloatProperty* minIntensityProperty_;
   rviz::FloatProperty* maxIntensityProperty_;
+  rviz::FloatProperty* gridLinesThicknessProperty_;
+  rviz::IntProperty* gridCellDecimationProperty_;
 };
 
 }  // end namespace grid_map_rviz_plugin

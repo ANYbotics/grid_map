@@ -43,7 +43,7 @@ class GridMapVisual {
   void computeVisualization(float alpha, bool showGridLines, bool flatTerrain, std::string heightLayer, bool flatColor, bool noColor,
                             Ogre::ColourValue meshColor, bool mapLayerColor, std::string colorLayer, bool useRainbow, bool invertRainbow,
                             Ogre::ColourValue minColor, Ogre::ColourValue maxColor, bool autocomputeIntensity, float minIntensity,
-                            float maxIntensity);
+                            float maxIntensity, float gridLineThickness, int gridCellDecimation);
 
   // Set the coordinate frame pose.
   void setFramePosition(const Ogre::Vector3& position);
@@ -101,8 +101,9 @@ class GridMapVisual {
    * @param rows Number of rows that will be drawn.
    * @param resolution Resolution of the map. Used to compute the line thickness.
    * @param alpha Line opacity.
+   * @param lineWidth line thickness for the mesh lines
    */
-  void initializeMeshLines(size_t cols, size_t rows, double resolution, double alpha);
+  void initializeMeshLines(size_t cols, size_t rows, double resolution, double alpha, double lineWidth);
 
   /**
    * Computes a mask where all the provided basicLayers are finite. Used to do fast lockups during mesh creation.
@@ -136,6 +137,26 @@ class GridMapVisual {
    * @return
    */
   Ogre::ColourValue getInterpolatedColor(float intensity, Ogre::ColourValue minColor, Ogre::ColourValue maxColor);
+
+  /**
+   * Returns a vector of ogre coordinates. Each coordinate is a vertex for a mesh line.
+   * @param i Index of the current point in x.
+   * @param j Index of the current point in y.
+   * @param gridCellDecimation Integer that defines how many cells to skip between mesh lines. E.g. if n=3,
+   *        every third mesh line will be displayed.
+   * @param isNthRow Flag to indicate the n-th row, where n = gridCellDecimation.
+   * @param isNthCol Flag to indicate the n-th column, where n = gridCellDecimation.
+   * @param isLastRow Flag to indicate the last row.
+   * @param isLastCol Flag to indicate the last column.
+   * @param resolution The resolution.
+   * @param topLeft The (x,y) position of the top left corner in the map.
+   * @param heightOrFlatData The height data for the elevation (z coordinates).
+   * @param isValid Mask of indices with valid data (i.e. not nan or inf)
+   * @return
+   */
+  std::vector<Ogre::Vector3> computeMeshLineVertices(int i, int j, int gridCellDecimation, bool isNthRow, bool isNthCol, bool isLastRow,
+                                                     bool isLastCol, double resolution, const grid_map::Position& topLeft,
+                                                     const Eigen::ArrayXXf& heightOrFlatData, const MaskArray& isValid) const;
 };
 
 }  // namespace grid_map_rviz_plugin

@@ -51,7 +51,8 @@ void GridMapVisual::setMessage(const grid_map_msgs::GridMap::ConstPtr& msg) {
 void GridMapVisual::computeVisualization(float alpha, bool showGridLines, bool flatTerrain, std::string heightLayer, bool flatColor,
                                          bool noColor, Ogre::ColourValue meshColor, bool mapLayerColor, std::string colorLayer,
                                          bool useRainbow, bool invertRainbow, Ogre::ColourValue minColor, Ogre::ColourValue maxColor,
-                                         bool autocomputeIntensity, float minIntensity, float maxIntensity) {
+                                         bool autocomputeIntensity, float minIntensity, float maxIntensity, float gridLineThickness,
+                                         int gridCellDecimation) {
   const auto startTime = std::chrono::high_resolution_clock::now();
   if (!haveMap_) {
     ROS_DEBUG("Unable to visualize grid map, no map data. Use setMessage() first!");
@@ -91,8 +92,10 @@ void GridMapVisual::computeVisualization(float alpha, bool showGridLines, bool f
   // Reset the mesh lines.
   meshLines_->clear();
   if (showGridLines) {
-    initializeMeshLines(cols, rows, resolution, alpha);
+    initializeMeshLines(cols, rows, resolution, alpha, gridLineThickness);
   }
+  // Make sure gridCellDecimation is within a valid range
+  gridCellDecimation = std::max(gridCellDecimation, 1);
 
   // Compute a mask of valid cells.
   auto basicLayers = map_.getBasicLayers();
@@ -185,34 +188,48 @@ void GridMapVisual::computeVisualization(float alpha, bool showGridLines, bool f
             manualObject_->quad(vertexIndices[0], vertexIndices[2], vertexIndices[3], vertexIndices[1]);
           }
         }
+      }
 
-        // plot grid lines
-        if (showGridLines) {
-          meshLines_->addPoint(vertexPositions[0]);
-          meshLines_->addPoint(vertexPositions[1]);
+      // compute grid lines vertices
+      const bool isNthRow{i % gridCellDecimation == 0};
+      const bool isNthCol{j % gridCellDecimation == 0};
+      const bool isLastRow{i == rows - 1};
+      const bool isLastCol{j == cols - 1};
+      const bool isDrawMeshLines{(isNthRow && isNthCol) || (isLastRow && isNthCol) || (isLastCol && isNthRow) || (isLastRow && isLastCol)};
+
+      if (!showGridLines || !isDrawMeshLines) {
+        continue;
+      }
+      std::vector<Ogre::Vector3> meshLineVertices = computeMeshLineVertices(i, j, gridCellDecimation, isNthRow, isNthCol, isLastRow,
+                                                                            isLastCol, resolution, topLeft, heightOrFlatData, isValid);
+
+      // plot grid lines if we have enough points
+      if (meshLineVertices.size() > 2) {
+        meshLines_->addPoint(meshLineVertices[0]);
+        meshLines_->addPoint(meshLineVertices[1]);
+        meshLines_->newLine();
+
+        if (meshLineVertices.size() == 3) {
+          meshLines_->addPoint(meshLineVertices[1]);
+          meshLines_->addPoint(meshLineVertices[2]);
+          meshLines_->newLine();
+        } else {
+          meshLines_->addPoint(meshLineVertices[1]);
+          meshLines_->addPoint(meshLineVertices[3]);
           meshLines_->newLine();
 
-          if (vertexIndices.size() == 3) {
-            meshLines_->addPoint(vertexPositions[1]);
-            meshLines_->addPoint(vertexPositions[2]);
-            meshLines_->newLine();
-          } else {
-            meshLines_->addPoint(vertexPositions[1]);
-            meshLines_->addPoint(vertexPositions[3]);
-            meshLines_->newLine();
-
-            meshLines_->addPoint(vertexPositions[3]);
-            meshLines_->addPoint(vertexPositions[2]);
-            meshLines_->newLine();
-          }
-
-          meshLines_->addPoint(vertexPositions[2]);
-          meshLines_->addPoint(vertexPositions[0]);
+          meshLines_->addPoint(meshLineVertices[3]);
+          meshLines_->addPoint(meshLineVertices[2]);
           meshLines_->newLine();
         }
+
+        meshLines_->addPoint(meshLineVertices[2]);
+        meshLines_->addPoint(meshLineVertices[0]);
+        meshLines_->newLine();
       }
-    }
-  }
+
+    }  // end for loop cols
+  }    // end for loop rows
 
   manualObject_->end();
   material_->getTechnique(0)->setLightingEnabled(false);
@@ -228,6 +245,29 @@ void GridMapVisual::computeVisualization(float alpha, bool showGridLines, bool f
   const auto stopTime = std::chrono::high_resolution_clock::now();
   const auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(stopTime - startTime);
   ROS_DEBUG_STREAM("Visualization of grid_map took: " << elapsedTime.count() << " ms.");
+}
+
+std::vector<Ogre::Vector3> GridMapVisual::computeMeshLineVertices(int i, int j, int gridCellDecimation, bool isNthRow, bool isNthCol,
+                                                                  bool isLastRow, bool isLastCol, double resolution,
+                                                                  const grid_map::Position& topLeft,
+                                                                  const Eigen::ArrayXXf& heightOrFlatData, const MaskArray& isValid) const {
+  std::vector<Ogre::Vector3> meshLineVertices;
+  meshLineVertices.reserve(4);
+  for (int k = 0; k < 2; ++k) {
+    for (int l = 0; l < 2; ++l) {
+      const int strideX = isLastRow ? (i % gridCellDecimation + int(isNthRow) * gridCellDecimation) : gridCellDecimation;
+      const int strideY = isLastCol ? (j % gridCellDecimation + int(isNthCol) * gridCellDecimation) : gridCellDecimation;
+      const int x = i - k * strideX;
+      const int y = j - l * strideY;
+      grid_map::Index index(x > 0 ? x : 0, y > 0 ? y : 0);
+      if (!isValid(index(0), index(1))) {
+        continue;
+      }
+      const grid_map::Position position = topLeft.array() - index.cast<double>() * resolution;
+      meshLineVertices.emplace_back(position(0), position(1), heightOrFlatData(index(0), index(1)));
+    }
+  }
+  return meshLineVertices;
 }
 
 void GridMapVisual::initializeAndBeginManualObject(size_t nVertices) {
@@ -296,9 +336,9 @@ GridMapVisual::ColorArray GridMapVisual::computeColorValues(Eigen::Ref<const gri
   }
 }
 
-void GridMapVisual::initializeMeshLines(size_t cols, size_t rows, double resolution, double alpha) {
+void GridMapVisual::initializeMeshLines(size_t cols, size_t rows, double resolution, double alpha, double lineWidth) {
   meshLines_->setColor(0.0, 0.0, 0.0, alpha);
-  meshLines_->setLineWidth(resolution / 10.0);
+  meshLines_->setLineWidth(resolution * lineWidth);
   meshLines_->setMaxPointsPerLine(2);
   // In the algorithm below, we have to account for max. 4 lines per cell.
   const size_t nLines = 2 * (rows * (cols - 1) + cols * (rows - 1));
