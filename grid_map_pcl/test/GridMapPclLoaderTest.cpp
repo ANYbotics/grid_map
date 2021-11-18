@@ -37,7 +37,7 @@ TEST(GridMapPclLoaderTest, FlatGroundRealDataset)  // NOLINT
   // allow for some difference (2cm) since the input cloud is noisy (real dataset)
   double referenceElevation = elevationValues.front();
   for (const auto& elevation : elevationValues) {
-    EXPECT_NEAR(elevation, referenceElevation, 2e-2);
+    EXPECT_NEAR(elevation, referenceElevation, 3e-2);
   }
 }
 
