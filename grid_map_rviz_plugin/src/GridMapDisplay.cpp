@@ -8,6 +8,8 @@
 
 #include "grid_map_rviz_plugin/GridMapVisual.hpp"
 #include "grid_map_rviz_plugin/GridMapDisplay.hpp"
+#include "grid_map_rviz_plugin/GridMapColorMaps.hpp"
+
 // The following replaces <rviz/frame_manager.h>
 #include "grid_map_rviz_plugin/modified/frame_manager.h"
 
@@ -68,19 +70,23 @@ GridMapDisplay::GridMapDisplay()
       "Color Layer", "elevation", "Select the grid map layer to compute the color.", this,
       SLOT(updateVisualization()));
 
+  colorMapProperty_ = new rviz::EditableEnumProperty(
+      "ColorMap", "default", "Select the colormap to be used.", this,
+      SLOT(updateVisualization()));
+
   colorProperty_ = new rviz::ColorProperty("Color", QColor(200, 200, 200),
                                            "Color to draw the mesh.", this,
                                            SLOT(updateVisualization()));
   colorProperty_->hide();
 
-  useRainbowProperty_ = new rviz::BoolProperty(
-      "Use Rainbow", true,
-      "Whether to use a rainbow of colors or to interpolate between two colors.", this,
-      SLOT(updateUseRainbow()));
+  useColorMapProperty_ = new rviz::BoolProperty(
+      "Use ColorMap", true,
+      "Whether to use a colormap or to interpolate between two colors.", this,
+      SLOT(updateUseColorMap()));
   
-  invertRainbowProperty_ = new rviz::BoolProperty(
-      "Invert Rainbow", false,
-      "Whether to invert the rainbow colors.", this,
+  invertColorMapProperty_ = new rviz::BoolProperty(
+      "Invert ColorMap", false,
+      "Whether to invert the colormap colors.", this,
       SLOT(updateVisualization()));
 
   minColorProperty_ = new rviz::ColorProperty(
@@ -124,6 +130,7 @@ void GridMapDisplay::onInitialize()
 {
   MFDClass::onInitialize();	 //  "MFDClass" = typedef of "MessageFilterDisplay<message type>"
   updateHistoryLength();
+  updateColorMapList();
 }
 
 void GridMapDisplay::onEnable()
@@ -161,24 +168,24 @@ void GridMapDisplay::updateColorMode()
   bool none = colorModeProperty_->getOptionInt() == 3;
   colorProperty_->setHidden(!flatColor);
   colorTransformerProperty_->setHidden(flatColor || none);
-  useRainbowProperty_->setHidden(!intensityColor);
-  invertRainbowProperty_->setHidden(!intensityColor);
+  useColorMapProperty_->setHidden(!intensityColor);
+  invertColorMapProperty_->setHidden(!intensityColor);
   autocomputeIntensityBoundsProperty_->setHidden(!intensityColor);
-  bool useRainbow = useRainbowProperty_->getBool();
-  minColorProperty_->setHidden(!intensityColor || useRainbow);
-  maxColorProperty_->setHidden(!intensityColor || useRainbow);
+  bool useColorMap = useColorMapProperty_->getBool();
+  minColorProperty_->setHidden(!intensityColor || useColorMap);
+  maxColorProperty_->setHidden(!intensityColor || useColorMap);
   bool autocomputeIntensity = autocomputeIntensityBoundsProperty_->getBool();
   minIntensityProperty_->setHidden(!intensityColor || autocomputeIntensity);
   minIntensityProperty_->setHidden(!intensityColor || autocomputeIntensity);
 }
 
-void GridMapDisplay::updateUseRainbow()
+void GridMapDisplay::updateUseColorMap()
 {
   updateVisualization();
-  bool useRainbow = useRainbowProperty_->getBool();
-  minColorProperty_->setHidden(useRainbow);
-  maxColorProperty_->setHidden(useRainbow);
-  invertRainbowProperty_->setHidden(!useRainbow);
+  bool useColorMap = useColorMapProperty_->getBool();
+  minColorProperty_->setHidden(useColorMap);
+  maxColorProperty_->setHidden(useColorMap);
+  invertColorMapProperty_->setHidden(!useColorMap);
 }
 
 void GridMapDisplay::updateGridLines()
@@ -207,8 +214,9 @@ void GridMapDisplay::updateVisualization()
   bool noColor = colorModeProperty_->getOptionInt() == 3;
   Ogre::ColourValue meshColor = colorProperty_->getOgreColor();
   std::string colorLayer = colorTransformerProperty_->getStdString();
-  bool useRainbow = useRainbowProperty_->getBool();
-  bool invertRainbow = invertRainbowProperty_->getBool();
+  std::string colorMap = colorMapProperty_->getStdString();
+  bool useColorMap = useColorMapProperty_->getBool();
+  bool invertColorMap = invertColorMapProperty_->getBool();
   Ogre::ColourValue minColor = minColorProperty_->getOgreColor();
   Ogre::ColourValue maxColor = maxColorProperty_->getOgreColor();
   bool autocomputeIntensity = autocomputeIntensityBoundsProperty_->getBool();
@@ -219,7 +227,7 @@ void GridMapDisplay::updateVisualization()
 
   for (size_t i = 0; i < visuals_.size(); i++) {
     visuals_[i]->computeVisualization(alpha, showGridLines, flatTerrain, heightLayer, flatColor, noColor, meshColor, mapLayerColor,
-                                      colorLayer, useRainbow, invertRainbow, minColor, maxColor, autocomputeIntensity, minIntensity,
+                                      colorLayer, colorMap, useColorMap, invertColorMap, minColor, maxColor, autocomputeIntensity, minIntensity,
                                       maxIntensity, gridLineThickness, gridCellDecimation);
   }
 }
@@ -261,10 +269,11 @@ void GridMapDisplay::onProcessMessage(const grid_map_msgs::GridMap::ConstPtr& ms
                                heightModeProperty_->getOptionInt() == 1, heightTransformerProperty_->getStdString(),
                                colorModeProperty_->getOptionInt() == 2, colorModeProperty_->getOptionInt() == 3,
                                colorProperty_->getOgreColor(), colorModeProperty_->getOptionInt() == 1,
-                               colorTransformerProperty_->getStdString(), useRainbowProperty_->getBool(),
-                               invertRainbowProperty_->getBool(), minColorProperty_->getOgreColor(),
-                               maxColorProperty_->getOgreColor(), autocomputeIntensityBoundsProperty_->getBool(),
-                               minIntensityProperty_->getFloat(), maxIntensityProperty_->getFloat(),
+                               colorTransformerProperty_->getStdString(), colorMapProperty_->getStdString(),
+                               useColorMapProperty_->getBool(), invertColorMapProperty_->getBool(),
+                               minColorProperty_->getOgreColor(), maxColorProperty_->getOgreColor(),
+                               autocomputeIntensityBoundsProperty_->getBool(), minIntensityProperty_->getFloat(),
+                               maxIntensityProperty_->getFloat(),
                                gridLinesThicknessProperty_->getFloat(), gridCellDecimationProperty_->getInt());
 
   std::vector<std::string> layer_names = visual->getLayerNames();
@@ -277,6 +286,15 @@ void GridMapDisplay::onProcessMessage(const grid_map_msgs::GridMap::ConstPtr& ms
 
   visuals_.push_back(visual);
 }
+
+void GridMapDisplay::updateColorMapList()
+{
+  updateVisualization();
+  for (auto cmap : getColorMapNames()) {
+    colorMapProperty_->addOptionStd(cmap);
+  }
+}
+
 
 }  // end namespace grid_map_rviz_plugin
 

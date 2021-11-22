@@ -22,6 +22,8 @@
 #include <grid_map_core/GridMapMath.hpp>
 #include <grid_map_ros/grid_map_ros.hpp>
 
+#include "grid_map_rviz_plugin/GridMapColorMaps.hpp"
+
 namespace grid_map_rviz_plugin {
 
 GridMapVisual::GridMapVisual(Ogre::SceneManager* sceneManager, Ogre::SceneNode* parentNode) : manualObject_(0), haveMap_(false) {
@@ -50,8 +52,8 @@ void GridMapVisual::setMessage(const grid_map_msgs::GridMap::ConstPtr& msg) {
 
 void GridMapVisual::computeVisualization(float alpha, bool showGridLines, bool flatTerrain, std::string heightLayer, bool flatColor,
                                          bool noColor, Ogre::ColourValue meshColor, bool mapLayerColor, std::string colorLayer,
-                                         bool useRainbow, bool invertRainbow, Ogre::ColourValue minColor, Ogre::ColourValue maxColor,
-                                         bool autocomputeIntensity, float minIntensity, float maxIntensity, float gridLineThickness,
+                                         std::string colorMap, bool useColorMap, bool invertColorMap, Ogre::ColourValue minColor,
+                                         Ogre::ColourValue maxColor, bool autocomputeIntensity, float minIntensity, float maxIntensity, float gridLineThickness,
                                          int gridCellDecimation) {
   const auto startTime = std::chrono::high_resolution_clock::now();
   if (!haveMap_) {
@@ -118,16 +120,16 @@ void GridMapVisual::computeVisualization(float alpha, bool showGridLines, bool f
     coloringMethod = ColoringMethod::FLAT;
   } else if(mapLayerColor) {
     coloringMethod = ColoringMethod::COLOR_LAYER;
-  } else if (!useRainbow) {
+  } else if (!useColorMap) {
     coloringMethod = ColoringMethod::INTENSITY_LAYER_MANUAL;
-  } else if (!invertRainbow) {
-    coloringMethod = ColoringMethod::INTENSITY_LAYER_RAINBOW;
+  } else if (!invertColorMap) {
+    coloringMethod = ColoringMethod::INTENSITY_LAYER_COLORMAP;
   } else {
-    coloringMethod = ColoringMethod::INTENSITY_LAYER_INVERTED_RAINBOW;
+    coloringMethod = ColoringMethod::INTENSITY_LAYER_INVERTED_COLORMAP;
   }
 
-  const auto colorValues = computeColorValues(heightData, colorData, coloringMethod, meshColor, minIntensity, maxIntensity,
-                                              autocomputeIntensity, minColor, maxColor);
+  const auto colorValues = computeColorValues(heightData, colorData, coloringMethod, colorMap, meshColor,
+                                              minIntensity, maxIntensity, autocomputeIntensity, minColor, maxColor);
 
   // Initialize loop constants.
   grid_map::Position topLeft;
@@ -292,19 +294,21 @@ void GridMapVisual::initializeAndBeginManualObject(size_t nVertices) {
   manualObject_->begin(materialName_, Ogre::RenderOperation::OT_TRIANGLE_LIST);
 }
 
-GridMapVisual::ColorArray GridMapVisual::computeColorValues(Eigen::Ref<const grid_map::Matrix> heightData,
-                                                            Eigen::Ref<const grid_map::Matrix> colorData,
-                                                            GridMapVisual::ColoringMethod coloringMethod, Ogre::ColourValue flatColor,
-                                                            double minIntensity, double maxIntensity, bool autocomputeIntensity,
-                                                            Ogre::ColourValue minColor, Ogre::ColourValue maxColor) {
+GridMapVisual::ColorArray GridMapVisual::computeColorValues(GridMapVisual::MatrixConstRef heightData,
+                                                            GridMapVisual::MatrixConstRef colorData,
+                                                            GridMapVisual::ColoringMethod coloringMethod, std::string cmap,
+                                                            Ogre::ColourValue flatColor, double minIntensity, double maxIntensity,
+                                                            bool autocomputeIntensity, Ogre::ColourValue minColor, Ogre::ColourValue maxColor) {
   // Determine max and min intensity.
-  bool isIntensityColoringMethod = coloringMethod == ColoringMethod::INTENSITY_LAYER_INVERTED_RAINBOW ||
-                                   coloringMethod == ColoringMethod::INTENSITY_LAYER_RAINBOW ||
+  bool isIntensityColoringMethod = coloringMethod == ColoringMethod::INTENSITY_LAYER_INVERTED_COLORMAP ||
+                                   coloringMethod == ColoringMethod::INTENSITY_LAYER_COLORMAP ||
                                    coloringMethod == ColoringMethod::INTENSITY_LAYER_MANUAL;
   if (autocomputeIntensity && isIntensityColoringMethod) {
     minIntensity = colorData.minCoeffOfFinites();
     maxIntensity = minIntensity + std::max(colorData.maxCoeffOfFinites() - minIntensity, 0.2);  // regularize the intensity range.
   }
+
+  const std::vector<std::vector<float>>& ctable = colorMap.at(cmap);
 
   switch (coloringMethod) {
     case ColoringMethod::FLAT:
@@ -320,15 +324,15 @@ GridMapVisual::ColorArray GridMapVisual::computeColorValues(Eigen::Ref<const gri
         normalizeIntensity(color, minIntensity, maxIntensity);
         return getInterpolatedColor(color, minColor, maxColor);
       });
-    case ColoringMethod::INTENSITY_LAYER_RAINBOW:
+    case ColoringMethod::INTENSITY_LAYER_COLORMAP:
       return colorData.unaryExpr([&](float color) {
         normalizeIntensity(color, minIntensity, maxIntensity);
-        return getRainbowColor(color);
+        return getColorMap(color, ctable);
       });
-    case ColoringMethod::INTENSITY_LAYER_INVERTED_RAINBOW:
+    case ColoringMethod::INTENSITY_LAYER_INVERTED_COLORMAP:
       return colorData.unaryExpr([&](float color) {
         normalizeIntensity(color, minIntensity, maxIntensity);
-        return getRainbowColor(1.0f - color);
+        return getColorMap(1.f - color, ctable);
       });
     default:
       throw std::invalid_argument(std::string("An unknown coloring method was provided: ") +

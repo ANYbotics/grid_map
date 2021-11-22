@@ -54,9 +54,10 @@ Q_OBJECT
   void updateHistoryLength();
   void updateHeightMode();
   void updateColorMode();
-  void updateUseRainbow();
+  void updateUseColorMap();
   void updateAutocomputeIntensityBounds();
   void updateVisualization();
+  void updateColorMapList();
   void updateGridLines();
   // Slot to ensure that the rendering happens in the ui thread.
   void onProcessMessage(const grid_map_msgs::GridMap::ConstPtr& msg);
@@ -79,9 +80,10 @@ Q_OBJECT
   rviz::EditableEnumProperty* heightTransformerProperty_;
   rviz::EnumProperty* colorModeProperty_;
   rviz::EditableEnumProperty* colorTransformerProperty_;
+  rviz::EditableEnumProperty* colorMapProperty_;
   rviz::ColorProperty* colorProperty_;
-  rviz::BoolProperty* useRainbowProperty_;
-  rviz::BoolProperty* invertRainbowProperty_;
+  rviz::BoolProperty* useColorMapProperty_;
+  rviz::BoolProperty* invertColorMapProperty_;
   rviz::ColorProperty* minColorProperty_;
   rviz::ColorProperty* maxColorProperty_;
   rviz::BoolProperty* autocomputeIntensityBoundsProperty_;

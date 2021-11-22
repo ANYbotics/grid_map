@@ -32,6 +32,7 @@ class GridMapVisual {
  public:
   using MaskArray = Eigen::Array<bool, Eigen::Dynamic, Eigen::Dynamic>;
   using ColorArray = Eigen::Array<Ogre::ColourValue, Eigen::Dynamic, Eigen::Dynamic>;
+  using MatrixConstRef = Eigen::Ref<const grid_map::Matrix>;
 
   GridMapVisual(Ogre::SceneManager* sceneManager, Ogre::SceneNode* parentNode);
   virtual ~GridMapVisual();
@@ -41,9 +42,9 @@ class GridMapVisual {
   // Compute the visualization of map_.
 
   void computeVisualization(float alpha, bool showGridLines, bool flatTerrain, std::string heightLayer, bool flatColor, bool noColor,
-                            Ogre::ColourValue meshColor, bool mapLayerColor, std::string colorLayer, bool useRainbow, bool invertRainbow,
-                            Ogre::ColourValue minColor, Ogre::ColourValue maxColor, bool autocomputeIntensity, float minIntensity,
-                            float maxIntensity, float gridLineThickness, int gridCellDecimation);
+                            Ogre::ColourValue meshColor, bool mapLayerColor, std::string colorLayer, std::string colorMap, bool useColorMap,
+                            bool invertColorMap, Ogre::ColourValue minColor, Ogre::ColourValue maxColor, bool autocomputeIntensity,
+                            float minIntensity, float maxIntensity, float gridLineThickness, int gridCellDecimation);
 
   // Set the coordinate frame pose.
   void setFramePosition(const Ogre::Vector3& position);
@@ -53,7 +54,7 @@ class GridMapVisual {
   std::vector<std::string> getLayerNames();
 
  private:
-  enum class ColoringMethod { FLAT, COLOR_LAYER, INTENSITY_LAYER_MANUAL, INTENSITY_LAYER_RAINBOW, INTENSITY_LAYER_INVERTED_RAINBOW };
+  enum class ColoringMethod { FLAT, COLOR_LAYER, INTENSITY_LAYER_MANUAL, INTENSITY_LAYER_COLORMAP, INTENSITY_LAYER_INVERTED_COLORMAP };
 
   Ogre::SceneNode* frameNode_;
   Ogre::SceneManager* sceneManager_;
@@ -82,6 +83,7 @@ class GridMapVisual {
    * @param heightData Height values of the cells.
    * @param colorData Values of the layer specified for coloring the mesh.
    * @param coloringMethod The strategy to color, see ColoringMethod.
+   * @param colorMap colorMap selected (string). See GridMapColorMaps.hpp
    * @param flatColor Used only if coloringMethod is FLAT
    * @param minIntensity Used for the intensity based coloring methods only.
    * @param maxIntensity Used for the intensity based coloring methods only.
@@ -91,9 +93,10 @@ class GridMapVisual {
    * @param maxColor Used only if coloringMethod is COLOR_LAYER.
    * @return The color for each cell.
    */
-  ColorArray computeColorValues(Eigen::Ref<const grid_map::Matrix> heightData, Eigen::Ref<const grid_map::Matrix> colorData,
-                                GridMapVisual::ColoringMethod coloringMethod, Ogre::ColourValue flatColor, double minIntensity,
-                                double maxIntensity, bool autocomputeIntensity, Ogre::ColourValue minColor, Ogre::ColourValue maxColor);
+  ColorArray computeColorValues(MatrixConstRef heightData, MatrixConstRef colorData,
+                                ColoringMethod coloringMethod, std::string colorMap, Ogre::ColourValue flatColor,
+                                double minIntensity, double maxIntensity, bool autocomputeIntensity, Ogre::ColourValue minColor,
+                                Ogre::ColourValue maxColor);
 
   /**
    * Initialized the meshLines_ object. Should be called before adding lines. Sets the drawing style and allocates the buffer.
