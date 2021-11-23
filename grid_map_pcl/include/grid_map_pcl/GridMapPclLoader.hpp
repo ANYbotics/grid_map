@@ -49,6 +49,12 @@ class GridMapPclLoader {
   void loadCloudFromPcdFile(const std::string& filename);
 
   /*!
+   * Loads the point cloud from a PointCloud2 message into memory
+   * @param[in] fullpath to the point cloud.
+   */
+  void loadCloudFromMessage(const sensor_msgs::PointCloud2& msg);
+
+  /*!
    * Allows the user to set the input cloud
    * @param[in] pointer to the input point cloud.
    */

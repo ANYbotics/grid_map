@@ -99,7 +99,7 @@ target_link_libraries(${PROJECT_NAME}
 )
 
 
-# Node.
+# Node grid_map_pcl_loader_node
 add_executable(grid_map_pcl_loader_node
   src/grid_map_pcl_loader_node.cpp
 )
@@ -114,6 +114,24 @@ target_include_directories(grid_map_pcl_loader_node SYSTEM PUBLIC
   ${EIGEN3_INCLUDE_DIR}
 )
 target_link_libraries(grid_map_pcl_loader_node
+  ${PROJECT_NAME}
+  ${catkin_LIBRARIES}
+)
+# Node PointCloud2_to_GridMap_msg_node
+add_executable(PointCloud2_to_GridMap_msg_node
+  src/PointCloud2_to_GridMap_msg_node.cpp
+)
+add_dependencies(PointCloud2_to_GridMap_msg_node
+  ${PROJECT_NAME}
+)
+target_include_directories(PointCloud2_to_GridMap_msg_node PRIVATE
+  include
+)
+target_include_directories(PointCloud2_to_GridMap_msg_node SYSTEM PUBLIC
+  ${catkin_INCLUDE_DIRS}
+  ${EIGEN3_INCLUDE_DIR}
+)
+target_link_libraries(PointCloud2_to_GridMap_msg_node
   ${PROJECT_NAME}
   ${catkin_LIBRARIES}
 )
