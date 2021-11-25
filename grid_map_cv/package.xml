@@ -15,6 +15,7 @@
   <depend>grid_map_core</depend>
   <depend>cv_bridge</depend>
   <depend>filters</depend>
+  <depend>libopencv-dev</depend>
 <!--   <test_depend>cmake_code_coverage</test_depend> -->
   <test_depend>gtest</test_depend>
   <export>
