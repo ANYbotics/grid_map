@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package format="2">
   <name>grid_map_demos</name>
-  <version>1.6.6</version>
+  <version>1.6.7</version>
   <description>Demo nodes to demonstrate the usage of the grid map library.</description>
   <maintainer email="mwulf@anybotics.com">Maximilian Wulf</maintainer>
   <maintainer email="ynava@anybotics.com">Yoshua Nava</maintainer>
