@@ -25,7 +25,7 @@ using namespace filters;
 namespace grid_map {
 
 template <typename T>
-MedianFillFilter<T>::MedianFillFilter() : fillHoleRadius_(0.05), filterExistingValues_(false) {}
+MedianFillFilter<T>::MedianFillFilter() : fillHoleRadius_(0.05), filterExistingValues_(false), numErodeDilationIterations_(4) {}
 
 template <typename T>
 MedianFillFilter<T>::~MedianFillFilter() = default;
@@ -53,6 +53,11 @@ bool MedianFillFilter<T>::configure() {
 
   if (!FilterBase<T>::getParam(std::string("input_layer"), inputLayer_)) {
     ROS_ERROR("Median filter did not find parameter `input_layer`.");
+    return false;
+  }
+
+  if (!FilterBase<T>::getParam(std::string("num_erode_dilation_iterations"), numErodeDilationIterations_)) {
+    ROS_ERROR("Median filter did not find parameter `num_erode_dilation_iterations`.");
     return false;
   }
 
@@ -198,7 +203,7 @@ Eigen::MatrixXf MedianFillFilter<T>::computeAndAddFillMask(const Eigen::MatrixXf
   cv::Mat isValidCV;
   cv::eigen2cv(isValid, isValidCV);
   cv::Mat_<bool> isValidOutlierRemoved{cleanedMask(isValidCV)};
-  cv::Mat shouldFillCV{fillHoles(isValidOutlierRemoved, 4)};
+  cv::Mat shouldFillCV{fillHoles(isValidOutlierRemoved, numErodeDilationIterations_)};
 
   // Outlier removed mask to eigen.
   if (debug_) {

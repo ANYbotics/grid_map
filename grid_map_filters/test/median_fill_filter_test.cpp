@@ -61,6 +61,7 @@ TEST(MedianFillFilter, LoadParametersAndUpdateTest) {  // NOLINT
   params["existing_value_radius"] = 0.02;
   params["fill_mask_layer"] = "fill_mask";
   params["debug"] = false;
+  params["num_erode_dilation_iterations"] = 4;
 
   config["params"] = params;
 

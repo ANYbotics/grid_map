@@ -110,6 +110,9 @@ class MedianFillFilter : public filters::FilterBase<T> {
   //! Flag indicating whether to also filter finite values.
   bool filterExistingValues_;
 
+  //! Number of erode-dilate iterations to calculate mask. Higher means that bigger holes will still be filled.
+  int numErodeDilationIterations_;
+
   //! Input layer name.
   std::string inputLayer_;
 
