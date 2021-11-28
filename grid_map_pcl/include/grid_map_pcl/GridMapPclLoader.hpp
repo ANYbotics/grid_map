@@ -156,7 +156,7 @@ class GridMapPclLoader {
    * @return elevation value computed from the input point cloud. It will return NaN if no clusters
    * have been found or an empty cloud is passed in.
    */
-  void calculateElevationFromPointsInsideGridMapCell(Pointcloud::ConstPtr cloud, std::vector<float>& heights) const;
+  float calculateElevationFromPointsInsideGridMapCell(Pointcloud::ConstPtr cloud, std::vector<float>& heights) const;
 
   /*!
    * Allocates space for the point clouds and dispatches points to the

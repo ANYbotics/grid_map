@@ -25,8 +25,6 @@ void PclLoaderParameters::loadParameters(const YAML::Node& yamlNode) {
   parameters_.cloudTransformation_.rpyIntrinsic_.y() = yamlNode["cloud_transform"]["rotation"]["p"].as<double>();
   parameters_.cloudTransformation_.rpyIntrinsic_.z() = yamlNode["cloud_transform"]["rotation"]["y"].as<double>();
 
-  parameters_.clusterExtraction_.useMaxHeightAsCellElevation_ =
-      yamlNode["cluster_extraction"]["use_max_height_as_cell_elevation"].as<bool>();
   parameters_.clusterExtraction_.clusterTolerance_ = yamlNode["cluster_extraction"]["cluster_tolerance"].as<double>();
   parameters_.clusterExtraction_.minNumPoints_ = yamlNode["cluster_extraction"]["min_num_points"].as<int>();
   parameters_.clusterExtraction_.maxNumPoints_ = yamlNode["cluster_extraction"]["max_num_points"].as<int>();
@@ -38,6 +36,8 @@ void PclLoaderParameters::loadParameters(const YAML::Node& yamlNode) {
   parameters_.gridMap_.resolution_ = yamlNode["grid_map"]["resolution"].as<double>();
   parameters_.gridMap_.minCloudPointsPerCell_ = yamlNode["grid_map"]["min_num_points_per_cell"].as<int>();
   parameters_.gridMap_.maxCloudPointsPerCell_ = yamlNode["grid_map"]["max_num_points_per_cell"].as<int>();
+  parameters_.gridMap_.height_type_ = yamlNode["grid_map"]["height_type"].as<int>();
+  parameters_.gridMap_.height_thresh_ = yamlNode["grid_map"]["height_thresh"].as<float>();
 
   parameters_.downsampling_.isDownsampleCloud_ = yamlNode["downsampling"]["is_downsample_cloud"].as<bool>();
   parameters_.downsampling_.voxelSize_.x() = yamlNode["downsampling"]["voxel_size"]["x"].as<double>();

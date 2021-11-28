@@ -47,6 +47,11 @@ class PclLoaderParameters {
     double resolution_ = 0.1;
     unsigned int minCloudPointsPerCell_ = 2;
     unsigned int maxCloudPointsPerCell_ = 100000;
+    // 0: Smallest value among the average values ​​of each cluster
+    // 1: Mean value of the cluster with the most points
+    unsigned int height_type_ = 0;
+    // For height_type 1
+    double height_thresh_ = 1.0;
   };
 
   struct Parameters {

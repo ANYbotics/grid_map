@@ -28,6 +28,12 @@ pcl_grid_map_extraction:
     min_num_points_per_cell: 4
     max_num_points_per_cell: 100000
     resolution: 0.1
+    # 0: Smallest value among the average v3lues ​​of each cluster
+    # 1: Largest value among the average values ​​of each cluster
+    # 2: Mean value of the cluster with the most points
+    height_type: 0
+    # For height_type 2
+    height_thresh: 1.0
 
     
        
