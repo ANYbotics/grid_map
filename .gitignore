@@ -36,4 +36,5 @@
 # OS X
 .DS_Store
 
-grid_map_pcl/data/
+grid_map_pcl/data/*
+!grid_map_pcl/data/input_cloud.pcd

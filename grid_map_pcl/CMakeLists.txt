@@ -99,7 +99,7 @@ target_link_libraries(${PROJECT_NAME}
 )
 
 
-# Node.
+# Nodes.
 add_executable(grid_map_pcl_loader_node
   src/grid_map_pcl_loader_node.cpp
 )
@@ -118,6 +118,24 @@ target_link_libraries(grid_map_pcl_loader_node
   ${catkin_LIBRARIES}
 )
 
+add_executable(pointcloud_publisher_node
+  src/pointcloud_publisher_node.cpp
+)
+add_dependencies(pointcloud_publisher_node
+  ${PROJECT_NAME}
+)
+target_include_directories(pointcloud_publisher_node PRIVATE
+  include
+)
+target_include_directories(pointcloud_publisher_node SYSTEM PUBLIC
+  ${catkin_INCLUDE_DIRS}
+  ${EIGEN3_INCLUDE_DIR}
+)
+target_link_libraries(pointcloud_publisher_node
+  ${PROJECT_NAME}
+  ${catkin_LIBRARIES}
+)
+
 #############
 ## Install ##
 #############
@@ -125,6 +143,7 @@ install(
   TARGETS
     ${PROJECT_NAME}
     grid_map_pcl_loader_node
+    pointcloud_publisher_node
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
@@ -161,6 +180,14 @@ install(
 
 if(CATKIN_ENABLE_TESTING)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
+
+  find_package(catkin REQUIRED
+    COMPONENTS
+      ${CATKIN_PACKAGE_DEPENDENCIES}
+      roslaunch
+  )
+
+  roslaunch_add_file_check(launch)
 
   ## Add gtest based cpp test target and link libraries
   catkin_add_gtest(${PROJECT_NAME}-test

@@ -12,7 +12,9 @@
   <author email="jelavice@ethz.ch">Edo Jelavic</author>
   
   <buildtool_depend>catkin</buildtool_depend>
+  
 <!--   <build_depend>cmake_clang_tools</build_depend> -->
+  
   <depend>grid_map_core</depend>
   <depend>grid_map_msgs</depend>
   <depend>grid_map_ros</depend>
@@ -20,6 +22,9 @@
   <depend>pcl_ros</depend>
   <depend>roscpp</depend>
   <depend>yaml-cpp</depend>
+
+  <exec_depend>rviz</exec_depend>
+  
 <!--   <test_depend>cmake_code_coverage</test_depend> -->
   <test_depend>gtest</test_depend>
 </package>

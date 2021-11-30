@@ -100,17 +100,18 @@ void GridMapPclLoader::addLayerFromInputCloud(const std::string& layer) {
   ROS_INFO_STREAM("Started adding layer: " << layer);
   // Preprocess: allocate memory in the internal data structure
   preprocessGridMapCells();
+  ROS_INFO("Finished preprocessing");
   workingGridMap_.add(layer);
   grid_map::Matrix& gridMapData = workingGridMap_.get(layer);
   unsigned int linearGridMapSize = workingGridMap_.getSize().prod();
 
+  // Iterate through grid map and calculate the corresponding height based on the point cloud
 #ifndef GRID_MAP_PCL_OPENMP_FOUND
   ROS_WARN_STREAM("OpemMP not found, defaulting to single threaded implementation");
 #else
   omp_set_num_threads(params_.get().numThreads_);
 #pragma omp parallel for schedule(dynamic, 10)
 #endif
-  // Iterate through grid map and calculate the corresponding height based on the point cloud
   for (unsigned int linearIndex = 0; linearIndex < linearGridMapSize; ++linearIndex) {
     processGridMapCell(linearIndex, &gridMapData);
   }
@@ -125,7 +126,11 @@ void GridMapPclLoader::processGridMapCell(const unsigned int linearGridMapIndex,
   pointsInsideCellBorder = getPointcloudInsideGridMapCellBorder(index);
   const bool isTooFewPointsInCell = pointsInsideCellBorder->size() < params_.get().gridMap_.minCloudPointsPerCell_;
   if (isTooFewPointsInCell) {
-    ROS_WARN_STREAM_THROTTLE(10.0, "Less than " << params_.get().gridMap_.minCloudPointsPerCell_ << " points in a cell");
+    ROS_WARN_STREAM_THROTTLE(10.0, "Less than " << params_.get().gridMap_.minCloudPointsPerCell_ << " points in a cell. Skipping.");
+    return;
+  }
+  if (pointsInsideCellBorder->size() > params_.get().gridMap_.maxCloudPointsPerCell_) {
+    ROS_WARN_STREAM_THROTTLE(10.0, "More than " << params_.get().gridMap_.maxCloudPointsPerCell_ << " points in a cell. Skipping.");
     return;
   }
   auto& clusterHeights = clusterHeightsWithingGridMapCell_[index(0)][index(1)];
@@ -163,6 +168,10 @@ GridMapPclLoader::Pointcloud::Ptr GridMapPclLoader::getPointcloudInsideGridMapCe
 void GridMapPclLoader::loadParameters(const std::string& filename) {
   params_.loadParameters(filename);
   pointcloudProcessor_.loadParameters(filename);
+}
+
+void GridMapPclLoader::setParameters(grid_map_pcl::PclLoaderParameters::Parameters parameters) {
+  params_.parameters_ = std::move(parameters);
 }
 
 void GridMapPclLoader::savePointCloudAsPcdFile(const std::string& filename) const {

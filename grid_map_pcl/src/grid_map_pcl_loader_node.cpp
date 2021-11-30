@@ -26,7 +26,7 @@ int main(int argc, char** argv) {
 
   grid_map::GridMapPclLoader gridMapPclLoader;
   const std::string pathToCloud = gm::getPcdFilePath(nh);
-  gridMapPclLoader.loadParameters(gm::getParameterPath());
+  gridMapPclLoader.loadParameters(gm::getParameterPath(nh));
   gridMapPclLoader.loadCloudFromPcdFile(pathToCloud);
 
   gm::processPointcloud(&gridMapPclLoader, nh);
@@ -37,7 +37,6 @@ int main(int argc, char** argv) {
   gm::saveGridMap(gridMap, nh, gm::getMapRosbagTopic(nh));
 
   // publish grid map
-
   grid_map_msgs::GridMap msg;
   grid_map::GridMapRosConverter::toMessage(gridMap, msg);
   gridMapPub.publish(msg);

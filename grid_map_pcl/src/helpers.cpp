@@ -41,25 +41,27 @@ void setVerbosityLevelToDebugIfFlagSet(const ros::NodeHandle& nh) {
   }
 }
 
-std::string getParameterPath() {
-  std::string filePath = ros::package::getPath("grid_map_pcl") + "/config/parameters.yaml";
-  return filePath;
+std::string getParameterPath(const ros::NodeHandle& nh) {
+  std::string defaultPath = ros::package::getPath("grid_map_pcl") + "/config/parameters.yaml";
+  std::string pathToConfig;
+  nh.param<std::string>("config_file_path", pathToConfig, defaultPath);
+  return pathToConfig;
 }
 
 std::string getOutputBagPath(const ros::NodeHandle& nh) {
-  std::string outputRosbagName, folderPath;
-  nh.param<std::string>("folder_path", folderPath, "");
-  nh.param<std::string>("output_grid_map", outputRosbagName, "output_grid_map.bag");
-  std::string pathToOutputBag = folderPath + "/" + outputRosbagName;
+  std::string pathToOutputBag;
+  const std::string defaultPath = ros::package::getPath("grid_map_pcl") + "/data/output_grid_map.bag";
+  nh.param<std::string>("output_grid_map", pathToOutputBag, defaultPath);
   return pathToOutputBag;
 }
 
 std::string getPcdFilePath(const ros::NodeHandle& nh) {
-  std::string inputCloudName, folderPath;
-  nh.param<std::string>("folder_path", folderPath, "");
-  nh.param<std::string>("pcd_filename", inputCloudName, "input_cloud");
-  std::string pathToCloud = folderPath + "/" + inputCloudName;
-  return pathToCloud;
+  std::string pathToCloud, folderPath;
+  const std::string defaultPathToCloud = "/data/input_cloud.pcd";
+  const std::string defaultFolderPath = ros::package::getPath("grid_map_pcl");
+  nh.param<std::string>("pcd_filename", pathToCloud, defaultPathToCloud);
+  nh.param<std::string>("folder_path", folderPath, defaultFolderPath);
+  return folderPath + "/" + pathToCloud;
 }
 
 std::string getMapFrame(const ros::NodeHandle& nh) {
