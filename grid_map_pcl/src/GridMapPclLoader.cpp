@@ -180,7 +180,10 @@ float GridMapPclLoader::calculateElevationFromPointsInsideGridMapCell(
       std::max_element(clusterSizes.begin(), clusterSizes.end());
     const size_t maxIndex = std::distance(clusterSizes.begin(), maxIt);
     height = heights[maxIndex];
+  } else {
+    return std::nan("1");
   }
+
   return height;
 }
 
@@ -190,6 +193,17 @@ GridMapPclLoader::Pointcloud::Ptr GridMapPclLoader::getPointcloudInsideGridMapCe
 
 void GridMapPclLoader::loadParameters(const std::string& filename) {
   params_.loadParameters(filename);
+
+  const int height_type = params_.get().gridMap_.height_type_;
+  if ((std::set<int>{0, 1, 2}).count(height_type) == 0) {
+    ROS_ERROR_STREAM(
+        "Invalid height type: " + std::to_string(height_type) +
+        "\nValid types are below" +
+        "\n0: Smallest value among the average values of each cluster" +
+        "\n1: Largest value among the average values of each cluster" +
+        "\n2: Mean value of the cluster with the most points");
+  }
+
   pointcloudProcessor_.loadParameters(filename);
 }
 
