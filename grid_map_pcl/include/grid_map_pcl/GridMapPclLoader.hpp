@@ -153,10 +153,13 @@ class GridMapPclLoader {
    * maps. Function finds all the clusters and for each of them it computes a mean of point
    * positions. Then it looks at z value of the means and takes the lowest one.
    * @param[in] point cloud that is entirely contained inside a grid map cell
+   * @param[in] height_type which is the method of calculation height value
    * @return elevation value computed from the input point cloud. It will return NaN if no clusters
    * have been found or an empty cloud is passed in.
    */
-  float calculateElevationFromPointsInsideGridMapCell(Pointcloud::ConstPtr cloud, std::vector<float>& heights) const;
+  float calculateElevationFromPointsInsideGridMapCell(
+      Pointcloud::ConstPtr cloud, const int height_type,
+      std::vector<float> &heights) const;
 
   /*!
    * Allocates space for the point clouds and dispatches points to the

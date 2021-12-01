@@ -134,10 +134,15 @@ void GridMapPclLoader::processGridMapCell(const unsigned int linearGridMapIndex,
     return;
   }
   auto& clusterHeights = clusterHeightsWithingGridMapCell_[index(0)][index(1)];
-  (*gridMapData)(index(0), index(1)) = calculateElevationFromPointsInsideGridMapCell(pointsInsideCellBorder, clusterHeights);
+  const int height_type = params_.get().gridMap_.height_type_;
+  (*gridMapData)(index(0), index(1)) =
+      calculateElevationFromPointsInsideGridMapCell(
+          pointsInsideCellBorder, height_type, clusterHeights);
 }
 
-float GridMapPclLoader::calculateElevationFromPointsInsideGridMapCell(Pointcloud::ConstPtr cloud, std::vector<float>& heights) const {
+float GridMapPclLoader::calculateElevationFromPointsInsideGridMapCell(
+    Pointcloud::ConstPtr cloud, const int height_type,
+    std::vector<float> &heights) const {
   heights.clear();
   // Extract point cloud cluster from point cloud and return if none is found.
   std::vector<Pointcloud::Ptr> clusterClouds = pointcloudProcessor_.extractClusterCloudsFromPointcloud(cloud);
@@ -154,7 +159,6 @@ float GridMapPclLoader::calculateElevationFromPointsInsideGridMapCell(Pointcloud
                  [this](Pointcloud::ConstPtr cloud) -> double { return grid_map_pcl::calculateMeanOfPointPositions(cloud).z(); });
 
   double height;
-  const int height_type = params_.get().gridMap_.height_type_;
   // 0: smallest value among the mean values ​​of each cluster
   if (height_type == 0) {
     height = *(std::min_element(heights.begin(), heights.end()));
