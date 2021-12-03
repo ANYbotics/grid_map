@@ -69,7 +69,7 @@ Resulting grid map parameters.
 0: Smallest value among the average values ​​of each cluster
 1: Largest value among the average values ​​of each cluster
 2: Mean value of the cluster with the most points
-* **pcl_grid_map_extraction/grid_map/height_thresh** Height range from the smallest cluster.(For only height_type 2)
+* **pcl_grid_map_extraction/grid_map/height_thresh** Height range from the smallest cluster.(Only for height_type 2)
 
 ### Point Cloud Pre-processing Parameters
 
