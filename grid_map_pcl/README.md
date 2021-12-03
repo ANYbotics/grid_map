@@ -54,7 +54,7 @@ Resulting grid map parameters.
 * **pcl_grid_map_extraction/grid_map/height_type** How to calculate elevation value.
 0: Smallest value among the average values ​​of each cluster
 1: Mean value of the cluster with the most points
-* **pcl_grid_map_extraction/grid_map/height_thresh** Height range from the smallest cluster.(For only height_type 1)
+* **pcl_grid_map_extraction/grid_map/height_thresh** Height range from the smallest cluster.(Only for height_type 1)
 
 ### Point Cloud Pre-processing Parameters
 
