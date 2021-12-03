@@ -65,9 +65,9 @@ Resulting grid map parameters.
 * **pcl_grid_map_extraction/grid_map/min_num_points_per_cell** Minimum number of points in the point cloud that have to fall within any of the grid map cells. Otherwise the cell elevation will be set to NaN.
 * **pcl_grid_map_extraction/grid_map/max_num_points_per_cell** Maximum number of points in the point cloud that are allowed to fall within any of the grid map cells. If there is more points, the value will be set to NaN. This number can be used to ignore cells with a lot of points which speeds up the processing (but results with some holes in the map).
 * **pcl_grid_map_extraction/grid_map/resolution** Resolution of the grid map. Width and lengths are computed automatically.
-* **pcl_grid_map_extraction/grid_map/height_type** How to calculate elevation value. 
-0: Smallest value among the average v3lues ​​of each cluster 
-1: Largest value among the average values ​​of each cluster 
+* **pcl_grid_map_extraction/grid_map/height_type** How to calculate elevation value.
+0: Smallest value among the average values ​​of each cluster
+1: Largest value among the average values ​​of each cluster
 2: Mean value of the cluster with the most points
 * **pcl_grid_map_extraction/grid_map/height_thresh** Height range from the smallest cluster.(For only height_type 2)
 
