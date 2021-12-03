@@ -21,7 +21,7 @@ The source code is released under a [BSD 3-Clause license](LICENSE).
 
 **Author: Péter Fankhauser<br />
 Affiliation: [ANYbotics](https://www.anybotics.com/)<br />
-Maintainer: Maximilian Wulf, mwulf@anybotics.com<br />**
+Maintainer: Maximilian Wulf, mwulf@anybotics.com, Magnus Gärtner, mgaertner@anybotics.com<br />**
 With contributions by: Simone Arreghini, Tanja Baumann, Jeff Delmerico, Remo Diethelm, Perry Franklin, Magnus Gärtner, Ruben Grandia, Edo Jelavic, Dominic Jud, Ralph Kaestner, Philipp Krüsi, Alex Millane, Daniel Stonier, Elena Stumm, Martin Wermelinger, Christos Zalidis
 
 This projected was initially developed at ETH Zurich (Autonomous Systems Lab & Robotic Systems Lab).
