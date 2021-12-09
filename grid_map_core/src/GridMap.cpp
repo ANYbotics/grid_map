@@ -943,8 +943,6 @@ void GridMap::conservativeResize(const Index& size, const Direction direction, f
   }
 
   size_ = size;
-}
-
 } /* namespace */
 
 bool GridMap::atPositionBicubicConvolutionInterpolated(const std::string& layer, const Position& position,
