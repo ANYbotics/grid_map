@@ -3,7 +3,7 @@
  *
  *  Created on: May 4, 2015
  *      Author: Martin Wermelinger
- *	 Institute: ETH Zurich, Autonomous Systems Lab
+ *	 Institute: ETH Zurich, ANYbotics
  *
  */
 

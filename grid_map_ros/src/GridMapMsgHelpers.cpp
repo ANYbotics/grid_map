@@ -3,7 +3,7 @@
  *
  *  Created on: Sep 8, 2014
  *      Author: Péter Fankhauser
- *   Institute: ETH Zurich, Autonomous Systems Lab
+ *   Institute: ETH Zurich, ANYbotics
  */
 
 #include "grid_map_ros/GridMapMsgHelpers.hpp"
@@ -13,7 +13,7 @@
 
 namespace grid_map {
 
-const int nDimensions()
+int nDimensions()
 {
   return 2;
 }

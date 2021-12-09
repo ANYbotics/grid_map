@@ -3,7 +3,7 @@
  *
  *  Created on: Aug 18, 2017
  *      Author: Peter Fankhauser
- *   Institute: ETH Zurich, Robotic Systems Lab
+ *   Institute: ETH Zurich, ANYbotics
  */
 
 #pragma once
@@ -12,7 +12,7 @@
 
 #include <grid_map_core/grid_map_core.hpp>
 
-#include <filters/filter_base.h>
+#include <filters/filter_base.hpp>
 
 #include <Eigen/Core>
 #include <string>

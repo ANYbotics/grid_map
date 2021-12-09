@@ -3,12 +3,12 @@
  *
  *  Created on: Sep 14, 2017
  *      Author: Peter Fankhauser
- *   Institute: ETH Zurich, Robotic Systems Lab
+ *   Institute: ETH Zurich, ANYbotics
  */
 
 #pragma once
 
-#include <filters/filter_base.h>
+#include <filters/filter_base.hpp>
 
 #include <Eigen/Core>
 #include <string>
@@ -55,11 +55,11 @@ class ColorBlendingFilter : public filters::FilterBase<T>
   //! Input layers.
   std::string backgroundLayer_, foregroundLayer_;
 
-  //! Blend mode.
-  BlendModes blendMode_;
-
   //! Opacity of foreground layer.
   double opacity_;
+
+  //! Blend mode.
+  BlendModes blendMode_;
 
   //! Output layer name.
   std::string outputLayer_;

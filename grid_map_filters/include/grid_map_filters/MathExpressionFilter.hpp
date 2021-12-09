@@ -3,14 +3,14 @@
  *
  *  Created on: Aug 16, 2017
  *      Author: Peter Fankhauser
- *   Institute: ETH Zurich, Robotic Systems Lab
+ *   Institute: ETH Zurich, ANYbotics
  */
 
 #pragma once
 
 #include "EigenLab/EigenLab.h"
 
-#include <filters/filter_base.h>
+#include <filters/filter_base.hpp>
 
 #include <string>
 

@@ -3,7 +3,7 @@
  *
  *  Created on: May 3, 2017
  *      Author: Tanja Baumann, Peter Fankhauser
- *   Institute: ETH Zurich, Robotic Systems Lab
+ *   Institute: ETH Zurich, ANYbotics
  */
 
 #include "grid_map_filters/MinInRadiusFilter.hpp"
@@ -70,7 +70,7 @@ bool MinInRadiusFilter<T>::update(const T& mapIn, T& mapOut)
     if (!mapOut.isValid(*iterator, inputLayer_))
       continue;
     value = mapOut.at(inputLayer_, *iterator);
-    double valueMin;
+    double valueMin = 0.0;
 
     // Requested position (center) of circle in map.
     Eigen::Vector2d center;

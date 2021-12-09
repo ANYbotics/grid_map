@@ -1,0 +1,21 @@
+<launch>
+  <!-- Noise is in meters -->
+  <arg name="noise_on_map" default="0.015"/>
+  <!-- Max percentage value is 1.0, all outliers -->
+  <arg name="outliers_percentage" default="0.0"/>
+
+  <!-- Launch the grid map normal filter comparison demo node -->
+  <node pkg="grid_map_demos" type="normal_filter_comparison_demo" name="normal_filter_comparison_demo" output="screen">
+    <rosparam command="load" file="$(find grid_map_demos)/config/normal_filter_comparison.yaml" />
+    <param name="noise_on_map" value="$(arg noise_on_map)" />
+    <param name="outliers_percentage" value="$(arg outliers_percentage)" />
+  </node>
+
+  <!-- Launch the grid map visualizer -->
+  <node pkg="grid_map_visualization" type="grid_map_visualization" name="grid_map_visualization" output="screen">
+    <rosparam command="load" file="$(find grid_map_demos)/config/normal_filter_comparison_visualization.yaml" />
+  </node>
+
+  <!-- Launch RViz with the demo configuration -->
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find grid_map_demos)/rviz/normal_filter_comparison_demo.rviz" />
+</launch>

@@ -2,6 +2,17 @@
 Changelog for package grid_map
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.6.4 (2020-12-04)
+------------------
+
+1.6.2 (2019-10-14)
+------------------
+
+1.6.1 (2019-02-27)
+------------------
+* Updated author e-mail address.
+* Contributors: Peter Fankhauser
+
 1.6.0 (2017-11-24)
 ------------------
 
@@ -46,4 +57,4 @@ Changelog for package grid_map
 
 1.2.0 (2016-03-03)
 ------------------
-* Added new package grid_map as metapackage (`#34 <https://github.com/ethz-asl/grid_map/issues/34>`_).
+* Added new package grid_map as metapackage (`#34 <https://github.com/anybotics/grid_map/issues/34>`_).

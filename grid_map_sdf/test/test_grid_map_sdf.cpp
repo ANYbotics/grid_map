@@ -3,7 +3,7 @@
  *
  *  Created on: Aug 28, 2017
  *      Author: Péter Fankhauser
- *	 Institute: ETH Zurich, Robotic Systems Lab
+ *	 Institute: ETH Zurich, ANYbotics
  */
 
 // gtest

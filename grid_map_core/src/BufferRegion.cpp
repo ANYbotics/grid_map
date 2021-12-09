@@ -3,7 +3,7 @@
  *
  *  Created on: Aug 19, 2015
  *      Author: Péter Fankhauser
- *   Institute: ETH Zurich, Autonomous Systems Lab
+ *   Institute: ETH Zurich, ANYbotics
  */
 #include <grid_map_core/BufferRegion.hpp>
 

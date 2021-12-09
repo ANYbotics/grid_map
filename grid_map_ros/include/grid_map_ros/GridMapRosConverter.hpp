@@ -3,7 +3,7 @@
  *
  *  Created on: Jul 14, 2014
  *      Author: Péter Fankhauser
- *	 Institute: ETH Zurich, Autonomous Systems Lab
+ *	 Institute: ETH Zurich, ANYbotics
  */
 
 #pragma once
@@ -44,6 +44,17 @@ class GridMapRosConverter
    * Destructor.
    */
   virtual ~GridMapRosConverter();
+
+  /*!
+   * Converts a ROS grid map message to a grid map object.
+   * @param[in] message the grid map message.
+   * @param[in] layers the layers to be copied.
+   * @param[in] copyBasicLayers if true, basic layers are copied.
+   * @param[in] copyAllNonBasicLayers if true, all basic layers are copied, otherwise only that one specified in layers.
+   * @param[out] gridMap the grid map object to be initialized.
+   * @return true if successful, false otherwise.
+   */
+  static bool fromMessage(const grid_map_msgs::GridMap& message, grid_map::GridMap& gridMap, const std::vector<std::string>& layers, bool copyBasicLayers = true, bool copyAllNonBasicLayers = true);
 
   /*!
    * Converts a ROS grid map message to a grid map object.

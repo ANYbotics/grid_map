@@ -3,7 +3,7 @@
  *
  *  Created on: Mar 28, 2015
  *      Author: Péter Fankhauser
- *   Institute: ETH Zurich, Autonomous Systems Lab
+ *   Institute: ETH Zurich, ANYbotics
  */
 
 #include "grid_map_visualization/visualizations/GridCellsVisualization.hpp"

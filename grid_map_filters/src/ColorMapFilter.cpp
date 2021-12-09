@@ -3,7 +3,7 @@
  *
  *  Created on: Sep 23, 2017
  *      Author: Peter Fankhauser
- *   Institute: ETH Zurich, Robotic Systems Lab
+ *   Institute: ETH Zurich, ANYbotics
  */
 
 #include <grid_map_filters/ColorMapFilter.hpp>
@@ -90,7 +90,7 @@ bool ColorMapFilter<T>::update(const T& mapIn, T& mapOut)
   const Eigen::Vector3f colorRange = maxColor_ - minColor_;
 
   // For each cell in map.
-  for (size_t i = 0; i < output.size(); ++i) {
+  for (Eigen::Index i = 0; i < output.size(); ++i) {
     if (!std::isfinite(input(i))) continue;
     const double value = std::min<float>(std::max<float>(input(i), min_), max_);
     const double factor = (value - min_) / range;

@@ -3,7 +3,7 @@
  *
  *  Created on: May 3, 2017
  *      Author: Tanja Baumann, Peter Fankhauser
- *   Institute: ETH Zurich, Robotic Systems Lab
+ *   Institute: ETH Zurich, ANYbotics
  */
 
 #include "grid_map_filters/MeanInRadiusFilter.hpp"

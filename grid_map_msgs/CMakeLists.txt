@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.5.1)
 project(grid_map_msgs)
 
 ## Find catkin macros and libraries
@@ -22,6 +22,7 @@ add_message_files(
 ## Generate services in the 'srv' folder
 add_service_files(
   FILES
+  SetGridMap.srv
   GetGridMap.srv
   GetGridMapInfo.srv
   ProcessFile.srv

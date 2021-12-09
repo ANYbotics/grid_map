@@ -7,8 +7,11 @@
 #include <costmap_2d/costmap_2d_ros.h>
 #include <grid_map_core/grid_map_core.hpp>
 #include <grid_map_costmap_2d/grid_map_costmap_2d.hpp>
+#if ROS_VERSION_MINIMUM(1,14,0)
+#include <tf2_ros/transform_listener.h>
+#else
 #include <tf/transform_listener.h>
-#include <tf/transform_broadcaster.h>
+#endif
 
 #include <atomic>
 #include <map>
@@ -56,11 +59,16 @@ public:
   ROSCostmapServer(const std::string& name, const std::string& baseLinkTransformName,
                    const grid_map::Position& origin, const double& width, const double& height);
 
-  ROSCostmapPtr getROSCostmap() { return costmap; };
+  ROSCostmapPtr getROSCostmap() { return costmap_; };
 
 private:
-  ROSCostmapPtr costmap;
-  tf::TransformListener transformListener;
+  ROSCostmapPtr costmap_;
+#if ROS_VERSION_MINIMUM(1,14,0)
+  tf2_ros::Buffer tfBuffer_;
+  tf2_ros::TransformListener tfListener_;
+#else
+  tf::TransformListener tfListener_;
+#endif
 };
 
 
@@ -75,3 +83,4 @@ private:
  * @param[in] broadcaster : uninitialised broadcaster object
  */
 void broadcastCostmap2DROSTestSuiteTransforms(TransformBroadcaster& broadcaster);
+

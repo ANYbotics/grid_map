@@ -3,12 +3,12 @@
  *
  *  Created on: Mar 19, 2015
  *      Author: Martin Wermelinger, Peter Fankhauser
- *   Institute: ETH Zurich, Autonomous Systems Lab
+ *   Institute: ETH Zurich, ANYbotics
  */
 
 #pragma once
 
-#include <filters/filter_base.h>
+#include <filters/filter_base.hpp>
 
 #include <vector>
 #include <string>

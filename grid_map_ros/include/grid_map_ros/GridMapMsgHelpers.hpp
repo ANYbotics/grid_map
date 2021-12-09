@@ -3,7 +3,7 @@
  *
  *  Created on: Sep 8, 2014
  *      Author: Péter Fankhauser
- *   Institute: ETH Zurich, Autonomous Systems Lab
+ *   Institute: ETH Zurich, ANYbotics
  */
 
 #pragma once
@@ -23,7 +23,7 @@ namespace grid_map {
  * Returns the number of dimensions of the grid map.
  * @return number of dimensions.
  */
-const int nDimensions();
+int nDimensions();
 
 enum class StorageIndices {
     Column,
