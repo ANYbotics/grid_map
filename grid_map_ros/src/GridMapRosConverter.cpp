@@ -275,7 +275,7 @@ bool GridMapRosConverter::fromOccupancyGrid(
     RCLCPP_INFO(
       rclcpp::get_logger("fromOccupancyGrid"),
       "Orientation of occupancy grid: \n%s",
-      rosidl_generator_traits::to_yaml(occupancyGrid.info.origin.orientation).c_str());
+      geometry_msgs::msg::to_yaml(occupancyGrid.info.origin.orientation).c_str());
     return false;
   }
 
@@ -374,7 +374,7 @@ bool GridMapRosConverter::fromCostmap(
     RCLCPP_INFO(
       rclcpp::get_logger("fromcostmap"),
       "Orientation of costmap: \n%s",
-      rosidl_generator_traits::to_yaml(costmap.metadata.origin.orientation).c_str());
+      geometry_msgs::msg::to_yaml(costmap.metadata.origin.orientation).c_str());
     return false;
   }
 
