@@ -8,7 +8,7 @@ from grid_map_msgs.msg import GridMap as GridMapMsg
 def from_msg(msg, cls=GridMapBinding):
   gm = cls()
   gm.setFrameId(msg.info.header.frame_id)
-  gm.setTimestamp(int(msg.info.header.stamp.to_sec()*1E9))
+  gm.setTimestamp(int(msg.info.header.stamp.to_sec()*10E9))
   gm.setStartIndex(np.array((msg.outer_start_index, msg.inner_start_index)))
   gm.setGeometry(
     np.array((msg.info.length_x, msg.info.length_y)),
@@ -16,14 +16,14 @@ def from_msg(msg, cls=GridMapBinding):
     np.array((msg.info.pose.position.x, msg.info.pose.position.y))
   )
 
-  for i, layer in enumerate(gm.getLayers()):
-    gm.add(layer, np.float32(np.reshape(msg.data[i].data, (msg.data[i].layout.dim[1].size, msg.data[i].layout.dim[0].size))) )
+  for i, layer in enumerate(msg.layers):
+    gm.add(layer, np.float32(np.reshape(msg.data[i].data, (msg.data[i].layout.dim[1].size, msg.data[i].layout.dim[0].size), order='F')) )
 
   return gm
 
 def to_msg(self):
   msg = GridMapMsg()
-  msg.info.header.stamp = rospy.Time(self.getTimestamp()/1E9)
+  msg.info.header.stamp = rospy.Time(self.getTimestamp()/10E9)
   msg.info.header.frame_id = self.getFrameId()
   msg.info.resolution = self.getResolution()
   msg.info.length_x = self.getLength()[0]
@@ -36,7 +36,7 @@ def to_msg(self):
     data_array = Float32MultiArray()
     data_array.layout.dim.append(MultiArrayDimension("column_index", matrix.shape[1], matrix.shape[0]*matrix.shape[1]))
     data_array.layout.dim.append(MultiArrayDimension("row_index", matrix.shape[0], matrix.shape[0]))
-    data_array.data = matrix.flatten()
+    data_array.data = matrix.flatten(order='F')
     msg.data.append(data_array)
 
   return msg
