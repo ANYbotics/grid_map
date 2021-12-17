@@ -1,12 +1,12 @@
 import numpy as np
-from grid_map_python import GridMap
+from grid_map_python import GridMapBinding
 
 import rospy
 from std_msgs.msg import Float32MultiArray, MultiArrayDimension
 from grid_map_msgs.msg import GridMap as GridMapMsg
 
-def from_msg(msg):
-  gm = GridMap(msg.layers)
+def from_msg(msg, cls=GridMapBinding):
+  gm = cls()
   gm.setFrameId(msg.info.header.frame_id)
   gm.setTimestamp(int(msg.info.header.stamp.to_sec()*1E9))
   gm.setStartIndex(np.array((msg.outer_start_index, msg.inner_start_index)))
