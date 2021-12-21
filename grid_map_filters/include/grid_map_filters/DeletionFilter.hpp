@@ -8,20 +8,18 @@
 
 #pragma once
 
-#include <filters/filter_base.hpp>
-
-#include <vector>
 #include <string>
+#include <vector>
+
+#include <filters/filter_base.hpp>
+#include <grid_map_core/GridMap.hpp>
 
 namespace grid_map {
 
 /*!
  * Deletion filter class deletes layers of a grid map.
  */
-template<typename T>
-class DeletionFilter : public filters::FilterBase<T>
-{
-
+class DeletionFilter : public filters::FilterBase<GridMap> {
  public:
   /*!
    * Constructor
@@ -31,25 +29,23 @@ class DeletionFilter : public filters::FilterBase<T>
   /*!
    * Destructor.
    */
-  virtual ~DeletionFilter();
+  ~DeletionFilter() override;
 
   /*!
    * Configures the filter from parameters on the parameter server.
    */
-  virtual bool configure();
+  bool configure() override;
 
   /*!
    * Deletes the specified layers of a grid map.
    * @param mapIn gridMap with the different layers.
    * @param mapOut gridMap without the deleted layers.
    */
-  virtual bool update(const T& mapIn, T& mapOut);
+  bool update(const GridMap& mapIn, GridMap& mapOut) override;
 
  private:
-
   //! List of layers that should be deleted.
   std::vector<std::string> layers_;
-
 };
 
-} /* namespace */
+}  // namespace grid_map

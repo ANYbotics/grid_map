@@ -8,21 +8,18 @@
 
 #pragma once
 
+#include <string>
 #include "EigenLab/EigenLab.h"
 
 #include <filters/filter_base.hpp>
-
-#include <string>
+#include <grid_map_core/GridMap.hpp>
 
 namespace grid_map {
 
 /*!
  * Parses and evaluates a mathematical matrix expression with layers of a grid map.
  */
-template<typename T>
-class MathExpressionFilter : public filters::FilterBase<T>
-{
-
+class MathExpressionFilter : public filters::FilterBase<GridMap> {
  public:
   /*!
    * Constructor
@@ -32,19 +29,19 @@ class MathExpressionFilter : public filters::FilterBase<T>
   /*!
    * Destructor.
    */
-  virtual ~MathExpressionFilter();
+  ~MathExpressionFilter() override;
 
   /*!
    * Configures the filter from parameters on the parameter server.
    */
-  virtual bool configure();
+  bool configure() override;
 
   /*!
    * Takes the minimum out of different layers of a grid map.
    * @param mapIn gridMap with the different layers to take the min.
    * @param mapOut gridMap with an additional layer containing the sum.
    */
-  virtual bool update(const T& mapIn, T& mapOut);
+  bool update(const GridMap& mapIn, GridMap& mapOut) override;
 
  private:
   //! EigenLab parser.
@@ -57,4 +54,4 @@ class MathExpressionFilter : public filters::FilterBase<T>
   std::string outputLayer_;
 };
 
-} /* namespace */
+}  // namespace grid_map

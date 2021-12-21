@@ -8,19 +8,17 @@
 
 #pragma once
 
-#include <filters/filter_base.hpp>
-
 #include <string>
+
+#include <filters/filter_base.hpp>
+#include <grid_map_core/GridMap.hpp>
 
 namespace grid_map {
 
 /*!
  * Duplication filter class duplicates a layer of a grid map.
  */
-template<typename T>
-class MockFilter : public filters::FilterBase<T>
-{
-
+class MockFilter : public filters::FilterBase<GridMap> {
  public:
   /*!
    * Constructor
@@ -30,27 +28,26 @@ class MockFilter : public filters::FilterBase<T>
   /*!
    * Destructor.
    */
-  virtual ~MockFilter();
+  ~MockFilter() override;
 
   /*!
    * Configures the filter from parameters on the parameter server.
    */
-  virtual bool configure();
+  bool configure() override;
 
   /*!
    * Copies the input to the output. The time for the update is specified by processingTime_. Optionally the update is logged.
    * @param mapIn Input.
    * @param mapOut Output.
    */
-  virtual bool update(const T& mapIn, T& mapOut);
+  bool update(const GridMap& mapIn, GridMap& mapOut) override;
 
  private:
-
   //! Flag indicating wheter to also log on update.
-  bool printName_;
+  bool printName_{false};
 
   //! The time [ms] that the update function takes.
-  uint processingTime_;
+  uint processingTime_{0};
 };
 
-} /* namespace */
+}  // namespace grid_map

@@ -8,19 +8,18 @@
 
 #pragma once
 
-#include <filters/filter_base.hpp>
-
-#include <vector>
 #include <string>
+#include <vector>
+
+#include <filters/filter_base.hpp>
+#include <grid_map_core/GridMap.hpp>
 
 namespace grid_map {
 
 /*!
  * Set specified layers of a grid map as basic layers.
  */
-template<typename T>
-class SetBasicLayersFilter : public filters::FilterBase<T>
-{
+class SetBasicLayersFilter : public filters::FilterBase<GridMap> {
  public:
   /*!
    * Constructor
@@ -30,24 +29,23 @@ class SetBasicLayersFilter : public filters::FilterBase<T>
   /*!
    * Destructor.
    */
-  virtual ~SetBasicLayersFilter();
+  ~SetBasicLayersFilter() override;
 
   /*!
    * Configures the filter from parameters on the parameter server.
    */
-  virtual bool configure();
+  bool configure() override;
 
   /*!
    * Set the specified layers as basic layers.
    * @param mapIn input grid map.
    * @param mapOut output grid map with basic layers set.
    */
-  virtual bool update(const T& mapIn, T& mapOut);
+  bool update(const GridMap& mapIn, GridMap& mapOut) override;
 
  private:
   //! List of layers that should be set as basic layers.
   std::vector<std::string> layers_;
-
 };
 
-} /* namespace */
+}  // namespace grid_map

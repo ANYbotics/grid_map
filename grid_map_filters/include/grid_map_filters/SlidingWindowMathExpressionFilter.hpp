@@ -8,24 +8,20 @@
 
 #pragma once
 
-#include "EigenLab/EigenLab.h"
-
-#include <grid_map_core/grid_map_core.hpp>
-
-#include <filters/filter_base.hpp>
-
 #include <Eigen/Core>
 #include <string>
+
+#include <filters/filter_base.hpp>
+#include <grid_map_core/grid_map_core.hpp>
+
+#include "EigenLab/EigenLab.h"
 
 namespace grid_map {
 
 /*!
  * Parse and evaluate a mathematical matrix expression within a sliding window on a layer of a grid map.
  */
-template<typename T>
-class SlidingWindowMathExpressionFilter : public filters::FilterBase<T>
-{
-
+class SlidingWindowMathExpressionFilter : public filters::FilterBase<GridMap> {
  public:
   /*!
    * Constructor
@@ -35,19 +31,19 @@ class SlidingWindowMathExpressionFilter : public filters::FilterBase<T>
   /*!
    * Destructor.
    */
-  virtual ~SlidingWindowMathExpressionFilter();
+  ~SlidingWindowMathExpressionFilter() override;
 
   /*!
    * Configures the filter from parameters on the parameter server.
    */
-  virtual bool configure();
+  bool configure() override;
 
   /*!
    * Takes the minimum out of different layers of a grid map.
    * @param mapIn gridMap with the different layers to take the min.
    * @param mapOut gridMap with an additional layer containing the sum.
    */
-  virtual bool update(const T& mapIn, T& mapOut);
+  bool update(const GridMap& mapIn, GridMap& mapOut) override;
 
  private:
   //! Input layer name.
@@ -78,4 +74,4 @@ class SlidingWindowMathExpressionFilter : public filters::FilterBase<T>
   SlidingWindowIterator::EdgeHandling edgeHandling_;
 };
 
-} /* namespace */
+}  // namespace grid_map

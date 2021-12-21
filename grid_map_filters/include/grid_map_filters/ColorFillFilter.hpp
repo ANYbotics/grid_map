@@ -8,20 +8,17 @@
 
 #pragma once
 
-#include <filters/filter_base.hpp>
-
 #include <Eigen/Core>
-#include <string>
+
+#include <filters/filter_base.hpp>
+#include <grid_map_core/GridMap.hpp>
 
 namespace grid_map {
 
 /*!
  * Creates a new color layer.
  */
-template<typename T>
-class ColorFillFilter : public filters::FilterBase<T>
-{
-
+class ColorFillFilter : public filters::FilterBase<GridMap> {
  public:
   /*!
    * Constructor
@@ -31,19 +28,19 @@ class ColorFillFilter : public filters::FilterBase<T>
   /*!
    * Destructor.
    */
-  virtual ~ColorFillFilter();
+  ~ColorFillFilter() override;
 
   /*!
    * Configures the filter.
    */
-  virtual bool configure();
+  bool configure() override;
 
   /*!
    * Adds a new color layer.
    * @param mapIn grid map to add the new layer.
    * @param mapOut grid map the grid map with the new color layer.
    */
-  virtual bool update(const T& mapIn, T& mapOut);
+  bool update(const GridMap& mapIn, GridMap& mapOut) override;
 
  private:
   //! Color.
@@ -56,4 +53,4 @@ class ColorFillFilter : public filters::FilterBase<T>
   std::string outputLayer_;
 };
 
-} /* namespace */
+}  // namespace grid_map

@@ -1,6 +1,11 @@
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Changelog for package grid_map_filters
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+1.6.8 (2021-12-15)
+------------------
+* Improved the template definition structure:
+* - grid_map_filters do not need to be template classes anymore.
+* Contributors: Magnus Gärtner
 
 1.6.4 (2020-12-04)
 ------------------

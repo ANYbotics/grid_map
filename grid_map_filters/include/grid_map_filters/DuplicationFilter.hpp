@@ -8,19 +8,17 @@
 
 #pragma once
 
-#include <filters/filter_base.hpp>
-
 #include <string>
+
+#include <filters/filter_base.hpp>
+#include <grid_map_core/GridMap.hpp>
 
 namespace grid_map {
 
 /*!
  * Duplication filter class duplicates a layer of a grid map.
  */
-template<typename T>
-class DuplicationFilter : public filters::FilterBase<T>
-{
-
+class DuplicationFilter : public filters::FilterBase<GridMap> {
  public:
   /*!
    * Constructor
@@ -30,19 +28,19 @@ class DuplicationFilter : public filters::FilterBase<T>
   /*!
    * Destructor.
    */
-  virtual ~DuplicationFilter();
+  ~DuplicationFilter() override;
 
   /*!
    * Configures the filter from parameters on the parameter server.
    */
-  virtual bool configure();
+  bool configure() override;
 
   /*!
    * Duplicates the specified layers of a grid map.
    * @param mapIn with the layer to duplicate.
    * @param mapOut with the layer duplicated.
    */
-  virtual bool update(const T& mapIn, T& mapOut);
+  bool update(const GridMap& mapIn, GridMap& mapOut) override;
 
  private:
   //! Name of the layer that is duplicated.
@@ -52,4 +50,4 @@ class DuplicationFilter : public filters::FilterBase<T>
   std::string outputLayer_;
 };
 
-} /* namespace */
+}  // namespace grid_map

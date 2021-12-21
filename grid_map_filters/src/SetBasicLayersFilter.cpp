@@ -6,29 +6,20 @@
  *   Institute: ETH Zurich, ANYbotics
  */
 
-#include "../include/grid_map_filters/SetBasicLayersFilter.hpp"
+#include "grid_map_filters/SetBasicLayersFilter.hpp"
 
 #include <grid_map_core/GridMap.hpp>
-#include <pluginlib/class_list_macros.h>
 
 using namespace filters;
 
 namespace grid_map {
 
-template<typename T>
-SetBasicLayersFilter<T>::SetBasicLayersFilter()
-{
-}
+SetBasicLayersFilter::SetBasicLayersFilter() = default;
 
-template<typename T>
-SetBasicLayersFilter<T>::~SetBasicLayersFilter()
-{
-}
+SetBasicLayersFilter::~SetBasicLayersFilter() = default;
 
-template<typename T>
-bool SetBasicLayersFilter<T>::configure()
-{
-  if (!FilterBase<T>::getParam(std::string("layers"), layers_)) {
+bool SetBasicLayersFilter::configure() {
+  if (!FilterBase::getParam(std::string("layers"), layers_)) {
     ROS_ERROR("SetBasicLayersFilters did not find parameter 'layers'.");
     return false;
   }
@@ -36,9 +27,7 @@ bool SetBasicLayersFilter<T>::configure()
   return true;
 }
 
-template<typename T>
-bool SetBasicLayersFilter<T>::update(const T& mapIn, T& mapOut)
-{
+bool SetBasicLayersFilter::update(const GridMap& mapIn, GridMap& mapOut) {
   mapOut = mapIn;
   std::vector<std::string> layersChecked;
 
@@ -54,6 +43,4 @@ bool SetBasicLayersFilter<T>::update(const T& mapIn, T& mapOut)
   return true;
 }
 
-} /* namespace */
-
-PLUGINLIB_EXPORT_CLASS(grid_map::SetBasicLayersFilter<grid_map::GridMap>, filters::FilterBase<grid_map::GridMap>)
+}  // namespace grid_map

@@ -6,58 +6,47 @@
  *   Institute: ETH Zurich, ANYbotics
  */
 
-#include <grid_map_filters/ColorFillFilter.hpp>
+#include "grid_map_filters/ColorFillFilter.hpp"
+
+#include <math.h>
+#include <Eigen/Dense>
 
 #include <grid_map_core/grid_map_core.hpp>
-#include <pluginlib/class_list_macros.h>
-
-#include <Eigen/Dense>
 
 using namespace filters;
 
 namespace grid_map {
 
-template<typename T>
-ColorFillFilter<T>::ColorFillFilter()
-    : r_(0.0),
-      g_(0.0),
-      b_(0.0)
-{
-}
+ColorFillFilter::ColorFillFilter() : r_(0.0), g_(0.0), b_(0.0) {}
 
-template<typename T>
-ColorFillFilter<T>::~ColorFillFilter()
-{
-}
+ColorFillFilter::~ColorFillFilter() = default;
 
-template<typename T>
-bool ColorFillFilter<T>::configure()
-{
-  if (!FilterBase < T > ::getParam(std::string("red"), r_)) {
+bool ColorFillFilter::configure() {
+  if (!FilterBase::getParam(std::string("red"), r_)) {
     ROS_ERROR("Color fill filter did not find parameter `red`.");
     return false;
   }
   ROS_DEBUG("Color fill filter red is = %f.", r_);
 
-  if (!FilterBase < T > ::getParam(std::string("green"), g_)) {
+  if (!FilterBase::getParam(std::string("green"), g_)) {
     ROS_ERROR("Color fill filter did not find parameter `green`.");
     return false;
   }
   ROS_DEBUG("Color fill filter green is = %f.", g_);
 
-  if (!FilterBase < T > ::getParam(std::string("blue"), b_)) {
+  if (!FilterBase::getParam(std::string("blue"), b_)) {
     ROS_ERROR("Color fill filter did not find parameter `blue`.");
     return false;
   }
   ROS_DEBUG("Color fill filter blue is = %f.", b_);
 
-  if (!FilterBase < T > ::getParam(std::string("mask_layer"), maskLayer_)) {
+  if (!FilterBase::getParam(std::string("mask_layer"), maskLayer_)) {
     ROS_WARN("Color fill filter did not find parameter `mask_layer`.");
   } else {
     ROS_DEBUG("Color fill filter mask_layer = %s.", maskLayer_.c_str());
   }
 
-  if (!FilterBase < T > ::getParam(std::string("output_layer"), outputLayer_)) {
+  if (!FilterBase::getParam(std::string("output_layer"), outputLayer_)) {
     ROS_ERROR("Color fill filter did not find parameter `output_layer`.");
     return false;
   }
@@ -65,12 +54,10 @@ bool ColorFillFilter<T>::configure()
   return true;
 }
 
-template<typename T>
-bool ColorFillFilter<T>::update(const T& mapIn, T& mapOut)
-{
+bool ColorFillFilter::update(const GridMap& mapIn, GridMap& mapOut) {
   mapOut = mapIn;
   const Eigen::Vector3f colorVector(r_, g_, b_);
-  float colorValue;
+  float colorValue{NAN};
   colorVectorToValue(colorVector, colorValue);
 
   if (maskLayer_.empty()) {
@@ -89,6 +76,4 @@ bool ColorFillFilter<T>::update(const T& mapIn, T& mapOut)
   return true;
 }
 
-} /* namespace */
-
-PLUGINLIB_EXPORT_CLASS(grid_map::ColorFillFilter<grid_map::GridMap>, filters::FilterBase<grid_map::GridMap>)
+}  // namespace grid_map

@@ -8,20 +8,18 @@
 
 #pragma once
 
-#include <filters/filter_base.hpp>
-
 #include <Eigen/Core>
 #include <string>
+
+#include <filters/filter_base.hpp>
+#include <grid_map_core/GridMap.hpp>
 
 namespace grid_map {
 
 /*!
  * Compute the curvature (second derivative) of a layer in the map.
  */
-template<typename T>
-class CurvatureFilter : public filters::FilterBase<T>
-{
-
+class CurvatureFilter : public filters::FilterBase<GridMap> {
  public:
   /*!
    * Constructor
@@ -31,12 +29,12 @@ class CurvatureFilter : public filters::FilterBase<T>
   /*!
    * Destructor.
    */
-  virtual ~CurvatureFilter();
+  ~CurvatureFilter() override;
 
   /*!
    * Configures the filter from parameters on the Parameter Server
    */
-  virtual bool configure();
+  bool configure() override;
 
   /*!
    * Compute the curvature of a layer in a map and
@@ -44,7 +42,7 @@ class CurvatureFilter : public filters::FilterBase<T>
    * @param mapIn grid map containing the layer for which the curvature is computed for.
    * @param mapOut grid map containing mapIn and the new layer for the curvature.
    */
-  virtual bool update(const T& mapIn, T& mapOut);
+  bool update(const GridMap& mapIn, GridMap& mapOut) override;
 
  private:
   //! Input layer name.
@@ -54,4 +52,4 @@ class CurvatureFilter : public filters::FilterBase<T>
   std::string outputLayer_;
 };
 
-} /* namespace */
+}  // namespace grid_map
