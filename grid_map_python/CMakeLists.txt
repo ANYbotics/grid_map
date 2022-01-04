@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.5)
 project(grid_map_python)
 
-set(CMAKE_CXX_STANDARD 17)
-add_compile_options(-O2)
+set(CMAKE_CXX_STANDARD 14)
+add_compile_options(-O2 -Wall -Wextra -Wpedantic)
 
 find_package(catkin REQUIRED COMPONENTS pybind11_catkin grid_map_core grid_map_msgs)
 find_package(Eigen3 REQUIRED)

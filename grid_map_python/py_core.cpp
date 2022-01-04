@@ -6,9 +6,13 @@
 #include <pybind11/stl.h>
 
 namespace py = pybind11;
-using grid_map::GridMap, grid_map::Position, grid_map::Index, grid_map::Length, grid_map::Time, grid_map::InterpolationMethods;
+using grid_map::GridMap;
+using grid_map::Position;
+using grid_map::Index;
+using grid_map::Length;
+using grid_map::Time;
+using grid_map::InterpolationMethods;
 constexpr static auto pyref = py::return_value_policy::reference_internal;
-
 
 void init_core(py::module m) {
   py::module& core(m);
