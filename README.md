@@ -258,11 +258,21 @@ Beware that while iterators are convenient, it is often the cleanest and most ef
 
 There are two different methods to change the position of the map:
 * `setPosition(...)`: Changes the position of the map without changing data stored in the map. This changes the corresponce between the data and the map frame.
-* `move(...)`: Relocates the grid map such that the corresponce between data and the map frame does not change. Data in the overlapping region before and after the position change remains stored. Data that falls outside of the map at its new position is discarded. Cells that cover previously unknown regions are emptied (set to nan). The data storage is implemented as two-dimensional circular buffer to minimize computational effort.
+* `move(...)`:
+ Relocates the region captured by grid map w.r.t. to the static grid map frame. Use this to move the grid map boundaries
+ without relocating the grid map data. Takes care of all the data handling, such that the grid map data is stationary in the grid map
+ frame.
+  - Data in the overlapping region before and after the position change remains stored.
+  - Data that falls outside the map at its new position is discarded.
+  - Cells that cover previously unknown regions are emptied (set to nan).
+  The data storage is implemented as two-dimensional circular buffer to minimize computational effort.
+ 
+   **Note**: Due to the circular buffer structure, neighbouring indices might not fall close in the map frame.
+   This assumption only holds for indices obtained by getUnwrappedIndex().
 
-`setPosition(...)` | `move(...)`
-:---: | :---:
-![Grid map iterator](grid_map_core/doc/setposition_method.gif) | ![Submap iterator](grid_map_core/doc/move_method.gif)|
+  `setPosition(...)` | `move(...)`
+  :---: | :---:
+  ![Grid map iterator](grid_map_core/doc/setposition_method.gif) | ![Submap iterator](grid_map_core/doc/move_method.gif)|
 
 
 ## Packages
