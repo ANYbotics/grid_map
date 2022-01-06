@@ -26,10 +26,11 @@
   <depend>grid_map_rviz_plugin</depend>
   <depend>grid_map_visualization</depend>
   <depend>octomap_msgs</depend>
-  <!-- <depend>octomap_server</depend> -->
   <depend>rclcpp</depend>
   <depend>sensor_msgs</depend>
 
+  <exec_depend>octomap_rviz_plugins</exec_depend>
+  <exec_depend>octomap_server</exec_depend>
   <exec_depend>rclpy</exec_depend>
 
   <test_depend>ament_cmake_gtest</test_depend>
