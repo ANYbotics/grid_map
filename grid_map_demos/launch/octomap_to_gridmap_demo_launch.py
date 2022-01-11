@@ -31,16 +31,18 @@ def generate_launch_description():
 
     # Declare node actions
 
-    # TODO(marwan99): re-enable once octomap_mapping is ported to ROS2
-    # https://github.com/OctoMap/octomap_mapping/issues/76
-    # octomap_server_node = Node(
-    #     package='octomap_server',
-    #     executable='octomap_server_static',
-    #     name='octomap_server',
-    #     output='screen',
-    #     parameters=[param_file],
-    #     arguments=['-d', os.path.join(grid_map_demos_dir + 'data' + 'freiburg1_360.bt']
-    # )
+    octomap_server_node = Node(
+        package='octomap_server',
+        executable='octomap_server_static_node',
+        name='octomap_server',
+        output='screen',
+        parameters=[
+            param_file,
+            {
+                'octomap_path': os.path.join(grid_map_demos_dir, 'data', 'freiburg1_360.bt')
+            }
+        ],
+    )
 
     octomap_to_gridmap_demo_node = Node(
         package='grid_map_demos',
@@ -73,7 +75,7 @@ def generate_launch_description():
     ld.add_action(declare_rviz_config_file_cmd)
 
     # Add node actions to the launch description
-    # ld.add_action(octomap_server_node)
+    ld.add_action(octomap_server_node)
     ld.add_action(octomap_to_gridmap_demo_node)
     ld.add_action(grid_map_visualization_node)
     ld.add_action(rviz2_node)
