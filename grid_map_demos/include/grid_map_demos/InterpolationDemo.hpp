@@ -54,7 +54,7 @@ namespace grid_map_demos
  * Different analytical functions used
  * to evaluate the quality of interpolation approximation.
  */
-enum class Worlds: int
+enum class Worlds : int
 {
   Poly,
   GaussMixture,

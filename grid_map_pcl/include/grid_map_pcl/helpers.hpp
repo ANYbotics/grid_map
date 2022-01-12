@@ -58,7 +58,7 @@ void processPointcloud(
 
 using Point = ::pcl::PointXYZ;
 using Pointcloud = ::pcl::PointCloud<Point>;
-enum class XYZ: int {X, Y, Z};
+enum class XYZ : int {X, Y, Z};
 
 Eigen::Affine3f getRigidBodyTransform(
   const Eigen::Vector3d & translation,

@@ -158,7 +158,7 @@ namespace bicubic
  * to perform interpolation one needs
  * derivatives w.r.t. to x and y dimension.
  */
-enum class Dim2D: int
+enum class Dim2D : int
 {
   X,
   Y
