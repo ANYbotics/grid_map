@@ -43,7 +43,7 @@ public:
   /*!
    * Destructor.
    */
-  virtual ~Polygon();
+  virtual ~Polygon() = default;
 
   /*!
    * Check if point is inside polygon.

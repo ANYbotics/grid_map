@@ -26,8 +26,6 @@
 namespace grid_map
 {
 
-constexpr double kRadToDeg = 180.0 / M_PI;
-
 GridMapPclLoader::GridMapPclLoader(const rclcpp::Logger & node_logger)
 : node_logger_(node_logger),
   pointcloudProcessor_(node_logger_)
@@ -193,7 +191,7 @@ double GridMapPclLoader::calculateElevationFromPointsInsideGridMapCell(
   std::vector<double> clusterHeights(clusterClouds.size());
   std::transform(
     clusterClouds.begin(), clusterClouds.end(), clusterHeights.begin(),
-    [this](Pointcloud::ConstPtr cloud) -> double {
+    [](Pointcloud::ConstPtr cloud) -> double {
       return grid_map_pcl::calculateMeanOfPointPositions(cloud).z();
     });
 

@@ -60,9 +60,6 @@ private:
   //! Name of the grid map topic.
   std::string imageTopic_;
 
-  //! Length of the grid map in x direction.
-  double mapLengthX_;
-
   //! Resolution of the grid map.
   double resolution_;
 

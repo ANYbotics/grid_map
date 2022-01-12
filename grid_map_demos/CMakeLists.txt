@@ -200,8 +200,10 @@ set(targets_list
 )
 
 foreach(target ${targets_list})
-  target_compile_options(${target} PRIVATE "SHELL:--param ggc-min-expand=1")
-  target_compile_options(${target} PRIVATE "SHELL:--param ggc-min-heapsize=32768")
+  if(CMAKE_COMPILER_IS_GNUCXX)
+    target_compile_options(${target} PRIVATE "SHELL:--param ggc-min-expand=1")
+    target_compile_options(${target} PRIVATE "SHELL:--param ggc-min-heapsize=32768")
+  endif()
 endforeach()
 
 #############
