@@ -261,5 +261,18 @@ TEST(triangulation, rectangle)
   std::vector<Polygon> polygons;
   polygons = rectangle.triangulate();
   ASSERT_EQ(2, polygons.size());
-  // TODO Extend.
+  ASSERT_DOUBLE_EQ(4.5, polygons[0].getArea());
+  ASSERT_DOUBLE_EQ(4.5, polygons[1].getArea());
+  Position centroid1 = polygons[0].getCentroid();
+  Position centroid2 = polygons[1].getCentroid();
+  ASSERT_TRUE((0.0 == centroid1.x()) || (-1.0 == centroid1.x()));
+  ASSERT_TRUE((0.0 == centroid2.x()) || (-1.0 == centroid2.x()));
+  ASSERT_TRUE((0.0 == centroid1.y()) || (1.0 == centroid1.y()));
+  ASSERT_TRUE((0.0 == centroid2.y()) || (1.0 == centroid2.y()));
+  Position point1(-1.0, 0.5), point2(0, 0.5);
+  ASSERT_FALSE(polygons[0].isInside(point1) && polygons[0].isInside(point2));
+  ASSERT_FALSE(polygons[1].isInside(point1) && polygons[1].isInside(point2));
+  ASSERT_TRUE(polygons[0].isInside(point1) || polygons[0].isInside(point2));
+  ASSERT_TRUE(polygons[1].isInside(point1) || polygons[1].isInside(point2));
+  ASSERT_TRUE(polygons[0].isInside(point1) || polygons[1].isInside(point1));
 }
