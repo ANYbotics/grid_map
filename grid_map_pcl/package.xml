@@ -14,6 +14,7 @@
   
   <buildtool_depend>ament_cmake</buildtool_depend>
   <build_depend>grid_map_cmake_helpers</build_depend>
+  <build_depend>libpcl-all-dev</build_depend>
 
   <depend>grid_map_core</depend>
   <depend>grid_map_msgs</depend>
@@ -21,7 +22,8 @@
   <depend>rclcpp</depend>
   <depend>rcutils</depend>
   <depend>yaml-cpp</depend>
-  <depend>libpcl-all</depend>
+  
+  <exec_depend>libpcl-all</exec_depend>
 
   <test_depend>ament_cmake_gtest</test_depend>
   <test_depend>ament_lint_auto</test_depend>
