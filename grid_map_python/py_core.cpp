@@ -104,10 +104,9 @@ void init_core(py::module m) {
           gm.getStartIndex()
         );
       },
-      [](py::tuple t) {
+      [](const py::tuple& t) {
         // Equivalent to __setstate__, return an instance from tuple
-        if(t.size()!=9)
-        {
+        if(t.size()!=9) {
           throw std::runtime_error("Invalid pickled state!");
         }
 

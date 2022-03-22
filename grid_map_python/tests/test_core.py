@@ -59,3 +59,9 @@ if __name__ == '__main__':
   gm_bytes = pickle.dumps(gm)
   gm4 = pickle.loads(gm_bytes)
   assert gm4.hasSameLayers(gm)
+
+  # Pickle
+  gms_ref = {'1': gm, 'a': gm4, 'fiezb': gm2}
+  gms_bytes = pickle.dumps(gms_ref)
+  gms = pickle.loads(gms_bytes)
+  print(len(gms_bytes), len(gm_bytes), gms)
