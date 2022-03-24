@@ -1,3 +1,7 @@
+/**
+ * Copied from ANYbotics/eigen_utils, to avoid testing dependency.
+ */
+
 #pragma once
 
 #include <gtest/gtest.h>
