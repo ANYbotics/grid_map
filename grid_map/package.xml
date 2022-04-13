@@ -20,6 +20,7 @@
   <exec_depend>grid_map_rviz_plugin</exec_depend>
   <exec_depend>grid_map_loader</exec_depend>
   <exec_depend>grid_map_demos</exec_depend>
+  <exec_depend>grid_map_sdf</exec_depend>
   <export>
     <build_type>ament_cmake</build_type>
   </export>
