@@ -34,9 +34,7 @@ namespace grid_map_pcl
 
 void setVerbosityLevelToDebugIfFlagSet(rclcpp::Node::SharedPtr & node)
 {
-  bool isSetVerbosityLevelToDebug;
-  node->declare_parameter("set_verbosity_to_debug", false);
-  node->get_parameter("set_verbosity_to_debug", isSetVerbosityLevelToDebug);
+  bool isSetVerbosityLevelToDebug = node->declare_parameter("set_verbosity_to_debug", false);
 
   if (!isSetVerbosityLevelToDebug) {
     return;
