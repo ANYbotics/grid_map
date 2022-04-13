@@ -23,7 +23,9 @@ grid_map_package()
 ## Specify additional locations of header files
 include_directories(
   include
-  ${EIGEN3_INCLUDE_DIR}
+  SYSTEM
+    ${EIGEN3_INCLUDE_DIR}
+    ${PCL_INCLUDE_DIRS}
 )
 
 set(dependencies
