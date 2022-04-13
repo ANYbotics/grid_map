@@ -120,6 +120,7 @@ bool ColorBlendingFilter<T>::update(const T & mapIn, T & mapOut)
       backgroundColor = color.array();
       colorValueToVector(foreground(i), color);
       foregroundColor = color.array();
+      outputColor = Eigen::Array3f::Zero();
 
       switch (blendMode_) {
         case BlendModes::Normal:
