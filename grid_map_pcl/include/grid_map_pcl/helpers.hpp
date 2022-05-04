@@ -10,6 +10,7 @@
 #define GRID_MAP_PCL__HELPERS_HPP_
 
 #include <pcl/common/common.h>
+#include <pcl/common/io.h>
 #include <rclcpp/rclcpp.hpp>
 #include <string>
 #include <chrono>
