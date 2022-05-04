@@ -23,7 +23,9 @@ grid_map_package()
 ## Specify additional locations of header files
 include_directories(
   include
-  ${EIGEN3_INCLUDE_DIR}
+  SYSTEM
+    ${EIGEN3_INCLUDE_DIR}
+    ${PCL_INCLUDE_DIRS}
 )
 
 set(dependencies
@@ -87,7 +89,7 @@ if(BUILD_TESTING)
     # run cpplint without copyright filter
     find_package(ament_cmake_cpplint)
     ament_cpplint(
-      FILTERS -legal/copyright
+      FILTERS -legal/copyright -build/include_order
     )
   endif()
   ament_lint_auto_find_test_dependencies()

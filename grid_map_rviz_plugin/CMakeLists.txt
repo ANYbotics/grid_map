@@ -124,7 +124,7 @@ if(BUILD_TESTING)
     # run cpplint without copyright filter
     find_package(ament_cmake_cpplint)
     ament_cpplint(
-      FILTERS -legal/copyright
+      FILTERS -legal/copyright -build/include_order
     )
   endif()
 endif()

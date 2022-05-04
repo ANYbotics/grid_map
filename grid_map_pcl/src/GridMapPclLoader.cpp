@@ -17,6 +17,8 @@
 #include <omp.h>
 #endif
 
+#include <pcl/common/io.h>
+
 #include <rclcpp/rclcpp.hpp>
 
 #include "grid_map_core/GridMapMath.hpp"
