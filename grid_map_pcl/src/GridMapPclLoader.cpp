@@ -195,9 +195,34 @@ double GridMapPclLoader::calculateElevationFromPointsInsideGridMapCell(
       return grid_map_pcl::calculateMeanOfPointPositions(cloud).z();
     });
 
-  double minClusterHeight = *(std::min_element(clusterHeights.begin(), clusterHeights.end()));
+  double height;
+  const int height_type = params_->get().gridMap_.height_type_;
+  // 0: Smallest value among the average values ​​of each cluster
+  if (height_type == 0) {
+    height = *(std::min_element(clusterHeights.begin(), clusterHeights.end()));
+  }
+  // 1: Mean value of the cluster with the most points
+  else if (height_type == 1) {
+    const float min_height = *(std::min_element(clusterHeights.begin(), clusterHeights.end()));
+    std::vector<int> clusterSizes(clusterClouds.size());
+    for (size_t i = 0; i < clusterClouds.size(); i++) {
+      clusterSizes[i] = clusterHeights[i] - min_height < params_->get().gridMap_.height_thresh_ ?
+        clusterClouds[i]->size() :
+        -1;
+    }
+    const std::vector<int>::iterator maxIt =
+      std::max_element(clusterSizes.begin(), clusterSizes.end());
+    const size_t maxIndex = std::distance(clusterSizes.begin(), maxIt);
+    height = clusterHeights[maxIndex];
+  } else {
+    throw std::invalid_argument(
+            "Invalid height type: " + std::to_string(height_type) +
+            "\nValid types are below" +
+            "\n0: Smallest value among the average values ​​of each cluster" +
+            "\n1: Mean value of the cluster with the most points");
+  }
 
-  return minClusterHeight;
+  return height;
 }
 
 GridMapPclLoader::Pointcloud::Ptr GridMapPclLoader::getPointcloudInsideGridMapCellBorder(
