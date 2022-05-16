@@ -169,16 +169,13 @@ void GridMapVisual::computeVisualization(float alpha, bool showGridLines, bool f
 
       // Add triangles and grid to scene.
       std::vector<int> vertexIndices;
-      std::vector<Ogre::Vector3> vertexPositions;
       for (size_t k = 0; k < 2; k++) {
         for (size_t l = 0; l < 2; l++) {
           grid_map::Index index(i - k, j - l);
           if (!isValid(index(0), index(1))) {
             continue;
           }
-          const grid_map::Position position = topLeft.array() - index.cast<double>() * resolution;
           vertexIndices.emplace_back(indexToOgreIndex(index(0), index(1)));
-          vertexPositions.emplace_back(position(0), position(1), heightOrFlatData(index(0), index(1)));
         }
       }
 
