@@ -47,7 +47,7 @@ The algorithm will open the `.pcd` file, convert the point cloud to a grid map a
 
 1.  Place your `.pcd` file in the package folder or anywhere on the system (e.g. `/.../grid_map_pcl/data/example.pcd`).
 2.  Modify the `pcd_filename` inside the launch file such that it points to the `.pcd` file you would like to process (e.g. `/.../grid_map_pcl/data/example.pcd`). Set the `output_grid_map` variable to point to the location where you wish to save the resulting grid map (e.g. `/.../grid_map_pcl/data/example_grid_map.bag`)
-3.  Change the `config_file_path` variable in the launch file to point to the `.yaml` file with configuration parameters (e.g. `/.../grid_map_pcl/config/parameters.yaml`)
+3.  Change the `configFilePath_` variable in the launch file to point to the `.yaml` file with configuration parameters (e.g. `/.../grid_map_pcl/config/parameters.yaml`)
 4.  You can run the algorithm with: `roslaunch grid_map_pcl grid_map_pcl_loader_node.launch` 
 5.  Once the algorithm is done you will see the output in the console, and it should visualize the point cloud and the grid map in rviz. If that does not happen, then you can run rviz in a separate terminal (make sure that you have sourced your workspace, **DO NOT CLOSE** the terminal where `grid_map_pcl_loader_node` is running ) and visualize the resulting grid map. Instructions on how to visualize a grid map are in the grid map [README](../README.md).
 

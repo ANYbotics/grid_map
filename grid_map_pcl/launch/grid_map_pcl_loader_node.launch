@@ -3,7 +3,7 @@
 <launch>
   <arg name="folder_path"            default="$(find grid_map_pcl)/data"/>
   <arg name="pcd_filename"           default="input_cloud.pcd" />
-  <arg name="config_file_path"       default="$(find grid_map_pcl)/config/parameters.yaml" />
+  <arg name="configFilePath_"       default="$(find grid_map_pcl)/config/parameters.yaml" />
   <arg name="map_rosbag_topic"       default="grid_map" />
   <arg name="output_grid_map"        default="$(find grid_map_pcl)/data/input_cloud.bag" />
   <arg name="map_frame"              default="map" />
@@ -17,8 +17,8 @@
         type="grid_map_pcl_loader_node" 
         output="screen" 
         launch-prefix="$(arg prefix)">
-    <rosparam file="$(arg config_file_path)" />
-    <param name="config_file_path"        type="string" value="$(arg config_file_path)" />
+    <rosparam file="$(arg configFilePath_)" />
+    <param name="configFilePath_"        type="string" value="$(arg configFilePath_)" />
     <param name="folder_path"             type="string" value="$(arg folder_path)" />
     <param name="pcd_filename"            type="string" value="$(arg pcd_filename)" />
     <param name="map_rosbag_topic"        type="string" value="$(arg map_rosbag_topic)" />
