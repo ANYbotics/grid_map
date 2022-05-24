@@ -202,9 +202,8 @@ double GridMapPclLoader::calculateElevationFromPointsInsideGridMapCell(
   // 0: Smallest value among the average values ​​of each cluster
   if (height_type == 0) {
     height = *(std::min_element(clusterHeights.begin(), clusterHeights.end()));
-  }
-  // 1: Mean value of the cluster with the most points
-  else if (height_type == 1) {
+    // 1: Mean value of the cluster with the most points
+  } else if (height_type == 1) {
     const float min_height = *(std::min_element(clusterHeights.begin(), clusterHeights.end()));
     std::vector<int> clusterSizes(clusterClouds.size());
     for (size_t i = 0; i < clusterClouds.size(); i++) {
