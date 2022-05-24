@@ -45,7 +45,8 @@ set(dependencies
 ## Specify additional locations of header files
 include_directories(
   include
-  ${EIGEN3_INCLUDE_DIR}
+  SYSTEM
+    ${EIGEN3_INCLUDE_DIR}
 )
 
 ## Declare a cpp library
@@ -55,7 +56,7 @@ add_library(${PROJECT_NAME} SHARED
   src/PolygonRosConverter.cpp
 )
 
-ament_target_dependencies(${PROJECT_NAME}
+ament_target_dependencies(${PROJECT_NAME} SYSTEM
   ${dependencies}
 )
 

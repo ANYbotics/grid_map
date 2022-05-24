@@ -43,7 +43,7 @@ add_library(${PROJECT_NAME} SHARED
   src/InpaintFilter.cpp
 )
 
-ament_target_dependencies(${PROJECT_NAME}
+ament_target_dependencies(${PROJECT_NAME} SYSTEM
   ${dependencies}
 )
 

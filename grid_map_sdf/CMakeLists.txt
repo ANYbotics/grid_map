@@ -42,7 +42,7 @@ add_library(${PROJECT_NAME}
   src/SignedDistanceField.cpp
 )
 
-ament_target_dependencies(${PROJECT_NAME}
+ament_target_dependencies(${PROJECT_NAME} SYSTEM
   ${dependencies}
 )
 

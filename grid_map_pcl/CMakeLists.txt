@@ -63,7 +63,7 @@ target_link_libraries(${PROJECT_NAME}
   yaml-cpp
 )
 
-ament_target_dependencies(${PROJECT_NAME}
+ament_target_dependencies(${PROJECT_NAME} SYSTEM
   ${dependencies}
 )
 

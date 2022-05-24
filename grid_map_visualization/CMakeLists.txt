@@ -32,7 +32,8 @@ set(dependencies
 ## Specify additional locations of header files
 include_directories(
   include
-  ${EIGEN3_INCLUDE_DIR}
+  SYSTEM
+    ${EIGEN3_INCLUDE_DIR}
 )
 
 set(library_name ${PROJECT_NAME}_core)
@@ -51,7 +52,7 @@ add_library(${library_name} SHARED
   src/visualizations/VisualizationBase.cpp
 )
 
-ament_target_dependencies(${library_name}
+ament_target_dependencies(${library_name} SYSTEM
   ${dependencies}
 )
 
@@ -63,7 +64,7 @@ add_executable(${PROJECT_NAME}
 ## Specify libraries to link executable target against
 target_link_libraries(${PROJECT_NAME} ${library_name})
 
-ament_target_dependencies(${PROJECT_NAME}
+ament_target_dependencies(${PROJECT_NAME} SYSTEM
   ${dependencies}
 )
 

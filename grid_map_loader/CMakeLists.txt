@@ -36,13 +36,13 @@ add_library(${library_name} SHARED
 )
 
 ## Specify libraries to link a library or executable target against
-ament_target_dependencies(${PROJECT_NAME}
+ament_target_dependencies(${PROJECT_NAME} SYSTEM
   ${dependencies}
 )
 
 target_link_libraries(${PROJECT_NAME} ${library_name})
 
-ament_target_dependencies(${library_name}
+ament_target_dependencies(${library_name} SYSTEM
   ${dependencies}
 )
 

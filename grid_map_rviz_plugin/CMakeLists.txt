@@ -54,7 +54,7 @@ add_library(${PROJECT_NAME} SHARED
   ${MOC_FILES}
 )
 
-ament_target_dependencies(${PROJECT_NAME}
+ament_target_dependencies(${PROJECT_NAME} SYSTEM
   ${dependencies}
 )
 
