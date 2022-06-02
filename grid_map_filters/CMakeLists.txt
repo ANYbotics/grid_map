@@ -32,18 +32,7 @@ find_package(catkin REQUIRED
   ${CATKIN_PACKAGE_DEPENDENCIES}
 )
 
-## System dependencies are found with CMake's conventions
-find_package(PkgConfig REQUIRED)
-
-pkg_check_modules(TBB "tbb")
-if (TBB_FOUND)
-  add_definitions(
-    ${TBB_CFLAGS}
-    ${TBB_CFLAGS_OTHER}
-  )
-else()
-  message([FATAL_ERROR] "tbb module not found")
-endif ()
+find_package(TBB 2020.1 EXACT REQUIRED)
 
 find_package(OpenCV REQUIRED)
 
