@@ -21,9 +21,10 @@
 // Vector
 #include <vector>
 
-using namespace std;
-using namespace Eigen;
-using namespace grid_map;
+using grid_map::GridMap;
+using grid_map::Length;
+using grid_map::Position;
+using grid_map::EllipseIterator;
 
 TEST(EllipseIterator, OneCellWideEllipse)
 {

@@ -13,18 +13,15 @@
 
 namespace grid_map {
 
-unsigned int bindIndexToRange(int idReq, unsigned int nElem)
+unsigned int bindIndexToRange(unsigned int idReq, unsigned int nElem)
 {
-  if (idReq < 0) {
-    return 0;
+  if (idReq >= nElem) {
+    return (nElem - 1);
   }
-  if (static_cast<unsigned int>(idReq) >= nElem) {
-    return static_cast<unsigned int>(nElem - 1);
-  }
-  return static_cast<unsigned int>(idReq);
+  return idReq;
 }
 
-double getLayerValue(const Matrix &layerMat, int rowReq, int colReq)
+double getLayerValue(const Matrix &layerMat, unsigned int rowReq, unsigned int colReq)
 {
   const auto numCol = layerMat.cols();
   const auto numRow = layerMat.rows();
@@ -92,7 +89,7 @@ bool assembleFunctionValueMatrix(const GridMap &gridMap, const std::string &laye
   }
 
   const Matrix &layerMatrix = gridMap.get(layer);
-  auto f = [&layerMatrix](int rowReq, int colReq) {
+  auto f = [&layerMatrix](unsigned int rowReq, unsigned int colReq) {
     double retVal = getLayerValue(layerMatrix, rowReq, colReq);
     return retVal;
   };
@@ -135,11 +132,7 @@ bool getNormalizedCoordinates(const GridMap &gridMap, const Position &queriedPos
 
 bool getIndicesOfMiddleKnot(const GridMap &gridMap, const Position &queriedPosition, Index *index)
 {
-
-  if (!gridMap.getIndex(queriedPosition, *index)) {
-    return false;
-  }
-  return true;
+  return gridMap.getIndex(queriedPosition, *index);
 }
 
 } /* namespace bicubic_conv */
@@ -264,11 +257,7 @@ bool getUnitSquareCornerIndices(const GridMap &gridMap, const Position &queriedP
 
 bool getClosestPointIndices(const GridMap &gridMap, const Position &queriedPosition, Index *index)
 {
-
-  if (!gridMap.getIndex(queriedPosition, *index)) {
-    return false;
-  }
-  return true;
+  return gridMap.getIndex(queriedPosition, *index);
 }
 
 bool computeNormalizedCoordinates(const GridMap &gridMap, const Index &originIndex,
@@ -298,8 +287,8 @@ bool getFunctionValues(const Matrix &layerData, const IndicesMatrix &indices, Da
 
 void bindIndicesToRange(const GridMap &gridMap, IndicesMatrix *indices)
 {
-  const int numCol = gridMap.getSize().y();
-  const int numRow = gridMap.getSize().x();
+  const unsigned int numCol = gridMap.getSize().y();
+  const unsigned int numRow = gridMap.getSize().x();
 
   //top left
   {
@@ -346,10 +335,11 @@ bool getFirstOrderDerivatives(const Matrix &layerData, const IndicesMatrix &indi
 double firstOrderDerivativeAt(const Matrix &layerData, const Index &index, Dim2D dim,
                               double resolution)
 {
-  const int numCol = layerData.cols();
-  const int numRow = layerData.rows();
+  const auto numCol{static_cast<unsigned int>(layerData.cols())};
+  const auto numRow{static_cast<unsigned int>(layerData.rows())};
 
-  double left, right;
+  double left;
+  double right;
   switch (dim) {
     case Dim2D::X: {
       left = layerData(bindIndexToRange(index.x() + 1, numRow), index.y());
@@ -380,9 +370,8 @@ double mixedSecondOrderDerivativeAt(const Matrix &layerData, const Index &index,
    * the order doesn't matter. Derivative values are the same.
    * Taken from https://www.mathematik.uni-dortmund.de/~kuzmin/cfdintro/lecture4.pdf
    */
-
-  const int numCol = layerData.cols();
-  const int numRow = layerData.rows();
+  const auto numCol{static_cast<unsigned int>(layerData.cols())};
+  const auto numRow{static_cast<unsigned int>(layerData.rows())};
 
   const double f11 = layerData(bindIndexToRange(index.x() - 1, numRow),
                                bindIndexToRange(index.y() - 1, numCol));

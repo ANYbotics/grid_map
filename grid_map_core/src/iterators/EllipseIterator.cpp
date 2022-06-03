@@ -9,10 +9,8 @@
 #include "grid_map_core/iterators/EllipseIterator.hpp"
 #include "grid_map_core/GridMapMath.hpp"
 
-#include <math.h>
+#include <cmath>
 #include <Eigen/Geometry>
-
-using namespace std;
 
 namespace grid_map {
 
@@ -20,8 +18,8 @@ EllipseIterator::EllipseIterator(const GridMap& gridMap, const Position& center,
     : center_(center)
 {
   semiAxisSquare_ = (0.5 * length).square();
-  double sinRotation = sin(rotation);
-  double cosRotation = cos(rotation);
+  double sinRotation = std::sin(rotation);
+  double cosRotation = std::cos(rotation);
   transformMatrix_ << cosRotation, sinRotation, sinRotation, -cosRotation;
   mapLength_ = gridMap.getLength();
   mapPosition_ = gridMap.getPosition();
@@ -31,22 +29,10 @@ EllipseIterator::EllipseIterator(const GridMap& gridMap, const Position& center,
   Index submapStartIndex;
   Index submapBufferSize;
   findSubmapParameters(center, length, rotation, submapStartIndex, submapBufferSize);
-  internalIterator_ = std::shared_ptr<SubmapIterator>(new SubmapIterator(gridMap, submapStartIndex, submapBufferSize));
-  if(!isInside()) ++(*this);
-}
-
-EllipseIterator& EllipseIterator::operator =(const EllipseIterator& other)
-{
-  center_ = other.center_;
-  semiAxisSquare_ = other.semiAxisSquare_;
-  transformMatrix_ = other.transformMatrix_;
-  internalIterator_ = other.internalIterator_;
-  mapLength_ = other.mapLength_;
-  mapPosition_ = other.mapPosition_;
-  resolution_ = other.resolution_;
-  bufferSize_ = other.bufferSize_;
-  bufferStartIndex_ = other.bufferStartIndex_;
-  return *this;
+  internalIterator_ = std::make_shared<SubmapIterator>(gridMap, submapStartIndex, submapBufferSize);
+  if (!isInside()) {
+    ++(*this);
+  }
 }
 
 bool EllipseIterator::operator !=(const EllipseIterator& other) const
@@ -62,10 +48,14 @@ const Eigen::Array2i& EllipseIterator::operator *() const
 EllipseIterator& EllipseIterator::operator ++()
 {
   ++(*internalIterator_);
-  if (internalIterator_->isPastEnd()) return *this;
+  if (internalIterator_->isPastEnd()) {
+    return *this;
+  }
 
   for ( ; !internalIterator_->isPastEnd(); ++(*internalIterator_)) {
-    if (isInside()) break;
+    if (isInside()) {
+      break;
+    }
   }
 
   return *this;

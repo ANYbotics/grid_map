@@ -15,14 +15,15 @@
 
 #include <Eigen/Dense>
 
-#include <math.h>
+#include <cmath>
 #include <algorithm>
 #include <cassert>
 #include <iostream>
 #include <stdexcept>
 
-using namespace std;
-using namespace grid_map;
+using std::cout;
+using std::endl;
+using std::isfinite;
 
 namespace grid_map {
 
@@ -57,8 +58,6 @@ void GridMap::setGeometry(const Length& length, const double resolution, const P
   length_ = (size_.cast<double>() * resolution_).matrix();
   position_ = position;
   startIndex_.setZero();
-
-  return;
 }
 
 void GridMap::setGeometry(const SubmapGeometry& geometry) {
@@ -74,16 +73,12 @@ const std::vector<std::string>& GridMap::getBasicLayers() const {
 }
 
 bool GridMap::hasBasicLayers() const {
-  return basicLayers_.size() > 0;
+  return !basicLayers_.empty();
 }
 
 bool GridMap::hasSameLayers(const GridMap& other) const {
-  for (const auto& layer : layers_) {
-    if (!other.exists(layer)) {
-      return false;
-    }
-  }
-  return true;
+  return std::all_of(layers_.begin(), layers_.end(),
+                     [&](const std::string& layer){return other.exists(layer);});
 }
 
 void GridMap::add(const std::string& layer, const double value) {
@@ -192,8 +187,9 @@ float GridMap::atPosition(const std::string& layer, const Position& position, In
     }
     case InterpolationMethods::INTER_LINEAR: {
       float value;
-      if (atPositionLinearInterpolated(layer, position, value))
+      if (atPositionLinearInterpolated(layer, position, value)){
         return value;
+      }
       else {
         interpolationMethod = InterpolationMethods::INTER_NEAREST;
       }
@@ -203,8 +199,9 @@ float GridMap::atPosition(const std::string& layer, const Position& position, In
       Index index;
       if (getIndex(position, index)) {
         return at(layer, index);
-      } else
+      } else {
         throw std::out_of_range("GridMap::atPosition(...) : Position is out of range.");
+      }
       break;
     }
     default:
@@ -258,12 +255,8 @@ bool GridMap::isValid(const Index& index, const std::vector<std::string>& layers
   if (layers.empty()) {
     return false;
   }
-  for (const auto& layer : layers) {
-    if (!isValid(index, layer)) {
-      return false;
-    }
-  }
-  return true;
+  return std::all_of(layers.begin(), layers.end(),
+              [&](const std::string& layer){return isValid(index, layer);});
 }
 
 bool GridMap::getPosition3(const std::string& layer, const Index& index, Position3& position) const {
@@ -303,7 +296,7 @@ GridMap GridMap::getSubmap(const Position& position, const Length& length, Index
   // Get submap geometric information.
   SubmapGeometry submapInformation(*this, position, length, isSuccess);
   if (!isSuccess) {
-    return GridMap(layers_);
+    return {layers_};
   }
   submap.setGeometry(submapInformation);
   submap.startIndex_.setZero();  // Because of the way we copy the data below.
@@ -314,7 +307,7 @@ GridMap GridMap::getSubmap(const Position& position, const Length& length, Index
   if (!getBufferRegionsForSubmap(bufferRegions, submapInformation.getStartIndex(), submap.getSize(), size_, startIndex_)) {
     cout << "Cannot access submap of this size." << endl;
     isSuccess = false;
-    return GridMap(layers_);
+    return {layers_};
   }
 
   for (const auto& data : data_) {
@@ -403,10 +396,10 @@ GridMap GridMap::getTransformedMap(const Eigen::Isometry3d& transform, const std
     if (sampleRatio > 0.0) {
       positionSamples.reserve(5);
       positionSamples.push_back(center);
-      positionSamples.push_back(Position3(center.x() - sampleLength, center.y(), center.z()));
-      positionSamples.push_back(Position3(center.x() + sampleLength, center.y(), center.z()));
-      positionSamples.push_back(Position3(center.x(), center.y() - sampleLength, center.z()));
-      positionSamples.push_back(Position3(center.x(), center.y() + sampleLength, center.z()));
+      positionSamples.emplace_back(center.x() - sampleLength, center.y(), center.z());
+      positionSamples.emplace_back(center.x() + sampleLength, center.y(), center.z());
+      positionSamples.emplace_back(center.x(), center.y() - sampleLength, center.z());
+      positionSamples.emplace_back(center.x(), center.y() + sampleLength, center.z());
     } else {
       positionSamples.push_back(center);
     }
@@ -461,7 +454,7 @@ bool GridMap::move(const Position& position, std::vector<BufferRegion>& newRegio
       if (abs(indexShift(i)) >= getSize()(i)) {
         // Entire map is dropped.
         clearAll();
-        newRegions.push_back(BufferRegion(Index(0, 0), getSize(), BufferRegion::Quadrant::Undefined));
+        newRegions.emplace_back(Index(0, 0), getSize(), BufferRegion::Quadrant::Undefined);
       } else {
         // Drop cells out of map.
         int sign = (indexShift(i) > 0 ? 1 : -1);
@@ -475,10 +468,10 @@ bool GridMap::move(const Position& position, std::vector<BufferRegion>& newRegio
           // One region to drop.
           if (i == 0) {
             clearRows(index, nCells);
-            newRegions.push_back(BufferRegion(Index(index, 0), Size(nCells, getSize()(1)), BufferRegion::Quadrant::Undefined));
+            newRegions.emplace_back(Index(index, 0), Size(nCells, getSize()(1)), BufferRegion::Quadrant::Undefined);
           } else if (i == 1) {
             clearCols(index, nCells);
-            newRegions.push_back(BufferRegion(Index(0, index), Size(getSize()(0), nCells), BufferRegion::Quadrant::Undefined));
+            newRegions.emplace_back(Index(0, index), Size(getSize()(0), nCells), BufferRegion::Quadrant::Undefined);
           }
         } else {
           // Two regions to drop.
@@ -486,20 +479,20 @@ bool GridMap::move(const Position& position, std::vector<BufferRegion>& newRegio
           int firstNCells = getSize()(i) - firstIndex;
           if (i == 0) {
             clearRows(firstIndex, firstNCells);
-            newRegions.push_back(BufferRegion(Index(firstIndex, 0), Size(firstNCells, getSize()(1)), BufferRegion::Quadrant::Undefined));
+            newRegions.emplace_back(Index(firstIndex, 0), Size(firstNCells, getSize()(1)), BufferRegion::Quadrant::Undefined);
           } else if (i == 1) {
             clearCols(firstIndex, firstNCells);
-            newRegions.push_back(BufferRegion(Index(0, firstIndex), Size(getSize()(0), firstNCells), BufferRegion::Quadrant::Undefined));
+            newRegions.emplace_back(Index(0, firstIndex), Size(getSize()(0), firstNCells), BufferRegion::Quadrant::Undefined);
           }
 
           int secondIndex = 0;
           int secondNCells = nCells - firstNCells;
           if (i == 0) {
             clearRows(secondIndex, secondNCells);
-            newRegions.push_back(BufferRegion(Index(secondIndex, 0), Size(secondNCells, getSize()(1)), BufferRegion::Quadrant::Undefined));
+            newRegions.emplace_back(Index(secondIndex, 0), Size(secondNCells, getSize()(1)), BufferRegion::Quadrant::Undefined);
           } else if (i == 1) {
             clearCols(secondIndex, secondNCells);
-            newRegions.push_back(BufferRegion(Index(0, secondIndex), Size(getSize()(0), secondNCells), BufferRegion::Quadrant::Undefined));
+            newRegions.emplace_back(Index(0, secondIndex), Size(getSize()(0), secondNCells), BufferRegion::Quadrant::Undefined);
           }
         }
       }
@@ -512,7 +505,7 @@ bool GridMap::move(const Position& position, std::vector<BufferRegion>& newRegio
   position_ += alignedPositionShift;
 
   // Check if map has been moved at all.
-  return (indexShift.any() != 0);
+  return indexShift.any();
 }
 
 bool GridMap::move(const Position& position) {
@@ -522,10 +515,14 @@ bool GridMap::move(const Position& position) {
 
 bool GridMap::addDataFrom(const GridMap& other, bool extendMap, bool overwriteData, bool copyAllLayers, std::vector<std::string> layers) {
   // Set the layers to copy.
-  if (copyAllLayers) layers = other.getLayers();
+  if (copyAllLayers) {
+    layers = other.getLayers();
+  }
 
   // Resize map.
-  if (extendMap) extendToInclude(other);
+  if (extendMap) {
+    extendToInclude(other);
+  }
 
   // Check if all layers to copy exist and add missing layers.
   for (const auto& layer : layers) {
@@ -535,14 +532,20 @@ bool GridMap::addDataFrom(const GridMap& other, bool extendMap, bool overwriteDa
   }
   // Copy data.
   for (GridMapIterator iterator(*this); !iterator.isPastEnd(); ++iterator) {
-    if (isValid(*iterator) && !overwriteData) continue;
+    if (isValid(*iterator) && !overwriteData) {
+      continue;
+    }
     Position position;
     getPosition(*iterator, position);
     Index index;
-    if (!other.isInside(position)) continue;
+    if (!other.isInside(position)) {
+      continue;
+    }
     other.getIndex(position, index);
     for (const auto& layer : layers) {
-      if (!other.isValid(index, layer)) continue;
+      if (!other.isValid(index, layer)) {
+        continue;
+      }
       at(layer, *iterator) = other.at(layer, index);
     }
   }
@@ -607,11 +610,15 @@ bool GridMap::extendToInclude(const GridMap& other) {
     }
     // Copy data.
     for (GridMapIterator iterator(*this); !iterator.isPastEnd(); ++iterator) {
-      if (isValid(*iterator)) continue;
+      if (isValid(*iterator)) {
+        continue;
+      }
       Position position;
       getPosition(*iterator, position);
       Index index;
-      if (!mapCopy.isInside(position)) continue;
+      if (!mapCopy.isInside(position)) {
+        continue;
+      }
       mapCopy.getIndex(position, index);
       for (const auto& layer : layers_) {
         at(layer, *iterator) = mapCopy.at(layer, index);
@@ -670,7 +677,9 @@ bool GridMap::isDefaultStartIndex() const {
 }
 
 void GridMap::convertToDefaultStartIndex() {
-  if (isDefaultStartIndex()) return;
+  if (isDefaultStartIndex()) {
+    return;
+  }
 
   std::vector<BufferRegion> bufferRegions;
   if (!getBufferRegionsForSubmap(bufferRegions, startIndex_, size_, size_, startIndex_)) {
@@ -823,7 +832,9 @@ bool GridMap::atPositionLinearInterpolated(const std::string& layer, const Posit
 
   for (size_t i = 0; i < 4; ++i) {
     const size_t indexLin = getLinearIndexFromIndex(indices[idxShift[i]], mapSize);
-    if ((indexLin < startIndexLin) || (indexLin > endIndexLin)) return false;
+    if ((indexLin < startIndexLin) || (indexLin > endIndexLin)) {
+      return false;
+    }
     f[i] = layerMat(indexLin);
   }
 

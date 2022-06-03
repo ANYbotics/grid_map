@@ -46,7 +46,7 @@ using FunctionValueMatrix = Eigen::Matrix4d;
  * @param[in] nElem - number of elements in the container
  * @return index that is within [0, nElem-1].
  */
-unsigned int bindIndexToRange(int idReq, unsigned int nElem);
+unsigned int bindIndexToRange(unsigned int idReq, unsigned int nElem);
 
 
 /*!

@@ -32,14 +32,14 @@ public:
    * @param length the length of the main axis.
    * @param angle the rotation angle of the ellipse (in [rad]).
    */
-  EllipseIterator(const GridMap& gridMap, const Position& center, const Length& length, const double rotation = 0.0);
+  EllipseIterator(const GridMap& gridMap, const Position& center, const Length& length, double rotation = 0.0);
 
   /*!
    * Assignment operator.
    * @param iterator the iterator to copy data from.
    * @return a reference to *this.
    */
-  EllipseIterator& operator =(const EllipseIterator& other);
+  EllipseIterator& operator =(const EllipseIterator& other) = default;
 
   /*!
    * Compare to another iterator.
@@ -87,7 +87,7 @@ private:
    * @param[out] startIndex the start index of the submap.
    * @param[out] bufferSize the buffer size of the submap.
    */
-  void findSubmapParameters(const Position& center, const Length& length, const double rotation,
+  void findSubmapParameters(const Position& center, const Length& length, double rotation,
                             Index& startIndex, Size& bufferSize) const;
 
   //! Position of the circle center;
@@ -113,4 +113,5 @@ private:
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
 
-} /* namespace */
+}  // namespace grid_map
+

@@ -7,9 +7,9 @@
  */
 
 #include "grid_map_core/iterators/CircleIterator.hpp"
-#include "grid_map_core/GridMapMath.hpp"
 
-using namespace std;
+#include <memory>
+#include "grid_map_core/GridMapMath.hpp"
 
 namespace grid_map {
 
@@ -26,22 +26,10 @@ CircleIterator::CircleIterator(const GridMap& gridMap, const Position& center, c
   Index submapStartIndex;
   Index submapBufferSize;
   findSubmapParameters(center, radius, submapStartIndex, submapBufferSize);
-  internalIterator_ = std::shared_ptr<SubmapIterator>(new SubmapIterator(gridMap, submapStartIndex, submapBufferSize));
-  if(!isInside()) ++(*this);
-}
-
-CircleIterator& CircleIterator::operator =(const CircleIterator& other)
-{
-  center_ = other.center_;
-  radius_ = other.radius_;
-  radiusSquare_ = other.radiusSquare_;
-  internalIterator_ = other.internalIterator_;
-  mapLength_ = other.mapLength_;
-  mapPosition_ = other.mapPosition_;
-  resolution_ = other.resolution_;
-  bufferSize_ = other.bufferSize_;
-  bufferStartIndex_ = other.bufferStartIndex_;
-  return *this;
+  internalIterator_ = std::make_shared<SubmapIterator>(gridMap, submapStartIndex, submapBufferSize);
+  if(!isInside()) {
+    ++(*this);
+  }
 }
 
 bool CircleIterator::operator !=(const CircleIterator& other) const
@@ -57,10 +45,14 @@ const Index& CircleIterator::operator *() const
 CircleIterator& CircleIterator::operator ++()
 {
   ++(*internalIterator_);
-  if (internalIterator_->isPastEnd()) return *this;
+  if (internalIterator_->isPastEnd()) {
+    return *this;
+  }
 
   for ( ; !internalIterator_->isPastEnd(); ++(*internalIterator_)) {
-    if (isInside()) break;
+    if (isInside()) {
+      break;
+    }
   }
 
   return *this;

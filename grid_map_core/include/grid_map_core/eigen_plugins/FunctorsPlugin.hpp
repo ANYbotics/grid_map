@@ -1,4 +1,4 @@
-#include <math.h>
+#include <cmath>
 
 template<typename Scalar> struct scalar_sum_of_finites_op {
   EIGEN_EMPTY_STRUCT_CTOR(scalar_sum_of_finites_op)

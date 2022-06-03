@@ -25,4 +25,4 @@ struct Clamp
   Scalar min_, max_;
 };
 
-}
+}  // namespace grid_map

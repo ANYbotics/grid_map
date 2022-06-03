@@ -30,14 +30,14 @@ public:
    * @param center the position of the circle center.
    * @param radius the radius of the circle.
    */
-  CircleIterator(const GridMap& gridMap, const Position& center, const double radius);
+  CircleIterator(const GridMap& gridMap, const Position& center, double radius);
 
   /*!
    * Assignment operator.
    * @param iterator the iterator to copy data from.
    * @return a reference to *this.
    */
-  CircleIterator& operator =(const CircleIterator& other);
+  CircleIterator& operator =(const CircleIterator& other) = default;
 
   /*!
    * Compare to another iterator.
@@ -78,7 +78,7 @@ private:
    * @param[out] startIndex the start index of the submap.
    * @param[out] bufferSize the buffer size of the submap.
    */
-  void findSubmapParameters(const Position& center, const double radius,
+  void findSubmapParameters(const Position& center, double radius,
                             Index& startIndex, Size& bufferSize) const;
 
   //! Position of the circle center;
@@ -104,4 +104,5 @@ private:
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
 
-} /* namespace */
+}  // namespace grid_map
+
