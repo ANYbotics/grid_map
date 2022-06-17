@@ -17,10 +17,11 @@ grid_map_package()
 ## Specify additional locations of header files
 include_directories(
   include
-  ${EIGEN3_INCLUDE_DIR}
-  ${grid_map_core_INCLUDE_DIRS}
-  ${nav2_costmap_2d_INCLUDE_DIRS}
-  ${geometry_msgs_INCLUDE_DIRS}
+  SYSTEM
+    ${EIGEN3_INCLUDE_DIR}
+    ${grid_map_core_INCLUDE_DIRS}
+    ${nav2_costmap_2d_INCLUDE_DIRS}
+    ${geometry_msgs_INCLUDE_DIRS}
 )
 
 set(dependencies

@@ -83,7 +83,7 @@ add_library(set_basic_layers_filter SHARED src/SetBasicLayersFilter.cpp)
 add_library(buffer_normalizer_filter SHARED src/BufferNormalizerFilter.cpp)
 
 foreach(lib_name ${filter_libs})
-  ament_target_dependencies(${lib_name}
+  ament_target_dependencies(${lib_name} SYSTEM
     ${dependencies}
   )
 

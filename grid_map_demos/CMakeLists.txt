@@ -38,7 +38,8 @@ set(dependencies
 ## Your package locations should be listed before other locations
 include_directories(
   include
-  ${EIGEN3_INCLUDE_DIR}
+  SYSTEM
+    ${EIGEN3_INCLUDE_DIR}
 )
 
 ## Declare a cpp executable
@@ -112,74 +113,74 @@ add_executable(
 
 ## Specify libraries to link a library or executable target against
 ament_target_dependencies(
-  simple_demo
+  simple_demo SYSTEM
   ${dependencies}
 )
 
 ament_target_dependencies(
-  tutorial_demo
+  tutorial_demo SYSTEM
   ${dependencies}
 )
 
 ament_target_dependencies(
-  iterators_demo
+  iterators_demo SYSTEM
   ${dependencies}
 )
 
-ament_target_dependencies(image_to_gridmap_demo
+ament_target_dependencies(image_to_gridmap_demo SYSTEM
   ${dependencies}
 )
 
 ament_target_dependencies(
-  octomap_to_gridmap_demo
+  octomap_to_gridmap_demo SYSTEM
   ${dependencies}
   grid_map_octomap
   octomap_msgs
 )
 
 ament_target_dependencies(
-  move_demo
+  move_demo SYSTEM
   ${dependencies}
 )
 
 ament_target_dependencies(
-  iterator_benchmark
+  iterator_benchmark SYSTEM
   grid_map_core
 )
 
 ament_target_dependencies(
-  opencv_demo
+  opencv_demo SYSTEM
   ${dependencies}
   grid_map_cv
 )
 
 ament_target_dependencies(
-  resolution_change_demo
+  resolution_change_demo SYSTEM
   ${dependencies}
 )
 
 target_link_libraries(filters_demo filters_demo_lib)
 
 ament_target_dependencies(
-  filters_demo_lib
+  filters_demo_lib SYSTEM
   ${dependencies}
   filters
 )
 
 ament_target_dependencies(
-  filters_demo
+  filters_demo SYSTEM
   ${dependencies}
   filters
 )
 
 ament_target_dependencies(
-  normal_filter_comparison_demo
+  normal_filter_comparison_demo SYSTEM
   ${dependencies}
   filters
 )
 
 ament_target_dependencies(
-  interpolation_demo
+  interpolation_demo SYSTEM
   ${dependencies}
 )
 
