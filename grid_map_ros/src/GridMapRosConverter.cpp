@@ -222,6 +222,64 @@ void GridMapRosConverter::toPointCloud(const grid_map::GridMap& gridMap,
   }
 }
 
+void GridMapRosConverter::toPointCloud(const grid_map::SignedDistanceField& signedDistanceField, sensor_msgs::PointCloud2& pointCloud,
+                                       size_t decimation, const std::function<bool(float)>& condition) {
+  pointCloud.header.stamp.fromNSec(signedDistanceField.getTime());
+  pointCloud.header.frame_id = signedDistanceField.getFrameId();
+
+  // Fields: Store each point analogous to pcl::PointXYZI
+  const std::vector<std::string> fieldNames{"x", "y", "z", "intensity"};
+  pointCloud.fields.clear();
+  pointCloud.fields.reserve(fieldNames.size());
+  size_t offset = 0;
+  for (const auto& name : fieldNames) {
+    sensor_msgs::PointField pointField;
+    pointField.name = name;
+    pointField.count = 1;
+    pointField.datatype = sensor_msgs::PointField::FLOAT32;
+    pointField.offset = offset;
+    pointCloud.fields.push_back(pointField);
+    offset += pointField.count * sizeof(float);
+  }
+
+  // Resize
+  const size_t pointCloudMaxSize{signedDistanceField.size()};
+  pointCloud.height = 1;
+  pointCloud.width = pointCloudMaxSize;
+  pointCloud.point_step = offset;
+  pointCloud.row_step = pointCloud.width * pointCloud.point_step;
+  pointCloud.data.resize(pointCloud.height * pointCloud.row_step);
+
+  // Fill data
+  sensor_msgs::PointCloud2Iterator<float> iter_x(pointCloud, fieldNames[0]);
+  sensor_msgs::PointCloud2Iterator<float> iter_y(pointCloud, fieldNames[1]);
+  sensor_msgs::PointCloud2Iterator<float> iter_z(pointCloud, fieldNames[2]);
+  sensor_msgs::PointCloud2Iterator<float> iter_i(pointCloud, fieldNames[3]);
+
+  size_t addedPoints = 0;
+  signedDistanceField.filterPoints(
+      [&](const Position3& p, float sdfValue, const SignedDistanceField::Derivative3&) {
+        if (condition(sdfValue)) {
+          *iter_x = static_cast<float>(p.x());
+          *iter_y = static_cast<float>(p.y());
+          *iter_z = static_cast<float>(p.z());
+          *iter_i = sdfValue;
+          ++iter_x;
+          ++iter_y;
+          ++iter_z;
+          ++iter_i;
+          ++addedPoints;
+        }
+      },
+      decimation);
+
+  if (addedPoints != pointCloudMaxSize) {
+    pointCloud.width = addedPoints;
+    pointCloud.row_step = pointCloud.width * pointCloud.point_step;
+    pointCloud.data.resize(pointCloud.height * pointCloud.row_step);
+  }
+}
+
 bool GridMapRosConverter::fromOccupancyGrid(const nav_msgs::OccupancyGrid& occupancyGrid,
                                             const std::string& layer, grid_map::GridMap& gridMap)
 {

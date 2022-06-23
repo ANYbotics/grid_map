@@ -108,6 +108,7 @@ This repository consists of following packages:
 * ***grid_map_filters*** builds on the [ROS Filters] package to process grid maps as a sequence of filters.
 * ***grid_map_msgs*** holds the [ROS] message and service definitions around the [grid_map_msg/GridMap] message type.
 * ***grid_map_rviz_plugin*** is an [RViz] plugin to visualize grid maps as 3d surface plots (height maps).
+* ***grid_map_sdf*** provides an algorithm to convert an elevation map into a 3D signed distance field.
 * ***grid_map_visualization*** contains a node written to convert GridMap messages to other [ROS] message types for example for  visualization in [RViz].
 
 Additional conversion packages:
@@ -283,6 +284,11 @@ This [RViz] plugin visualizes a grid map layer as 3d surface plot (height map). 
 
 ![Grid map visualization in RViz](grid_map_rviz_plugin/doc/grid_map_rviz_plugin.png)
 
+### grid_map_sdf
+
+This package provides an efficient algorithm to convert an elevation map into a dense 3D signed distance field. Each point in the 3D grid contains the distance to the closest point in the map together with the gradient.  
+
+![ANYmal SDF demo](grid_map_sdf/doc/anymal_sdf_demo.gif)
 
 ### grid_map_visualization
 

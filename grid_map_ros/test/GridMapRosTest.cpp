@@ -236,3 +236,22 @@ TEST(ImageConversion, roundTripMONO16)
   EXPECT_TRUE((mapIn.getLength() == mapOut.getLength()).all());
   EXPECT_TRUE((mapIn.getSize() == mapOut.getSize()).all());
 }
+
+TEST(SdfConversion, toPointcloud) {
+  grid_map::GridMap map;
+  const std::string elevationLayer{"layer"};
+  map.setGeometry(grid_map::Length(8.0, 5.0), 0.03, grid_map::Position(0.0, 0.0));
+  map.add(elevationLayer, 1.0);
+  auto& elevationData = map.get(elevationLayer);
+  elevationData.setRandom();
+
+  // Create SDF
+  const float heightMargin{0.1};
+  const float minValue{elevationData.minCoeffOfFinites() - heightMargin};
+  const float maxValue{elevationData.maxCoeffOfFinites() + heightMargin};
+  grid_map::SignedDistanceField sdf(map, elevationLayer, minValue, maxValue);
+
+  // Extract as point clouds.
+  sensor_msgs::PointCloud2 pointCloud2Msg;
+  ASSERT_NO_THROW(grid_map::GridMapRosConverter::toPointCloud(sdf, pointCloud2Msg));
+}

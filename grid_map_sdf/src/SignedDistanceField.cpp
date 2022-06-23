@@ -1,186 +1,198 @@
 /*
- * SignedDistanceField.hpp
+ * SignedDistanceField.cpp
  *
- *  Created on: Aug 16, 2017
- *     Authors: Takahiro Miki, Peter Fankhauser
- *   Institute: ETH Zurich, ANYbotics
+ *  Created on: Jul 10, 2020
+ *      Author: Ruben Grandia
+ *   Institute: ETH Zurich
  */
 
-#include <grid_map_sdf/SignedDistanceField.hpp>
-#include <grid_map_sdf/distance_transform/dt.h>
+#include "grid_map_sdf/SignedDistanceField.hpp"
 
-#include <grid_map_core/GridMap.hpp>
+#include <iostream>
 
-#include <limits>
-
-using namespace distance_transform;
+#include "grid_map_sdf/DistanceDerivatives.hpp"
+#include "grid_map_sdf/SignedDistance2d.hpp"
 
 namespace grid_map {
 
-SignedDistanceField::SignedDistanceField()
-    : maxDistance_(std::numeric_limits<float>::max()),
-      zIndexStartHeight_(0.0),
-      resolution_(0.0),
-      lowestHeight_(-1e5) // We need some precision.
-{
-}
+// Import from the signed_distance_field namespace
+using signed_distance_field::columnwiseCentralDifference;
+using signed_distance_field::Gridmap3dLookup;
+using signed_distance_field::layerCentralDifference;
+using signed_distance_field::layerFiniteDifference;
+using signed_distance_field::signedDistanceAtHeightTranspose;
 
-SignedDistanceField::~SignedDistanceField()
-{
-}
+SignedDistanceField::SignedDistanceField(const GridMap& gridMap, const std::string& elevationLayer, double minHeight, double maxHeight)
+    : frameId_(gridMap.getFrameId()), timestamp_(gridMap.getTimestamp()) {
+  assert(maxHeight >= minHeight);
 
-void SignedDistanceField::calculateSignedDistanceField(const GridMap& gridMap, const std::string& layer,
-                                                       const double heightClearance)
-{
-  data_.clear();
-  resolution_ = gridMap.getResolution();
-  position_ = gridMap.getPosition();
-  size_ = gridMap.getSize();
-  Matrix map = gridMap.get(layer); // Copy!
+  // Determine origin of the 3D grid
+  Position mapOriginXY;
+  gridMap.getPosition(Eigen::Vector2i(0, 0), mapOriginXY);
+  Position3 gridOrigin(mapOriginXY.x(), mapOriginXY.y(), minHeight);
 
-  float minHeight = map.minCoeffOfFinites();
-  if (!std::isfinite(minHeight)) minHeight = lowestHeight_;
-  float maxHeight = map.maxCoeffOfFinites();
-  if (!std::isfinite(maxHeight)) maxHeight = lowestHeight_;
+  // Round up the Z-discretization. We need a minimum of two layers to enable finite difference in Z direction
+  const auto numZLayers = static_cast<size_t>(std::max(std::ceil((maxHeight - minHeight) / gridMap.getResolution()), 2.0));
+  const size_t numXrows = gridMap.getSize().x();
+  const size_t numYrows = gridMap.getSize().y();
+  Gridmap3dLookup::size_t_3d gridsize = {numXrows, numYrows, numZLayers};
 
-  const float valueForEmptyCells = lowestHeight_; // maxHeight, minHeight (TODO Make this an option).
-  for (Eigen::Index i{0}; i < map.size(); ++i) {
-    if (std::isnan(map(i))) map(i) = valueForEmptyCells;
+  // Initialize 3D lookup
+  gridmap3DLookup_ = Gridmap3dLookup(gridsize, gridOrigin, gridMap.getResolution());
+
+  // Allocate the internal data structure
+  data_.reserve(gridmap3DLookup_.linearSize());
+
+  // Check for NaN
+  const auto& elevationData = gridMap.get(elevationLayer);
+  if (elevationData.hasNaN()) {
+    std::cerr
+        << "[grid_map_sdf::SignedDistanceField] elevation data contains NaN. The generated SDF will be invalid! Apply inpainting first"
+        << std::endl;
   }
 
-  // Height range of the signed distance field is higher than the max height.
-  maxHeight += heightClearance;
+  // Compute the SDF
+  computeSignedDistance(elevationData);
+}
 
-  Matrix sdfElevationAbove = Matrix::Ones(map.rows(), map.cols()) * maxDistance_;
-  Matrix sdfLayer = Matrix::Zero(map.rows(), map.cols());
-  std::vector<Matrix> sdf;
-  zIndexStartHeight_ = minHeight;
+double SignedDistanceField::value(const Position3& position) const noexcept {
+  const auto nodeIndex = gridmap3DLookup_.nearestNode(position);
+  const auto nodePosition = gridmap3DLookup_.nodePosition(nodeIndex);
+  const auto nodeData = data_[gridmap3DLookup_.linearIndex(nodeIndex)];
+  const auto jacobian = derivative(nodeData);
+  return distance(nodeData) + jacobian.dot(position - nodePosition);
+}
 
-  // Calculate signed distance field from bottom.
-  for (float h = minHeight; h < maxHeight; h += resolution_) {
-    Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic> obstacleFreeField = map.array() < h;
-    Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic> obstacleField = obstacleFreeField.array() < 1;
-    Matrix sdfObstacle = getPlanarSignedDistanceField(obstacleField);
-    Matrix sdfObstacleFree = getPlanarSignedDistanceField(obstacleFreeField);
-    Matrix sdf2d;
-    // If 2d sdfObstacleFree calculation failed, neglect this SDF
-    // to avoid extreme small distances (-INF).
-    if ((sdfObstacleFree.array() >= INF).any()) sdf2d = sdfObstacle;
-    else sdf2d = sdfObstacle - sdfObstacleFree;
-    sdf2d *= resolution_;
-    for (Eigen::Index i{0}; i < sdfElevationAbove.size(); ++i) {
-      if(sdfElevationAbove(i) == maxDistance_ && map(i) <= h) sdfElevationAbove(i) = h - map(i);
-      else if(sdfElevationAbove(i) != maxDistance_ && map(i) <= h) sdfElevationAbove(i) = sdfLayer(i) + resolution_;
-      if (sdf2d(i) == 0) sdfLayer(i) = h - map(i);
-      else if (sdf2d(i) < 0) sdfLayer(i) = -std::min(fabs(sdf2d(i)), fabs(map(i) - h));
-      else sdfLayer(i) = std::min(sdf2d(i), sdfElevationAbove(i));
+SignedDistanceField::Derivative3 SignedDistanceField::derivative(const Position3& position) const noexcept {
+  const auto nodeIndex = gridmap3DLookup_.nearestNode(position);
+  const auto nodeData = data_[gridmap3DLookup_.linearIndex(nodeIndex)];
+  return derivative(nodeData);
+}
+
+std::pair<double, SignedDistanceField::Derivative3> SignedDistanceField::valueAndDerivative(const Position3& position) const noexcept {
+  const auto nodeIndex = gridmap3DLookup_.nearestNode(position);
+  const auto nodePosition = gridmap3DLookup_.nodePosition(nodeIndex);
+  const auto nodeData = data_[gridmap3DLookup_.linearIndex(nodeIndex)];
+  const auto jacobian = derivative(nodeData);
+  return {distance(nodeData) + jacobian.dot(position - nodePosition), jacobian};
+}
+
+void SignedDistanceField::computeSignedDistance(const Matrix& elevation) {
+  const auto gridOriginZ = static_cast<float>(gridmap3DLookup_.gridOrigin_.z());
+  const auto resolution = static_cast<float>(gridmap3DLookup_.resolution_);
+  const auto minHeight = elevation.minCoeff();
+  const auto maxHeight = elevation.maxCoeff();
+
+  /*
+   * General strategy to reduce the amount of transposing:
+   *    - SDF at a height is in transposed form after computing it.
+   *    - Take the finite difference in dx, now that this data is continuous in memory.
+   *    - Transpose the SDF
+   *    - Take other finite differences. Now dy is efficient.
+   *    - When writing to the 3D structure, keep in mind that dx is still transposed.
+   */
+
+  // Memory needed to compute the SDF at a layer
+  Matrix tmp;           // allocated on first use
+  Matrix tmpTranspose;  // allocated on first use
+  Matrix sdfTranspose;  // allocated on first use
+
+  // Memory needed to keep a buffer of layers. We need 3 due to the central difference
+  Matrix currentLayer;   // allocated on first use
+  Matrix nextLayer;      // allocated on first use
+  Matrix previousLayer;  // allocated on first use
+
+  // Memory needed to compute finite differences
+  Matrix dxTranspose = Matrix::Zero(elevation.cols(), elevation.rows());
+  Matrix dxNextTranspose = Matrix::Zero(elevation.cols(), elevation.rows());
+  Matrix dy = Matrix::Zero(elevation.rows(), elevation.cols());
+  Matrix dz = Matrix::Zero(elevation.rows(), elevation.cols());
+
+  // Compute SDF of first layer
+  computeLayerSdfandDeltaX(elevation, currentLayer, dxTranspose, sdfTranspose, tmp, tmpTranspose, gridOriginZ, resolution, minHeight,
+                           maxHeight);
+
+  // Compute SDF of second layer
+  computeLayerSdfandDeltaX(elevation, nextLayer, dxNextTranspose, sdfTranspose, tmp, tmpTranspose, gridOriginZ + resolution, resolution,
+                           minHeight, maxHeight);
+
+  // First layer: forward difference in z
+  layerFiniteDifference(currentLayer, nextLayer, dz, resolution);  // dz / layer = +resolution
+  columnwiseCentralDifference(currentLayer, dy, -resolution);      // dy / dcol = -resolution
+
+  emplacebackLayerData(currentLayer, dxTranspose, dy, dz);
+
+  // Middle layers: central difference in z
+  for (size_t layerZ = 1; layerZ + 1 < gridmap3DLookup_.gridsize_.z; ++layerZ) {
+    // Circulate layer buffers
+    previousLayer.swap(currentLayer);
+    currentLayer.swap(nextLayer);
+    dxTranspose.swap(dxNextTranspose);
+
+    // Compute SDF of next layer
+    computeLayerSdfandDeltaX(elevation, nextLayer, dxNextTranspose, sdfTranspose, tmp, tmpTranspose,
+                             gridOriginZ + (layerZ + 1) * resolution, resolution, minHeight, maxHeight);
+
+    // Compute other finite differences
+    layerCentralDifference(previousLayer, nextLayer, dz, resolution);
+    columnwiseCentralDifference(currentLayer, dy, -resolution);
+
+    // Add the data to the 3D structure
+    emplacebackLayerData(currentLayer, dxTranspose, dy, dz);
+  }
+
+  // Circulate layer buffers one last time
+  previousLayer.swap(currentLayer);
+  currentLayer.swap(nextLayer);
+  dxTranspose.swap(dxNextTranspose);
+
+  // Last layer: backward difference in z
+  layerFiniteDifference(previousLayer, currentLayer, dz, resolution);
+  columnwiseCentralDifference(currentLayer, dy, -resolution);
+
+  // Add the data to the 3D structure
+  emplacebackLayerData(currentLayer, dxTranspose, dy, dz);
+}
+void SignedDistanceField::computeLayerSdfandDeltaX(const Matrix& elevation, Matrix& currentLayer, Matrix& dxTranspose, Matrix& sdfTranspose,
+                                                   Matrix& tmp, Matrix& tmpTranspose, float height, float resolution, float minHeight,
+                                                   float maxHeight) const {
+  // Compute SDF + dx of layer: compute sdfTranspose -> take dxTranspose -> transpose to get sdf
+  signedDistanceAtHeightTranspose(elevation, sdfTranspose, tmp, tmpTranspose, height, resolution, minHeight, maxHeight);
+  columnwiseCentralDifference(sdfTranspose, dxTranspose, -resolution);  // dx / drow = -resolution
+  currentLayer = sdfTranspose.transpose();
+}
+
+void SignedDistanceField::emplacebackLayerData(const Matrix& signedDistance, const Matrix& dxTranspose, const Matrix& dy,
+                                               const Matrix& dz) {
+  for (size_t colY = 0; colY < gridmap3DLookup_.gridsize_.y; ++colY) {
+    for (size_t rowX = 0; rowX < gridmap3DLookup_.gridsize_.x; ++rowX) {
+      data_.emplace_back(node_data_t{signedDistance(rowX, colY), dxTranspose(colY, rowX), dy(rowX, colY), dz(rowX, colY)});
     }
-    data_.push_back(sdfLayer);
   }
 }
 
-grid_map::Matrix SignedDistanceField::getPlanarSignedDistanceField(Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic>& data) const
-{
-  image<uchar> *input = new image<uchar>(data.rows(), data.cols(), true);
-
-  for (int y = 0; y < input->height(); y++) {
-    for (int x = 0; x < input->width(); x++) {
-      imRef(input, x, y) = data(x, y);
-    }
-  }
-
-  // Compute dt.
-  image<float> *out = dt(input);
-
-  Matrix result(data.rows(), data.cols());
-
-  // Take square roots.
-  for (int y = 0; y < out->height(); y++) {
-    for (int x = 0; x < out->width(); x++) {
-      result(x, y) = sqrt(imRef(out, x, y));
-    }
-  }
-  delete input;
-  delete out;
-  return result;
+size_t SignedDistanceField::size() const noexcept {
+  return gridmap3DLookup_.linearSize();
 }
 
-double SignedDistanceField::getDistanceAt(const Position3& position) const
-{
-  double xCenter = size_.x() / 2.0;
-  double yCenter = size_.y() / 2.0;
-  int i = std::round(xCenter - (position.x() - position_.x()) / resolution_);
-  int j = std::round(yCenter - (position.y() - position_.y()) / resolution_);
-  int k = std::round((position.z() - zIndexStartHeight_) / resolution_);
-  i = std::max(i, 0);
-  i = std::min(i, size_.x() - 1);
-  j = std::max(j, 0);
-  j = std::min(j, size_.y() - 1);
-  k = std::max(k, 0);
-  k = std::min(k, (int)data_.size() - 1);
-  return data_[k](i, j);
+const std::string& SignedDistanceField::getFrameId() const noexcept {
+  return frameId_;
 }
 
-double SignedDistanceField::getInterpolatedDistanceAt(const Position3& position) const
-{
-  double xCenter = size_.x() / 2.0;
-  double yCenter = size_.y() / 2.0;
-  int i = std::round(xCenter - (position.x() - position_.x()) / resolution_);
-  int j = std::round(yCenter - (position.y() - position_.y()) / resolution_);
-  int k = std::round((position.z() - zIndexStartHeight_) / resolution_);
-  i = std::max(i, 0);
-  i = std::min(i, size_.x() - 1);
-  j = std::max(j, 0);
-  j = std::min(j, size_.y() - 1);
-  k = std::max(k, 0);
-  k = std::min(k, (int)data_.size() - 1);
-  Vector3 gradient = getDistanceGradientAt(position);
-  double xp = position_.x() + ((size_.x() - i) - xCenter) * resolution_;
-  double yp = position_.y() + ((size_.y() - j) - yCenter) * resolution_;
-  double zp = zIndexStartHeight_ + k * resolution_;
-  Vector3 error = position - Vector3(xp, yp, zp);
-  return data_[k](i, j) + gradient.dot(error);
+Time SignedDistanceField::getTime() const noexcept {
+  return timestamp_;
 }
 
-Vector3 SignedDistanceField::getDistanceGradientAt(const Position3& position) const
-{
-  double xCenter = size_.x() / 2.0;
-  double yCenter = size_.y() / 2.0;
-  int i = std::round(xCenter - (position.x() - position_.x()) / resolution_);
-  int j = std::round(yCenter - (position.y() - position_.y()) / resolution_);
-  int k = std::round((position.z() - zIndexStartHeight_) / resolution_);
-  i = std::max(i, 1);
-  i = std::min(i, size_.x() - 2);
-  j = std::max(j, 1);
-  j = std::min(j, size_.y() - 2);
-  k = std::max(k, 1);
-  k = std::min(k, (int)data_.size() - 2);
-  double dx = (data_[k](i - 1, j) - data_[k](i + 1, j)) / (2 * resolution_);
-  double dy = (data_[k](i, j - 1) - data_[k](i, j + 1)) / (2 * resolution_);
-  double dz = (data_[k + 1](i, j) - data_[k - 1](i, j)) / (2 * resolution_);
-  return Vector3(dx, dy, dz);
-}
-
-void SignedDistanceField::convertToPointCloud(pcl::PointCloud<pcl::PointXYZI>& points) const
-{
-  double xCenter = size_.x() / 2.0;
-  double yCenter = size_.y() / 2.0;
-  for (size_t z = 0; z < data_.size(); z++){  
-    for (int y = 0; y < size_.y(); y++) {
-      for (int x = 0; x < size_.x(); x++) {
-        double xp = position_.x() + ((size_.x() - x) - xCenter) * resolution_;
-        double yp = position_.y() + ((size_.y() - y) - yCenter) * resolution_;
-        double zp = zIndexStartHeight_ + z * resolution_;
-        pcl::PointXYZI p;
-        p.x = xp;
-        p.y = yp;
-        p.z = zp;
-        p.intensity = data_[z](x, y);
-        points.push_back(p);
+void SignedDistanceField::filterPoints(std::function<void(const Position3&, float, const Derivative3&)> func, size_t decimation) const {
+  for (size_t layerZ = 0; layerZ < gridmap3DLookup_.gridsize_.z; layerZ += decimation) {
+    for (size_t colY = 0; colY < gridmap3DLookup_.gridsize_.y; colY += decimation) {
+      for (size_t rowX = 0; rowX < gridmap3DLookup_.gridsize_.x; rowX += decimation) {
+        const Gridmap3dLookup::size_t_3d index3d = {rowX, colY, layerZ};
+        const auto index = gridmap3DLookup_.linearIndex(index3d);
+        func(gridmap3DLookup_.nodePosition(index3d), distanceFloat(data_[index]), derivative(data_[index]));
       }
     }
   }
-  return;
 }
 
-} /* namespace */
+}  // namespace grid_map

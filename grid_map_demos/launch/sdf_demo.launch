@@ -1,0 +1,31 @@
+<launch>
+
+  <!-- Load the general parameters for this demo. -->
+  <rosparam command="load" file="$(find grid_map_demos)/config/sdf_demo.yaml" />
+
+  <!-- Launch the grid map filters demo node. -->
+  <node pkg="grid_map_demos" type="sdf_demo" name="grid_map_sdf_demo" output="screen"/>
+
+  <!-- Launch the image to grid map demo node (this provides the input for the filter demo). -->
+  <node pkg="grid_map_demos" type="image_publisher.py" name="image_publisher" output="screen">
+    <param name="image_path" value="$(find grid_map_demos)/data/heightmap_generated.png" />
+    <!-- Various options for png image.-->
+    <!-- terrain.png-->
+    <!-- radialGradient_circle.png-->
+    <!-- radialGradient_ellipse.png-->
+    <!-- radialGradient_horizontal.png-->
+    <!-- linearGradient_vertical.png-->
+    <!-- linearGradient_oblique_and_flat.png-->
+    <!-- linearGradient_horizontal.png-->
+    <!-- linearGradient_oblique_only.png-->
+    <param name="topic" value="~image" />
+  </node>
+
+  <node pkg="grid_map_demos" type="image_to_gridmap_demo" name="image_to_gridmap_demo" output="screen" />
+
+  <!-- Launch the grid map visualizer -->
+  <node pkg="grid_map_visualization" type="grid_map_visualization" name="grid_map_visualization" output="screen" />
+
+  <!-- Launch RViz with the demo configuration. -->
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find grid_map_demos)/rviz/sdf_demo.rviz" />
+</launch>

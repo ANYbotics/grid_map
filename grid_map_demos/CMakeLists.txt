@@ -9,13 +9,14 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   grid_map_core
-  grid_map_ros
   grid_map_cv
   grid_map_filters
   grid_map_loader
   grid_map_msgs
   grid_map_octomap
+  grid_map_ros
   grid_map_rviz_plugin
+  grid_map_sdf
   grid_map_visualization
   geometry_msgs
   sensor_msgs
@@ -120,6 +121,11 @@ add_executable(interpolation_demo
   src/InterpolationDemo.cpp
 )
 
+add_executable(sdf_demo
+  src/sdf_demo_node.cpp
+  src/SdfDemo.cpp
+)
+
 ## Specify libraries to link a library or executable target against
 target_link_libraries(
   simple_demo
@@ -188,6 +194,11 @@ target_link_libraries(
   ${catkin_LIBRARIES}
 )
 
+target_link_libraries(
+  sdf_demo
+  ${catkin_LIBRARIES}
+)
+
 #############
 ## Install ##
 #############
@@ -213,6 +224,7 @@ install(
     resolution_change_demo
     simple_demo
     tutorial_demo
+    sdf_demo
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}

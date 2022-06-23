@@ -13,13 +13,14 @@
 <!--   <build_depend>cmake_clang_tools</build_depend> -->
   <depend>roscpp</depend>
   <depend>grid_map_core</depend>
-  <depend>grid_map_ros</depend>
   <depend>grid_map_cv</depend>
   <depend>grid_map_filters</depend>
   <depend>grid_map_loader</depend>
   <depend>grid_map_msgs</depend>
   <depend>grid_map_octomap</depend>
+  <depend>grid_map_ros</depend>
   <depend>grid_map_rviz_plugin</depend>
+  <depend>grid_map_sdf</depend>
   <depend>grid_map_visualization</depend>
   <depend>geometry_msgs</depend>
   <depend>sensor_msgs</depend>

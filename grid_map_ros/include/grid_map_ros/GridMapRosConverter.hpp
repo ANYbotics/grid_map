@@ -9,6 +9,7 @@
 #pragma once
 
 #include <grid_map_core/grid_map_core.hpp>
+#include <grid_map_sdf/SignedDistanceField.hpp>
 #include <grid_map_msgs/GridMap.h>
 
 // STL
@@ -105,6 +106,17 @@ class GridMapRosConverter
                            const std::vector<std::string>& layers,
                            const std::string& pointLayer,
                            sensor_msgs::PointCloud2& pointCloud);
+
+  /*!
+   * Converts a grid map signed distance field object to a ROS PointCloud2 message.
+   * @param[in] gridMap the grid map object.
+   * @param[out] pointCloud the message to be populated.
+   * @param[in] decimation : specifies how many points are returned. 1: all points, 2: every second point, etc.
+   * @param[in] condition : specifies the condition on the distance value to add it to the pointcloud (default = any distance is added)
+   */
+  static void toPointCloud(
+      const grid_map::SignedDistanceField& signedDistanceField, sensor_msgs::PointCloud2& pointCloud, size_t decimation = 1,
+      const std::function<bool(float)>& condition = [](float) { return true; });
 
   /*!
    * Converts an occupancy grid message to a layer of a grid map.

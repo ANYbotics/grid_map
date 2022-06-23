@@ -1,0 +1,16 @@
+grid_map_topic: /image_to_gridmap_demo/grid_map
+pointcloud_topic: /grid_map_sdf_demo/signed_distance_field
+elevation_layer: "elevation"
+image_to_gridmap_demo:
+  image_topic: "/image_publisher/image"
+  resolution: 0.03
+  map_frame_id: "map"
+  min_height: -0.3
+  max_height: 0.4
+grid_map_visualization:
+  grid_map_topic: /image_to_gridmap_demo/grid_map
+  grid_map_visualizations:
+    - name: elevation_points
+      type: point_cloud
+      params:
+        layer: elevation

@@ -11,6 +11,7 @@ find_package(catkin REQUIRED COMPONENTS
   grid_map_core
   grid_map_msgs
   grid_map_cv
+  grid_map_sdf
   sensor_msgs
   nav_msgs
   std_msgs
@@ -43,6 +44,7 @@ catkin_package(
     grid_map_core
     grid_map_msgs
     grid_map_cv
+    grid_map_sdf
     sensor_msgs
     nav_msgs
     std_msgs
