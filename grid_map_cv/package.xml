@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package format="2">
   <name>grid_map_cv</name>
-  <version>1.6.10</version>
+  <version>1.7.0</version>
   <description>Conversions between grid maps and OpenCV images.</description>
   <maintainer email="mwulf@anybotics.com">Maximilian Wulf</maintainer>
   <maintainer email="ynava@anybotics.com">Yoshua Nava</maintainer>
