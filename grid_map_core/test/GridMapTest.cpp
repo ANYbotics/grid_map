@@ -489,3 +489,29 @@ TEST(ValueAtPosition, LinearInterpolated)
   value = map.atPosition("types", Position(0.69,0.38), InterpolationMethods::INTER_LINEAR);
   EXPECT_NEAR(2.1963200, value, 0.0000001);
 }
+
+TEST(GridMap, PositiveClosestPositionInMap)
+{
+  GridMap map({"types"});
+  map.setGeometry(Length(1.0, 1.0), 0.05, Position(0.0, 0.0));
+
+  Position max_positive_position (1.0, 1.0);
+
+  auto closest_positive_position = map.getClosestPositionInMap(max_positive_position);
+  Index idx;
+
+  EXPECT_TRUE(map.getIndex(closest_positive_position, idx));
+}
+
+TEST(GridMap, NegativeClosestPositionInMap)
+{
+  GridMap map({"types"});
+  map.setGeometry(Length(1.0, 1.0), 0.05, Position(0.0, 0.0));
+
+  Position max_negative_position (-1.0, -1.0);
+
+  auto closest_negative_position = map.getClosestPositionInMap(max_negative_position);
+  Index idx;
+
+  EXPECT_TRUE(map.getIndex(closest_negative_position, idx));
+}
