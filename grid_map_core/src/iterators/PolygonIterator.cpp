@@ -76,18 +76,23 @@ bool PolygonIterator::isInside() const
 
 void PolygonIterator::findSubmapParameters(const grid_map::Polygon& /*polygon*/, Index& startIndex, Size& bufferSize) const
 {
-  Position topLeft = polygon_.getVertices()[0];
-  Position bottomRight = topLeft;
-  for (const auto& vertex : polygon_.getVertices()) {
-    topLeft = topLeft.array().max(vertex.array());
-    bottomRight = bottomRight.array().min(vertex.array());
+  startIndex = Index(0, 0);
+  bufferSize = Size(0, 0);
+
+  if (polygon_.getVertices().size() > 0) {
+    Position topLeft = polygon_.getVertices()[0];
+    Position bottomRight = topLeft;
+    for (const auto& vertex : polygon_.getVertices()) {
+      topLeft = topLeft.array().max(vertex.array());
+      bottomRight = bottomRight.array().min(vertex.array());
+    }
+    boundPositionToRange(topLeft, mapLength_, mapPosition_);
+    boundPositionToRange(bottomRight, mapLength_, mapPosition_);
+    getIndexFromPosition(startIndex, topLeft, mapLength_, mapPosition_, resolution_, bufferSize_, bufferStartIndex_);
+    Index endIndex;
+    getIndexFromPosition(endIndex, bottomRight, mapLength_, mapPosition_, resolution_, bufferSize_, bufferStartIndex_);
+    bufferSize = getSubmapSizeFromCornerIndeces(startIndex, endIndex, bufferSize_, bufferStartIndex_);
   }
-  boundPositionToRange(topLeft, mapLength_, mapPosition_);
-  boundPositionToRange(bottomRight, mapLength_, mapPosition_);
-  getIndexFromPosition(startIndex, topLeft, mapLength_, mapPosition_, resolution_, bufferSize_, bufferStartIndex_);
-  Index endIndex;
-  getIndexFromPosition(endIndex, bottomRight, mapLength_, mapPosition_, resolution_, bufferSize_, bufferStartIndex_);
-  bufferSize = getSubmapSizeFromCornerIndeces(startIndex, endIndex, bufferSize_, bufferStartIndex_);
 }
 
 } /* namespace grid_map */

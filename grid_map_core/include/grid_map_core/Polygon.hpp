@@ -6,6 +6,10 @@
  *   Institute: ETH Zurich, ANYbotics
  */
 
+
+#define _USE_MATH_DEFINES
+#include <cmath>
+
 #pragma once
 
 #include <grid_map_core/TypeDefs.hpp>
@@ -209,6 +213,8 @@ class Polygon
    * @return convex hull as polygon.
    */
   static Polygon monotoneChainConvexHullOfPoints(const std::vector<Position>& points);
+
+  const std::vector<Position> getInterpolatedConvexHull(const double stepSize);
 
  protected:
 
