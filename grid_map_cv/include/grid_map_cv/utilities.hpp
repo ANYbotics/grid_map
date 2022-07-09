@@ -42,7 +42,7 @@ public:
   {
     rclcpp::Parameter param;
 
-    params_interface_->declare_parameter(param_prefix_ + name, rclcpp::ParameterValue());
+    params_interface_->declare_parameter(param_prefix_ + name, param_type);
     params_interface_->get_parameter(param_prefix_ + name, param);
 
     if (param.get_type() != param_type) {
