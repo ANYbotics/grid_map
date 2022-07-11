@@ -61,3 +61,13 @@ TEST(GridMapIterator, LinearIndex)
   EXPECT_TRUE(iterator.isPastEnd());
   EXPECT_TRUE((map["layer"].array() == 1.0f).all());
 }
+
+TEST(GridMapIterator, GeometryIsNotSet)
+{
+  grid_map::GridMap map;
+  grid_map::GridMapIterator iterator(map);
+
+  // If geometry of GridMap has not been set, bufferSize is by default (0,0).
+  // We cannot read GridMap's data as it's empty so GridMapIterator.isPastEnd() should return "true".
+  EXPECT_TRUE(iterator.isPastEnd());
+}
