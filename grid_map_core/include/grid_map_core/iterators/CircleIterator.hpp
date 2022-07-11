@@ -33,13 +33,6 @@ public:
   CircleIterator(const GridMap& gridMap, const Position& center, double radius);
 
   /*!
-   * Assignment operator.
-   * @param iterator the iterator to copy data from.
-   * @return a reference to *this.
-   */
-  CircleIterator& operator =(const CircleIterator& other) = default;
-
-  /*!
    * Compare to another iterator.
    * @return whether the current iterator points to a different address than the other one.
    */

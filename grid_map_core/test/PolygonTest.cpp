@@ -13,11 +13,14 @@
 
 // Eigen
 #include <Eigen/Core>
-#include <Eigen/Dense>
 
-using namespace std;
-using namespace Eigen;
-using namespace grid_map;
+using Eigen::MatrixXd;
+using Eigen::Vector2d;
+using Eigen::VectorXd;
+
+using grid_map::Length;
+using grid_map::Polygon;
+using grid_map::Position;
 
 TEST(Polygon, getCentroidTriangle)
 {
@@ -71,10 +74,10 @@ TEST(Polygon, convexHullPoints)
 {
   // Test that points which already create a convex shape (square) can be used to create a convex polygon.
   std::vector<Position> points1;
-  points1.push_back(Vector2d(0.0, 0.0));
-  points1.push_back(Vector2d(1.0, 0.0));
-  points1.push_back(Vector2d(1.0, 1.0));
-  points1.push_back(Vector2d(0.0, 1.0));
+  points1.emplace_back(0.0, 0.0);
+  points1.emplace_back(1.0, 0.0);
+  points1.emplace_back(1.0, 1.0);
+  points1.emplace_back(0.0, 1.0);
   Polygon polygon1 = Polygon::monotoneChainConvexHullOfPoints(points1);
   EXPECT_EQ(4, polygon1.nVertices());
   EXPECT_TRUE(polygon1.isInside(Vector2d(0.5, 0.5)));
@@ -82,14 +85,14 @@ TEST(Polygon, convexHullPoints)
 
   // Test that a random set of points can be used to create a convex polygon.
   std::vector<Position> points2;
-  points2.push_back(Vector2d(0.0, 0.0));
-  points2.push_back(Vector2d(1.0, 0.0));
-  points2.push_back(Vector2d(2.0, 1.0));
-  points2.push_back(Vector2d(1.0, 2.0));
-  points2.push_back(Vector2d(-1.0, 2.0));
-  points2.push_back(Vector2d(-1.0, -2.0));
-  points2.push_back(Vector2d(0.0, 1.0));
-  points2.push_back(Vector2d(1.0, 1.0));
+  points2.emplace_back(0.0, 0.0);
+  points2.emplace_back(1.0, 0.0);
+  points2.emplace_back(2.0, 1.0);
+  points2.emplace_back(1.0, 2.0);
+  points2.emplace_back(-1.0, 2.0);
+  points2.emplace_back(-1.0, -2.0);
+  points2.emplace_back(0.0, 1.0);
+  points2.emplace_back(1.0, 1.0);
   Polygon polygon2 = Polygon::monotoneChainConvexHullOfPoints(points2);
   EXPECT_EQ(4, polygon2.nVertices());
   EXPECT_TRUE(polygon2.isInside(Vector2d(0.5, 0.5)));

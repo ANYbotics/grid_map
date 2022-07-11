@@ -11,14 +11,9 @@
 // gtest
 #include <gtest/gtest.h>
 
-// Math
-#include <math.h>
+namespace grid_map {
 
-using namespace std;
-using namespace grid_map;
-
-TEST(GridMap, CopyConstructor)
-{
+TEST(GridMap, CopyConstructor) {
   GridMap map({"layer_a", "layer_b"});
   map.setGeometry(Length(1.0, 2.0), 0.1, Position(0.1, 0.2));
   map["layer_a"].setConstant(1.0);
@@ -66,12 +61,21 @@ TEST(GridMap, Move)
 
   EXPECT_EQ(3, startIndex(0));
   EXPECT_EQ(2, startIndex(1));
-
-  EXPECT_FALSE(map.isValid(Index(0, 0))); // TODO Check entire map.
-  EXPECT_TRUE(map.isValid(Index(3, 2)));
-  EXPECT_FALSE(map.isValid(Index(2, 2)));
-  EXPECT_FALSE(map.isValid(Index(3, 1)));
-  EXPECT_TRUE(map.isValid(Index(7, 4)));
+  
+  Eigen::Matrix<bool, 8, 5> isValidExpected;
+  isValidExpected << false, false, false, false, false, // clang-format off
+                     false, false, false, false, false,
+                     false, false, false, false, false,
+                     false, false, true,  true,  true,
+                     false, false, true,  true,  true,
+                     false, false, true,  true,  true,
+                     false, false, true,  true,  true,
+                     false, false, true,  true,  true; // clang-format on
+  for(int row{0}; row < 8; row++){
+    for(int col{0}; col < 5; col++){
+      EXPECT_EQ(map.isValid(Index(row, col)), isValidExpected(row, col)) << "Value of map.isValid at ["<<row << ", " << col <<"] is unexpected!";
+    }
+  }
 
   EXPECT_EQ(2, regions.size());
   EXPECT_EQ(0, regions[0].getStartIndex()[0]);
@@ -88,7 +92,7 @@ TEST(GridMap, Transform)
 {
   // Initial map.
   GridMap map;
-  const auto heightLayerName = "height";
+  constexpr auto heightLayerName = "height";
 
   map.setGeometry(Length(1.0, 2.0), 0.1, Position(0.0, 0.0));
   map.add(heightLayerName, 0.0);
@@ -141,7 +145,7 @@ TEST(GridMap, ClipToMap)
   EXPECT_NEAR(clippedPositionInMap.x(),positionInMap.x(), 1e-6);
   EXPECT_NEAR(clippedPositionInMap.y(), positionInMap.y(), 1e-6);
 
-  // Check if position-out-map is indeed outside of the map.
+  // Check if position-out-map is indeed outside the map.
   EXPECT_TRUE(!map.isInside(positionOutMap));
 
   // Check if position-out-map has been projected into the map.
@@ -165,7 +169,7 @@ TEST(GridMap, ClipToMap2)
    *  +---+     Y<--+
    * F  G  H
    *
-   * Note: Position to index alignment is an half open interval.
+   * Note: Position to index alignment is a half open interval.
    *       An example position of 0.5 is assigned to the upper index.
    *       The interval in the current example is: 
    *       Position: [...)[0.485 ... 0.5)[0.5 ... 0.505)[...)
@@ -354,7 +358,8 @@ TEST(GridMap, ClipToMap2)
 
 TEST(AddDataFrom, ExtendMapAligned)
 {
-  GridMap map1, map2;
+  GridMap map1;
+  GridMap map2;
   map1.setGeometry(Length(5.1, 5.1), 1.0, Position(0.0, 0.0)); // bufferSize(5, 5)
   map1.add("zero", 0.0);
   map1.add("one", 1.0);
@@ -380,7 +385,8 @@ TEST(AddDataFrom, ExtendMapAligned)
 
 TEST(AddDataFrom, ExtendMapNotAligned)
 {
-  GridMap map1, map2;
+  GridMap map1;
+  GridMap map2;
   map1.setGeometry(Length(6.1, 6.1), 1.0, Position(0.0, 0.0)); // bufferSize(6, 6)
   map1.add("nan");
   map1.add("one", 1.0);
@@ -394,7 +400,7 @@ TEST(AddDataFrom, ExtendMapNotAligned)
   map2.setBasicLayers(map1.getLayers());
 
   std::vector<std::string> stringVector;
-  stringVector.push_back("nan");
+  stringVector.emplace_back("nan");
   map1.addDataFrom(map2, true, false, false, stringVector);
   Index index;
   map1.getIndex(Position(-2, -2), index);
@@ -412,7 +418,8 @@ TEST(AddDataFrom, ExtendMapNotAligned)
 
 TEST(AddDataFrom, CopyData)
 {
-  GridMap map1, map2;
+  GridMap map1;
+  GridMap map2;
   map1.setGeometry(Length(5.1, 5.1), 1.0, Position(0.0, 0.0)); // bufferSize(5, 5)
   map1.add("zero", 0.0);
   map1.add("one");
@@ -453,9 +460,7 @@ TEST(ValueAtPosition, NearestNeighbor)
   map.at("types", Index(2,1)) = 2.0;
   map.at("types", Index(2,2)) = 2.0;
 
-  double value;
-
-  value = map.atPosition("types", Position(1.35,-0.4));
+  double value = map.atPosition("types", Position(1.35,-0.4));
   EXPECT_DOUBLE_EQ((float)3.8, value);
 
   value = map.atPosition("types", Position(-0.3,0.0));
@@ -477,10 +482,8 @@ TEST(ValueAtPosition, LinearInterpolated)
   map.at("types", Index(2,1)) = 2.0;
   map.at("types", Index(2,2)) = 2.0;
 
-  double value;
-
   // Close to the border -> reverting to INTER_NEAREST.
-  value = map.atPosition("types", Position(-0.5,-1.2), InterpolationMethods::INTER_LINEAR);
+  double value = map.atPosition("types", Position(-0.5,-1.2), InterpolationMethods::INTER_LINEAR);
   EXPECT_DOUBLE_EQ(2.0, value);
   // In between 1.0 and 2.0 field.
   value = map.atPosition("types", Position(-0.5,0.0), InterpolationMethods::INTER_LINEAR);
@@ -489,3 +492,5 @@ TEST(ValueAtPosition, LinearInterpolated)
   value = map.atPosition("types", Position(0.69,0.38), InterpolationMethods::INTER_LINEAR);
   EXPECT_NEAR(2.1963200, value, 0.0000001);
 }
+
+}  // namespace grid_map

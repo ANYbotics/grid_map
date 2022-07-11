@@ -23,7 +23,7 @@ AnalyticalFunctions createFlatWorld(grid_map::GridMap *map)
 
   AnalyticalFunctions func;
 
-  func.f_ = [](double x, double y) {
+  func.f_ = [](double  /*x*/, double  /*y*/) {
     return 0.0;
   };
 
@@ -111,7 +111,7 @@ AnalyticalFunctions createTanhWorld(grid_map::GridMap *map)
 
   std::uniform_real_distribution<double> scaling(0.1, 2.0);
   const double s = scaling(rndGenerator);
-  func.f_ = [s](double x,double y) {
+  func.f_ = [s](double x,double  /*y*/) {
     const double expZ = std::exp(2 *s* x);
     return (expZ - 1) / (expZ + 1);
   };
@@ -149,12 +149,12 @@ AnalyticalFunctions createGaussianWorld(grid_map::GridMap *map)
 
   func.f_ = [g](double x,double y) {
     double value = 0.0;
-    for (int i = 0; i < g.size(); ++i) {
-      const double x0 = g.at(i).x0;
-      const double y0 = g.at(i).y0;
-      const double varX = g.at(i).varX;
-      const double varY = g.at(i).varY;
-      const double s = g.at(i).s;
+    for (const auto & i : g) {
+      const double x0 = i.x0;
+      const double y0 = i.y0;
+      const double varX = i.varX;
+      const double varY = i.varY;
+      const double s = i.s;
         value += s * std::exp(-(x-x0)*(x-x0) / (2.0*varX) - (y-y0)*(y-y0) / (2.0 * varY));
     }
 
@@ -168,12 +168,18 @@ AnalyticalFunctions createGaussianWorld(grid_map::GridMap *map)
 
 void fillGridMap(grid_map::GridMap *map, const AnalyticalFunctions &functions)
 {
-  grid_map::Matrix& data = (*map)[testLayer];
-  for (grid_map::GridMapIterator iterator(*map); !iterator.isPastEnd(); ++iterator) {
-    const grid_map::Index index(*iterator);
-    grid_map::Position pos;
+  using grid_map::DataType;
+  using grid_map::GridMapIterator;
+  using grid_map::Index;
+  using grid_map::Matrix;
+  using grid_map::Position;
+
+  Matrix& data = (*map)[testLayer];
+  for (GridMapIterator iterator(*map); !iterator.isPastEnd(); ++iterator) {
+    const Index index(*iterator);
+    Position pos;
     map->getPosition(index, pos);
-    data(index(0), index(1)) = functions.f_(pos.x(), pos.y());
+    data(index(0), index(1)) = static_cast<DataType>(functions.f_(pos.x(), pos.y()));
   }
 }
 

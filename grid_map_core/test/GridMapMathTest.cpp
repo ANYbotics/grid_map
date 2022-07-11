@@ -8,9 +8,6 @@
 
 #include "grid_map_core/GridMapMath.hpp"
 
-// Eigen
-#include <Eigen/Core>
-
 // gtest
 #include <gtest/gtest.h>
 
@@ -20,8 +17,9 @@
 // Vector
 #include <vector>
 
-using namespace std;
-using namespace grid_map;
+using std::numeric_limits;
+
+namespace grid_map{
 
 TEST(PositionFromIndex, Simple)
 {
@@ -303,10 +301,9 @@ TEST(checkIfIndexInRange, All)
 
 TEST(boundIndexToRange, All)
 {
-  int index;
   int bufferSize = 10;
 
-  index = 0;
+  int index = 0;
   boundIndexToRange(index, bufferSize);
   EXPECT_EQ(0, index);
 
@@ -337,10 +334,9 @@ TEST(boundIndexToRange, All)
 
 TEST(wrapIndexToRange, All)
 {
-  int index;
   int bufferSize = 10;
 
-  index = 0;
+  int index = 0;
   wrapIndexToRange(index, bufferSize);
   EXPECT_EQ(0, index);
 
@@ -501,7 +497,7 @@ TEST(getSubmapInformation, Simple)
   Position requestedSubmapPosition;
   Position requestedSubmapLength;
 
-  // The returned submap indeces
+  // The returned submap indices
   Index submapTopLeftIndex;
   Index submapSize;
   Position submapPosition;
@@ -536,7 +532,7 @@ TEST(getSubmapInformation, Zero)
   Position requestedSubmapPosition;
   Length requestedSubmapLength;
 
-  // The returned submap indeces
+  // The returned submap indices
   Index submapTopLeftIndex;
   Index submapSize;
   Position submapPosition;
@@ -572,7 +568,7 @@ TEST(getSubmapInformation, ExceedingBoundaries)
   Position requestedSubmapPosition;
   Length requestedSubmapLength;
 
-  // The returned submap indeces
+  // The returned submap indices
   Index submapTopLeftIndex;
   Size submapSize;
   Position submapPosition;
@@ -626,7 +622,7 @@ TEST(getSubmapInformation, CircularBuffer)
   Position requestedSubmapPosition;
   Length requestedSubmapLength;
 
-  // The returned submap indeces
+  // The returned submap indices
   Index submapTopLeftIndex;
   Size submapSize;
   Position submapPosition;
@@ -696,7 +692,7 @@ TEST(getSubmapInformation, Debug1)
   Position requestedSubmapPosition(-7.44, -3.42);
   Length requestedSubmapLength(0.12, 0.12);
 
-  // The returned submap indeces
+  // The returned submap indices
   Index submapTopLeftIndex;
   Size submapSize;
   Position submapPosition;
@@ -725,7 +721,7 @@ TEST(getSubmapInformation, Debug2)
   Position requestedSubmapPosition(0.24, -26.82);
   Length requestedSubmapLength(0.624614, 0.462276);
 
-  // The returned submap indeces
+  // The returned submap indices
   Index submapTopLeftIndex;
   Size submapSize;
   Position submapPosition;
@@ -1039,3 +1035,5 @@ TEST(getIndexFromLinearIndex, Simple)
   EXPECT_TRUE((Index(0, 1) == getIndexFromLinearIndex(8, Size(8, 5), false)).all());
   EXPECT_TRUE((Index(7, 4) == getIndexFromLinearIndex(39, Size(8, 5), false)).all());
 }
+
+}  // namespace grid_map

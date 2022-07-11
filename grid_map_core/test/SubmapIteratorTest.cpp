@@ -15,15 +15,13 @@
 // gtest
 #include <gtest/gtest.h>
 
-// Limits
-#include <cfloat>
-
 // Vector
 #include <vector>
 
-using namespace std;
-using namespace Eigen;
-using namespace grid_map;
+using std::vector;
+using std::string;
+
+namespace grid_map{
 
 TEST(SubmapIterator, Simple) {
   Eigen::Array2i submapTopLeftIndex(3, 1);
@@ -32,9 +30,9 @@ TEST(SubmapIterator, Simple) {
   Eigen::Array2i submapIndex;
 
   vector<string> types;
-  types.push_back("type");
+  types.emplace_back("type");
   GridMap map(types);
-  map.setGeometry(Array2d(8.1, 5.1), 1.0, Vector2d(0.0, 0.0));  // bufferSize(8, 5)
+  map.setGeometry(Eigen::Array2d(8.1, 5.1), 1.0, Eigen::Vector2d(0.0, 0.0));  // bufferSize(8, 5)
 
   SubmapIterator iterator(map, submapTopLeftIndex, submapBufferSize);
 
@@ -94,7 +92,7 @@ TEST(SubmapIterator, CircularBuffer) {
   Eigen::Array2i submapIndex;
 
   vector<string> types;
-  types.push_back("type");
+  types.emplace_back("type");
   GridMap map(types);
   map.setGeometry(Length(8.1, 5.1), 1.0, Position(0.0, 0.0));  // bufferSize(8, 5)
   map.move(Position(-3.0, -2.0));                              // bufferStartIndex(3, 2)
@@ -203,8 +201,8 @@ TEST(SubmapIterator, InterleavedExecutionWithMove) {
   auto& layer = map.get("layer");
 
   // Initialize the layer as sketched.
-  for (size_t colIndex = 0; colIndex < layer.cols(); colIndex++) {
-    layer.col(colIndex).setConstant(colIndex);
+  for (long colIndex = 0; colIndex < layer.cols(); colIndex++) {
+    layer.col(colIndex).setConstant(static_cast<DataType>(colIndex));
   }
 
   std::cout << "(4,7) contains " << map.at("layer", {4, 7}) << std::endl;
@@ -213,7 +211,8 @@ TEST(SubmapIterator, InterleavedExecutionWithMove) {
 
   // check that the submap iterator returns {1,1,2,2}
   auto checkCorrectValues = [](std::array<double, 4> given) {
-    int countOnes = 0, countTwos = 0;
+    int countOnes = 0;
+    int countTwos = 0;
     for (auto& value : given) {
       if (std::abs(value - 1.0) < 1e-6) {
         countOnes++;
@@ -227,7 +226,7 @@ TEST(SubmapIterator, InterleavedExecutionWithMove) {
     EXPECT_EQ(countTwos, 2);
   };
 
-  std::array<double, 4> returnedSequence;
+  std::array<double, 4> returnedSequence{};
   returnedSequence.fill(0);
 
   for (size_t submapIndex = 0; submapIndex < 4; submapIndex++) {
@@ -264,3 +263,5 @@ TEST(SubmapIterator, InterleavedExecutionWithMove) {
   //    ++iterator;
   //  });
 }
+
+}  // namespace grid_map

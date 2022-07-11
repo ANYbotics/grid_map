@@ -12,13 +12,9 @@
 // gtest
 #include <gtest/gtest.h>
 
-// Limits
-#include <cfloat>
+namespace grid_map {
 
-using namespace grid_map;
-
-TEST(LineIterator, StartOutsideMap)
-{
+TEST(LineIterator, StartOutsideMap) {
   GridMap map( { "types" });
   map.setGeometry(Length(8.0, 5.0), 1.0, Position(0.0, 0.0));
 
@@ -178,3 +174,5 @@ TEST(LineIterator, StartAndEndOutsideMovedMap)
   ++iterator;
   EXPECT_TRUE(iterator.isPastEnd());
 }
+
+}  // namespace grid_map

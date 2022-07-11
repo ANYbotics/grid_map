@@ -9,14 +9,8 @@
 #include "grid_map_core/iterators/EllipseIterator.hpp"
 #include "grid_map_core/GridMap.hpp"
 
-// Eigen
-#include <Eigen/Core>
-
 // gtest
 #include <gtest/gtest.h>
-
-// Limits
-#include <cfloat>
 
 // Vector
 #include <vector>

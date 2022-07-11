@@ -1,5 +1,5 @@
 /*
- * Circleterator.hpp
+ * CircleIterator.hpp
  *
  *  Created on: Nov 13, 2014
  *      Author: Péter Fankhauser
@@ -81,7 +81,7 @@ void CircleIterator::findSubmapParameters(const Position& center, const double r
   getIndexFromPosition(startIndex, topLeft, mapLength_, mapPosition_, resolution_, bufferSize_, bufferStartIndex_);
   Index endIndex;
   getIndexFromPosition(endIndex, bottomRight, mapLength_, mapPosition_, resolution_, bufferSize_, bufferStartIndex_);
-  bufferSize = getSubmapSizeFromCornerIndeces(startIndex, endIndex, bufferSize_, bufferStartIndex_);
+  bufferSize = getSubmapSizeFromCornerIndices(startIndex, endIndex, bufferSize_, bufferStartIndex_);
 }
 
 } /* namespace grid_map */

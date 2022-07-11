@@ -9,7 +9,7 @@
 #include "grid_map_core/iterators/SubmapIterator.hpp"
 #include "grid_map_core/GridMapMath.hpp"
 
-using namespace std;
+
 
 namespace grid_map {
 
@@ -46,18 +46,6 @@ SubmapIterator::SubmapIterator(const SubmapIterator* other)
   index_ = other->index_;
   submapIndex_ = other->submapIndex_;
   isPastEnd_ = other->isPastEnd_;
-}
-
-SubmapIterator& SubmapIterator::operator =(const SubmapIterator& other)
-{
-  size_ = other.size_;
-  startIndex_ = other.startIndex_;
-  submapSize_ = other.submapSize_;
-  submapStartIndex_ = other.submapStartIndex_;
-  index_ = other.index_;
-  submapIndex_ = other.submapIndex_;
-  isPastEnd_ = other.isPastEnd_;
-  return *this;
 }
 
 bool SubmapIterator::operator !=(const SubmapIterator& other) const

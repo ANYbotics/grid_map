@@ -35,7 +35,7 @@ class SubmapGeometry
   SubmapGeometry(const GridMap& gridMap, const Position& position, const Length& length,
                  bool& isSuccess);
 
-  virtual ~SubmapGeometry();
+  virtual ~SubmapGeometry() = default;
 
   const GridMap& getGridMap() const;
   const Length& getLength() const;

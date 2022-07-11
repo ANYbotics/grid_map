@@ -6,10 +6,10 @@
  *   Institute: ETH Zurich, ANYbotics
  */
 
+#include <memory>
+
 #include "grid_map_core/iterators/PolygonIterator.hpp"
 #include "grid_map_core/GridMapMath.hpp"
-
-using namespace std;
 
 namespace grid_map {
 
@@ -24,20 +24,10 @@ PolygonIterator::PolygonIterator(const grid_map::GridMap& gridMap, const grid_ma
   Index submapStartIndex;
   Size submapBufferSize;
   findSubmapParameters(polygon, submapStartIndex, submapBufferSize);
-  internalIterator_ = std::shared_ptr<SubmapIterator>(new SubmapIterator(gridMap, submapStartIndex, submapBufferSize));
-  if(!isInside()) ++(*this);
-}
-
-PolygonIterator& PolygonIterator::operator =(const PolygonIterator& other)
-{
-  polygon_ = other.polygon_;
-  internalIterator_ = other.internalIterator_;
-  mapLength_ = other.mapLength_;
-  mapPosition_ = other.mapPosition_;
-  resolution_ = other.resolution_;
-  bufferSize_ = other.bufferSize_;
-  bufferStartIndex_ = other.bufferStartIndex_;
-  return *this;
+  internalIterator_ = std::make_shared<SubmapIterator>(gridMap, submapStartIndex, submapBufferSize);
+  if (!isInside()) {
+    ++(*this);
+  }
 }
 
 bool PolygonIterator::operator !=(const PolygonIterator& other) const
@@ -53,10 +43,14 @@ const Index& PolygonIterator::operator *() const
 PolygonIterator& PolygonIterator::operator ++()
 {
   ++(*internalIterator_);
-  if (internalIterator_->isPastEnd()) return *this;
+  if (internalIterator_->isPastEnd()) {
+    return *this;
+  }
 
-  for ( ; !internalIterator_->isPastEnd(); ++(*internalIterator_)) {
-    if (isInside()) break;
+  for (; !internalIterator_->isPastEnd(); ++(*internalIterator_)) {
+    if (isInside()) {
+      break;
+    }
   }
 
   return *this;
@@ -87,7 +81,7 @@ void PolygonIterator::findSubmapParameters(const grid_map::Polygon& /*polygon*/,
   getIndexFromPosition(startIndex, topLeft, mapLength_, mapPosition_, resolution_, bufferSize_, bufferStartIndex_);
   Index endIndex;
   getIndexFromPosition(endIndex, bottomRight, mapLength_, mapPosition_, resolution_, bufferSize_, bufferStartIndex_);
-  bufferSize = getSubmapSizeFromCornerIndeces(startIndex, endIndex, bufferSize_, bufferStartIndex_);
+  bufferSize = getSubmapSizeFromCornerIndices(startIndex, endIndex, bufferSize_, bufferStartIndex_);
 }
 
 } /* namespace grid_map */

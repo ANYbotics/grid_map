@@ -19,8 +19,8 @@ namespace grid_map {
 
 union Color
 {
-    unsigned long longColor;
-    float floatColor;
+    unsigned long longColor_;
+    float floatColor_;
 };
 
 /*!
@@ -83,7 +83,7 @@ void getPositionOfDataStructureOrigin(const Position& position,
                                       Position& positionOfOrigin);
 
 /*!
- * Computes how many cells/indeces the map is moved based on a position shift in
+ * Computes how many cells/indices the map is moved based on a position shift in
  * the grid map frame. Use this function if you are moving the grid map
  * and want to ensure that the cells match before and after.
  * @param[out] indexShift the corresponding shift of the indices.
@@ -100,7 +100,7 @@ bool getIndexShiftFromPositionShift(Index& indexShift,
  * if you are moving the grid map and want to ensure that the cells match
  * before and after.
  * @param[out] positionShift the corresponding shift in position in the grid map frame.
- * @param[in] indexShift the desired shift of the indeces.
+ * @param[in] indexShift the desired shift of the indices.
  * @param[in] resolution the resolution of the map.
  * @return true if successful.
  */
@@ -120,7 +120,7 @@ bool checkIfIndexInRange(const Index& index, const Size& bufferSize);
  * Bounds an index that runs out of the range of the buffer.
  * This means that an index that overflows is stopped at the last valid index.
  * This is the 2d version of boundIndexToRange(int&, const int&).
- * @param[in/out] index the indeces that will be bounded to the valid region of the buffer.
+ * @param[in/out] index the indices that will be bounded to the valid region of the buffer.
  * @param[in] bufferSize the size of the buffer.
  */
 void boundIndexToRange(Index& index, const Size& bufferSize);
@@ -137,7 +137,7 @@ void boundIndexToRange(int& index, const int& bufferSize);
  * Wraps an index that runs out of the range of the buffer back into allowed the region.
  * This means that an index that overflows is reset to zero.
  * This is the 2d version of wrapIndexToRange(int&, const int&).
- * @param[in/out] index the indeces that will be wrapped into the valid region of the buffer.
+ * @param[in/out] index the indices that will be wrapped into the valid region of the buffer.
  * @param[in] bufferSize the size of the buffer.
  */
 void wrapIndexToRange(Index& index, const Size& bufferSize);
@@ -164,7 +164,7 @@ void boundPositionToRange(Position& position, const Length& mapLength, const Pos
  * and the map frame (x/y-coordinate).
  * @return the alignment transformation.
  */
-const Eigen::Matrix2i getBufferOrderToMapFrameAlignment();
+Eigen::Matrix2i getBufferOrderToMapFrameAlignment();
 
 /*!
  * Given a map and a desired submap (defined by position and size), this function computes
@@ -204,7 +204,7 @@ bool getSubmapInformation(Index& submapTopLeftIndex,
  * @param bottomRightIndex the bottom right index in the map.
  * @return buffer size for the submap.
  */
-Size getSubmapSizeFromCornerIndeces(const Index& topLeftIndex, const Index& bottomRightIndex,
+Size getSubmapSizeFromCornerIndices(const Index& topLeftIndex, const Index& bottomRightIndex,
                                     const Size& bufferSize, const Index& bufferStartIndex);
 
 /*!
@@ -230,7 +230,7 @@ bool getBufferRegionsForSubmap(std::vector<BufferRegion>& submapBufferRegions,
  * @param[in/out] index the index in the map that is incremented (corrected for the circular buffer).
  * @param[in] bufferSize the map buffer size.
  * @param[in] bufferStartIndex the map buffer start index.
- * @return true if successfully incremented indeces, false if end of iteration limits are reached.
+ * @return true if successfully incremented indices, false if end of iteration limits are reached.
  */
 bool incrementIndex(Index& index, const Size& bufferSize,
                     const Index& bufferStartIndex = Index::Zero());
@@ -249,7 +249,7 @@ bool incrementIndex(Index& index, const Size& bufferSize,
  * @param[in] submapBufferSize the submap buffer size.
  * @param[in] bufferSize the map buffer size.
  * @param[in] bufferStartIndex the map buffer start index.
- * @return true if successfully incremented indeces, false if end of iteration limits are reached.
+ * @return true if successfully incremented indices, false if end of iteration limits are reached.
  */
 bool incrementIndexForSubmap(Index& submapIndex, Index& index, const Index& submapTopLeftIndex,
                              const Size& submapBufferSize, const Size& bufferSize,
@@ -284,7 +284,7 @@ Index getBufferIndexFromIndex(const Index& index, const Size& bufferSize, const 
  * @param[in] (optional) rowMajor if the linear index is generated for row-major format.
  * @return the linear 1d index.
  */
-size_t getLinearIndexFromIndex(const Index& index, const Size& bufferSize, const bool rowMajor = false);
+size_t getLinearIndexFromIndex(const Index& index, const Size& bufferSize, bool rowMajor = false);
 
 /*!
  * Returns the regular index (2-dim.) corresponding to the linear index (1-dim.) for a given buffer size.
@@ -293,7 +293,7 @@ size_t getLinearIndexFromIndex(const Index& index, const Size& bufferSize, const
  * @param[in] (optional) rowMajor if the linear index is generated for row-major format.
  * @return the regular 2d index.
  */
-Index getIndexFromLinearIndex(const size_t linearIndex, const Size& bufferSize, const bool rowMajor = false);
+Index getIndexFromLinearIndex(size_t linearIndex, const Size& bufferSize, bool rowMajor = false);
 
 /*!
  * Transforms an int color value (concatenated RGB values) to an int color vector (RGB from 0-255).
@@ -341,4 +341,4 @@ void colorVectorToValue(const Eigen::Vector3i& colorVector, float& colorValue);
  */
 void colorVectorToValue(const Eigen::Vector3f& colorVector, float& colorValue);
 
-} // namespace
+}  // namespace grid_map

@@ -578,7 +578,7 @@ class GridMap {
   //! Size of the buffer (rows and cols of the data structure).
   Size size_;
 
-  //! Circular buffer start indeces.
+  //! Circular buffer start indices.
   Index startIndex_;
 
  public:

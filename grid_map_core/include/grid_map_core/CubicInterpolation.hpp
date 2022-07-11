@@ -35,7 +35,7 @@ class GridMap;
  * necessary for interpolation. These are either 16
  * function values in the case of bicubic convolution interpolation
  * or function values and their derivatives for the case
- * of standard bicubic inteprolation.
+ * of standard bicubic interpolation.
  */
 using FunctionValueMatrix = Eigen::Matrix4d;
 
@@ -74,7 +74,7 @@ static const Eigen::Matrix4d cubicInterpolationConvolutionMatrix {
                          -1.0,  3.0, -3.0,  1.0).finished() };
 
 /*
- * Index of the middle knot for bicubic inteprolation. This is
+ * Index of the middle knot for bicubic interpolation. This is
  * the function value with subscripts (0,0), i.e. f00 in
  * https://en.wikipedia.org/wiki/Bicubic_interpolation
  * In the grid map it corresponds to the grid map point closest to the
@@ -100,7 +100,7 @@ bool getNormalizedCoordinates(const GridMap &gridMap, const Position &queriedPos
                               Position *position);
 
 /*
- * Queries the grid map for function values at the coordiantes which are neccesary for
+ * Queries the grid map for function values at the coordinates which are necessary for
  * performing the interpolation. The right function values are then assembled
  * in a matrix.
  * @param[in]  gridMap - grid map with the data
@@ -119,7 +119,7 @@ bool assembleFunctionValueMatrix(const GridMap &gridMap, const std::string &laye
  * Performs convolution in 1D. the function requires 4 function values
  * to compute the convolution. The result is interpolated data in 1D.
  * @param[in]  t - normalized coordinate (x or y)
- * @param[in]  functionValues - vector of 4 function values neccessary to perform
+ * @param[in]  functionValues - vector of 4 function values necessary to perform
  *                            interpolation in 1 dimension.
  * @return - interpolated value at normalized coordinate t
  */
@@ -177,7 +177,7 @@ struct DataMatrix
 
 /*
  * Interpolation is performed on a unit square.
- * Hence we need to compute 4 corners of that unit square,
+ * Hence, we need to compute 4 corners of that unit square,
  * and find their indices in the grid map. IndicesMatrix
  * is a container that stores those indices. Each index
  * contains two numbers (row number, column number) in the
@@ -313,7 +313,7 @@ double mixedSecondOrderDerivativeAt(const Matrix &layerData, const Index &index,
 double evaluatePolynomial(const FunctionValueMatrix &functionValues, double tx, double ty);
 
 /*
- * Assemble function value matrix from small submatrices containing function values
+ * Assemble function value matrix from small sub-matrices containing function values
  * or derivative values at the corners of the unit square.
  * See https://en.wikipedia.org/wiki/Bicubic_interpolation for details.
  *

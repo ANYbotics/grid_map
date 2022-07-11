@@ -29,14 +29,7 @@ public:
    * @param center the position of the circle center.
    * @param radius the radius of the circle.
    */
-  SpiralIterator(const grid_map::GridMap& gridMap, const Eigen::Vector2d& center, const double radius);
-
-  /*!
-   * Assignment operator.
-   * @param iterator the iterator to copy data from.
-   * @return a reference to *this.
-   */
-  SpiralIterator& operator =(const SpiralIterator& other);
+  SpiralIterator(const grid_map::GridMap& gridMap, Eigen::Vector2d  center, double radius);
 
   /*!
    * Compare to another iterator.
@@ -74,7 +67,7 @@ private:
    * Check if index is inside the circle.
    * @return true if inside, false otherwise.
    */
-  bool isInside(const Index index) const;
+  bool isInside(const Index& index) const;
 
   /*!
    * Uses the current distance to get the points of a ring
@@ -82,8 +75,8 @@ private:
    */
   void generateRing();
 
-  int signum(const int val) {
-      return (0 < val) - (val < 0);
+  static int signum(const int val) {
+      return static_cast<int>(0 < val) - static_cast<int>(val < 0);
   }
 
   //! Position of the circle center;
@@ -112,4 +105,5 @@ private:
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
 
-} /* namespace */
+}  // namespace grid_map
+

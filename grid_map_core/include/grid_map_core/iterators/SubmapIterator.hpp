@@ -53,13 +53,6 @@ public:
   SubmapIterator(const SubmapIterator* other);
 
   /*!
-   * Assignment operator.
-   * @param iterator the iterator to copy data from.
-   * @return a reference to *this.
-   */
-  SubmapIterator& operator =(const SubmapIterator& other);
-
-  /*!
    * Compare to another iterator.
    * @return whether the current iterator points to a different address than the other one.
    */
@@ -122,4 +115,5 @@ private:
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
 
-} /* namespace */
+}  // namespace grid_map
+

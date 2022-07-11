@@ -9,13 +9,14 @@
 #include "grid_map_core/iterators/SlidingWindowIterator.hpp"
 #include "grid_map_core/GridMap.hpp"
 
-#include <cfloat>
-#include <Eigen/Core>
 #include <gtest/gtest.h>
 #include <vector>
 
-using namespace std;
-using namespace grid_map;
+using grid_map::GridMap;
+using grid_map::Index;
+using grid_map::Length;
+using grid_map::Position;
+using grid_map::SlidingWindowIterator;
 
 TEST(SlidingWindowIterator, WindowSize3Cutoff)
 {
@@ -41,7 +42,9 @@ TEST(SlidingWindowIterator, WindowSize3Cutoff)
 
   for (; !iterator.isPastEnd(); ++iterator) {
     EXPECT_FALSE(iterator.isPastEnd());
-    if ((*iterator == Index(3, 2)).all()) break;
+    if ((*iterator == Index(3, 2)).all()) {
+      break;
+    }
   }
 
   EXPECT_EQ(iterator.getData().rows(), 3);
@@ -50,7 +53,9 @@ TEST(SlidingWindowIterator, WindowSize3Cutoff)
 
   for (; !iterator.isPastEnd(); ++iterator) {
     EXPECT_FALSE(iterator.isPastEnd());
-    if ((*iterator == Index(7, 4)).all()) break;
+    if ((*iterator == Index(7, 4)).all()) {
+      break;
+    }
   }
 
   EXPECT_EQ(iterator.getData().rows(), 2);
@@ -85,7 +90,9 @@ TEST(SlidingWindowIterator, WindowSize5)
 
   for (; !iterator.isPastEnd(); ++iterator) {
     EXPECT_FALSE(iterator.isPastEnd());
-    if ((*iterator == Index(3, 2)).all()) break;
+    if ((*iterator == Index(3, 2)).all()) {
+      break;
+    }
   }
 
   EXPECT_EQ(iterator.getData().rows(), 5);
@@ -94,7 +101,9 @@ TEST(SlidingWindowIterator, WindowSize5)
 
   for (; !iterator.isPastEnd(); ++iterator) {
     EXPECT_FALSE(iterator.isPastEnd());
-    if ((*iterator == Index(7, 4)).all()) break;
+    if ((*iterator == Index(7, 4)).all()) {
+      break;
+    }
   }
 
   EXPECT_EQ(iterator.getData().rows(), 3);
@@ -119,7 +128,9 @@ TEST(SlidingWindowIterator, WindowSize3Inside)
 
   for (; !iterator.isPastEnd(); ++iterator) {
     EXPECT_FALSE(iterator.isPastEnd());
-    if ((*iterator == Index(3, 2)).all()) break;
+    if ((*iterator == Index(3, 2)).all()) {
+      break;
+    }
   }
 
   EXPECT_EQ(iterator.getData().rows(), 3);
@@ -128,7 +139,9 @@ TEST(SlidingWindowIterator, WindowSize3Inside)
 
   for (; !iterator.isPastEnd(); ++iterator) {
     EXPECT_FALSE(iterator.isPastEnd());
-    if ((*iterator == Index(6, 3)).all()) break;
+    if ((*iterator == Index(6, 3)).all()) {
+      break;
+    }
   }
 
   EXPECT_EQ(iterator.getData().rows(), 3);

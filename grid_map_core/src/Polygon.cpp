@@ -27,8 +27,6 @@ Polygon::Polygon(std::vector<Position> vertices)
   vertices_ = vertices;
 }
 
-Polygon::~Polygon() {}
-
 bool Polygon::isInside(const Position& point) const
 {
   int cross = 0;

@@ -9,14 +9,13 @@
 #include "grid_map_core/iterators/LineIterator.hpp"
 #include "grid_map_core/GridMapMath.hpp"
 
-using namespace std;
-
 namespace grid_map {
 
 LineIterator::LineIterator(const grid_map::GridMap& gridMap, const Position& start,
                            const Position& end)
 {
-  Index startIndex, endIndex;
+  Index startIndex;
+  Index endIndex;
   if (getIndexLimitedToMapRange(gridMap, start, end, startIndex)
       && getIndexLimitedToMapRange(gridMap, end, start, endIndex)) {
     initialize(gridMap, startIndex, endIndex);
@@ -29,26 +28,6 @@ LineIterator::LineIterator(const grid_map::GridMap& gridMap, const Position& sta
 LineIterator::LineIterator(const grid_map::GridMap& gridMap, const Index& start, const Index& end)
 {
   initialize(gridMap, start, end);
-}
-
-LineIterator& LineIterator::operator =(const LineIterator& other)
-{
-  index_ = other.index_;
-  start_ = other.start_;
-  end_ = other.end_;
-  iCell_ = other.iCell_;
-  nCells_ = other.nCells_;
-  increment1_ = other.increment1_;
-  increment2_ = other.increment2_;
-  denominator_ = other.denominator_;
-  numerator_ = other.numerator_;
-  numeratorAdd_ = other.numeratorAdd_;
-  mapLength_ = other.mapLength_;
-  mapPosition_ = other.mapPosition_;
-  resolution_ = other.resolution_;
-  bufferSize_ = other.bufferSize_;
-  bufferStartIndex_ = other.bufferStartIndex_;
-  return *this;
 }
 
 bool LineIterator::operator !=(const LineIterator& other) const
@@ -101,8 +80,9 @@ bool LineIterator::getIndexLimitedToMapRange(const grid_map::GridMap& gridMap,
   Vector direction = (end - start).normalized();
   while (!gridMap.getIndex(newStart, index)) {
     newStart += (gridMap.getResolution() - std::numeric_limits<double>::epsilon()) * direction;
-    if ((end - newStart).norm() < gridMap.getResolution() - std::numeric_limits<double>::epsilon())
+    if ((end - newStart).norm() < gridMap.getResolution() - std::numeric_limits<double>::epsilon()) {
       return false;
+    }
   }
   return true;
 }

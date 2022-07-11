@@ -9,20 +9,16 @@
 #include "grid_map_core/iterators/GridMapIterator.hpp"
 #include "grid_map_core/GridMap.hpp"
 
-// Eigen
-#include <Eigen/Core>
-
 // gtest
 #include <gtest/gtest.h>
-
-// Limits
-#include <cfloat>
 
 // Vector
 #include <vector>
 
-using namespace std;
-using namespace grid_map;
+using grid_map::GridMap;
+using grid_map::Length;
+using grid_map::Position;
+using grid_map::GridMapIterator;
 
 TEST(GridMapIterator, Simple)
 {
@@ -52,7 +48,7 @@ TEST(GridMapIterator, LinearIndex)
   auto& data = map["layer"];
   unsigned int i = 0;
   for (; !iterator.isPastEnd(); ++iterator, ++i) {
-    data(iterator.getLinearIndex()) = 1.0;
+    data(static_cast<long>(iterator.getLinearIndex())) = 1.0;
     EXPECT_EQ(i, iterator.getLinearIndex());
     EXPECT_FALSE(iterator.isPastEnd());
   }

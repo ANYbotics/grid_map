@@ -14,8 +14,7 @@
 // Eigen
 #include <Eigen/Core>
 
-using namespace std;
-using namespace Eigen;
+using Eigen::Matrix;
 
 TEST(EigenMatrixBaseAddons, numberOfFinites)
 {

@@ -10,26 +10,21 @@
 #include "grid_map_core/GridMap.hpp"
 #include "grid_map_core/Polygon.hpp"
 
-// Eigen
-#include <Eigen/Core>
-
 // gtest
 #include <gtest/gtest.h>
-
-// Limits
-#include <cfloat>
 
 // Vector
 #include <vector>
 
-using namespace std;
-using namespace Eigen;
-using namespace grid_map;
+using grid_map::GridMap;
+using grid_map::Length;
+using grid_map::Polygon;
+using grid_map::PolygonIterator;
+using grid_map::Position;
 
-TEST(PolygonIterator, FullCover)
-{
-  vector<string> types;
-  types.push_back("type");
+TEST(PolygonIterator, FullCover) {
+  std::vector<std::string> types;
+  types.emplace_back("type");
   GridMap map(types);
   map.setGeometry(Length(8.0, 5.0), 1.0, Position(0.0, 0.0)); // bufferSize(8, 5)
 
@@ -55,7 +50,9 @@ TEST(PolygonIterator, FullCover)
   EXPECT_EQ(0, (*iterator)(0));
   EXPECT_EQ(2, (*iterator)(1));
 
-  for (int i = 0; i < 37; ++i) ++iterator;
+  for (int i = 0; i < 37; ++i) {
+    ++iterator;
+  }
 
   EXPECT_FALSE(iterator.isPastEnd());
   EXPECT_EQ(7, (*iterator)(0));
@@ -173,7 +170,9 @@ TEST(PolygonIterator, MoveMap)
   EXPECT_EQ(6, (*iterator)(0));
   EXPECT_EQ(2, (*iterator)(1));
 
-  for (int i = 0; i < 4; ++i) ++iterator;
+  for (int i = 0; i < 4; ++i) {
+    ++iterator;
+  }
 
   EXPECT_FALSE(iterator.isPastEnd());
   EXPECT_EQ(7, (*iterator)(0));
@@ -184,7 +183,9 @@ TEST(PolygonIterator, MoveMap)
   EXPECT_EQ(0, (*iterator)(0));
   EXPECT_EQ(1, (*iterator)(1));
 
-  for (int i = 0; i < 8; ++i) ++iterator;
+  for (int i = 0; i < 8; ++i) {
+    ++iterator;
+  }
 
   EXPECT_FALSE(iterator.isPastEnd());
   EXPECT_EQ(2, (*iterator)(0));

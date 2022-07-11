@@ -14,7 +14,7 @@
 // Limits
 #include <limits>
 
-using namespace std;
+using std::numeric_limits;
 
 namespace grid_map {
 
@@ -98,18 +98,34 @@ inline Index getIndexFromIndexVector(
   return getBufferIndexFromIndex(index, bufferSize, bufferStartIndex);
 }
 
-inline BufferRegion::Quadrant getQuadrant(const Index& index, const Index& bufferStartIndex)
-{
-  if (index[0] >= bufferStartIndex[0] && index[1] >= bufferStartIndex[1]) return BufferRegion::Quadrant::TopLeft;
-  if (index[0] >= bufferStartIndex[0] && index[1] <  bufferStartIndex[1]) return BufferRegion::Quadrant::TopRight;
-  if (index[0] <  bufferStartIndex[0] && index[1] >= bufferStartIndex[1]) return BufferRegion::Quadrant::BottomLeft;
-  if (index[0] <  bufferStartIndex[0] && index[1] <  bufferStartIndex[1]) return BufferRegion::Quadrant::BottomRight;
+inline BufferRegion::Quadrant getQuadrant(const Index& index, const Index& bufferStartIndex) {
+  if (index[0] >= bufferStartIndex[0] && index[1] >= bufferStartIndex[1]) {
+    return BufferRegion::Quadrant::TopLeft;
+  }
+  if (index[0] >= bufferStartIndex[0] && index[1] < bufferStartIndex[1]) {
+    return BufferRegion::Quadrant::TopRight;
+  }
+  if (index[0] < bufferStartIndex[0] && index[1] >= bufferStartIndex[1]) {
+    return BufferRegion::Quadrant::BottomLeft;
+  }
+  if (index[0] < bufferStartIndex[0] && index[1] < bufferStartIndex[1]) {
+    return BufferRegion::Quadrant::BottomRight;
+  }
   return BufferRegion::Quadrant::Undefined;
 }
 
-} // namespace
+}  // namespace internal
 
-using namespace internal;
+using internal::checkIfStartIndexAtDefaultPosition;
+using internal::getBufferOrderToMapFrameTransformation;
+using internal::getIndexFromIndexVector;
+using internal::getIndexVectorFromIndex;
+using internal::getMapFrameToBufferOrderTransformation;
+using internal::getQuadrant;
+using internal::getVectorToFirstCell;
+using internal::getVectorToOrigin;
+using internal::transformBufferOrderToMapFrame;
+using internal::transformMapFrameToBufferOrder;
 
 bool getPositionFromIndex(Position& position,
                           const Index& index,
@@ -119,7 +135,9 @@ bool getPositionFromIndex(Position& position,
                           const Size& bufferSize,
                           const Index& bufferStartIndex)
 {
-  if (!checkIfIndexInRange(index, bufferSize)) return false;
+  if (!checkIfIndexInRange(index, bufferSize)) {
+    return false;
+  }
   Vector offset;
   getVectorToFirstCell(offset, mapLength, resolution);
   position = mapPosition + offset + resolution * getIndexVectorFromIndex(index, bufferSize, bufferStartIndex);
@@ -149,11 +167,8 @@ bool checkIfPositionWithinMap(const Position& position,
   getVectorToOrigin(offset, mapLength);
   Position positionTransformed = getMapFrameToBufferOrderTransformation().cast<double>() * (position - mapPosition - offset);
 
-  if (positionTransformed.x() >= 0.0 && positionTransformed.y() >= 0.0
-      && positionTransformed.x() < mapLength(0) && positionTransformed.y() < mapLength(1)) {
-    return true;
-  }
-  return false;
+  return positionTransformed.x() >= 0.0 && positionTransformed.y() >= 0.0
+      && positionTransformed.x() < mapLength(0) && positionTransformed.y() < mapLength(1);
 }
 
 void getPositionOfDataStructureOrigin(const Position& position,
@@ -190,11 +205,7 @@ bool getPositionShiftFromIndexShift(Vector& positionShift,
 
 bool checkIfIndexInRange(const Index& index, const Size& bufferSize)
 {
-  if (index[0] >= 0 && index[1] >= 0 && index[0] < bufferSize[0] && index[1] < bufferSize[1])
-  {
-    return true;
-  }
-  return false;
+  return index[0] >= 0 && index[1] >= 0 && index[0] < bufferSize[0] && index[1] < bufferSize[1];
 }
 
 void boundIndexToRange(Index& index, const Size& bufferSize)
@@ -206,8 +217,11 @@ void boundIndexToRange(Index& index, const Size& bufferSize)
 
 void boundIndexToRange(int& index, const int& bufferSize)
 {
-  if (index < 0) index = 0;
-  else if (index >= bufferSize) index = bufferSize - 1;
+  if (index < 0) {
+    index = 0;
+  } else if (index >= bufferSize) {
+    index = bufferSize - 1;
+  }
 }
 
 void wrapIndexToRange(Index& index, const Size& bufferSize)
@@ -248,7 +262,9 @@ void boundPositionToRange(Position& position, const Length& mapLength, const Pos
   for (int i = 0; i < positionShifted.size(); i++) {
 
     double epsilon = 10.0 * numeric_limits<double>::epsilon(); // TODO Why is the factor 10 necessary.
-    if (std::fabs(position(i)) > 1.0) epsilon *= std::fabs(position(i));
+    if (std::fabs(position(i)) > 1.0) {
+      epsilon *= std::fabs(position(i));
+    }
 
     if (positionShifted(i) <= 0) {
       positionShifted(i) = epsilon;
@@ -263,7 +279,7 @@ void boundPositionToRange(Position& position, const Length& mapLength, const Pos
   position = positionShifted + mapPosition - vectorToOrigin;
 }
 
-const Eigen::Matrix2i getBufferOrderToMapFrameAlignment()
+Eigen::Matrix2i getBufferOrderToMapFrameAlignment()
 {
   return getBufferOrderToMapFrameTransformation().array().abs().matrix();
 }
@@ -287,19 +303,25 @@ bool getSubmapInformation(Index& submapTopLeftIndex,
   // Corners of submap.
   Position topLeftPosition = requestedSubmapPosition - halfTransform * requestedSubmapLength.matrix();
   boundPositionToRange(topLeftPosition, mapLength, mapPosition);
-  if(!getIndexFromPosition(submapTopLeftIndex, topLeftPosition, mapLength, mapPosition, resolution, bufferSize, bufferStartIndex)) return false;
+  if (!getIndexFromPosition(submapTopLeftIndex, topLeftPosition, mapLength, mapPosition, resolution, bufferSize, bufferStartIndex)) {
+    return false;
+  }
   Index topLeftIndex;
   topLeftIndex = getIndexFromBufferIndex(submapTopLeftIndex, bufferSize, bufferStartIndex);
 
   Position bottomRightPosition = requestedSubmapPosition + halfTransform * requestedSubmapLength.matrix();
   boundPositionToRange(bottomRightPosition, mapLength, mapPosition);
   Index bottomRightIndex;
-  if(!getIndexFromPosition(bottomRightIndex, bottomRightPosition, mapLength, mapPosition, resolution, bufferSize, bufferStartIndex)) return false;
+  if (!getIndexFromPosition(bottomRightIndex, bottomRightPosition, mapLength, mapPosition, resolution, bufferSize, bufferStartIndex)) {
+    return false;
+  }
   bottomRightIndex = getIndexFromBufferIndex(bottomRightIndex, bufferSize, bufferStartIndex);
 
   // Get the position of the top left corner of the generated submap.
   Position topLeftCorner;
-  if(!getPositionFromIndex(topLeftCorner, submapTopLeftIndex, mapLength, mapPosition, resolution, bufferSize, bufferStartIndex)) return false;
+  if (!getPositionFromIndex(topLeftCorner, submapTopLeftIndex, mapLength, mapPosition, resolution, bufferSize, bufferStartIndex)) {
+    return false;
+  }
   topLeftCorner -= halfTransform * Position::Constant(resolution);
 
   // Size of submap.
@@ -318,7 +340,7 @@ bool getSubmapInformation(Index& submapTopLeftIndex,
   return getIndexFromPosition(requestedIndexInSubmap, requestedSubmapPosition, submapLength, submapPosition, resolution, submapBufferSize);
 }
 
-Size getSubmapSizeFromCornerIndeces(const Index& topLeftIndex, const Index& bottomRightIndex,
+Size getSubmapSizeFromCornerIndices(const Index& topLeftIndex, const Index& bottomRightIndex,
                                     const Size& bufferSize, const Index& bufferStartIndex)
 {
   const Index unwrappedTopLeftIndex = getIndexFromBufferIndex(topLeftIndex, bufferSize, bufferStartIndex);
@@ -332,7 +354,9 @@ bool getBufferRegionsForSubmap(std::vector<BufferRegion>& submapBufferRegions,
                                const Size& bufferSize,
                                const Index& bufferStartIndex)
 {
-  if ((getIndexFromBufferIndex(submapIndex, bufferSize, bufferStartIndex) + submapBufferSize > bufferSize).any()) return false;
+  if ((getIndexFromBufferIndex(submapIndex, bufferSize, bufferStartIndex) + submapBufferSize > bufferSize).any()) {
+    return false;
+  }
 
   submapBufferRegions.clear();
 
@@ -345,87 +369,87 @@ bool getBufferRegionsForSubmap(std::vector<BufferRegion>& submapBufferRegions,
   if (quadrantOfTopLeft == BufferRegion::Quadrant::TopLeft) {
 
     if (quadrantOfBottomRight == BufferRegion::Quadrant::TopLeft) {
-      submapBufferRegions.push_back(BufferRegion(submapIndex, submapBufferSize, BufferRegion::Quadrant::TopLeft));
+      submapBufferRegions.emplace_back(submapIndex, submapBufferSize, BufferRegion::Quadrant::TopLeft);
       return true;
     }
 
     if (quadrantOfBottomRight == BufferRegion::Quadrant::TopRight) {
       Size topLeftSize(submapBufferSize(0), bufferSize(1) - submapIndex(1));
-      submapBufferRegions.push_back(BufferRegion(submapIndex, topLeftSize, BufferRegion::Quadrant::TopLeft));
+      submapBufferRegions.emplace_back(submapIndex, topLeftSize, BufferRegion::Quadrant::TopLeft);
 
       Index topRightIndex(submapIndex(0), 0);
       Size topRightSize(submapBufferSize(0), submapBufferSize(1) - topLeftSize(1));
-      submapBufferRegions.push_back(BufferRegion(topRightIndex, topRightSize, BufferRegion::Quadrant::TopRight));
+      submapBufferRegions.emplace_back(topRightIndex, topRightSize, BufferRegion::Quadrant::TopRight);
       return true;
     }
 
     if (quadrantOfBottomRight == BufferRegion::Quadrant::BottomLeft) {
       Size topLeftSize(bufferSize(0) - submapIndex(0), submapBufferSize(1));
-      submapBufferRegions.push_back(BufferRegion(submapIndex, topLeftSize, BufferRegion::Quadrant::TopLeft));
+      submapBufferRegions.emplace_back(submapIndex, topLeftSize, BufferRegion::Quadrant::TopLeft);
 
       Index bottomLeftIndex(0, submapIndex(1));
       Size bottomLeftSize(submapBufferSize(0) - topLeftSize(0), submapBufferSize(1));
-      submapBufferRegions.push_back(BufferRegion(bottomLeftIndex, bottomLeftSize, BufferRegion::Quadrant::BottomLeft));
+      submapBufferRegions.emplace_back(bottomLeftIndex, bottomLeftSize, BufferRegion::Quadrant::BottomLeft);
       return true;
     }
 
     if (quadrantOfBottomRight == BufferRegion::Quadrant::BottomRight) {
       Size topLeftSize(bufferSize(0) - submapIndex(0), bufferSize(1) - submapIndex(1));
-      submapBufferRegions.push_back(BufferRegion(submapIndex, topLeftSize, BufferRegion::Quadrant::TopLeft));
+      submapBufferRegions.emplace_back(submapIndex, topLeftSize, BufferRegion::Quadrant::TopLeft);
 
       Index topRightIndex(submapIndex(0), 0);
       Size topRightSize(bufferSize(0) - submapIndex(0), submapBufferSize(1) - topLeftSize(1));
-      submapBufferRegions.push_back(BufferRegion(topRightIndex, topRightSize, BufferRegion::Quadrant::TopRight));
+      submapBufferRegions.emplace_back(topRightIndex, topRightSize, BufferRegion::Quadrant::TopRight);
 
       Index bottomLeftIndex(0, submapIndex(1));
       Size bottomLeftSize(submapBufferSize(0) - topLeftSize(0), bufferSize(1) - submapIndex(1));
-      submapBufferRegions.push_back(BufferRegion(bottomLeftIndex, bottomLeftSize, BufferRegion::Quadrant::BottomLeft));
+      submapBufferRegions.emplace_back(bottomLeftIndex, bottomLeftSize, BufferRegion::Quadrant::BottomLeft);
 
       Index bottomRightIndex = Index::Zero();
       Size bottomRightSize(bottomLeftSize(0), topRightSize(1));
-      submapBufferRegions.push_back(BufferRegion(bottomRightIndex, bottomRightSize, BufferRegion::Quadrant::BottomRight));
+      submapBufferRegions.emplace_back(bottomRightIndex, bottomRightSize, BufferRegion::Quadrant::BottomRight);
       return true;
     }
 
   } else if (quadrantOfTopLeft == BufferRegion::Quadrant::TopRight) {
 
     if (quadrantOfBottomRight == BufferRegion::Quadrant::TopRight) {
-      submapBufferRegions.push_back(BufferRegion(submapIndex, submapBufferSize, BufferRegion::Quadrant::TopRight));
+      submapBufferRegions.emplace_back(submapIndex, submapBufferSize, BufferRegion::Quadrant::TopRight);
       return true;
     }
 
     if (quadrantOfBottomRight == BufferRegion::Quadrant::BottomRight) {
 
       Size topRightSize(bufferSize(0) - submapIndex(0), submapBufferSize(1));
-      submapBufferRegions.push_back(BufferRegion(submapIndex, topRightSize, BufferRegion::Quadrant::TopRight));
+      submapBufferRegions.emplace_back(submapIndex, topRightSize, BufferRegion::Quadrant::TopRight);
 
       Index bottomRightIndex(0, submapIndex(1));
       Size bottomRightSize(submapBufferSize(0) - topRightSize(0), submapBufferSize(1));
-      submapBufferRegions.push_back(BufferRegion(bottomRightIndex, bottomRightSize, BufferRegion::Quadrant::BottomRight));
+      submapBufferRegions.emplace_back(bottomRightIndex, bottomRightSize, BufferRegion::Quadrant::BottomRight);
       return true;
     }
 
   } else if (quadrantOfTopLeft == BufferRegion::Quadrant::BottomLeft) {
 
     if (quadrantOfBottomRight == BufferRegion::Quadrant::BottomLeft) {
-      submapBufferRegions.push_back(BufferRegion(submapIndex, submapBufferSize, BufferRegion::Quadrant::BottomLeft));
+      submapBufferRegions.emplace_back(submapIndex, submapBufferSize, BufferRegion::Quadrant::BottomLeft);
       return true;
     }
 
     if (quadrantOfBottomRight == BufferRegion::Quadrant::BottomRight) {
       Size bottomLeftSize(submapBufferSize(0), bufferSize(1) - submapIndex(1));
-      submapBufferRegions.push_back(BufferRegion(submapIndex, bottomLeftSize, BufferRegion::Quadrant::BottomLeft));
+      submapBufferRegions.emplace_back(submapIndex, bottomLeftSize, BufferRegion::Quadrant::BottomLeft);
 
       Index bottomRightIndex(submapIndex(0), 0);
       Size bottomRightSize(submapBufferSize(0), submapBufferSize(1) - bottomLeftSize(1));
-      submapBufferRegions.push_back(BufferRegion(bottomRightIndex, bottomRightSize, BufferRegion::Quadrant::BottomRight));
+      submapBufferRegions.emplace_back(bottomRightIndex, bottomRightSize, BufferRegion::Quadrant::BottomRight);
       return true;
     }
 
   } else if (quadrantOfTopLeft == BufferRegion::Quadrant::BottomRight) {
 
     if (quadrantOfBottomRight == BufferRegion::Quadrant::BottomRight) {
-      submapBufferRegions.push_back(BufferRegion(submapIndex, submapBufferSize, BufferRegion::Quadrant::BottomRight));
+      submapBufferRegions.emplace_back(submapIndex, submapBufferSize, BufferRegion::Quadrant::BottomRight);
       return true;
     }
 
@@ -449,7 +473,9 @@ bool incrementIndex(Index& index, const Size& bufferSize, const Index& bufferSta
   }
 
   // End of iterations reached.
-  if (!checkIfIndexInRange(unwrappedIndex, bufferSize)) return false;
+  if (!checkIfIndexInRange(unwrappedIndex, bufferSize)) {
+    return false;
+  }
 
   // Return true iterated index.
   index = getBufferIndexFromIndex(unwrappedIndex, bufferSize, bufferStartIndex);
@@ -475,7 +501,9 @@ bool incrementIndexForSubmap(Index& submapIndex, Index& index, const Index& subm
   }
 
   // End of iterations reached.
-  if (!checkIfIndexInRange(tempSubmapIndex, submapBufferSize)) return false;
+  if (!checkIfIndexInRange(tempSubmapIndex, submapBufferSize)) {
+    return false;
+  }
 
   // Get corresponding index in map.
   Index unwrappedSubmapTopLeftIndex = getIndexFromBufferIndex(submapTopLeftIndex, bufferSize, bufferStartIndex);
@@ -489,7 +517,9 @@ bool incrementIndexForSubmap(Index& submapIndex, Index& index, const Index& subm
 
 Index getIndexFromBufferIndex(const Index& bufferIndex, const Size& bufferSize, const Index& bufferStartIndex)
 {
-  if (checkIfStartIndexAtDefaultPosition(bufferStartIndex)) return bufferIndex;
+  if (checkIfStartIndexAtDefaultPosition(bufferStartIndex)) {
+    return bufferIndex;
+  }
 
   Index index = bufferIndex - bufferStartIndex;
   wrapIndexToRange(index, bufferSize);
@@ -498,7 +528,9 @@ Index getIndexFromBufferIndex(const Index& bufferIndex, const Size& bufferSize, 
 
 Index getBufferIndexFromIndex(const Index& index, const Size& bufferSize, const Index& bufferStartIndex)
 {
-  if (checkIfStartIndexAtDefaultPosition(bufferStartIndex)) return index;
+  if (checkIfStartIndexAtDefaultPosition(bufferStartIndex)) {
+    return index;
+  }
 
   Index bufferIndex = index + bufferStartIndex;
   wrapIndexToRange(bufferIndex, bufferSize);
@@ -507,13 +539,17 @@ Index getBufferIndexFromIndex(const Index& index, const Size& bufferSize, const 
 
 size_t getLinearIndexFromIndex(const Index& index, const Size& bufferSize, const bool rowMajor)
 {
-  if (!rowMajor) return index(1) * bufferSize(0) + index(0);
+  if (!rowMajor) {
+    return index(1) * bufferSize(0) + index(0);
+  }
   return index(0) * bufferSize(1) + index(1);
 }
 
 Index getIndexFromLinearIndex(const size_t linearIndex, const Size& bufferSize, const bool rowMajor)
 {
-  if (!rowMajor) return Index((int)linearIndex % bufferSize(0), (int)linearIndex / bufferSize(0));
+  if (!rowMajor) {
+    return Index((int)linearIndex % bufferSize(0), (int)linearIndex / bufferSize(0));
+  }
   return Index((int)linearIndex / bufferSize(1), (int)linearIndex % bufferSize(1));
 }
 
@@ -550,8 +586,8 @@ bool colorVectorToValue(const Eigen::Vector3i& colorVector, unsigned long& color
 void colorVectorToValue(const Eigen::Vector3i& colorVector, float& colorValue)
 {
   Color colors;
-  colors.longColor = (colorVector(0) << 16) + (colorVector(1) << 8) + colorVector(2);
-  colorValue = colors.floatColor;
+  colors.longColor_ = (colorVector(0) << 16) + (colorVector(1) << 8) + colorVector(2);
+  colorValue = colors.floatColor_;
 }
 
 void colorVectorToValue(const Eigen::Vector3f& colorVector, float& colorValue)
@@ -560,5 +596,5 @@ void colorVectorToValue(const Eigen::Vector3f& colorVector, float& colorValue)
   colorVectorToValue(tempColorVector, colorValue);
 }
 
-}  // namespace
+}  // namespace grid_map
 

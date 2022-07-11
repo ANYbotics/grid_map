@@ -29,22 +29,12 @@ GridMapIterator::GridMapIterator(const GridMapIterator* other)
   isPastEnd_ = other->isPastEnd_;
 }
 
-GridMapIterator& GridMapIterator::operator =(const GridMapIterator& other)
-{
-  size_ = other.size_;
-  startIndex_ = other.startIndex_;
-  linearSize_ = other.linearSize_;
-  linearIndex_ = other.linearIndex_;
-  isPastEnd_ = other.isPastEnd_;
-  return *this;
-}
-
 bool GridMapIterator::operator !=(const GridMapIterator& other) const
 {
   return linearIndex_ != other.linearIndex_;
 }
 
-const Index GridMapIterator::operator *() const
+Index GridMapIterator::operator *() const
 {
   return getIndexFromLinearIndex(linearIndex_, size_);
 }
@@ -54,7 +44,7 @@ const size_t& GridMapIterator::getLinearIndex() const
   return linearIndex_;
 }
 
-const Index GridMapIterator::getUnwrappedIndex() const
+Index GridMapIterator::getUnwrappedIndex() const
 {
   return getIndexFromBufferIndex(*(*this), size_, startIndex_);
 }

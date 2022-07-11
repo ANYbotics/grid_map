@@ -38,11 +38,6 @@ class Polygon
   Polygon(std::vector<Position> vertices);
 
   /*!
-   * Destructor.
-   */
-  virtual ~Polygon();
-
-  /*!
    * Check if point is inside polygon.
    * @param point the point to be checked.
    * @return true if inside, false otherwise.
@@ -60,7 +55,7 @@ class Polygon
    * @param index the index of the requested vertex.
    * @return the requested vertex.
    */
-  const Position& getVertex(const size_t index) const;
+  const Position& getVertex(size_t index) const;
 
   /*!
    * Removes all vertices from the polygon.
@@ -72,7 +67,7 @@ class Polygon
    * @param index the index of the requested vertex.
    * @return the requested vertex.
    */
-  const Position& operator [](const size_t index) const;
+  const Position& operator [](size_t index) const;
 
   /*!
    * Returns the vertices of the polygon.
@@ -90,7 +85,7 @@ class Polygon
    * Set the timestamp of the polygon.
    * @param timestamp the timestamp to set (in  nanoseconds).
    */
-  void setTimestamp(const uint64_t timestamp);
+  void setTimestamp(uint64_t timestamp);
 
   /*!
    * Get the timestamp of the polygon.
@@ -156,15 +151,15 @@ class Polygon
    * @param margin the margin to offset the polygon by (in [m]).
    * @return true if successful, false otherwise.
    */
-  bool offsetInward(const double margin);
+  bool offsetInward(double margin);
 
   /*!
-   * If only two verices are given, this methods generates a
+   * If only two vertices are given, this methods generates a
    * `thickened` line polygon with four vertices.
    * @param thickness the desired thickness of the line.
    * @return true if successful, false otherwise.
    */
-  bool thickenLine(const double thickness);
+  bool thickenLine(double thickness);
 
   /*!
    * Return a triangulated version of the polygon.
@@ -179,8 +174,8 @@ class Polygon
    * @param[in] nVertices number of vertices of the approximation polygon. Default = 20.
    * @return circle as polygon.
    */
-  static Polygon fromCircle(const Position center, const double radius,
-                            const int nVertices = 20);
+  static Polygon fromCircle(Position center, double radius,
+                            int nVertices = 20);
 
   /*!
    * Approximates two circles with a convex hull and returns it as polygon.
@@ -190,10 +185,10 @@ class Polygon
    * @param[in] nVertices number of vertices of the approximation polygon. Default = 20.
    * @return convex hull of the two circles as polygon.
    */
-  static Polygon convexHullOfTwoCircles(const Position center1,
-                                        const Position center2,
-                                        const double radius,
-                                        const int nVertices = 20);
+  static Polygon convexHullOfTwoCircles(Position center1,
+                                        Position center2,
+                                        double radius,
+                                        int nVertices = 20);
 
   /*!
    * Computes the convex hull of two polygons and returns it as polygon.
@@ -237,7 +232,7 @@ class Polygon
   static double vectorsMakeClockwiseTurn(const Eigen::Vector2d& pointO,
                                          const Eigen::Vector2d& pointA,
                                          const Eigen::Vector2d& pointB);
-
+  // NOLINTBEGIN(misc-non-private-member-variables-in-classes)
   //! Frame id of the polygon.
   std::string frameId_;
 
@@ -246,7 +241,7 @@ class Polygon
 
   //! Vertices of the polygon.
   std::vector<Position> vertices_;
-
+  // NOLINTEND(misc-non-private-member-variables-in-classes)
  public:
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };

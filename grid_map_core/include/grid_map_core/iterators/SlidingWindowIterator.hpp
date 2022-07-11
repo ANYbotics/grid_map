@@ -41,32 +41,32 @@ public:
    */
   SlidingWindowIterator(const GridMap& gridMap, const std::string& layer,
                         const EdgeHandling& edgeHandling = EdgeHandling::CROP,
-                        const size_t windowSize = 3);
+                        size_t windowSize = 3);
 
   /*!
    * Copy constructor.
    * @param other the object to copy.
    */
-  SlidingWindowIterator(const SlidingWindowIterator* other);
+  explicit SlidingWindowIterator(const SlidingWindowIterator* other);
 
   /*!
    * Set the side length of the moving window (in m).
    * @param gridMap the grid map to iterate on.
    * @param windowLength the side length of the window (in m).
    */
-  void setWindowLength(const GridMap& gridMap, const double windowLength);
+  void setWindowLength(const GridMap& gridMap, double windowLength);
 
   /*!
    * Increase the iterator to the next element.
    * @return a reference to the updated iterator.
    */
-  SlidingWindowIterator& operator ++();
+  SlidingWindowIterator& operator ++() override;
 
   /*!
    * Return the data of the sliding window.
    * @return the data of the sliding window.
    */
-  const Matrix getData() const;
+  Matrix getData() const;
 
 private:
   //! Setup members.
@@ -85,10 +85,11 @@ private:
   size_t windowSize_;
 
   //! Size of the border of the window around the center cell.
-  size_t windowMargin_;
+  size_t windowMargin_{0};
 
  public:
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
 
-} /* namespace */
+}  // namespace grid_map
+

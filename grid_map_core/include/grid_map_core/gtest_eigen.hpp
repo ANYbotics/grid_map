@@ -96,8 +96,9 @@ namespace grid_map {
     }
 
     template<typename M1>
-    void assertFinite(const M1 & A, std::string const & message = "")
+    void assertFinite(const M1 & A, std::string const &  /*message*/ = "")
     {
+      std::cout << ("test") << std::endl;
       for(int r = 0; r < A.rows(); r++)
 		{
 		  for(int c = 0; c < A.cols(); c++)
@@ -107,58 +108,58 @@ namespace grid_map {
 		}
     }
 
-    inline bool compareRelative(double a, double b, double percentTolerance, double * percentError = NULL)
-    {
-	  // \todo: does anyone have a better idea?
+    inline bool compareRelative(double a, double b, double percentTolerance, double* percentError = nullptr) {
+      // \todo: does anyone have a better idea?
       double fa = fabs(a);
       double fb = fabs(b);
-      if( (fa < 1e-15 && fb < 1e-15) ||  // Both zero.
-		  (fa == 0.0  && fb < 1e-6)  ||  // One exactly zero and the other small
-		  (fb == 0.0  && fa < 1e-6) )    // ditto
-		return true;
+      if ((fa < 1e-15 && fb < 1e-15) ||  // Both zero.
+          (fa == 0.0 && fb < 1e-6) ||    // One exactly zero and the other small
+          (fb == 0.0 && fa < 1e-6)) {    // ditto
+        return true;
+      }
 
-      double diff = fabs(a - b)/std::max(fa,fb);
-      if(diff > percentTolerance * 1e-2)
-		{
-		  if(percentError)
-			*percentError = diff * 100.0;
-		  return false;
-		}
+      double diff = fabs(a - b) / std::max(fa, fb);
+      if (diff > percentTolerance * 1e-2) {
+        if (percentError != nullptr) {
+          *percentError = diff * 100.0;
+        }
+        return false;
+      }
       return true;
     }
 
 #define ASSERT_DOUBLE_MX_EQ(A, B, PERCENT_TOLERANCE, MSG)				\
-    ASSERT_EQ((size_t)(A).rows(), (size_t)(B).rows())  << MSG << "\nMatrix " << #A << ":\n" << A << "\nand matrix " << #B << "\n" << B << "\nare not the same size"; \
-    ASSERT_EQ((size_t)(A).cols(), (size_t)(B).cols())  << MSG << "\nMatrix " << #A << ":\n" << A << "\nand matrix " << #B << "\n" << B << "\nare not the same size"; \
+    ASSERT_EQ((size_t)(A).rows(), (size_t)(B).rows())  << (MSG) << "\nMatrix " << #A << ":\n" << (A) << "\nand matrix " << #B << "\n" << (B) << "\nare not the same size"; \
+    ASSERT_EQ((size_t)(A).cols(), (size_t)(B).cols())  << (MSG) << "\nMatrix " << #A << ":\n" << (A) << "\nand matrix " << #B << "\n" << (B) << "\nare not the same size"; \
     for(int r = 0; r < (A).rows(); r++)									\
       {																	\
 		for(int c = 0; c < (A).cols(); c++)								\
 		  {																\
 			double percentError = 0.0;									\
 			ASSERT_TRUE(grid_map::compareRelative( (A)(r,c), (B)(r,c), PERCENT_TOLERANCE, &percentError)) \
-			  << MSG << "\nComparing:\n"								\
+			  << (MSG) << "\nComparing:\n"								\
 			  << #A << "(" << r << "," << c << ") = " << (A)(r,c) << std::endl \
 			  << #B << "(" << r << "," << c << ") = " << (B)(r,c) << std::endl \
-			  << "Error was " << percentError << "% > " << PERCENT_TOLERANCE << "%\n" \
-			  << "\nMatrix " << #A << ":\n" << A << "\nand matrix " << #B << "\n" << B; \
+			  << "Error was " << percentError << "% > " << (PERCENT_TOLERANCE) << "%\n" \
+			  << "\nMatrix " << #A << ":\n" << (A) << "\nand matrix " << #B << "\n" << (B); \
 		  }																\
       }
 
 #define ASSERT_DOUBLE_SPARSE_MX_EQ(A, B, PERCENT_TOLERANCE, MSG)       \
-    ASSERT_EQ((size_t)(A).rows(), (size_t)(B).rows())  << MSG << "\nMatrix " << #A << ":\n" << A << "\nand matrix " << #B << "\n" << B << "\nare not the same size"; \
-    ASSERT_EQ((size_t)(A).cols(), (size_t)(B).cols())  << MSG << "\nMatrix " << #A << ":\n" << A << "\nand matrix " << #B << "\n" << B << "\nare not the same size"; \
+    ASSERT_EQ((size_t)(A).rows(), (size_t)(B).rows())  << (MSG) << "\nMatrix " << #A << ":\n" << (A) << "\nand matrix " << #B << "\n" << (B) << "\nare not the same size"; \
+    ASSERT_EQ((size_t)(A).cols(), (size_t)(B).cols())  << (MSG) << "\nMatrix " << #A << ":\n" << (A) << "\nand matrix " << #B << "\n" << (B) << "\nare not the same size"; \
     for(int r = 0; r < (A).rows(); r++)                 \
       {                                 \
     for(int c = 0; c < (A).cols(); c++)               \
       {                               \
       double percentError = 0.0;                  \
       ASSERT_TRUE(grid_map::compareRelative( (A).coeff(r,c), (B).coeff(r,c), PERCENT_TOLERANCE, &percentError)) \
-        << MSG << "\nComparing:\n"                \
+        << (MSG) << "\nComparing:\n"                \
         << #A << "(" << r << "," << c << ") = " << (A).coeff(r,c) << std::endl \
         << #B << "(" << r << "," << c << ") = " << (B).coeff(r,c) << std::endl \
-        << "Error was " << percentError << "% > " << PERCENT_TOLERANCE << "%\n" \
-        << "\nMatrix " << #A << ":\n" << A << "\nand matrix " << #B << "\n" << B; \
+        << "Error was " << percentError << "% > " << (PERCENT_TOLERANCE) << "%\n" \
+        << "\nMatrix " << #A << ":\n" << (A) << "\nand matrix " << #B << "\n" << (B); \
       }                               \
       }
 
-} // namespace
+}  // namespace grid_map

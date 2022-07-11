@@ -18,7 +18,7 @@ struct Clamp
         max_(max)
   {
   }
-  const Scalar operator()(const Scalar& x) const
+  Scalar operator()(const Scalar& x) const
   {
     return x < min_ ? min_ : (x > max_ ? max_ : x);
   }

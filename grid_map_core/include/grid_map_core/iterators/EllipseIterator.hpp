@@ -35,13 +35,6 @@ public:
   EllipseIterator(const GridMap& gridMap, const Position& center, const Length& length, double rotation = 0.0);
 
   /*!
-   * Assignment operator.
-   * @param iterator the iterator to copy data from.
-   * @return a reference to *this.
-   */
-  EllipseIterator& operator =(const EllipseIterator& other) = default;
-
-  /*!
    * Compare to another iterator.
    * @return whether the current iterator points to a different address than the other one.
    */

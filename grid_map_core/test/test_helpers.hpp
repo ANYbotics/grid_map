@@ -93,4 +93,4 @@ void verifyValuesAtQueryPointsAreClose(const grid_map::GridMap &map, const Analy
                                const std::vector<Point2D> &queryPoints,
                                grid_map::InterpolationMethods interpolationMethod);
 
-} /*grid_map_test*/
+}  // namespace grid_map_test

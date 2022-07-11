@@ -34,8 +34,10 @@ SlidingWindowIterator::SlidingWindowIterator(const SlidingWindowIterator* other)
 
 void SlidingWindowIterator::setWindowLength(const GridMap& gridMap, const double windowLength)
 {
-  windowSize_ = std::round(windowLength / gridMap.getResolution());
-  if (windowSize_ % 2 != 1) ++windowSize_;
+  windowSize_ = static_cast<size_t>(std::round(windowLength / gridMap.getResolution()));
+  if (windowSize_ % 2 != 1) {
+    ++windowSize_;
+  }
   setup(gridMap);
 }
 
@@ -44,7 +46,9 @@ SlidingWindowIterator& SlidingWindowIterator::operator ++()
   if (edgeHandling_ == EdgeHandling::INSIDE) {
     while (!isPastEnd()) {
       GridMapIterator::operator++();
-      if (dataInsideMap()) break;
+      if (dataInsideMap()) {
+        break;
+      }
     }
   } else {
     GridMapIterator::operator++();
@@ -52,10 +56,10 @@ SlidingWindowIterator& SlidingWindowIterator::operator ++()
   return *this;
 }
 
-const Matrix SlidingWindowIterator::getData() const
+Matrix SlidingWindowIterator::getData() const
 {
   const Index centerIndex(*(*this));
-  const Index windowMargin(Index::Constant(windowMargin_));
+  const Index windowMargin(Index::Constant(static_cast<int>(windowMargin_)));
   const Index originalTopLeftIndex(centerIndex - windowMargin);
   Index topLeftIndex(originalTopLeftIndex);
   boundIndexToRange(topLeftIndex, size_);
@@ -71,8 +75,11 @@ const Matrix SlidingWindowIterator::getData() const
     case EdgeHandling::MEAN:
       const Matrix data = data_.block(topLeftIndex(0), topLeftIndex(1), adjustedWindowSize(0), adjustedWindowSize(1));
       Matrix returnData(windowSize_, windowSize_);
-      if (edgeHandling_ == EdgeHandling::EMPTY) returnData.setConstant(NAN);
-      else if (edgeHandling_ == EdgeHandling::MEAN) returnData.setConstant(data.meanOfFinites());
+      if (edgeHandling_ == EdgeHandling::EMPTY) {
+        returnData.setConstant(NAN);
+      } else if (edgeHandling_ == EdgeHandling::MEAN) {
+        returnData.setConstant(data.meanOfFinites());
+      }
       const Index topLeftIndexShift(topLeftIndex - originalTopLeftIndex);
       returnData.block(topLeftIndexShift(0), topLeftIndexShift(1), adjustedWindowSize(0), adjustedWindowSize(1)) =
           data_.block(topLeftIndex(0), topLeftIndex(1), adjustedWindowSize(0), adjustedWindowSize(1));
@@ -83,10 +90,12 @@ const Matrix SlidingWindowIterator::getData() const
 
 void SlidingWindowIterator::setup(const GridMap& gridMap)
 {
-  if (!gridMap.isDefaultStartIndex()) throw std::runtime_error(
-      "SlidingWindowIterator cannot be used with grid maps that don't have a default buffer start index.");
-  if (windowSize_ % 2 == 0) throw std::runtime_error(
-      "SlidingWindowIterator has a wrong window size!");
+  if (!gridMap.isDefaultStartIndex()) {
+    throw std::runtime_error("SlidingWindowIterator cannot be used with grid maps that don't have a default buffer start index.");
+  }
+  if (windowSize_ % 2 == 0) {
+    throw std::runtime_error("SlidingWindowIterator has a wrong window size!");
+  }
   windowMargin_ = (windowSize_ - 1) / 2;
 
   if (edgeHandling_ == EdgeHandling::INSIDE) {
@@ -99,7 +108,7 @@ void SlidingWindowIterator::setup(const GridMap& gridMap)
 bool SlidingWindowIterator::dataInsideMap() const
 {
   const Index centerIndex(*(*this));
-  const Index windowMargin(Index::Constant(windowMargin_));
+  const Index windowMargin(Index::Constant(static_cast<int>(windowMargin_)));
   const Index topLeftIndex(centerIndex - windowMargin);
   const Index bottomRightIndex(centerIndex + windowMargin);
   return checkIfIndexInRange(topLeftIndex, size_) && checkIfIndexInRange(bottomRightIndex, size_);

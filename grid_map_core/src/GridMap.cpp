@@ -13,8 +13,6 @@
 #include "grid_map_core/SubmapGeometry.hpp"
 #include "grid_map_core/iterators/GridMapIterator.hpp"
 
-#include <Eigen/Dense>
-
 #include <cmath>
 #include <algorithm>
 #include <cassert>
@@ -287,7 +285,7 @@ GridMap GridMap::getSubmap(const Position& position, const Length& length, bool&
 }
 
 GridMap GridMap::getSubmap(const Position& position, const Length& length, Index& /*indexInSubmap*/, bool& isSuccess) const {
-  // Submap the generate.
+  // Submap to generate.
   GridMap submap(layers_);
   submap.setBasicLayers(basicLayers_);
   submap.setTimestamp(timestamp_);

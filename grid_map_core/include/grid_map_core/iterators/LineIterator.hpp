@@ -41,13 +41,6 @@ public:
   LineIterator(const grid_map::GridMap& gridMap, const Index& start, const Index& end);
 
   /*!
-   * Assignment operator.
-   * @param iterator the iterator to copy data from.
-   * @return a reference to *this.
-   */
-  LineIterator& operator =(const LineIterator& other);
-
-  /*!
    * Compare to another iterator.
    * @return whether the current iterator points to a different address than the other one.
    */
@@ -96,7 +89,7 @@ private:
    * @param[out] index the index of the moved start position.
    * @return true if successful, false otherwise.
    */
-  bool getIndexLimitedToMapRange(const grid_map::GridMap& gridMap, const Position& start,
+  static bool getIndexLimitedToMapRange(const grid_map::GridMap& gridMap, const Position& start,
                                  const Position& end, Index& index);
 
   //! Current index.
@@ -116,12 +109,12 @@ private:
 
   //! Helper variables for Bresenham Line Drawing algorithm.
   Size increment1_, increment2_;
-  int denominator_, numerator_, numeratorAdd_;
+  int denominator_{0}, numerator_{0}, numeratorAdd_{0};
 
   //! Map information needed to get position from iterator.
   Length mapLength_;
   Position mapPosition_;
-  double resolution_;
+  double resolution_{NAN};
   Size bufferSize_;
   Index bufferStartIndex_;
 
@@ -129,4 +122,5 @@ private:
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
 
-} /* namespace */
+}  // namespace grid_map
+

@@ -35,19 +35,6 @@ public:
   GridMapIterator(const GridMapIterator* other);
 
   /*!
-   * Copy constructor.
-   * @param other the object to copy.
-   */
-  GridMapIterator(const GridMapIterator &other) = default;
-
-  /*!
-   * Assignment operator.
-   * @param iterator the iterator to copy data from.
-   * @return a reference to *this.
-   */
-  GridMapIterator& operator =(const GridMapIterator& other);
-
-  /*!
    * Compare to another iterator.
    * @return whether the current iterator points to a different address than the other one.
    */
@@ -58,7 +45,7 @@ public:
    * to which the iterator is pointing at.
    * @return the regular index (2-dim.) of the cell on which the iterator is pointing.
    */
-  const Index operator *() const;
+  Index operator *() const;
 
   /*!
    * Returns the the linear (1-dim.) index of the cell the iterator is pointing at.
@@ -72,7 +59,7 @@ public:
    * Retrieve the index as unwrapped index, i.e., as the corresponding index of a
    * grid map with no circular buffer offset.
    */
-  const Index getUnwrappedIndex() const;
+  Index getUnwrappedIndex() const;
 
   /*!
    * Increase the iterator to the next element.
@@ -92,8 +79,8 @@ public:
    */
   bool isPastEnd() const;
 
-protected:
-
+ protected:
+  // NOLINTBEGIN(misc-non-private-member-variables-in-classes)
   //! Size of the buffer.
   Size size_;
 
@@ -108,9 +95,11 @@ protected:
 
   //! Is iterator out of scope.
   bool isPastEnd_;
+  // NOLINTEND(misc-non-private-member-variables-in-classes)
 
  public:
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
 
-} /* namespace */
+}  // namespace grid_map
+
