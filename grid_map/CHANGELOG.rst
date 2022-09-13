@@ -2,8 +2,8 @@
 Changelog for package grid_map
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+2.0.0 (2022-09-13)
+------------------
 * fix: build error on jammy
 * Initial ROS2 port
 * Contributors: Maximilian Wulf, Steve Macenski

@@ -7,8 +7,8 @@ unreleased (2021-06-24)
 * Replaced pcl_ros dependency with PCL
 * Contributors: Matthew Young (Trimble Inc) 
 
-Forthcoming
------------
+2.0.0 (2022-09-13)
+------------------
 * ci: fix tests in grid map pcl
 * fix: mark Eigen library as SYSTEM
 * fix: build error on jammy

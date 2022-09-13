@@ -2,8 +2,8 @@
 Changelog for package grid_map_cmake_helpers
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+2.0.0 (2022-09-13)
+------------------
 * Initial ROS2 port
 * Contributors: Steve Macenski
 
