@@ -2,6 +2,13 @@
 Changelog for package grid_map_filters
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* fix: mark Eigen library as SYSTEM
+* fix: build error on jammy
+* Initial ROS2 port
+* Contributors: Maximilian Wulf, Steve Macenski
+
 1.6.2 (2019-10-14)
 ------------------
 * Update MinInRadiusFilter.cpp

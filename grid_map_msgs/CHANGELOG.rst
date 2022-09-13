@@ -2,6 +2,11 @@
 Changelog for package grid_map_msgs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Initial ROS2 port
+* Contributors: Steve Macenski
+
 1.6.2 (2019-10-14)
 ------------------
 

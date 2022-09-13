@@ -4,19 +4,12 @@ Changelog for package grid_map_cmake_helpers
 
 Forthcoming
 -----------
+* Initial ROS2 port
+* Contributors: Steve Macenski
+
 * Update for rolliing (`#296 <https://github.com/ANYbotics/grid_map/issues/296>`_)
-  * Fix pluginlib dependency
-  * Update to rosbag and Duration main
-  * Fix tests
-  * Fix %s type in logger
-  * Fix deprecated declare parameter API
-  * Enable C++17
-  * Add build dependencies for rolling
-  * Update ros version for ci
-  * Update setup for ci
   Co-authored-by: Francisco Martin Rico <fmrico@gmail.com>
-* Merge pull request `#232 <https://github.com/ANYbotics/grid_map/issues/232>`_ from Marwan99/initial_port
-  Initial ROS2 port
+* Initial ROS2 port
 * added grid_map_cmake_helpers maintainers
 * changed grid_map_common to grid_map_cmake_helpers
 * Contributors: Daisuke Nishimatsu, Marwan Taher, Steve Macenski

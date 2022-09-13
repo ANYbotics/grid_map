@@ -2,6 +2,11 @@
 Changelog for package grid_map_core
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Initial ROS2 port
+* Contributors: Maximilian Wulf, Steve Macenski
+
 1.6.2 (2019-10-14)
 ------------------
 * Implements a grid map transformation from one map frame to another map frame given the transform between the frames.

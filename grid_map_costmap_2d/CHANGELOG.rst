@@ -2,6 +2,12 @@
 Changelog for package grid_map_costmap_2d
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* fix: mark Eigen library as SYSTEM
+* Initial ROS2 port
+* Contributors: Maximilian Wulf, Steve Macenski
+
 1.6.2 (2019-10-14)
 ------------------
 
