@@ -1,0 +1,13 @@
+name: Mirror rolling to ros2
+
+on:
+  push:
+    branches: [ rolling ]
+
+jobs:
+  mirror-to-ros2:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: zofrex/mirror-branch@v1
+      with:
+        target-branch: ros2
