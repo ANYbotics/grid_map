@@ -2,6 +2,11 @@
 Changelog for package grid_map_ros
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* fix: change cv_bridge.h -> .hpp (`#376 <https://github.com/ANYbotics/grid_map/issues/376>`_)
+* Contributors: Iván López Broceño
+
 2.0.0 (2022-09-13)
 ------------------
 * fix: mark Eigen library as SYSTEM

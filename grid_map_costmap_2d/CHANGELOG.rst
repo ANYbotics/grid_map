@@ -2,6 +2,9 @@
 Changelog for package grid_map_costmap_2d
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 2.0.0 (2022-09-13)
 ------------------
 * fix: mark Eigen library as SYSTEM
