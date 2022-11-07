@@ -2,8 +2,8 @@
 Changelog for package grid_map_demos
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+2.1.0 (2022-11-08)
+------------------
 * fix: change cv_bridge.h -> .hpp (`#376 <https://github.com/ANYbotics/grid_map/issues/376>`_)
 * Contributors: Iván López Broceño
 
