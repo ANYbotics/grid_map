@@ -11,7 +11,7 @@
 #include <string>
 #include "EigenLab/EigenLab.h"
 
-#include <filters/filter_base.hpp>
+#include <filters/filter_base.h>
 #include <grid_map_core/GridMap.hpp>
 
 namespace grid_map {

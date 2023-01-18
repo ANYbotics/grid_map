@@ -96,9 +96,9 @@ bool GridMapOctomapConverter::fromOctomap(const octomap::OcTree& octomap,
           end = octomapCopy.end_leafs_bbx(); it != end; ++it) {
     if (octomapCopy.isNodeOccupied(*it)) {
       octomap::point3d octoPos = it.getCoordinate();
-      grid_map::Position position(octoPos.x(), octoPos.y());
+      grid_map::Position gridm_position(octoPos.x(), octoPos.y());
       grid_map::Index index;
-      gridMap.getIndex(position, index);
+      gridMap.getIndex(gridm_position, index);
       // If no elevation has been set, use current elevation.
       if (!gridMap.isValid(index)) {
         gridMapData(index(0), index(1)) = octoPos.z();

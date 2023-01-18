@@ -124,7 +124,7 @@ AnalyticalFunctions createGaussianWorld(grid_map::GridMap *map)
       0.1, 0.1 }, { 0.1, 0.1 }, { 0.1, 0.1 }, { 0.1, 0.05 }, { 0.05, 0.05 } } };
   std::array<std::pair<double, double>, numGaussians> means = { { { 1, -1 }, { 1, 1.7 },
       { -1, 1.6 }, { -1.8, -1.8 }, { -1, 1.8 }, { 0, 0 }, { -1.2, 0 } } };
-  std::array<double, numGaussians> scales = { -2.0, -1.0, 2.0, 1.0, 3.0, 4.0, 1.0 };
+  std::array<double, numGaussians> scales = {{ -2.0, -1.0, 2.0, 1.0, 3.0, 4.0, 1.0 }};
 
   std::array<Gaussian, numGaussians> g;
 
