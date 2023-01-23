@@ -86,7 +86,7 @@ void GridMapVisual::computeVisualization(float alpha, bool showGridLines, bool f
   }
   const double resolution = map_.getResolution();
   const grid_map::Matrix& heightData = map_[flatTerrain ? layerNames[0] : heightLayer];
-  const grid_map::Matrix& colorData = map_[flatColor ? layerNames[0] : colorLayer];
+  const grid_map::Matrix& colorData = map_[(flatColor || noColor) ? layerNames[0] : colorLayer];
 
   // Reset and begin the manualObject (mesh).
   // For more information: https://www.ogre3d.org/docs/api/1.7/class_ogre_1_1_manual_object.html#details
@@ -103,7 +103,7 @@ void GridMapVisual::computeVisualization(float alpha, bool showGridLines, bool f
 
   // Compute a mask of valid cells.
   auto basicLayers = map_.getBasicLayers();
-  if (std::find(basicLayers.begin(), basicLayers.end(), heightLayer) == basicLayers.end()) {
+  if (!flatTerrain && std::find(basicLayers.begin(), basicLayers.end(), heightLayer) == basicLayers.end()) {
     basicLayers.emplace_back(heightLayer);
   }
   const MaskArray isValid = computeIsValidMask(basicLayers);
