@@ -1,7 +1,7 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
-#include <filters/filter_base.hpp>
+#include <filters/filter_base.h>
 #include <grid_map_core/GridMap.hpp>
 #include <grid_map_core/utils/testing.hpp>
 

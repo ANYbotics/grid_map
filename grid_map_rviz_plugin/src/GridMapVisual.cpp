@@ -54,7 +54,7 @@ void GridMapVisual::setMessage(const grid_map_msgs::GridMap::ConstPtr& msg) {
 
 void GridMapVisual::computeVisualization(float alpha, bool showGridLines, bool flatTerrain, std::string heightLayer, bool flatColor,
                                          bool noColor, Ogre::ColourValue meshColor, bool mapLayerColor, std::string colorLayer,
-                                         std::string colorMap, bool useColorMap, bool invertColorMap, Ogre::ColourValue minColor,
+                                         std::string colorMapStr, bool useColorMap, bool invertColorMap, Ogre::ColourValue minColor,
                                          Ogre::ColourValue maxColor, bool autocomputeIntensity, float minIntensity, float maxIntensity, float gridLineThickness,
                                          int gridCellDecimation) {
   const auto startTime = std::chrono::high_resolution_clock::now();
@@ -130,7 +130,7 @@ void GridMapVisual::computeVisualization(float alpha, bool showGridLines, bool f
     coloringMethod = ColoringMethod::INTENSITY_LAYER_INVERTED_COLORMAP;
   }
 
-  const auto colorValues = computeColorValues(heightData, colorData, coloringMethod, colorMap, meshColor,
+  const auto colorValues = computeColorValues(heightData, colorData, coloringMethod, colorMapStr, meshColor,
                                               minIntensity, maxIntensity, autocomputeIntensity, minColor, maxColor);
 
   // Initialize loop constants.
@@ -171,11 +171,11 @@ void GridMapVisual::computeVisualization(float alpha, bool showGridLines, bool f
       std::vector<int> vertexIndices;
       for (size_t k = 0; k < 2; k++) {
         for (size_t l = 0; l < 2; l++) {
-          grid_map::Index index(i - k, j - l);
-          if (!isValid(index(0), index(1))) {
+          grid_map::Index my_index(i - k, j - l);
+          if (!isValid(my_index(0), my_index(1))) {
             continue;
           }
-          vertexIndices.emplace_back(indexToOgreIndex(index(0), index(1)));
+          vertexIndices.emplace_back(indexToOgreIndex(my_index(0), my_index(1)));
         }
       }
 

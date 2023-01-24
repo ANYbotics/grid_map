@@ -57,6 +57,7 @@ catkin_package(
 ## Your package locations should be listed before other locations
 include_directories(
   include
+  SYSTEM
   ${catkin_INCLUDE_DIRS}
   ${EIGEN3_INCLUDE_DIR}
   ${OCTOMAP_INCLUDE_DIR}

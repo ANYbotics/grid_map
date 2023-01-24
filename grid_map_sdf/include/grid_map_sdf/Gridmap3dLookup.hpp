@@ -29,7 +29,7 @@ struct Gridmap3dLookup {
     size_t z{0};
 
     size_t_3d() = default;
-    size_t_3d(size_t x, size_t y, size_t z) : x(x), y(y), z(z) {}
+    size_t_3d(size_t in_x, size_t in_y, size_t in_z) : x(in_x), y(in_y), z(in_z) {}
   };
 
   //! 3D size of the grid

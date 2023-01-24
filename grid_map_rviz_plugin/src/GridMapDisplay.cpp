@@ -214,7 +214,7 @@ void GridMapDisplay::updateVisualization()
   bool noColor = colorModeProperty_->getOptionInt() == 3;
   Ogre::ColourValue meshColor = colorProperty_->getOgreColor();
   std::string colorLayer = colorTransformerProperty_->getStdString();
-  std::string colorMap = colorMapProperty_->getStdString();
+  std::string colorMapStr = colorMapProperty_->getStdString();
   bool useColorMap = useColorMapProperty_->getBool();
   bool invertColorMap = invertColorMapProperty_->getBool();
   Ogre::ColourValue minColor = minColorProperty_->getOgreColor();
@@ -227,7 +227,7 @@ void GridMapDisplay::updateVisualization()
 
   for (size_t i = 0; i < visuals_.size(); i++) {
     visuals_[i]->computeVisualization(alpha, showGridLines, flatTerrain, heightLayer, flatColor, noColor, meshColor, mapLayerColor,
-                                      colorLayer, colorMap, useColorMap, invertColorMap, minColor, maxColor, autocomputeIntensity, minIntensity,
+                                      colorLayer, colorMapStr, useColorMap, invertColorMap, minColor, maxColor, autocomputeIntensity, minIntensity,
                                       maxIntensity, gridLineThickness, gridCellDecimation);
   }
 }

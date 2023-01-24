@@ -166,7 +166,7 @@ void SignedDistanceField::emplacebackLayerData(const Matrix& signedDistance, con
                                                const Matrix& dz) {
   for (size_t colY = 0; colY < gridmap3DLookup_.gridsize_.y; ++colY) {
     for (size_t rowX = 0; rowX < gridmap3DLookup_.gridsize_.x; ++rowX) {
-      data_.emplace_back(node_data_t{signedDistance(rowX, colY), dxTranspose(colY, rowX), dy(rowX, colY), dz(rowX, colY)});
+      data_.emplace_back(node_data_t{{signedDistance(rowX, colY), dxTranspose(colY, rowX), dy(rowX, colY), dz(rowX, colY)}});
     }
   }
 }
