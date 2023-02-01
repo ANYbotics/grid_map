@@ -118,7 +118,7 @@ void GridMapVisual::computeVisualization(float alpha, bool showGridLines, bool f
 
   // Compute the color data for each cell.
   ColoringMethod coloringMethod;
-  if (flatColor) {
+  if (flatColor || noColor) {
     coloringMethod = ColoringMethod::FLAT;
   } else if(mapLayerColor) {
     coloringMethod = ColoringMethod::COLOR_LAYER;
@@ -145,44 +145,44 @@ void GridMapVisual::computeVisualization(float alpha, bool showGridLines, bool f
   // Add vertices for mesh.
   for (size_t i = 0; i < rows; ++i) {
     for (size_t j = 0; j < cols; ++j) {
-      std::vector<int> vertices;
-      std::vector<Ogre::ColourValue> colors;
+      if(!noColor) {
+        std::vector<int> vertices;
+        std::vector<Ogre::ColourValue> colors;
 
-      // Add the vertex to the scene
-      grid_map::Index index(i, j);
-      if (!isValid(index(0), index(1))) {
-        continue;
-      }
-      grid_map::Position position = topLeft.array() - index.cast<double>() * resolution;
-      manualObject_->position(position(0), position(1), heightOrFlatData(index(0), index(1)));
-
-      const Ogre::ColourValue& color = colorValues(index(0), index(1));
-      manualObject_->colour(color.r, color.g, color.b, alpha);
-
-      indexToOgreIndex(index(0), index(1)) = ogreIndex;
-      ogreIndex++;
-
-      // We can only add triangles to the top left side of the current vertex if we have data.
-      if (i == 0 || j == 0) {
-        continue;
-      }
-
-      // Add triangles and grid to scene.
-      std::vector<int> vertexIndices;
-      for (size_t k = 0; k < 2; k++) {
-        for (size_t l = 0; l < 2; l++) {
-          grid_map::Index index(i - k, j - l);
-          if (!isValid(index(0), index(1))) {
-            continue;
-          }
-          vertexIndices.emplace_back(indexToOgreIndex(index(0), index(1)));
+        // Add the vertex to the scene
+        grid_map::Index index(i, j);
+        if (!isValid(index(0), index(1))) {
+          continue;
         }
-      }
+        grid_map::Position position = topLeft.array() - index.cast<double>() * resolution;
+        manualObject_->position(position(0), position(1), heightOrFlatData(index(0), index(1)));
 
-      // Plot triangles if we have enough vertices.
-      if (vertexIndices.size() > 2) {
-        // Create one or two triangles from the vertices depending on how many vertices we have.
-        if (!noColor) {
+        const Ogre::ColourValue& color = colorValues(index(0), index(1));
+        manualObject_->colour(color.r, color.g, color.b, alpha);
+
+        indexToOgreIndex(index(0), index(1)) = ogreIndex;
+        ogreIndex++;
+
+        // We can only add triangles to the top left side of the current vertex if we have data.
+        if (i == 0 || j == 0) {
+          continue;
+        }
+
+        // Add triangles and grid to scene.
+        std::vector<int> vertexIndices;
+        for (size_t k = 0; k < 2; k++) {
+          for (size_t l = 0; l < 2; l++) {
+            grid_map::Index index(i - k, j - l);
+            if (!isValid(index(0), index(1))) {
+              continue;
+            }
+            vertexIndices.emplace_back(indexToOgreIndex(index(0), index(1)));
+          }
+        }
+
+        // Plot triangles if we have enough vertices.
+        if (vertexIndices.size() > 2) {
+          // Create one or two triangles from the vertices depending on how many vertices we have.
           if (vertexIndices.size() == 3) {
             manualObject_->triangle(vertexIndices[0], vertexIndices[1], vertexIndices[2]);
           } else {

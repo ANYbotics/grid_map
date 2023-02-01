@@ -107,7 +107,14 @@ class MessageFilterDisplay : public _RosTopicDisplay {
  protected:
   void updateTopic() override {
     unsubscribe();
+
+    // reset and enable again.
+    bool wasEnabled = isEnabled();
     reset();
+    if(wasEnabled){
+      onEnable();
+    }
+
     subscribe();
     context_->queueRender();
   }
