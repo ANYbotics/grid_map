@@ -22,7 +22,7 @@ namespace grid_map_pcl {
 
 void setVerbosityLevelToDebugIfFlagSet(const ros::NodeHandle& nh);
 
-std::string getParameterPath();
+std::string getParameterPath(const ros::NodeHandle& nh);
 
 std::string getOutputBagPath(const ros::NodeHandle& nh);
 

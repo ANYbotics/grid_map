@@ -115,13 +115,9 @@ Pointcloud::Ptr concatenate(Pointcloud::Ptr cloud1, Pointcloud::Ptr cloud2) {
   Pointcloud::Ptr concatenatedCloud(new grid_map_pcl_test::Pointcloud());
   concatenatedCloud->points.reserve(cloud1->points.size() + cloud2->points.size());
 
-  for (const auto& point : cloud2->points) {
-    concatenatedCloud->push_back(point);
-  }
+  std::copy(cloud2->points.begin(), cloud2->points.end(), std::back_inserter(concatenatedCloud->points));
 
-  for (const auto& point : cloud1->points) {
-    concatenatedCloud->push_back(point);
-  }
+  std::copy(cloud1->points.begin(), cloud1->points.end(), std::back_inserter(concatenatedCloud->points));
 
   return concatenatedCloud;
 }

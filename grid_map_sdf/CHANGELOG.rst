@@ -2,6 +2,11 @@
 Changelog for package grid_map_sdf
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.7.0 (2022-03-17)
+------------------
+* Release of new implementation to convert grid maps to signed distance fields.
+* Contributors: Ruben Grandia
+
 1.6.4 (2020-12-04)
 ------------------
 

@@ -8,7 +8,6 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 ## Find catkin macros and libraries
 find_package(catkin REQUIRED COMPONENTS
   grid_map_core
-  pcl_ros
 )
 
 ###################################
@@ -27,7 +26,6 @@ catkin_package(
     ${PROJECT_NAME}
   CATKIN_DEPENDS
     grid_map_core
-    pcl_ros
   DEPENDS
 )
 
@@ -45,6 +43,7 @@ include_directories(
 
 ## Declare a cpp library
 add_library(${PROJECT_NAME}
+  src/SignedDistance2d.cpp
   src/SignedDistanceField.cpp
 )
 
@@ -82,11 +81,16 @@ if(CATKIN_ENABLE_TESTING)
 
   ## Add gtest based cpp test target and link libraries
   catkin_add_gtest(${PROJECT_NAME}-test
-    test/SignedDistanceFieldTest.cpp
+    test/test3dLookup.cpp
     test/test_grid_map_sdf.cpp
+    test/testDerivatives.cpp
+    test/testPixelBorderDistance.cpp
+    test/testSignedDistance2d.cpp
+    test/testSignedDistance3d.cpp
   )
   target_include_directories(${PROJECT_NAME}-test PRIVATE
     include
+    test/include
   )
   target_include_directories(${PROJECT_NAME}-test SYSTEM PUBLIC
     ${catkin_INCLUDE_DIRS}

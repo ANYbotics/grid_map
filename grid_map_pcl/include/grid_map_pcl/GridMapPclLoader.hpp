@@ -92,6 +92,12 @@ class GridMapPclLoader {
    */
   void loadParameters(const std::string& filename);
 
+  /*!
+   * Set algorithm's parameters.
+   * @param[in] parameters of the algorithm
+   */
+  void setParameters(const grid_map_pcl::PclLoaderParameters::Parameters parameters);
+
   //! @return the parameters.
   const grid_map_pcl::PclLoaderParameters::Parameters& getParameters() const { return params_.get(); }
 

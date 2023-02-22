@@ -46,6 +46,7 @@ class PclLoaderParameters {
   struct GridMapParameters {
     double resolution_ = 0.1;
     unsigned int minCloudPointsPerCell_ = 2;
+    unsigned int maxCloudPointsPerCell_ = 100000;
   };
 
   struct Parameters {
@@ -64,7 +65,6 @@ class PclLoaderParameters {
   PclLoaderParameters() = default;
   ~PclLoaderParameters() = default;
 
- private:
   /*!
    * Load parameters for the GridMapPclLoader class.
    * @param[in] full path to the config file with parameters
@@ -76,7 +76,7 @@ class PclLoaderParameters {
    * Invoke operator[] on the yaml node. Finds
    * the parameters in the yaml tree.
    */
-  void handleYamlNode(const YAML::Node& yamlNode);
+  void loadParameters(const YAML::Node& yamlNode);
 
   /*!
    * Saves typing parameters_ in the owner class. The owner of this
@@ -85,6 +85,7 @@ class PclLoaderParameters {
    */
   const Parameters& get() const;
 
+ private:
   // Parameters for the GridMapPclLoader class.
   Parameters parameters_;
 };
