@@ -667,7 +667,7 @@ bool GridMapRosConverter::saveToBag(
   rclcpp::Serialization<grid_map_msgs::msg::GridMap> serialization;
   serialization.serialize_message(message.get(), &serialized_msg);
 
-  rosbag2_cpp::StorageOptions storage_options;
+  rosbag2_storage::StorageOptions storage_options;
   storage_options.uri = pathToBag;
   storage_options.storage_id = "sqlite3";
 
@@ -703,7 +703,7 @@ bool GridMapRosConverter::loadFromBag(
   const std::string & pathToBag, const std::string & topic,
   grid_map::GridMap & gridMap)
 {
-  rosbag2_cpp::StorageOptions storage_options;
+  rosbag2_storage::StorageOptions storage_options;
   storage_options.uri = pathToBag;
   storage_options.storage_id = "sqlite3";
 
