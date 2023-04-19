@@ -72,6 +72,10 @@ class GridMapVisual {
 
   // Helper methods.
   bool haveMap_;
+
+  // Warning logs
+  static constexpr double warningMessageThrottlePeriod_{10.0};
+
   /**
    * Initialized the manualObject if not already initialized and clears all previously added data.
    * @param nVertices An estimate on the number of vertices to be added.
@@ -114,6 +118,13 @@ class GridMapVisual {
    * @return A boolean mask. True indicates that all layers are finite, false indicates that at least one layer is NAN.
    */
   MaskArray computeIsValidMask(std::vector<std::string> basicLayers);
+
+  /**
+   * @brief Logs a warning message which lists the basic layers that are missing from the grid map.
+   *
+   * @param basicLayers  Basic layers.
+   */
+  void printMissingBasicLayers(const std::vector<std::string>& basicLayers) const;
 
   /**
    * Transforms the intensity into [0,1] range where 0 corresponds to the minIntensity and 1 to maxIntensity. The given value is clipped to

@@ -8,6 +8,9 @@
 
 #include "grid_map_rviz_plugin/GridMapVisual.hpp"
 
+#include <algorithm>
+#include <iterator>
+
 #include <OGRE/OgreManualObject.h>
 #include <OGRE/OgreMaterialManager.h>
 #include <OGRE/OgreSceneManager.h>
@@ -107,6 +110,9 @@ void GridMapVisual::computeVisualization(float alpha, bool showGridLines, bool f
     basicLayers.emplace_back(heightLayer);
   }
   const MaskArray isValid = computeIsValidMask(basicLayers);
+
+  // Check and warn the user if any basic layers are not present in the grid map.
+  printMissingBasicLayers(basicLayers);
 
   // Compute the display heights for each cell.
   Eigen::ArrayXXf heightOrFlatData;
@@ -351,9 +357,24 @@ void GridMapVisual::initializeMeshLines(size_t cols, size_t rows, double resolut
 GridMapVisual::MaskArray GridMapVisual::computeIsValidMask(std::vector<std::string> basicLayers) {
   MaskArray isValid = MaskArray::Ones(map_.getSize()(0), map_.getSize()(1));
   for (const std::string& layer : basicLayers) {
-    isValid = isValid && map_.get(layer).array().unaryExpr([](float v) { return std::isfinite(v); });
+    if (map_.exists(layer)) {
+      isValid = isValid && map_.get(layer).array().unaryExpr([](float v) { return std::isfinite(v); });
+    }
   }
   return isValid;
+}
+
+void GridMapVisual::printMissingBasicLayers(const std::vector<std::string>& basicLayers) const {
+  std::stringstream missingBasicLayers{};
+  std::copy_if(basicLayers.cbegin(), basicLayers.cend(), std::ostream_iterator<std::string>(missingBasicLayers, "\n"),
+               [&](const std::string& basicLayer) { return !map_.exists(basicLayer); });
+
+  if (missingBasicLayers.str().empty()) {
+    return;
+  }
+
+  ROS_WARN_STREAM_THROTTLE(warningMessageThrottlePeriod_, "The following basic layers are missing from the grid map:\n"
+                                                              << missingBasicLayers.str());
 }
 
 void GridMapVisual::setFramePosition(const Ogre::Vector3& position) {
