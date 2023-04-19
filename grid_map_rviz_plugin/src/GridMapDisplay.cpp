@@ -135,17 +135,24 @@ void GridMapDisplay::onInitialize()
 
 void GridMapDisplay::onEnable()
 {
-  isReset_ = false;
+  isEnabled_ = true;
   connect(this, &GridMapDisplay::process, this, &GridMapDisplay::onProcessMessage);
   MessageFilterDisplay<grid_map_msgs::GridMap>::onEnable();
 }
 
+void GridMapDisplay::onDisable(){
+  MFDClass::onDisable();
+  isEnabled_ = false;
+}
+
 void GridMapDisplay::reset()
 {
-  isReset_ = true;
   disconnect(this, &GridMapDisplay::process, this, &GridMapDisplay::onProcessMessage);
   MFDClass::reset();
   visuals_.clear();
+  if(isEnabled_){
+    onEnable();
+  }
 }
 
 void GridMapDisplay::updateHistoryLength()
@@ -240,7 +247,7 @@ void GridMapDisplay::processMessage(const grid_map_msgs::GridMap::ConstPtr& msg)
 void GridMapDisplay::onProcessMessage(const grid_map_msgs::GridMap::ConstPtr& msg)
 {
   // Check if the display was already reset.
-  if (isReset_) {
+  if (!isEnabled_) {
     return;
   }
 

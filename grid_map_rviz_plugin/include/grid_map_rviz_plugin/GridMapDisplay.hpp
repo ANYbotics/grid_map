@@ -44,6 +44,8 @@ Q_OBJECT
 
   virtual void onEnable();
 
+  virtual void onDisable();
+
   virtual void reset();
 
  Q_SIGNALS:
@@ -67,7 +69,7 @@ Q_OBJECT
   void processMessage(const grid_map_msgs::GridMap::ConstPtr& msg);
 
   // Flag to ensure that after the reset the scene is not updated again.
-  std::atomic<bool> isReset_{false};
+  std::atomic<bool> isEnabled_{true};
 
   // Circular buffer for visuals
   boost::circular_buffer<boost::shared_ptr<GridMapVisual> > visuals_;
