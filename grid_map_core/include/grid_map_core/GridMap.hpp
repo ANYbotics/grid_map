@@ -311,6 +311,7 @@ class GridMap {
   /*!
    * Apply isometric transformation (rotation + offset) to grid map and returns the transformed map.
    * Note: The returned map may not have the same length since it's geometric description contains
+   * Note: The transformation will only be applied to the height layer of the grid map, other layers will remain untouched.
    * the original map.
    * @param[in] transform the requested transformation to apply.
    * @param[in] heightLayerName the height layer of the map.
