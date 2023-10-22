@@ -43,8 +43,12 @@ add_library(${PROJECT_NAME} SHARED
   src/InpaintFilter.cpp
 )
 
-ament_target_dependencies(${PROJECT_NAME} SYSTEM
+ament_target_dependencies(${PROJECT_NAME} PUBLIC
   ${dependencies}
+)
+
+target_link_libraries(${PROJECT_NAME} PUBLIC
+  grid_map_core::grid_map_core
 )
 
 #############
