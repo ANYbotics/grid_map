@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.5.1)
 project(grid_map_filters)
 
 # Better with serial algorithms.
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 # We want performance (fast-math) but also need a representation for NaN values to represent missing values. 
 # Therefore, we disable the finite-math-only flag that was set by fast-math.  
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ffast-math -fno-finite-math-only")

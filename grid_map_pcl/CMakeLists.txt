@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.5.1)
 project(grid_map_pcl)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 add_compile_options(-Wall -Wextra -Wpedantic)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
