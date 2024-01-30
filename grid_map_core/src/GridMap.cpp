@@ -596,7 +596,7 @@ bool GridMap::extendToInclude(const GridMap& other) {
       position_.x() += resolution_ - shift.x();
     }
     if (size_.x() % 2 != mapCopy.getSize().x() % 2) {
-      position_.x() += -std::copysign(resolution_ / 2.0, shift.x());
+      position_.x() += -std::copysign(resolution_ / 2.0, std::abs(shift.x()) < resolution_ / 2.0 ? -shift.x() : shift.x());
     }
     if (std::abs(shift.y()) < resolution_ / 2.0) {
       position_.y() -= shift.y();
