@@ -194,9 +194,10 @@ TEST(GridMapPclLoaderTest, CalculateElevation)  // NOLINT
     gridMapPclLoader.loadParameters(grid_map_pcl_test::getConfigFilePath());
     gridMapPclLoader.setInputCloud(cloud);
 
+    // 0: Smallest value among the average values ​​of each cluster
+    const int height_type = 0;
     std::vector<float> clusterHeights;
-    gridMapPclLoader.calculateElevationFromPointsInsideGridMapCell(cloud, clusterHeights);
-    const float elevation = *std::min_element(clusterHeights.begin(), clusterHeights.end());
+    const float elevation = gridMapPclLoader.calculateElevationFromPointsInsideGridMapCell(cloud, height_type, clusterHeights);
     EXPECT_NEAR(elevation, minZ, 3 * stdDevZ);
   }
 
