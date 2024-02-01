@@ -77,21 +77,19 @@ The C++ API is documented here:
 
 #### Dependencies
 
-Install ROS 2 Foxy from [here](https://index.ros.org/doc/ros2/Installation/Foxy/Linux-Development-Setup/).
-
-The *grid_map_core* package depends only on the linear algebra library [Eigen].
-
-    sudo apt-get install libeigen3-dev
+Install ROS 2 rolling from [here](https://docs.ros.org/en/rolling/Installation/Alternatives/Ubuntu-Install-Binary.html).
 
 Source the ROS 2 underlay workspace.
 
-    source /opt/ros/foxy/setup.bash
+    source /opt/ros/rolling/setup.bash
 
 Clone and build grid_map ROS2 dependencies.
+The *grid_map_core* package depends only on the linear algebra library [Eigen] which is installed through rosdep.
+
 
     mkdir -p ~/gridmap_dep/src
     cd ~/gridmap_dep
-    wget https://raw.githubusercontent.com/ANYbotics/grid_map/ros2/tools/ros2_dependencies.repos
+    wget https://raw.githubusercontent.com/ANYbotics/grid_map/rolling/tools/ros2_dependencies.repos
     vcs import src < ros2_dependencies.repos
     rosdep install -y --ignore-src --from-paths src
     colcon build --symlink-install --packages-up-to pcl_ros
