@@ -91,7 +91,7 @@ Clone and build grid_map ROS2 dependencies.
 
     mkdir -p ~/gridmap_dep/src
     cd ~/gridmap_dep
-    wget https://raw.githubusercontent.com/ANYbotics/grid_map/ros2/tools/ros2_dependencies.repos
+    wget https://raw.githubusercontent.com/ANYbotics/grid_map/humble/tools/ros2_dependencies.repos
     vcs import src < ros2_dependencies.repos
     rosdep install -y --ignore-src --from-paths src
     colcon build --symlink-install --packages-up-to pcl_ros
@@ -108,7 +108,7 @@ Clone the latest version from this repository and build it in a new grid_map wor
 
     mkdir -p ~/gridmap_ws/src 
     cd ~/gridmap_ws/src
-    git clone https://github.com/anybotics/grid_map.git --branch ros2
+    git clone https://github.com/anybotics/grid_map.git --branch humble
     cd ../
     rosdep install -y --ignore-src --from-paths src
     colcon build --symlink-install
