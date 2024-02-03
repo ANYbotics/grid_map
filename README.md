@@ -77,7 +77,7 @@ The C++ API is documented here:
 
 #### Dependencies
 
-Install ROS 2 Foxy from [here](https://index.ros.org/doc/ros2/Installation/Foxy/Linux-Development-Setup/).
+Install ROS 2 Iron from [here](https://index.ros.org/doc/ros2/Installation/Iron/Linux-Development-Setup/).
 
 The *grid_map_core* package depends only on the linear algebra library [Eigen].
 
@@ -85,7 +85,7 @@ The *grid_map_core* package depends only on the linear algebra library [Eigen].
 
 Source the ROS 2 underlay workspace.
 
-    source /opt/ros/foxy/setup.bash
+    source /opt/ros/iron/setup.bash
 
 Clone and build grid_map ROS2 dependencies.
 
