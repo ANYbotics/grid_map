@@ -1,27 +1,36 @@
 ARG ROS_DISTRO=rolling
 FROM ros:${ROS_DISTRO}-ros-core
 
-RUN apt-get update \
-    && apt-get install -y \
-        ros-dev-tools \
-        wget
-        
 WORKDIR /root/ros2_ws/
-RUN mkdir -p src
+
+# Install essential dependencies
+RUN apt-get update && \
+    apt-get install -y \
+        ros-dev-tools \
+        wget && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Clone dependencies
 COPY tools/ros2_dependencies.repos .
-RUN vcs import --input ros2_dependencies.repos src
+RUN mkdir -p src && \
+    vcs import --input ros2_dependencies.repos src
+
+# Initialize rosdep
 RUN rosdep init
 
+# Copy source code
 COPY . src/grid_map
-RUN ls src/grid_map
 
+# Install dependencies
 SHELL ["/bin/bash", "-c"]
-RUN apt-get update \
-    && rosdep update
+RUN apt-get update && \
+    rosdep update && \
+    source /opt/ros/${ROS_DISTRO}/setup.bash && \
+    rosdep install -y --ignore-src --from-paths src --skip-keys slam_toolbox && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
-RUN source /opt/ros/${ROS_DISTRO}/setup.bash \
-    && rosdep install -y --ignore-src --from-paths src --skip-keys slam_toolbox
-
-RUN source /opt/ros/${ROS_DISTRO}/setup.bash \ 
-    && colcon build --symlink-install --packages-up-to grid_map
-
+# Build
+RUN source /opt/ros/${ROS_DISTRO}/setup.bash && \
+    colcon build --symlink-install --packages-up-to grid_map
