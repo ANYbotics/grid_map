@@ -12,7 +12,6 @@ macro(grid_map_package)
       "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
   endif()
 
-  # Default to C++14
   if(NOT CMAKE_CXX_STANDARD)
     set(CMAKE_CXX_STANDARD 17)
   endif()
