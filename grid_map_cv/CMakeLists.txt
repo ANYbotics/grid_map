@@ -13,7 +13,7 @@ find_package(sensor_msgs REQUIRED)
 
 find_package(OpenCV REQUIRED
   COMPONENTS
-    opencv_photo
+    photo
 )
 
 grid_map_package()
@@ -43,12 +43,13 @@ add_library(${PROJECT_NAME} SHARED
   src/InpaintFilter.cpp
 )
 
-ament_target_dependencies(${PROJECT_NAME} PUBLIC
-  ${dependencies}
-)
-
 target_link_libraries(${PROJECT_NAME} PUBLIC
+  cv_bridge::cv_bridge
   grid_map_core::grid_map_core
+  opencv_photo
+  pluginlib::pluginlib
+  rclcpp::rclcpp
+  ${sensor_msgs_TARGETS}
 )
 
 #############
