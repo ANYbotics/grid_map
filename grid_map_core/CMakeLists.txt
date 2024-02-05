@@ -9,23 +9,9 @@ find_package(grid_map_cmake_helpers REQUIRED)
 include(cmake/${PROJECT_NAME}-extras.cmake)
 
 ## System dependencies are found with CMake's conventions
-#find_package(Eigen3 REQUIRED)
-# Solution to find Eigen3 with Saucy.
-find_package(Eigen3 QUIET)
-if(NOT EIGEN3_FOUND)
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(EIGEN3 REQUIRED eigen3)
-set(EIGEN3_INCLUDE_DIR ${EIGEN3_INCLUDE_DIRS})
-endif()
+find_package(Eigen3 REQUIRED)
 
 grid_map_package()
-
-## Specify additional locations of header files
-include_directories(
-  include
-  SYSTEM
-    ${EIGEN3_INCLUDE_DIR}
-)
 
 ###########
 ## Build ##
@@ -49,6 +35,15 @@ add_library(${PROJECT_NAME}
   src/iterators/SlidingWindowIterator.cpp
 )
 
+## Specify additional locations of header files
+target_include_directories(${PROJECT_NAME}
+  PUBLIC
+    "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+    "$<INSTALL_INTERFACE:include/${PROJECT_NAME}>"
+)
+
+target_link_libraries(${PROJECT_NAME} PUBLIC Eigen3::Eigen)
+
 #############
 ## Install ##
 #############
@@ -56,14 +51,15 @@ add_library(${PROJECT_NAME}
 # Mark executables and/or libraries for installation
 install(
   TARGETS ${PROJECT_NAME}
-  ARCHIVE DESTINATION lib
+  EXPORT export_${PROJECT_NAME}
   LIBRARY DESTINATION lib
+  ARCHIVE DESTINATION lib
   RUNTIME DESTINATION lib/${PROJECT_NAME}
 )
 
 # Mark cpp header files for installation
 install(
-  DIRECTORY include/${PROJECT_NAME}/
+  DIRECTORY include/
   DESTINATION include/${PROJECT_NAME}
   FILES_MATCHING PATTERN "*.hpp"
 )
@@ -129,10 +125,8 @@ if(TARGET ${PROJECT_NAME}-test)
   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 endif()
 
-ament_export_include_directories(include ${EIGEN3_INCLUDE_DIR})
-ament_export_libraries(
-  ${PROJECT_NAME}
-)
+ament_export_targets(export_${PROJECT_NAME} HAS_LIBRARY_TARGET)
+ament_export_dependencies(Eigen3)
 ament_package(CONFIG_EXTRAS
   cmake/${PROJECT_NAME}-extras.cmake
 )
