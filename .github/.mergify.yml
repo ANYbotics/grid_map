@@ -1,0 +1,36 @@
+---
+pull_request_rules:
+  - name: backport to iron at reviewers discretion
+    conditions:
+      - base=rolling
+      - label=backport-iron
+    actions:
+      backport:
+        branches:
+          - iron
+
+  - name: backport to humble at reviewers discretion
+    conditions:
+      - base=rolling
+      - label=backport-humble
+    actions:
+      backport:
+        branches:
+          - humble
+
+  - name: delete head branch after merge
+    conditions:
+      - merged
+    actions:
+      delete_head_branch:
+
+  - name: ask to resolve conflict
+    conditions:
+      - conflict
+      - author!=mergify
+    actions:
+      comment:
+        message: This pull request is in conflict. Could you fix it @{{author}}?
+
+# TODO enable automatic merge of backports
+# https://docs.mergify.com/workflow/actions/backport/#combining-automatic-merge
