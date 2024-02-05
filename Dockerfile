@@ -27,7 +27,7 @@ SHELL ["/bin/bash", "-c"]
 RUN apt-get update && \
     rosdep update && \
     source /opt/ros/${ROS_DISTRO}/setup.bash && \
-    rosdep install -y --ignore-src --from-paths src --skip-keys slam_toolbox && \
+    rosdep install -y --ignore-src --from-paths src --skip-keys slam_toolbox --skip-keys gazebo_ros_pkgs --skip-keys turtlebot3_gazebo && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
