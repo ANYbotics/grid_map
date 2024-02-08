@@ -1,0 +1,5 @@
+.circleci/
+.github/
+.gitignore/
+LICENSE/
+README.md
