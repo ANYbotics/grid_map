@@ -7,7 +7,7 @@
  *
  */
 
-#include "grid_map_demos/FiltersDemo.hpp"
+#include "grid_map_demos/FiltersDemo.h"
 
 using namespace grid_map;
 
