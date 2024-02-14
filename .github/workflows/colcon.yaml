@@ -1,15 +1,48 @@
 name: Colcon Build Test
-
-on: [push, pull_request]
-
+on:
+  push:
+    branches:
+    - 'rolling'
+    - 'iron'
+    - 'humble'
+  pull_request:
+    branches:
+    - '*'
 jobs:
-  industrial_ci:
+  build-test:
+    runs-on: ubuntu-22.04
     strategy:
+      fail-fast: false
       matrix:
-        env:
-          - {ROS_DISTRO: rolling, ROS_REPO: rolling}
-    runs-on: ubuntu-latest
+        config:
+          - {rosdistro: 'rolling', container: 'osrf/ros:rolling-desktop'}
+    container: ${{ matrix.config.container }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: 'ros-industrial/industrial_ci@master'
-        env: ${{matrix.env}}
+    - uses: actions/checkout@v4
+      with:
+        path: src/grid_map
+    - name: Pull in repos with vcs
+      run: |
+        apt-get update
+        vcs import --shallow --skip-existing --input grid_map/tools/ros2_dependencies.repos
+      shell: bash
+      working-directory: src
+    - name: Install Dependencies with Rosdep
+      run: |
+        apt update
+        rosdep update
+        source /opt/ros/${{matrix.config.rosdistro}}/setup.bash
+        rosdep install --from-paths src --ignore-src -y --skip-keys "slam_toolbox turtlebot3_gazebo gazebo_ros_pkgs"
+      shell: bash
+    - name: Colcon Build (Release)
+      run: |
+        source /opt/ros/${{matrix.config.rosdistro}}/setup.bash
+        colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release --packages-up-to grid_map
+      shell: bash
+    - name: Test
+      run: |
+        source /opt/ros/${{matrix.config.rosdistro}}/setup.bash
+        source install/setup.bash
+        colcon test --return-code-on-test-failure --paths src/grid_map/* --event-handlers=console_cohesion+
+        colcon test-result --all --verbose
+      shell: bash
