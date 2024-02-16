@@ -21,7 +21,9 @@
   <depend>rclcpp</depend>
   <depend>rcutils</depend>
   <depend>yaml-cpp</depend>
-  <depend>libpcl-all-dev</depend>
+  <build_depend>libpcl-all-dev</build_depend>
+  <build_export_depend>libpcl-all-dev</build_export_depend>
+  <exec_depend>libpcl-all</exec_depend>
 
   <test_depend>ament_cmake_gtest</test_depend>
   <test_depend>ament_lint_auto</test_depend>
