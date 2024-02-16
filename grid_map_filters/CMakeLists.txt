@@ -87,7 +87,7 @@ foreach(lib_name ${filter_libs})
     ${dependencies}
   )
 
-  if(CMAKE_COMPILER_IS_GNUCXX)
+  if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
     target_compile_options(${lib_name} PRIVATE "SHELL:--param ggc-min-expand=1")
     target_compile_options(${lib_name} PRIVATE "SHELL:--param ggc-min-heapsize=32768")
   endif()

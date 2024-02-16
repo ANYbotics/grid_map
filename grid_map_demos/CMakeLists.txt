@@ -201,7 +201,7 @@ set(targets_list
 )
 
 foreach(target ${targets_list})
-  if(CMAKE_COMPILER_IS_GNUCXX)
+  if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
     target_compile_options(${target} PRIVATE "SHELL:--param ggc-min-expand=1")
     target_compile_options(${target} PRIVATE "SHELL:--param ggc-min-heapsize=32768")
   endif()
