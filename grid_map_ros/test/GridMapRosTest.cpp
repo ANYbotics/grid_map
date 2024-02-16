@@ -19,6 +19,7 @@
 #include <nav2_msgs/msg/costmap.hpp>
 #include <sensor_msgs/image_encodings.hpp>
 #include <rcpputils/filesystem_helper.hpp>
+#include <rosbag2_cpp/writer.hpp>
 
 // STD
 #include <string>
@@ -130,6 +131,18 @@ TEST(RosbagHandling, saveLoadWithTime)
 
   // Removing the created bag
   rcpputils::fs::remove_all(dir);
+}
+
+TEST(RosbagHandling, wrongTopicType)
+{
+  // This test validates LoadFromBag will reject a topic of the wrong type.
+
+  std::string pathToBag = "double_chatter";
+  string topic = "chatter1";
+  GridMap gridMapOut;
+  rcpputils::fs::path dir(pathToBag);
+
+  EXPECT_FALSE(GridMapRosConverter::loadFromBag(pathToBag, topic, gridMapOut));
 }
 
 TEST(OccupancyGridConversion, withMove)
