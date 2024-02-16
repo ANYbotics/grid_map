@@ -15,7 +15,7 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {rosdistro: 'rolling', container: 'osrf/ros:rolling-desktop'}
+          - {rosdistro: 'rolling', container: 'ros:rolling'}
     container: ${{ matrix.config.container }}
     steps:
     - uses: actions/checkout@v4
@@ -33,6 +33,7 @@ jobs:
         rosdep update
         source /opt/ros/${{matrix.config.rosdistro}}/setup.bash
         rosdep install --from-paths src --ignore-src -y --skip-keys "slam_toolbox turtlebot3_gazebo gazebo_ros_pkgs"
+        apt show ros-rolling-bond-core
       shell: bash
     - name: Colcon Build (Release)
       run: |
