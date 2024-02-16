@@ -33,7 +33,6 @@ jobs:
         rosdep update
         source /opt/ros/${{matrix.config.rosdistro}}/setup.bash
         rosdep install --from-paths src --ignore-src -y --skip-keys "slam_toolbox turtlebot3_gazebo gazebo_ros_pkgs"
-        apt show ros-rolling-bond-core
       shell: bash
     - name: Colcon Build (Release)
       run: |
@@ -47,3 +46,4 @@ jobs:
         colcon test --return-code-on-test-failure --paths src/grid_map/* --event-handlers=console_cohesion+
         colcon test-result --all --verbose
       shell: bash
+
