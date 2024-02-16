@@ -10,7 +10,7 @@
 #include <OgreTextureManager.h>
 #include <OgreTechnique.h>
 
-#include <OgreVector3.h>
+#include <Ogre.h>
 #include <OgreSceneNode.h>
 #include <OgreSceneManager.h>
 #include <OgreManualObject.h>
