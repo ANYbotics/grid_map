@@ -7,7 +7,6 @@ find_package(grid_map_cmake_helpers REQUIRED)
 find_package(grid_map_core REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(nav2_costmap_2d REQUIRED)
-
 find_package(tf2_ros REQUIRED)
 find_package(tf2_geometry_msgs REQUIRED)
 
@@ -23,7 +22,7 @@ set(dependencies
   tf2_geometry_msgs
 )
 
-add_library(${PROJECT_NAME}
+add_library(${PROJECT_NAME} INTERFACE
   include/grid_map_costmap_2d/costmap_2d_converter.hpp
   include/grid_map_costmap_2d/grid_map_costmap_2d.hpp
 )
@@ -31,7 +30,7 @@ add_library(${PROJECT_NAME}
 add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 
 target_link_libraries(${PROJECT_NAME}
-  PUBLIC
+  INTERFACE
     grid_map_core::grid_map_core
     ${geometry_msgs_TARGETS}
     ${tf2_geometry_msgs_TARGETS}
@@ -40,7 +39,7 @@ target_link_libraries(${PROJECT_NAME}
 )
 
 target_include_directories(${PROJECT_NAME}
-  PUBLIC
+  INTERFACE
     "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
     "$<INSTALL_INTERFACE:include/${PROJECT_NAME}>"
 )
