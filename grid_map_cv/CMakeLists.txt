@@ -52,6 +52,12 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
   ${sensor_msgs_TARGETS}
 )
 
+# Filters does not expose targets (yet)
+target_include_directories(${PROJECT_NAME}
+  PUBLIC
+    ${filters_INCLUDE_DIRS}
+)
+
 #############
 ## Install ##
 #############
