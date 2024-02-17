@@ -15,7 +15,7 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {rosdistro: 'rolling', container: 'ros:rolling'}
+          - {rosdistro: 'humble', container: 'ros:humble'}
     container: ${{ matrix.config.container }}
     steps:
     - uses: actions/checkout@v4
