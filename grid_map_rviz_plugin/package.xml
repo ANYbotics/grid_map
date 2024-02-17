@@ -6,6 +6,7 @@
   <description>RViz plugin for displaying grid map messages.</description>
   <maintainer email="mwulf@anybotics.com">Maximilian Wulf</maintainer>
   <maintainer email="ynava@anybotics.com">Yoshua Nava</maintainer>
+  <maintainer email="ryanfriedman5410+grid_map@gmail.com">Ryan Friedman</maintainer>
   <license>BSD</license>
   <author email="philipp.kruesi@mavt.ethz.ch">Philipp Krüsi</author>
   <author>Péter Fankhauser</author>
