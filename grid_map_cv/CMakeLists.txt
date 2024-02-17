@@ -53,6 +53,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
 )
 
 # Filters does not expose targets (yet)
+# https://github.com/ros/filters/pull/70
 target_include_directories(${PROJECT_NAME}
   PUBLIC
     ${filters_INCLUDE_DIRS}
