@@ -6,7 +6,7 @@
   <description>CMake support functionality used throughout grid_map</description>
   <maintainer email="mwulf@anybotics.com">Maximilian Wulf</maintainer>
   <maintainer email="ynava@anybotics.com">Yoshua Nava</maintainer>
-  <maintainer email="stevenmacenski@gmail.com">Steve Macenski</maintainer>
+  <maintainer email="ryanfriedman5410+grid_map@gmail.com">Ryan Friedman</maintainer>
   <license>BSD</license>
 
   <buildtool_depend>ament_cmake_core</buildtool_depend>
