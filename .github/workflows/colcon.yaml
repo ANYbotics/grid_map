@@ -21,12 +21,6 @@ jobs:
     - uses: actions/checkout@v4
       with:
         path: src/grid_map
-    - name: Pull in repos with vcs
-      run: |
-        apt-get update
-        vcs import --shallow --skip-existing --input grid_map/tools/ros2_dependencies.repos
-      shell: bash
-      working-directory: src
     - name: Install Dependencies with Rosdep
       run: |
         apt update
