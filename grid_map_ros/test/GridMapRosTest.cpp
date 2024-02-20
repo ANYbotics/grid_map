@@ -19,7 +19,6 @@
 #include <nav2_msgs/msg/costmap.hpp>
 #include <sensor_msgs/image_encodings.hpp>
 #include <rcpputils/filesystem_helper.hpp>
-#include <rosbag2_cpp/writer.hpp>
 
 // STD
 #include <string>
