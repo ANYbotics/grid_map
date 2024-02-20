@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.13)
 project(grid_map_costmap_2d)
 
 ## Find ament_cmake macros and libraries
@@ -14,16 +14,6 @@ find_package(Eigen3 REQUIRED)
 
 grid_map_package()
 
-## Specify additional locations of header files
-include_directories(
-  include
-  SYSTEM
-    ${EIGEN3_INCLUDE_DIR}
-    ${grid_map_core_INCLUDE_DIRS}
-    ${nav2_costmap_2d_INCLUDE_DIRS}
-    ${geometry_msgs_INCLUDE_DIRS}
-)
-
 set(dependencies
   grid_map_core
   geometry_msgs
@@ -32,13 +22,44 @@ set(dependencies
   tf2_geometry_msgs
 )
 
+add_library(${PROJECT_NAME} INTERFACE
+  include/grid_map_costmap_2d/costmap_2d_converter.hpp
+  include/grid_map_costmap_2d/grid_map_costmap_2d.hpp
+)
+
+add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
+
+target_link_libraries(${PROJECT_NAME}
+  INTERFACE
+    grid_map_core::grid_map_core
+    ${geometry_msgs_TARGETS}
+    ${tf2_geometry_msgs_TARGETS}
+    nav2_costmap_2d::nav2_costmap_2d_core
+    tf2_ros::tf2_ros
+)
+
+target_include_directories(${PROJECT_NAME}
+  INTERFACE
+    "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+    "$<INSTALL_INTERFACE:include/${PROJECT_NAME}>"
+)
+
 #############
 ## Install ##
 #############
 
+# Mark library for installation
+install(
+  TARGETS ${PROJECT_NAME}
+  EXPORT export_${PROJECT_NAME}
+  LIBRARY DESTINATION lib
+  ARCHIVE DESTINATION lib
+  RUNTIME DESTINATION lib/${PROJECT_NAME}
+)
+
 # Mark cpp header files for installation
 install(
-  DIRECTORY include/${PROJECT_NAME}/
+  DIRECTORY include/
   DESTINATION include/${PROJECT_NAME}
   FILES_MATCHING PATTERN "*.hpp"
 )
@@ -77,6 +98,6 @@ if(BUILD_TESTING)
   add_subdirectory(test)
 endif()
 
-ament_export_include_directories(include)
+ament_export_targets(export_${PROJECT_NAME} HAS_LIBRARY_TARGET)
 ament_export_dependencies(${dependencies})
 ament_package()
