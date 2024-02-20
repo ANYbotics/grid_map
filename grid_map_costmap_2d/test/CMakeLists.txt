@@ -15,4 +15,3 @@ target_link_libraries(costmap-2d-ros-test
   ${PROJECT_NAME}::${PROJECT_NAME}
 )
 
-
