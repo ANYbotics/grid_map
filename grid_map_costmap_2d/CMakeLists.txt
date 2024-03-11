@@ -7,6 +7,7 @@ find_package(grid_map_cmake_helpers REQUIRED)
 find_package(grid_map_core REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(nav2_costmap_2d REQUIRED)
+find_package(rclcpp REQUIRED)
 find_package(tf2_ros REQUIRED)
 find_package(tf2_geometry_msgs REQUIRED)
 
@@ -34,9 +35,9 @@ target_link_libraries(${PROJECT_NAME}
     grid_map_core::grid_map_core
     ${geometry_msgs_TARGETS}
     ${tf2_geometry_msgs_TARGETS}
-    nav2_costmap_2d::nav2_costmap_2d_core
     tf2_ros::tf2_ros
 )
+ament_target_dependencies(${PROJECT_NAME} INTERFACE nav2_costmap_2d)
 
 target_include_directories(${PROJECT_NAME}
   INTERFACE
