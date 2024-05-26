@@ -32,7 +32,7 @@ jobs:
         apt update
         rosdep update
         source /opt/ros/${{matrix.config.rosdistro}}/setup.bash
-        rosdep install --from-paths src --ignore-src -y --skip-keys "slam_toolbox turtlebot3_gazebo gazebo_ros_pkgs"
+        rosdep install --from-paths src --ignore-src -y --skip-keys "slam_toolbox turtlebot3_gazebo gazebo_ros_pkgs octomap_server"
       shell: bash
     - name: Colcon Build (Release)
       run: |

@@ -136,6 +136,7 @@ if(BUILD_TESTING)
     list(APPEND AMENT_LINT_AUTO_EXCLUDE
       ament_cmake_cpplint
       ament_cmake_copyright
+      ament_cmake_uncrustify
     )
     ament_lint_auto_find_test_dependencies()
 
@@ -143,6 +144,17 @@ if(BUILD_TESTING)
     find_package(ament_cmake_cpplint)
     ament_cpplint(
       FILTERS -legal/copyright -build/include_order
+    )
+
+    # run uncrustify except for EigenLab.hpp
+    find_package(ament_cmake_uncrustify)
+    set(
+      _linter_excludes
+      include/EigenLab/EigenLab.hpp
+    )
+    ament_uncrustify(
+      EXCLUDE ${_linter_excludes}
+      LANGUAGE c++
     )
   endif()
   ament_lint_auto_find_test_dependencies()

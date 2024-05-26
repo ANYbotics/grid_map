@@ -14,6 +14,13 @@
 
 #include "grid_map_core/grid_map_core.hpp"
 
+// GCC 13 has false positive warnings around array-bounds.
+// Suppress them until this is fixed in upstream gcc. See
+// https://gcc.gnu.org/bugzilla/show_bug.cgi?id=114758 for more details.
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Warray-bounds"
+#endif
 
 TEST(EigenMatrixBaseAddons, numberOfFinites)
 {
