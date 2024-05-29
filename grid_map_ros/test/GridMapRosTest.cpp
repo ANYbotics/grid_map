@@ -132,6 +132,18 @@ TEST(RosbagHandling, saveLoadWithTime)
   rcpputils::fs::remove_all(dir);
 }
 
+TEST(RosbagHandling, wrongTopicType)
+{
+  // This test validates LoadFromBag will reject a topic of the wrong type.
+
+  std::string pathToBag = "double_chatter";
+  string topic = "chatter1";
+  GridMap gridMapOut;
+  rcpputils::fs::path dir(pathToBag);
+
+  EXPECT_FALSE(GridMapRosConverter::loadFromBag(pathToBag, topic, gridMapOut));
+}
+
 TEST(OccupancyGridConversion, withMove)
 {
   grid_map::GridMap map;
