@@ -1,5 +1,5 @@
 # Header (time and frame)
-Header header
+std_msgs/Header header
 
 # Resolution of the grid [m/cell].
 float64 resolution
