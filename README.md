@@ -52,6 +52,19 @@ If you use this work in an academic context, please cite the following publicati
       url = {http://www.springer.com/de/book/9783319260525}
     }
 
+## Branches
+
+These branches are currently maintained:
+* ROS 1
+  * [master](https://github.com/ANYbotics/grid_map)
+* ROS 2
+  * [humble](https://github.com/ANYbotics/grid_map/tree/humble)
+  * [iron](https://github.com/ANYbotics/grid_map/tree/iron)
+  * [rolling](https://github.com/ANYbotics/grid_map/tree/rolling)
+
+Pull requests for ROS 1 should target `master`.
+Pull requests for ROS 2 should target `rolling` and will be backported if they do not break ABI.
+
 ## Documentation
 
 An introduction to the grid map library including a tutorial is given in [this book chapter](http://www.researchgate.net/publication/284415855).
