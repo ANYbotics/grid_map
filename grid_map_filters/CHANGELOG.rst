@@ -2,6 +2,21 @@
 Changelog for package grid_map_filters
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge pull request `#458 <https://github.com/ANYbotics/grid_map/issues/458>`_ from ANYbotics/ci-temp-skip-octomap-server
+  build: treat several build issues on rolling
+* apply uncrustify except for EigenLab.hpp
+* Merge pull request `#443 <https://github.com/ANYbotics/grid_map/issues/443>`_ from Ryanf55/update-maintainers
+  Add Ryan as maintainer, remove Steve
+* Add Ryan as maintainer, remove Steve
+* Merge pull request `#419 <https://github.com/ANYbotics/grid_map/issues/419>`_ from Ryanf55/stop-using-CMAKE_COMPILER_IS_GNUCXX
+  Stop using deprecated CMAKE_COMPILER_IS_GNUCXX
+* Stop using deprecated CMAKE_COMPILER_IS_GNUCXX
+  * Switch to CMAKE_CXX_COMPILER_ID
+  * https://cmake.org/cmake/help/latest/variable/CMAKE_LANG_COMPILER_ID.html
+* Contributors: Ryan, Ryan Friedman, wep21
+
 2.1.0 (2022-11-08)
 ------------------
 

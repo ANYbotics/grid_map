@@ -2,6 +2,20 @@
 Changelog for package grid_map_core
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge pull request `#458 <https://github.com/ANYbotics/grid_map/issues/458>`_ from ANYbotics/ci-temp-skip-octomap-server
+  build: treat several build issues on rolling
+* suppress warning due to gcc13 bug
+* Merge pull request `#443 <https://github.com/ANYbotics/grid_map/issues/443>`_ from Ryanf55/update-maintainers
+  Add Ryan as maintainer, remove Steve
+* Add Ryan as maintainer, remove Steve
+* Merge pull request `#404 <https://github.com/ANYbotics/grid_map/issues/404>`_ from Ryanf55/bugfix-403-cmake
+  grid_map_core: Use ament_export_targets and improve eigen linkage
+* Update ament to latest recommendations
+  * Fixes include errors in grid_map_geo ros2 port
+* Contributors: Ryan, Ryan Friedman, wep21
+
 2.1.0 (2022-11-08)
 ------------------
 

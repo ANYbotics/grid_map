@@ -2,6 +2,16 @@
 Changelog for package grid_map
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge pull request `#443 <https://github.com/ANYbotics/grid_map/issues/443>`_ from Ryanf55/update-maintainers
+  Add Ryan as maintainer, remove Steve
+* Add Ryan as maintainer, remove Steve
+* Merge pull request `#420 <https://github.com/ANYbotics/grid_map/issues/420>`_ from Ryanf55/enfore-cpp17
+  Enfore C++17
+* Enfore C++17
+* Contributors: Ryan, Ryan Friedman
+
 2.1.0 (2022-11-08)
 ------------------
 

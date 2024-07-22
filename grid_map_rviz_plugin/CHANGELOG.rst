@@ -2,6 +2,16 @@
 Changelog for package grid_map_rviz_plugin
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge pull request `#443 <https://github.com/ANYbotics/grid_map/issues/443>`_ from Ryanf55/update-maintainers
+  Add Ryan as maintainer, remove Steve
+* Add Ryan as maintainer, remove Steve
+* Merge pull request `#422 <https://github.com/ANYbotics/grid_map/issues/422>`_ from jtaveau/feature/deprecation_ogre_vector3_h
+  update deprecated ogre header file
+* update header file
+* Contributors: JTaveau, Ryan, Ryan Friedman
+
 2.1.0 (2022-11-08)
 ------------------
 

@@ -2,6 +2,25 @@
 Changelog for package grid_map_cv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge pull request `#458 <https://github.com/ANYbotics/grid_map/issues/458>`_ from ANYbotics/ci-temp-skip-octomap-server
+  build: treat several build issues on rolling
+* suppress warning due to gcc13 bug
+* Merge pull request `#442 <https://github.com/ANYbotics/grid_map/issues/442>`_ from Ryanf55/bugfix-use-old-style-for-filters
+  Bugfix use old style include directories for filters
+* Merge pull request `#443 <https://github.com/ANYbotics/grid_map/issues/443>`_ from Ryanf55/update-maintainers
+  Add Ryan as maintainer, remove Steve
+* Add Ryan as maintainer, remove Steve
+* Add link to upstream ticket
+* Use old-style variables for filter include directories
+* Merge pull request `#404 <https://github.com/ANYbotics/grid_map/issues/404>`_ from Ryanf55/bugfix-403-cmake
+  grid_map_core: Use ament_export_targets and improve eigen linkage
+* fix: use target link libraries instead of ament target deps
+* Update ament to latest recommendations
+  * Fixes include errors in grid_map_geo ros2 port
+* Contributors: Ryan, Ryan Friedman, wep21
+
 2.1.0 (2022-11-08)
 ------------------
 * fix: change cv_bridge.h -> .hpp (`#376 <https://github.com/ANYbotics/grid_map/issues/376>`_)

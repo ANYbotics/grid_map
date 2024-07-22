@@ -2,6 +2,21 @@
 Changelog for package grid_map_cmake_helpers
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge pull request `#443 <https://github.com/ANYbotics/grid_map/issues/443>`_ from Ryanf55/update-maintainers
+  Add Ryan as maintainer, remove Steve
+* Add Ryan as maintainer, remove Steve
+* Merge pull request `#419 <https://github.com/ANYbotics/grid_map/issues/419>`_ from Ryanf55/stop-using-CMAKE_COMPILER_IS_GNUCXX
+  Stop using deprecated CMAKE_COMPILER_IS_GNUCXX
+* Merge pull request `#420 <https://github.com/ANYbotics/grid_map/issues/420>`_ from Ryanf55/enfore-cpp17
+  Enfore C++17
+* Enfore C++17
+* Stop using deprecated CMAKE_COMPILER_IS_GNUCXX
+  * Switch to CMAKE_CXX_COMPILER_ID
+  * https://cmake.org/cmake/help/latest/variable/CMAKE_LANG_COMPILER_ID.html
+* Contributors: Ryan, Ryan Friedman
+
 2.1.0 (2022-11-08)
 ------------------
 
