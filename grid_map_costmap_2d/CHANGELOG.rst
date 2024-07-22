@@ -2,8 +2,8 @@
 Changelog for package grid_map_costmap_2d
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+2.2.0 (2024-07-23)
+------------------
 * Merge pull request `#424 <https://github.com/ANYbotics/grid_map/issues/424>`_ from Ryanf55/modern-ament-grid-map-costmap-2d
   Use ament_export_targets in grid_map_costmap_2d
 * Remove extra whitespace

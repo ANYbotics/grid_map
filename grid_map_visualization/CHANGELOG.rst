@@ -2,8 +2,8 @@
 Changelog for package grid_map_visualization
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+2.2.0 (2024-07-23)
+------------------
 * Merge pull request `#443 <https://github.com/ANYbotics/grid_map/issues/443>`_ from Ryanf55/update-maintainers
   Add Ryan as maintainer, remove Steve
 * Add Ryan as maintainer, remove Steve
