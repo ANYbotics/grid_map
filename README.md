@@ -60,6 +60,7 @@ These branches are currently maintained:
 * ROS 2
   * [humble](https://github.com/ANYbotics/grid_map/tree/humble)
   * [iron](https://github.com/ANYbotics/grid_map/tree/iron)
+  * [jazzy](https://github.com/ANYbotics/grid_map/tree/jazzy)
   * [rolling](https://github.com/ANYbotics/grid_map/tree/rolling)
 
 Pull requests for ROS 1 should target `master`.
