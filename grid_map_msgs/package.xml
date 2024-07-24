@@ -3,24 +3,28 @@
   <name>grid_map_msgs</name>
   <version>1.7.15</version>
   <description>Definition of the multi-layered grid map message type.</description>
+
+  <license>BSD</license>
   <author email="pfankhauser@anybotics.com">Péter Fankhauser</author>
   <maintainer email="mwulf@anybotics.com">Maximilian Wulf</maintainer>
   <maintainer email="ynava@anybotics.com">Yoshua Nava</maintainer>
-  <license>BSD</license>
   <url type="website">http://github.com/anybotics/grid_map</url>
   <url type="bugtracker">http://github.com/anybotics/grid_map/issues</url>
+
   <buildtool_depend condition="$ROS_VERSION == 1">catkin</buildtool_depend>
   <buildtool_depend condition="$ROS_VERSION == 2">ament_cmake</buildtool_depend>
   <buildtool_depend condition="$ROS_VERSION == 2">rosidl_default_generators</buildtool_depend>
-  <depend condition="$ROS_VERSION == 1">roscpp</depend>
-  <depend condition="$ROS_VERSION == 1">message_generation</depend>
+
+  <build_depend condition="$ROS_VERSION == 1">message_generation</build_depend>
+
   <depend>std_msgs</depend>
   <depend>geometry_msgs</depend>
-  <depend condition="$ROS_VERSION == 2">rclcpp</depend>
-  <depend condition="$ROS_VERSION == 2">builtin_interfaces</depend>
+
   <exec_depend condition="$ROS_VERSION == 1">message_runtime</exec_depend>
   <exec_depend condition="$ROS_VERSION == 2">rosidl_default_runtime</exec_depend>
+
   <member_of_group condition="$ROS_VERSION == 2">rosidl_interface_packages</member_of_group>
+
   <export>
     <build_type condition="$ROS_VERSION == 2">ament_cmake</build_type>
   </export>
