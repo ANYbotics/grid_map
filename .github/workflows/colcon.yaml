@@ -10,13 +10,14 @@ on:
     - '*'
 jobs:
   build-test:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         config:
-          - {rosdistro: 'rolling', container: 'ros:rolling'}
-    container: ${{ matrix.config.container }}
+          - {rosdistro: 'rolling', container: 'rostooling/setup-ros-docker:ubuntu-noble-ros-rolling-desktop-latest'}
+    container: 
+      image: ${{ matrix.config.container }}
     steps:
     - uses: actions/checkout@v4
       with:
@@ -32,7 +33,7 @@ jobs:
         apt update
         rosdep update
         source /opt/ros/${{matrix.config.rosdistro}}/setup.bash
-        rosdep install --from-paths src --ignore-src -y --skip-keys "slam_toolbox turtlebot3_gazebo gazebo_ros_pkgs octomap_server"
+        rosdep install --from-paths src --ignore-src -y --skip-keys "slam_toolbox"
       shell: bash
     - name: Colcon Build (Release)
       run: |
