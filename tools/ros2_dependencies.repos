@@ -1,6 +1,5 @@
 repositories:
   ros-planning/navigation2:
     type: git
-    # back to upstream main after https://github.com/ros-navigation/navigation2/pull/4298 is merged 
-    url: https://github.com/tonynajjar/navigation2.git
-    version: fix-devcontainer
+    url: https://github.com/ros-navigation/navigation2.git
+    version: main
