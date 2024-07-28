@@ -138,7 +138,7 @@ TEST(RosbagHandling, wrongTopicType)
   // See https://github.com/ANYbotics/grid_map/issues/401.
 
   std::string pathToBag = "double_chatter";
-  string topic = "chatter1";
+  string topic = "/chatter1";
   GridMap gridMapOut;
   rcpputils::fs::path dir(pathToBag);
 
