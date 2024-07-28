@@ -724,7 +724,7 @@ bool GridMapRosConverter::loadFromBag(
   // Validate the received bag topic exists and is of the correct type to prevent later serialization exception.
   const auto topic_metadata = reader.get_all_topics_and_types();
   bool topic_is_correct_type = false;
-  for (const auto& m: topic_metadata) {
+  for (const auto & m: topic_metadata) {
     if (m.name == topic && m.type == "grid_map_msgs/msg/GridMap") {
       topic_is_correct_type = true;
     }
@@ -732,7 +732,8 @@ bool GridMapRosConverter::loadFromBag(
   if (!topic_is_correct_type) {
     RCLCPP_ERROR(
       rclcpp::get_logger(
-        "loadFromBag"), "Bagfile does not contain a GridMap message on the expected topic '%s'", topic.c_str());
+        "loadFromBag"), "Bagfile does not contain a GridMap message on the expected topic '%s'",
+        topic.c_str());
     return false;
   }
 
@@ -743,7 +744,7 @@ bool GridMapRosConverter::loadFromBag(
     }
 
     // Only read messages on the correct topic.
-    // https://github.com/ANYbotics/grid_map/issues/401 
+    // https://github.com/ANYbotics/grid_map/issues/401
     if (bag_message->topic_name != topic) {
       continue;
     }
