@@ -37,7 +37,7 @@ jobs:
       run: |
         source /opt/ros/${{matrix.config.rosdistro}}/setup.bash
         source install/setup.bash
-        colcon test --return-code-on-test-failure --paths src/grid_map/* --event-handlers=console_cohesion+
+        colcon test --paths src/grid_map/* --event-handlers=console_cohesion+
         colcon test-result --all --verbose
       shell: bash
 
