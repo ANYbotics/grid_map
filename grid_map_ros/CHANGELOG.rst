@@ -2,6 +2,19 @@
 Changelog for package grid_map_ros
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix LoadFromBag assumptions causing C++ exceptions during serialization (`#438 <https://github.com/ANYbotics/grid_map/issues/438>`_)
+  Fix LoadFromBag assumptions
+  * Not all bags have only GridMap messages
+  * Not all bags have GridMap on the right topic
+  * Add test for trying to load a grid map from a bag that doesn't
+  contain it on the expected topic
+  * Add nullptr check on reader messages
+  * Remove unused include
+  * Don't skip reporting when tests fail
+* Contributors: Ryan
+
 2.2.0 (2024-07-23)
 ------------------
 * Merge pull request `#458 <https://github.com/ANYbotics/grid_map/issues/458>`_ from ANYbotics/ci-temp-skip-octomap-server
