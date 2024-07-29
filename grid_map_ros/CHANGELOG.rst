@@ -2,8 +2,8 @@
 Changelog for package grid_map_ros
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+2.3.0 (2024-07-29)
+------------------
 * Fix LoadFromBag assumptions causing C++ exceptions during serialization (`#438 <https://github.com/ANYbotics/grid_map/issues/438>`_)
   Fix LoadFromBag assumptions
   * Not all bags have only GridMap messages
