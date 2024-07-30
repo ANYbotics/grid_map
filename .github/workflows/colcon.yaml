@@ -28,6 +28,7 @@ jobs:
         vcs import --shallow --skip-existing --input grid_map/tools/ros2_dependencies.repos
       shell: bash
       working-directory: src
+      if: ${{ matrix.config.rosdistro == 'rolling' }}
     - name: Install Dependencies with Rosdep
       run: |
         apt update
