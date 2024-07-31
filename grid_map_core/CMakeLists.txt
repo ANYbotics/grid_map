@@ -129,6 +129,7 @@ endif()
 
 ament_export_targets(export_${PROJECT_NAME} HAS_LIBRARY_TARGET)
 ament_export_dependencies(Eigen3)
-ament_package(CONFIG_EXTRAS
-  cmake/${PROJECT_NAME}-extras.cmake
-)
+ament_package()
+#ament_package(CONFIG_EXTRAS
+#  cmake/${PROJECT_NAME}-extras.cmake
+#)

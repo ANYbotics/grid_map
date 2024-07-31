@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.15)
 project(issue382)
 
-find_package(grid_map_core REQUIRED)
+find_package(grid_map_core CONFIG REQUIRED)
 find_package(Eigen3 CONFIG REQUIRED)
 
 
