@@ -38,3 +38,6 @@
 
 grid_map_pcl/data/*
 !grid_map_pcl/data/input_cloud.pcd
+
+# Python
+*.pyc
