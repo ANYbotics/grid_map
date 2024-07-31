@@ -5,8 +5,7 @@ project(grid_map_core)
 find_package(ament_cmake REQUIRED)
 find_package(grid_map_cmake_helpers REQUIRED)
 
-## Define Eigen addons.
-include(cmake/${PROJECT_NAME}-extras.cmake)
+
 
 ## System dependencies are found with CMake's conventions
 find_package(Eigen3 REQUIRED)
@@ -34,6 +33,9 @@ add_library(${PROJECT_NAME}
   src/iterators/LineIterator.cpp
   src/iterators/SlidingWindowIterator.cpp
 )
+
+## Define Eigen addons.
+include(cmake/${PROJECT_NAME}-extras.cmake)
 
 ## Specify additional locations of header files
 target_include_directories(${PROJECT_NAME}
