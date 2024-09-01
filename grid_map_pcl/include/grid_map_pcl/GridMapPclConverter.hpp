@@ -60,6 +60,16 @@ class GridMapPclConverter {
    */
   static bool addLayerFromPolygonMesh(const pcl::PolygonMesh& mesh, const std::string& layer, grid_map::GridMap& gridMap);
 
+  /*!
+   * Adds a color layer with data from a polygon mesh. The mesh is ray traced from
+   * above (negative z-Direction).
+   * @param[in] mesh the mesh to be added. It can only consist of triangles!
+   * @param[in] layer the layer that is filled with the mesh data.
+   * @param[out] gridMap the grid map to be populated.
+   * @return true if successful, false otherwise.
+   */
+  static bool addColorLayerFromPolygonMesh(const pcl::PolygonMesh& mesh, const std::string& layer, grid_map::GridMap& gridMap);
+
  private:
   static bool rayTriangleIntersect(const Eigen::Vector3f& point, const Eigen::Vector3f& ray, const Eigen::Matrix3f& triangleVertices,
                                    Eigen::Vector3f& intersectionPoint);
