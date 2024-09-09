@@ -11,6 +11,7 @@ Features:
 * **Based on Eigen:** Grid map data is stored as [Eigen] data types. Users can apply available Eigen algorithms directly to the map data for versatile and efficient data manipulation.
 * **Convenience functions:** Several helper methods allow for convenient and memory safe cell data access. For example, iterator functions for rectangular, circular, polygonal regions and lines are implemented.
 * **ROS interface:** Grid maps can be directly converted to and from ROS message types such as PointCloud2, OccupancyGrid, GridCells, and our custom GridMap message. Conversion packages provide compatibility with [costmap_2d], [PCL], and [OctoMap] data types.
+  * Note: Currently, PointCloud2 can only be converted one-way; see this [issue](https://github.com/ANYbotics/grid_map/issues/158) for context.
 * **OpenCV interface:** Grid maps can be seamlessly converted from and to [OpenCV] image types to make use of the tools provided by [OpenCV].
 * **Visualizations:** The *grid_map_rviz_plugin* renders grid maps as 3d surface plots (height maps) in [RViz]. Additionally, the *grid_map_visualization* package helps to visualize grid maps as point clouds, occupancy grids, grid cells etc.
 * **Filters:** The *grid_map_filters* provides are range of filters to process grid maps as a sequence of filters. Parsing of mathematical expressions allows to flexibly setup powerful computations such as thresholding, normal vectors, smoothening, variance, inpainting, and matrix kernel convolutions.
@@ -51,6 +52,20 @@ If you use this work in an academic context, please cite the following publicati
       doi = {10.1007/978-3-319-26054-9{\_}5},
       url = {http://www.springer.com/de/book/9783319260525}
     }
+
+## Branches
+
+These branches are currently maintained:
+* ROS 1
+  * [master](https://github.com/ANYbotics/grid_map)
+* ROS 2
+  * [humble](https://github.com/ANYbotics/grid_map/tree/humble)
+  * [iron](https://github.com/ANYbotics/grid_map/tree/iron)
+  * [jazzy](https://github.com/ANYbotics/grid_map/tree/jazzy)
+  * [rolling](https://github.com/ANYbotics/grid_map/tree/rolling)
+
+Pull requests for ROS 1 should target `master`.
+Pull requests for ROS 2 should target `rolling` and will be backported if they do not break ABI.
 
 ## Documentation
 
