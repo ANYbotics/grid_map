@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.5.1)
 project(grid_map_visualization)
 
-set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
 add_compile_options(-Wall -Wextra -Wpedantic)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 

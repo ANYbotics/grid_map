@@ -1,4 +1,4 @@
-#include <pluginlib/class_list_macros.h>
+#include <pluginlib/class_list_macros.hpp>
 
 #include "grid_map_filters/BufferNormalizerFilter.hpp"
 #include "grid_map_filters/ColorBlendingFilter.hpp"
