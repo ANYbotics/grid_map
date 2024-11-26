@@ -88,9 +88,9 @@ bool GridMap::hasBasicLayers() const
 bool GridMap::hasSameLayers(const GridMap & other) const
 {
   return std::all_of(layers_.begin(), layers_.end(),
-                     [&](const std::string& layer){
-                      return other.exists(layer);
-                    });
+           [&](const std::string & layer){
+             return other.exists(layer);
+           });
 }
 
 void GridMap::add(const std::string & layer, const double value)
@@ -189,45 +189,44 @@ float GridMap::atPosition(
   bool skipNextSwitchCase = false;
   switch (interpolationMethod) {
     case InterpolationMethods::INTER_CUBIC_CONVOLUTION: {
-      float value;
-      if (atPositionBicubicConvolutionInterpolated(layer, position, value)) {
-        return value;
-      } else {
-        interpolationMethod = InterpolationMethods::INTER_LINEAR;
-        skipNextSwitchCase = true;
-      }
-      [[fallthrough]];
-    }
-    case InterpolationMethods::INTER_CUBIC: {
-      if (!skipNextSwitchCase) {
         float value;
-        if (atPositionBicubicInterpolated(layer, position, value)) {
+        if (atPositionBicubicConvolutionInterpolated(layer, position, value)) {
           return value;
         } else {
           interpolationMethod = InterpolationMethods::INTER_LINEAR;
+          skipNextSwitchCase = true;
         }
+        [[fallthrough]];
       }
-      [[fallthrough]];
-    }
+    case InterpolationMethods::INTER_CUBIC: {
+        if (!skipNextSwitchCase) {
+          float value;
+          if (atPositionBicubicInterpolated(layer, position, value)) {
+            return value;
+          } else {
+            interpolationMethod = InterpolationMethods::INTER_LINEAR;
+          }
+        }
+        [[fallthrough]];
+      }
     case InterpolationMethods::INTER_LINEAR: {
-      float value;
-      if (atPositionLinearInterpolated(layer, position, value)){
-        return value;
+        float value;
+        if (atPositionLinearInterpolated(layer, position, value)) {
+          return value;
+        } else {
+          interpolationMethod = InterpolationMethods::INTER_NEAREST;
+        }
+        [[fallthrough]];
       }
-      else {
-        interpolationMethod = InterpolationMethods::INTER_NEAREST;
-      }
-      [[fallthrough]];
-    }
     case InterpolationMethods::INTER_NEAREST: {
-      Index index;
-      if (getIndex(position, index)) {
-        return at(layer, index);
-      } else {
-        throw std::out_of_range("GridMap::atPosition(...) : Position is out of range.");
+        Index index;
+        if (getIndex(position, index)) {
+          return at(layer, index);
+        } else {
+          throw std::out_of_range("GridMap::atPosition(...) : Position is out of range.");
+        }
+        break;
       }
-      break;
-    }
     default:
       throw std::runtime_error(
           "GridMap::atPosition(...) : Specified "
@@ -290,9 +289,9 @@ bool GridMap::isValid(const Index & index, const std::vector<std::string> & laye
     return false;
   }
   return std::all_of(layers.begin(), layers.end(),
-              [&](const std::string& layer){
-                return isValid(index, layer);
-              });
+           [&](const std::string & layer){
+             return isValid(index, layer);
+           });
 }
 
 bool GridMap::getPosition3(
@@ -824,12 +823,17 @@ Position GridMap::getClosestPositionInMap(const Position & position) const
   const double minY = bottomRightCorner.y();
 
   // Clip to box constraints and correct for indexing precision.
-  // Points on the border can lead to invalid indices because the cells represent half open intervals, i.e. [...).
-  positionInMap.x() = std::fmin(positionInMap.x(), maxX - std::numeric_limits<double>::epsilon());
-  positionInMap.y() = std::fmin(positionInMap.y(), maxY - std::numeric_limits<double>::epsilon());
+  // Points on the border can lead to invalid indices because
+  // the cells represent half open intervals, i.e. [...).
+  positionInMap.x() = std::fmin(positionInMap.x(), maxX -
+    std::numeric_limits<double>::epsilon());
+  positionInMap.y() = std::fmin(positionInMap.y(), maxY -
+    std::numeric_limits<double>::epsilon());
 
-  positionInMap.x() = std::fmax(positionInMap.x(), minX + std::numeric_limits<double>::epsilon());
-  positionInMap.y() = std::fmax(positionInMap.y(), minY + std::numeric_limits<double>::epsilon());
+  positionInMap.x() = std::fmax(positionInMap.x(), minX +
+    std::numeric_limits<double>::epsilon());
+  positionInMap.y() = std::fmax(positionInMap.y(), minY +
+    std::numeric_limits<double>::epsilon());
 
   return positionInMap;
 }
@@ -859,14 +863,14 @@ void GridMap::clearAll()
 
 void GridMap::clearRows(unsigned int index, unsigned int nRows)
 {
-  for (auto & layer : layersToClear) {
+  for (auto & layer : layers_) {
     data_.at(layer).block(index, 0, nRows, getSize()(1)).setConstant(NAN);
   }
 }
 
 void GridMap::clearCols(unsigned int index, unsigned int nCols)
 {
-  for (auto & layer : layersToClear) {
+  for (auto & layer : layers_) {
     data_.at(layer).block(0, index, getSize()(0), nCols).setConstant(NAN);
   }
 }

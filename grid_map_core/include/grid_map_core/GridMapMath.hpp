@@ -17,10 +17,9 @@
 
 namespace grid_map
 {
-union Color
-{
-    unsigned long longColor_;
-    float floatColor_;
+union Color{
+  uint64_t longColor_;
+  float floatColor_;
 };
 
 /*!
@@ -148,12 +147,6 @@ void boundIndexToRange(int & index, const int & bufferSize);
  */
 void wrapIndexToRange(Index & index, const Size & bufferSize);
 
-/*!
- * Wraps an index that runs out of the range of the buffer back into allowed the region.
- * This means that an index that overflows is reset to zero.
- * @param[in/out] index the index that will be wrapped into the valid region of the buffer.
- * @param[in] bufferSize the size of the buffer.
- */
 /*!
  * Wraps an index that runs out of the range of the buffer back into allowed the region.
  * This means that an index that overflows is reset to zero.

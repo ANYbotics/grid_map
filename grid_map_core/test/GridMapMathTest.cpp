@@ -289,7 +289,7 @@ TEST(checkIfPositionWithinMap, EdgeCases)
   grid_map::Position mapPosition(0.0, 0.0);
 
   /*
-  *  
+  *
   *  A (is inside)             B (is not inside)
   *   +-----------------------+
   *   |                       |
@@ -343,21 +343,21 @@ TEST(checkIfPositionWithinMap, EdgeCases)
       mapPosition));
   EXPECT_FALSE(
     grid_map::checkIfPositionWithinMap(
-      grid_map::Position(1.0 + DBL_EPSILON, - 1.5), mapLength,
+      grid_map::Position(1.0 + DBL_EPSILON, -1.5), mapLength,
       mapPosition));
   EXPECT_FALSE(
     grid_map::checkIfPositionWithinMap(
-      grid_map::Position(1.0 - DBL_EPSILON, - 1.5), mapLength,
+      grid_map::Position(1.0 - DBL_EPSILON, -1.5), mapLength,
       mapPosition));
   EXPECT_FALSE(
     grid_map::checkIfPositionWithinMap(
-      grid_map::Position(1.0, - 1.5 + DBL_EPSILON), mapLength,
+      grid_map::Position(1.0, -1.5 + DBL_EPSILON), mapLength,
       mapPosition));
   EXPECT_FALSE(
     grid_map::checkIfPositionWithinMap(
-      grid_map::Position(1.0, - 1.5 - DBL_EPSILON), mapLength,
+      grid_map::Position(1.0, -1.5 - DBL_EPSILON), mapLength,
       mapPosition));
-  
+
   // Noise around C.
   EXPECT_FALSE(
     grid_map::checkIfPositionWithinMap(

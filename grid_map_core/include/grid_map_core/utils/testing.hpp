@@ -6,10 +6,17 @@
 
 #include <gtest/gtest.h>
 #include <Eigen/Core>
+#include <string>
 
-#define ASSERT_MATRICES_EQ_WITH_NAN(first, second) assertMatrixesEqualWithNan((first), #first, (second), #second, __LINE__)
-static void assertMatrixesEqualWithNan(Eigen::Ref<const Eigen::MatrixXf> first, std::string firstName,
-                                       Eigen::Ref<const Eigen::MatrixXf> second, std::string secondName, int line) {
+#define ASSERT_MATRICES_EQ_WITH_NAN(first, second) \
+  assertMatrixesEqualWithNan((first), #first, (second), #second, __LINE__)
+static void assertMatrixesEqualWithNan(
+  Eigen::Ref<const Eigen::MatrixXf> first,
+  std::string firstName,
+  Eigen::Ref<const Eigen::MatrixXf> second,
+  std::string secondName,
+  int line)
+{
   ASSERT_EQ(first.rows(), second.rows());
   ASSERT_EQ(first.cols(), second.cols());
 
