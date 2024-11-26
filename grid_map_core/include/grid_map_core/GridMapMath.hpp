@@ -6,8 +6,7 @@
  *	 Institute: ETH Zurich, ANYbotics
  */
 
-#ifndef GRID_MAP_CORE__GRIDMAPMATH_HPP_
-#define GRID_MAP_CORE__GRIDMAPMATH_HPP_
+#pragma once
 
 #include <Eigen/Core>
 #include <vector>
@@ -18,6 +17,11 @@
 
 namespace grid_map
 {
+union Color
+{
+    unsigned long longColor_;
+    float floatColor_;
+};
 
 /*!
  * Gets the position of a cell specified by its index in the map frame.
@@ -83,7 +87,7 @@ void getPositionOfDataStructureOrigin(
   Position & positionOfOrigin);
 
 /*!
- * Computes how many cells/indeces the map is moved based on a position shift in
+ * Computes how many cells/indices the map is moved based on a position shift in
  * the grid map frame. Use this function if you are moving the grid map
  * and want to ensure that the cells match before and after.
  * @param[out] indexShift the corresponding shift of the indices.
@@ -101,7 +105,7 @@ bool getIndexShiftFromPositionShift(
  * if you are moving the grid map and want to ensure that the cells match
  * before and after.
  * @param[out] positionShift the corresponding shift in position in the grid map frame.
- * @param[in] indexShift the desired shift of the indeces.
+ * @param[in] indexShift the desired shift of the indices.
  * @param[in] resolution the resolution of the map.
  * @return true if successful.
  */
@@ -122,7 +126,7 @@ bool checkIfIndexInRange(const Index & index, const Size & bufferSize);
  * Bounds an index that runs out of the range of the buffer.
  * This means that an index that overflows is stopped at the last valid index.
  * This is the 2d version of boundIndexToRange(int&, const int&).
- * @param[in/out] index the indeces that will be bounded to the valid region of the buffer.
+ * @param[in/out] index the indices that will be bounded to the valid region of the buffer.
  * @param[in] bufferSize the size of the buffer.
  */
 void boundIndexToRange(Index & index, const Size & bufferSize);
@@ -139,11 +143,17 @@ void boundIndexToRange(int & index, const int & bufferSize);
  * Wraps an index that runs out of the range of the buffer back into allowed the region.
  * This means that an index that overflows is reset to zero.
  * This is the 2d version of wrapIndexToRange(int&, const int&).
- * @param[in/out] index the indeces that will be wrapped into the valid region of the buffer.
+ * @param[in/out] index the indices that will be wrapped into the valid region of the buffer.
  * @param[in] bufferSize the size of the buffer.
  */
 void wrapIndexToRange(Index & index, const Size & bufferSize);
 
+/*!
+ * Wraps an index that runs out of the range of the buffer back into allowed the region.
+ * This means that an index that overflows is reset to zero.
+ * @param[in/out] index the index that will be wrapped into the valid region of the buffer.
+ * @param[in] bufferSize the size of the buffer.
+ */
 /*!
  * Wraps an index that runs out of the range of the buffer back into allowed the region.
  * This means that an index that overflows is reset to zero.
@@ -237,7 +247,7 @@ bool getBufferRegionsForSubmap(
  * @param[in/out] index the index in the map that is incremented (corrected for the circular buffer).
  * @param[in] bufferSize the map buffer size.
  * @param[in] bufferStartIndex the map buffer start index.
- * @return true if successfully incremented indeces, false if end of iteration limits are reached.
+ * @return true if successfully incremented indices, false if end of iteration limits are reached.
  */
 bool incrementIndex(
   Index & index, const Size & bufferSize,
@@ -257,7 +267,7 @@ bool incrementIndex(
  * @param[in] submapBufferSize the submap buffer size.
  * @param[in] bufferSize the map buffer size.
  * @param[in] bufferStartIndex the map buffer start index.
- * @return true if successfully incremented indeces, false if end of iteration limits are reached.
+ * @return true if successfully incremented indices, false if end of iteration limits are reached.
  */
 bool incrementIndexForSubmap(
   Index & submapIndex, Index & index, const Index & submapTopLeftIndex,
@@ -311,26 +321,6 @@ Index getIndexFromLinearIndex(
   const size_t linearIndex, const Size & bufferSize,
   const bool rowMajor = false);
 
-/*!
- * Generates a list of indices for a region in the map.
- * @param regionIndex the region top-left index.
- * @param regionSize the region size.
- * @param indices the list of indices of the region.
- */
-void getIndicesForRegion(
-  const Index & regionIndex, const Size & regionSize,
-  std::vector<Index> indices);
-
-/*!
- * Generates a list of indices for multiple regions in the map.
- * This method makes sure every index is only once contained in the list.
- * @param regionIndeces the regions' top-left index.
- * @param regionSizes the regions' sizes.
- * @param indices the list of indices of the regions.
- */
-void getIndicesForRegions(
-  const std::vector<Index> & regionIndeces, const Size & regionSizes,
-  std::vector<Index> indices);
 
 /*!
  * Transforms an int color value (concatenated RGB values) to an int color vector (RGB from 0-255).
@@ -379,4 +369,3 @@ void colorVectorToValue(const Eigen::Vector3i & colorVector, float & colorValue)
 void colorVectorToValue(const Eigen::Vector3f & colorVector, float & colorValue);
 
 }  // namespace grid_map
-#endif  // GRID_MAP_CORE__GRIDMAPMATH_HPP_

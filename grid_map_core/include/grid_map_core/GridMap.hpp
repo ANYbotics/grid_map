@@ -6,8 +6,7 @@
  *	 Institute: ETH Zurich, ANYbotics
  */
 
-#ifndef GRID_MAP_CORE__GRIDMAP_HPP_
-#define GRID_MAP_CORE__GRIDMAP_HPP_
+#pragma once
 
 // Eigen
 #include <Eigen/Core>
@@ -308,6 +307,7 @@ public:
   /*!
    * Apply isometric transformation (rotation + offset) to grid map and returns the transformed map.
    * Note: The returned map may not have the same length since it's geometric description contains
+   * Note: The transformation will only be applied to the height layer of the grid map, other layers will remain untouched.
    * the original map.
    * @param[in] transform the requested transformation to apply.
    * @param[in] heightLayerName the height layer of the map.
@@ -334,11 +334,19 @@ public:
   void setPosition(const Position & position);
 
   /*!
-   * Move the grid map w.r.t. to the grid map frame. Use this to move the grid map
-   * boundaries without moving the grid map data. Takes care of all the data handling,
-   * such that the grid map data is stationary in the grid map frame.
-   * Note: For a comparison between the `setPosition` and the `move` method,
-   * see the `move_demo_node.cpp` file of the `grid_map_demos` package.
+   * Relocates the region captured by grid map w.r.t. to the static grid map frame. Use this to move the grid map boundaries
+   * without relocating the grid map data. Takes care of all the data handling, such that the grid map data is stationary in the grid map
+   * frame.
+   * - Data in the overlapping region before and after the position change remains stored.
+   * - Data that falls outside the map at its new position is discarded.
+   *  - Cells that cover previously unknown regions are emptied (set to nan).
+   *  The data storage is implemented as two-dimensional circular buffer to minimize computational effort.
+   *
+   *  Note: Due to the circular buffer structure, neighbouring indices might not fall close in the map frame.
+   *  This assumption only holds for indices obtained by getUnwrappedIndex().
+   *
+   *  Note: For a comparison between the `setPosition` and the `move` method, see the `move_demo_node.cpp` file of the `grid_map_demos` package.
+   *
    * @param position the new location of the grid map in the map frame.
    * @param newRegions the regions of the newly covered / previously uncovered regions of the buffer.
    * @return true if map has been moved, false otherwise.
@@ -579,7 +587,7 @@ private:
   //! Size of the buffer (rows and cols of the data structure).
   Size size_;
 
-  //! Circular buffer start indeces.
+  //! Circular buffer start indices.
   Index startIndex_;
 
 public:
@@ -587,4 +595,3 @@ public:
 };
 
 }  // namespace grid_map
-#endif  // GRID_MAP_CORE__GRIDMAP_HPP_

@@ -82,17 +82,15 @@ const std::vector<std::string> & GridMap::getBasicLayers() const
 
 bool GridMap::hasBasicLayers() const
 {
-  return basicLayers_.size() > 0;
+  return !basicLayers_.empty();
 }
 
 bool GridMap::hasSameLayers(const GridMap & other) const
 {
-  for (const auto & layer : layers_) {
-    if (!other.exists(layer)) {
-      return false;
-    }
-  }
-  return true;
+  return std::all_of(layers_.begin(), layers_.end(),
+                     [&](const std::string& layer){
+                      return other.exists(layer);
+                    });
 }
 
 void GridMap::add(const std::string & layer, const double value)
@@ -188,44 +186,52 @@ float GridMap::atPosition(
   const std::string & layer, const Position & position,
   InterpolationMethods interpolationMethod) const
 {
-  if (interpolationMethod == InterpolationMethods::INTER_CUBIC_CONVOLUTION) {
-    float value;
-    if (atPositionBicubicConvolutionInterpolated(layer, position, value)) {
-      return value;
-    } else {
-      interpolationMethod = InterpolationMethods::INTER_LINEAR;
+  bool skipNextSwitchCase = false;
+  switch (interpolationMethod) {
+    case InterpolationMethods::INTER_CUBIC_CONVOLUTION: {
+      float value;
+      if (atPositionBicubicConvolutionInterpolated(layer, position, value)) {
+        return value;
+      } else {
+        interpolationMethod = InterpolationMethods::INTER_LINEAR;
+        skipNextSwitchCase = true;
+      }
+      [[fallthrough]];
     }
-  }
-
-  if (interpolationMethod == InterpolationMethods::INTER_CUBIC) {
-    float value;
-    if (atPositionBicubicInterpolated(layer, position, value)) {
-      return value;
-    } else {
-      interpolationMethod = InterpolationMethods::INTER_LINEAR;
+    case InterpolationMethods::INTER_CUBIC: {
+      if (!skipNextSwitchCase) {
+        float value;
+        if (atPositionBicubicInterpolated(layer, position, value)) {
+          return value;
+        } else {
+          interpolationMethod = InterpolationMethods::INTER_LINEAR;
+        }
+      }
+      [[fallthrough]];
     }
-  }
-
-  if (interpolationMethod == InterpolationMethods::INTER_LINEAR) {
-    float value;
-    if (atPositionLinearInterpolated(layer, position, value)) {
-      return value;
-    } else {
-      interpolationMethod = InterpolationMethods::INTER_NEAREST;
+    case InterpolationMethods::INTER_LINEAR: {
+      float value;
+      if (atPositionLinearInterpolated(layer, position, value)){
+        return value;
+      }
+      else {
+        interpolationMethod = InterpolationMethods::INTER_NEAREST;
+      }
+      [[fallthrough]];
     }
-  }
-
-  if (interpolationMethod == InterpolationMethods::INTER_NEAREST) {
-    Index index;
-    if (getIndex(position, index)) {
-      return at(layer, index);
-    } else {
-      throw std::out_of_range("GridMap::atPosition(...) : Position is out of range.");
+    case InterpolationMethods::INTER_NEAREST: {
+      Index index;
+      if (getIndex(position, index)) {
+        return at(layer, index);
+      } else {
+        throw std::out_of_range("GridMap::atPosition(...) : Position is out of range.");
+      }
+      break;
     }
-  } else {
-    throw std::runtime_error(
-            "GridMap::atPosition(...) : Specified "
-            "interpolation method not implemented.");
+    default:
+      throw std::runtime_error(
+          "GridMap::atPosition(...) : Specified "
+          "interpolation method not implemented.");
   }
 }
 
@@ -283,12 +289,10 @@ bool GridMap::isValid(const Index & index, const std::vector<std::string> & laye
   if (layers.empty()) {
     return false;
   }
-  for (const auto & layer : layers) {
-    if (!isValid(index, layer)) {
-      return false;
-    }
-  }
-  return true;
+  return std::all_of(layers.begin(), layers.end(),
+              [&](const std::string& layer){
+                return isValid(index, layer);
+              });
 }
 
 bool GridMap::getPosition3(
@@ -322,7 +326,7 @@ bool GridMap::getVector(
 
 GridMap GridMap::getSubmap(const Position & position, const Length & length, bool & isSuccess) const
 {
-  // Submap the generate.
+  // Submap to generate.
   GridMap submap(layers_);
   submap.setBasicLayers(basicLayers_);
   submap.setTimestamp(timestamp_);
@@ -579,7 +583,7 @@ bool GridMap::move(const Position & position, std::vector<BufferRegion> & newReg
   position_ += alignedPositionShift;
 
   // Check if map has been moved at all.
-  return indexShift.any() != 0;
+  return indexShift.any();
 }
 
 bool GridMap::move(const Position & position)
@@ -819,12 +823,13 @@ Position GridMap::getClosestPositionInMap(const Position & position) const
   const double maxY = bottomLeftCorner.y();
   const double minY = bottomRightCorner.y();
 
-  // Clip to box constraints.
-  positionInMap.x() = std::fmin(positionInMap.x(), maxX);
-  positionInMap.y() = std::fmin(positionInMap.y(), maxY);
+  // Clip to box constraints and correct for indexing precision.
+  // Points on the border can lead to invalid indices because the cells represent half open intervals, i.e. [...).
+  positionInMap.x() = std::fmin(positionInMap.x(), maxX - std::numeric_limits<double>::epsilon());
+  positionInMap.y() = std::fmin(positionInMap.y(), maxY - std::numeric_limits<double>::epsilon());
 
-  positionInMap.x() = std::fmax(positionInMap.x(), minX);
-  positionInMap.y() = std::fmax(positionInMap.y(), minY);
+  positionInMap.x() = std::fmax(positionInMap.x(), minX + std::numeric_limits<double>::epsilon());
+  positionInMap.y() = std::fmax(positionInMap.y(), minY + std::numeric_limits<double>::epsilon());
 
   return positionInMap;
 }
@@ -854,12 +859,6 @@ void GridMap::clearAll()
 
 void GridMap::clearRows(unsigned int index, unsigned int nRows)
 {
-  std::vector<std::string> layersToClear;
-  if (basicLayers_.size() > 0) {
-    layersToClear = basicLayers_;
-  } else {
-    layersToClear = layers_;
-  }
   for (auto & layer : layersToClear) {
     data_.at(layer).block(index, 0, nRows, getSize()(1)).setConstant(NAN);
   }
@@ -867,12 +866,6 @@ void GridMap::clearRows(unsigned int index, unsigned int nRows)
 
 void GridMap::clearCols(unsigned int index, unsigned int nCols)
 {
-  std::vector<std::string> layersToClear;
-  if (basicLayers_.size() > 0) {
-    layersToClear = basicLayers_;
-  } else {
-    layersToClear = layers_;
-  }
   for (auto & layer : layersToClear) {
     data_.at(layer).block(0, index, getSize()(0), nCols).setConstant(NAN);
   }

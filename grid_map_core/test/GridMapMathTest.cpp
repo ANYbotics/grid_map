@@ -22,6 +22,8 @@
 
 #include "grid_map_core/GridMapMath.hpp"
 
+namespace grid_map
+{
 
 TEST(PositionFromIndex, Simple)
 {
@@ -286,10 +288,121 @@ TEST(checkIfPositionWithinMap, EdgeCases)
   grid_map::Length mapLength(2.0, 3.0);
   grid_map::Position mapPosition(0.0, 0.0);
 
+  /*
+  *  
+  *  A (is inside)             B (is not inside)
+  *   +-----------------------+
+  *   |                       |
+  *   |                       |
+  *   |              X        |
+  *   |             ^         |
+  *   |             |         |
+  *   |             |         |
+  *   |       <-----+         |
+  *   |      Y                |
+  *   |                       |
+  *   |                       |
+  *   |                       |
+  *   +-----------------------+
+  *  C (is not inside)         D (is not inside)
+  *
+  * Resulting coordinates are:
+  *  A: (1.0, 1.5)
+  *  B: (1.0, -1.5)
+  *  C: (-1.0, 1.5)
+  *  D: (-1.0, -1.5)
+  *
+  */
+
+  // Noise around A.
+  EXPECT_TRUE(
+    grid_map::checkIfPositionWithinMap(
+      grid_map::Position(1.0, 1.5), mapLength,
+      mapPosition));
+  EXPECT_FALSE(
+    grid_map::checkIfPositionWithinMap(
+      grid_map::Position(1.0 + DBL_EPSILON, 1.5), mapLength,
+      mapPosition));
+  EXPECT_TRUE(
+    grid_map::checkIfPositionWithinMap(
+      grid_map::Position(1.0 - DBL_EPSILON, 1.5), mapLength,
+      mapPosition));
+  EXPECT_FALSE(
+    grid_map::checkIfPositionWithinMap(
+      grid_map::Position(1.0, 1.5 + DBL_EPSILON), mapLength,
+      mapPosition));
+  EXPECT_TRUE(
+    grid_map::checkIfPositionWithinMap(
+      grid_map::Position(1.0, 1.5 - DBL_EPSILON), mapLength,
+      mapPosition));
+
+  // Noise around B.
   EXPECT_FALSE(
     grid_map::checkIfPositionWithinMap(
       grid_map::Position(1.0, -1.5), mapLength,
       mapPosition));
+  EXPECT_FALSE(
+    grid_map::checkIfPositionWithinMap(
+      grid_map::Position(1.0 + DBL_EPSILON, - 1.5), mapLength,
+      mapPosition));
+  EXPECT_FALSE(
+    grid_map::checkIfPositionWithinMap(
+      grid_map::Position(1.0 - DBL_EPSILON, - 1.5), mapLength,
+      mapPosition));
+  EXPECT_FALSE(
+    grid_map::checkIfPositionWithinMap(
+      grid_map::Position(1.0, - 1.5 + DBL_EPSILON), mapLength,
+      mapPosition));
+  EXPECT_FALSE(
+    grid_map::checkIfPositionWithinMap(
+      grid_map::Position(1.0, - 1.5 - DBL_EPSILON), mapLength,
+      mapPosition));
+  
+  // Noise around C.
+  EXPECT_FALSE(
+    grid_map::checkIfPositionWithinMap(
+      grid_map::Position(-1.0, 1.5), mapLength,
+      mapPosition));
+  EXPECT_TRUE(
+    grid_map::checkIfPositionWithinMap(
+      grid_map::Position(-1.0 + DBL_EPSILON, 1.5), mapLength,
+      mapPosition));
+  EXPECT_FALSE(
+    grid_map::checkIfPositionWithinMap(
+      grid_map::Position(-1.0 - DBL_EPSILON, 1.5), mapLength,
+      mapPosition));
+  EXPECT_FALSE(
+    grid_map::checkIfPositionWithinMap(
+      grid_map::Position(-1.0, 1.5 + DBL_EPSILON), mapLength,
+      mapPosition));
+  EXPECT_FALSE(
+    grid_map::checkIfPositionWithinMap(
+      grid_map::Position(-1.0, 1.5 - DBL_EPSILON), mapLength,
+      mapPosition));
+
+  // Noise around D.
+  EXPECT_FALSE(
+    grid_map::checkIfPositionWithinMap(
+      grid_map::Position(-1.0, -1.5), mapLength,
+      mapPosition));
+  EXPECT_FALSE(
+    grid_map::checkIfPositionWithinMap(
+      grid_map::Position(-1.0 + DBL_EPSILON, -1.5), mapLength,
+      mapPosition));
+  EXPECT_FALSE(
+    grid_map::checkIfPositionWithinMap(
+      grid_map::Position(-1.0 - DBL_EPSILON, -1.5), mapLength,
+      mapPosition));
+  EXPECT_FALSE(
+    grid_map::checkIfPositionWithinMap(
+      grid_map::Position(-1.0, -1.5 + DBL_EPSILON), mapLength,
+      mapPosition));
+  EXPECT_FALSE(
+    grid_map::checkIfPositionWithinMap(
+      grid_map::Position(-1.0, -1.5 - DBL_EPSILON), mapLength,
+      mapPosition));
+
+  // Extra tests.
   EXPECT_FALSE(
     grid_map::checkIfPositionWithinMap(
       grid_map::Position(-1.0, 1.5), mapLength,
@@ -394,10 +507,9 @@ TEST(checkIfIndexInRange, All)
 
 TEST(boundIndexToRange, All)
 {
-  int index;
   int bufferSize = 10;
 
-  index = 0;
+  int index = 0;
   grid_map::boundIndexToRange(index, bufferSize);
   EXPECT_EQ(0, index);
 
@@ -428,10 +540,9 @@ TEST(boundIndexToRange, All)
 
 TEST(wrapIndexToRange, All)
 {
-  int index;
   int bufferSize = 10;
 
-  index = 0;
+  int index = 0;
   grid_map::wrapIndexToRange(index, bufferSize);
   EXPECT_EQ(0, index);
 
@@ -1221,3 +1332,5 @@ TEST(getIndexFromLinearIndex, Simple)
       7,
       4) == grid_map::getIndexFromLinearIndex(39, grid_map::Size(8, 5), false)).all());
 }
+
+}  // namespace grid_map

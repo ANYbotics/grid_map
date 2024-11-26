@@ -17,9 +17,6 @@ namespace grid_map
 
 unsigned int bindIndexToRange(int idReq, unsigned int nElem)
 {
-  if (idReq < 0) {
-    return 0;
-  }
   if ((unsigned)idReq >= nElem) {
     return static_cast<unsigned int>(nElem - 1);
   }
@@ -37,7 +34,7 @@ double getLayerValue(const Matrix & layerMat, int rowReq, int colReq)
 
 
 /**
- * BICUBIC CONVLUTION INTERPOLATION ALGORITHM
+ * BICUBIC CONVOLUTION INTERPOLATION ALGORITHM
  * also known as piecewise bicubic interpolation,
  * it does not ensure continuity of the first derivatives.
  * see:
@@ -142,10 +139,7 @@ bool getIndicesOfMiddleKnot(
   const GridMap & gridMap, const Position & queriedPosition,
   Index * index)
 {
-  if (!gridMap.getIndex(queriedPosition, *index)) {
-    return false;
-  }
-  return true;
+  return gridMap.getIndex(queriedPosition, *index);
 }
 
 }  // namespace bicubic_conv
@@ -202,7 +196,7 @@ bool evaluateBicubicInterpolation(
   FunctionValueMatrix functionValues;
   assembleFunctionValueMatrix(f, dfx, dfy, ddfxy, &functionValues);
 
-  // get normalized coordiantes
+  // get normalized coordinates
   Position normalizedCoordinates;
   if (!computeNormalizedCoordinates(
       gridMap, unitSquareCornerIndices.bottomLeft_, queriedPosition,
@@ -275,10 +269,7 @@ bool getClosestPointIndices(
   const GridMap & gridMap, const Position & queriedPosition,
   Index * index)
 {
-  if (!gridMap.getIndex(queriedPosition, *index)) {
-    return false;
-  }
-  return true;
+  return gridMap.getIndex(queriedPosition, *index);
 }
 
 bool computeNormalizedCoordinates(
@@ -390,7 +381,7 @@ double mixedSecondOrderDerivativeAt(
   double resolution)
 {
   /*
-   * no need for dimensions since the we have to differentiate w.r.t. x and y
+   * no need for dimensions since we have to differentiate w.r.t. x and y
    * the order doesn't matter. Derivative values are the same.
    * Taken from https://www.mathematik.uni-dortmund.de/~kuzmin/cfdintro/lecture4.pdf
    */

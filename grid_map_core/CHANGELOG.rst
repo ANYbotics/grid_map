@@ -2,6 +2,10 @@
 Changelog for package grid_map_core
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+2.4.0 (2024-11-26)
+------------------
+* Update changes from master
+
 2.3.0 (2024-07-29)
 ------------------
 
@@ -26,6 +30,12 @@ Changelog for package grid_map_core
 ------------------
 * Initial ROS2 port
 * Contributors: Maximilian Wulf, Steve Macenski
+
+1.7.0 (2022-03-17)
+------------------
+
+1.6.4 (2020-12-04)
+------------------
 
 1.6.2 (2019-10-14)
 ------------------

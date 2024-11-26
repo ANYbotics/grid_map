@@ -5,9 +5,7 @@
  * @brief  Code to simplify Eigen integration into GTest. Pretty basic but the error messages are good.
  */
 
-
-#ifndef GRID_MAP_CORE__GTEST_EIGEN_HPP_
-#define GRID_MAP_CORE__GTEST_EIGEN_HPP_
+#pragma once
 
 #include <gtest/gtest.h>
 #include <Eigen/Core>
@@ -49,7 +47,8 @@ void assertEqual(const M1 & A, const M2 & B, std::string const & message = "")
   for (int r = 0; r < A.rows(); r++) {
     for (int c = 0; c < A.cols(); c++) {
       if (std::isnan(A(r, c))) {
-        ASSERT_TRUE(std::isnan(B(r, c)));
+		      ASSERT_TRUE(std::isnan(B(r, c))) << message << "\nNaN check failed at (" << r << "," << c << ")\n"
+                                  << "\nMatrix A:\n" << A << "\nand matrix B\n" << B;
       } else {
         ASSERT_EQ(
           A(r, c),
@@ -78,7 +77,8 @@ void assertNear(const M1 & A, const M2 & B, T tolerance, std::string const & mes
   for (int r = 0; r < A.rows(); r++) {
     for (int c = 0; c < A.cols(); c++) {
       if (std::isnan(A(r, c))) {
-        ASSERT_TRUE(std::isnan(B(r, c)));
+		      ASSERT_TRUE(std::isnan(B(r,c))) << message << "\nNaN check failed at (" << r << "," << c << ")\n"
+                                  << "\nMatrix A:\n" << A << "\nand matrix B\n" << B;
       } else {
         ASSERT_NEAR(
           A(r, c), B(r, c),
@@ -105,7 +105,8 @@ void expectNear(const M1 & A, const M2 & B, T tolerance, std::string const & mes
   for (int r = 0; r < A.rows(); r++) {
     for (int c = 0; c < A.cols(); c++) {
       if (std::isnan(A(r, c))) {
-        EXPECT_TRUE(std::isnan(B(r, c)));
+                EXPECT_TRUE(std::isnan(B(r,c))) << message << "\nNaN check failed at (" << r << "," << c << ")\n"
+                            << "\nMatrix A:\n" << A << "\nand matrix B\n" << B;
       } else {
         EXPECT_NEAR(
           A(r, c), B(r, c),
@@ -209,4 +210,3 @@ inline bool compareRelative(
   }
 
 }  // namespace grid_map
-#endif  // GRID_MAP_CORE__GTEST_EIGEN_HPP_
