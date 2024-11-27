@@ -16,7 +16,7 @@
   <build_depend>grid_map_cmake_helpers</build_depend>
 
   <depend>grid_map_core</depend>
-  <depend>octomap</depend>
+  <depend>liboctomap-dev</depend>
 
   <test_depend>ament_cmake_gtest</test_depend>
   <test_depend>ament_lint_common</test_depend>
