@@ -138,16 +138,6 @@ ament_target_dependencies(
   octomap_msgs
 )
 
-foreach(dir IN LISTS octomap_msgs_INCLUDE_DIRS)
-  if(dir MATCHES ".*octomap_msgs.*")
-    get_filename_component(PARENT "${dir}" DIRECTORY)
-    target_include_directories(octomap_to_gridmap_demo
-      PRIVATE
-        ${PARENT}
-    )
-  endif()
-endforeach()
-
 ament_target_dependencies(
   move_demo SYSTEM
   ${dependencies}
