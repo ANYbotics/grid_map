@@ -132,6 +132,36 @@ TEST(RosbagHandling, saveLoadWithTime)
   rcpputils::fs::remove_all(dir);
 }
 
+TEST(RosbagHandling, wrongTopicType)
+{
+  // This test validates LoadFromBag will reject a topic of the wrong type.
+  // See https://github.com/ANYbotics/grid_map/issues/401.
+
+  std::string pathToBag = "double_chatter";
+  string topic = "/chatter1";
+  GridMap gridMapOut;
+  rcpputils::fs::path dir(pathToBag);
+
+  EXPECT_FALSE(GridMapRosConverter::loadFromBag(pathToBag, topic, gridMapOut));
+}
+
+TEST(RosbagHandling, checkTopicTypes)
+{
+  // This test validates loadFromBag will reject a topic of the wrong type or
+  // non-existing topic and accept a correct topic.
+
+  std::string pathToBag = "test_multitopic";
+  string topic_wrong = "/chatter";
+  string topic_correct = "/grid_map";
+  string topic_non_existing = "/grid_map_non_existing";
+  GridMap gridMapOut;
+  rcpputils::fs::path dir(pathToBag);
+
+  EXPECT_FALSE(GridMapRosConverter::loadFromBag(pathToBag, topic_wrong, gridMapOut));
+  EXPECT_TRUE(GridMapRosConverter::loadFromBag(pathToBag, topic_correct, gridMapOut));
+  EXPECT_FALSE(GridMapRosConverter::loadFromBag(pathToBag, topic_non_existing, gridMapOut));
+}
+
 TEST(OccupancyGridConversion, withMove)
 {
   grid_map::GridMap map;
