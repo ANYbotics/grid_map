@@ -721,8 +721,34 @@ bool GridMapRosConverter::loadFromBag(
   grid_map_msgs::msg::GridMap extracted_gridmap_msg;
   rclcpp::Serialization<grid_map_msgs::msg::GridMap> serialization;
 
+  // Validate the received bag topic exists and
+  // is of the correct type to prevent later serialization exception.
+  const auto topic_metadata = reader.get_all_topics_and_types();
+  bool topic_is_correct_type = false;
+  for (const auto & m : topic_metadata) {
+    if (m.name == topic && m.type == "grid_map_msgs/msg/GridMap") {
+      topic_is_correct_type = true;
+    }
+  }
+  if (!topic_is_correct_type) {
+    RCLCPP_ERROR(
+      rclcpp::get_logger(
+        "loadFromBag"), "Bagfile does not contain a GridMap message on the expected topic '%s'",
+      topic.c_str());
+    return false;
+  }
+
   while (reader.has_next()) {
     auto bag_message = reader.read_next();
+    if (bag_message == nullptr) {
+      continue;
+    }
+
+    // Only read messages on the correct topic.
+    // https://github.com/ANYbotics/grid_map/issues/401
+    if (bag_message->topic_name != topic) {
+      continue;
+    }
 
     if (bag_message->serialized_data != NULL) {
       rclcpp::SerializedMessage extracted_serialized_msg(*bag_message->serialized_data);

@@ -115,6 +115,9 @@ if(BUILD_TESTING)
     test/test_grid_map_ros.cpp
     test/GridMapRosTest.cpp
   )
+
+  file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/resource/double_chatter DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+  file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/resource/test_multitopic DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 endif()
 
 if(TARGET ${PROJECT_NAME}-test)

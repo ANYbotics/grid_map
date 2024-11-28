@@ -1,0 +1,35 @@
+rosbag2_bagfile_information:
+  version: 7
+  storage_identifier: sqlite3
+  duration:
+    nanoseconds: 2640963805
+  starting_time:
+    nanoseconds_since_epoch: 1708420680345493502
+  message_count: 2
+  topics_with_message_count:
+    - topic_metadata:
+        name: /chatter
+        type: std_msgs/msg/String
+        serialization_format: cdr
+        offered_qos_profiles: "- history: 1\n  depth: 7\n  reliability: 1\n  durability: 2\n  deadline:\n    sec: 9223372036\n    nsec: 854775807\n  lifespan:\n    sec: 9223372036\n    nsec: 854775807\n  liveliness: 1\n  liveliness_lease_duration:\n    sec: 9223372036\n    nsec: 854775807\n  avoid_ros_namespace_conventions: false"
+        type_description_hash: RIHS01_df668c740482bbd48fb39d76a70dfd4bd59db1288021743503259e948f6b1a18
+      message_count: 1
+    - topic_metadata:
+        name: /grid_map
+        type: grid_map_msgs/msg/GridMap
+        serialization_format: cdr
+        offered_qos_profiles: "- history: 1\n  depth: 10\n  reliability: 1\n  durability: 1\n  deadline:\n    sec: 9223372036\n    nsec: 854775807\n  lifespan:\n    sec: 9223372036\n    nsec: 854775807\n  liveliness: 1\n  liveliness_lease_duration:\n    sec: 9223372036\n    nsec: 854775807\n  avoid_ros_namespace_conventions: false"
+        type_description_hash: RIHS01_343b0e72887541beda6b035cc053f2d6fffaad9d6dcb2773c15a808dfca31fde
+      message_count: 1
+  compression_format: ""
+  compression_mode: ""
+  relative_file_paths:
+    - test_multitopic_0.db3
+  files:
+    - path: test_multitopic_0.db3
+      starting_time:
+        nanoseconds_since_epoch: 1708420680345493502
+      duration:
+        nanoseconds: 2640963805
+      message_count: 2
+  custom_data: ~
