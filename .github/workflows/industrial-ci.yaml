@@ -1,0 +1,29 @@
+name: Industrial CI
+
+# Use industrial CI to ensure our packages express all dependencies.
+# Attempts to find issues like #490 before merge.
+# https://github.com/ros-industrial/industrial_ci?tab=readme-ov-file#for-github-actions
+
+on:
+  push:
+    branches:
+    - 'rolling'
+    - 'jazzy'
+    - 'iron'
+    - 'humble'
+  pull_request:
+    branches:
+    - '*'
+
+jobs:
+  industrial_ci:
+    strategy:
+      matrix:
+        env:
+          - {ROS_DISTRO: rolling, ROS_REPO: testing}
+          - {ROS_DISTRO: rolling, ROS_REPO: main}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: 'ros-industrial/industrial_ci@master'
+        env: ${{matrix.env}}
