@@ -25,5 +25,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      # nav2 on rolling is not available with binaries
+      - name: Set UPSTREAM_WORKSPACE to bring in nav2 as a source dependency
+        if: ${{ matrix.env.ROS_DISTRO == 'rolling' }}
+        run: echo "UPSTREAM_WORKSPACE=https://raw.githubusercontent.com/ANYbotics/grid_map/rolling/tools/ros2_dependencies.repos" >> $GITHUB_ENV
       - uses: 'ros-industrial/industrial_ci@master'
         env: ${{matrix.env}}
