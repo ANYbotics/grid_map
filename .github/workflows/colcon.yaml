@@ -3,6 +3,7 @@ on:
   push:
     branches:
     - 'rolling'
+    - 'jazzy'
     - 'iron'
     - 'humble'
   pull_request:
