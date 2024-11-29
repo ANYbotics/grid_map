@@ -36,9 +36,7 @@ public:
   constexpr static unsigned int nQuadrants = 4;
 
   BufferRegion();
-  BufferRegion(
-    const Index & startIndex, const Size & size,
-    const BufferRegion::Quadrant & quadrant);
+  BufferRegion(Index startIndex, Size size, BufferRegion::Quadrant quadrant);
   virtual ~BufferRegion() = default;
 
   const Index & getStartIndex() const;
@@ -50,7 +48,7 @@ public:
 
 private:
   //! Start index (typically top-left) of the buffer region.
-  Index staretIndex_;
+  Index startIndex_;
 
   //! Size of the buffer region.
   Size size_;

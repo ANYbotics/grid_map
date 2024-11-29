@@ -6,7 +6,7 @@
  *   Institute: ETH Zurich, ANYbotics
  */
 
-#include <math.h>
+#include <cmath>
 #include <Eigen/Geometry>
 #include <memory>
 
@@ -23,8 +23,8 @@ EllipseIterator::EllipseIterator(
 : center_(center)
 {
   semiAxisSquare_ = (0.5 * length).square();
-  double sinRotation = sin(rotation);
-  double cosRotation = cos(rotation);
+  double sinRotation = std::sin(rotation);
+  double cosRotation = std::cos(rotation);
   transformMatrix_ << cosRotation, sinRotation, sinRotation, -cosRotation;
   mapLength_ = gridMap.getLength();
   mapPosition_ = gridMap.getPosition();
@@ -40,20 +40,6 @@ EllipseIterator::EllipseIterator(
       gridMap, submapStartIndex,
       submapBufferSize));
   if (!isInside()) {++(*this);}
-}
-
-EllipseIterator & EllipseIterator::operator=(const EllipseIterator & other)
-{
-  center_ = other.center_;
-  semiAxisSquare_ = other.semiAxisSquare_;
-  transformMatrix_ = other.transformMatrix_;
-  internalIterator_ = other.internalIterator_;
-  mapLength_ = other.mapLength_;
-  mapPosition_ = other.mapPosition_;
-  resolution_ = other.resolution_;
-  bufferSize_ = other.bufferSize_;
-  bufferStartIndex_ = other.bufferStartIndex_;
-  return *this;
 }
 
 bool EllipseIterator::operator!=(const EllipseIterator & other) const
