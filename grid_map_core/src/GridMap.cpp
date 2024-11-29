@@ -80,13 +80,15 @@ const std::vector<std::string> & GridMap::getBasicLayers() const
   return basicLayers_;
 }
 
-bool GridMap::hasBasicLayers() const {
+bool GridMap::hasBasicLayers() const
+{
   return !basicLayers_.empty();
 }
 
-bool GridMap::hasSameLayers(const GridMap& other) const {
+bool GridMap::hasSameLayers(const GridMap & other) const
+{
   return std::all_of(layers_.begin(), layers_.end(),
-                     [&](const std::string& layer){return other.exists(layer);});
+           [&](const std::string & layer){return other.exists(layer);});
 }
 
 void GridMap::add(const std::string & layer, const double value)
@@ -278,7 +280,7 @@ bool GridMap::isValid(const Index & index, const std::vector<std::string> & laye
     return false;
   }
   return std::all_of(layers.begin(), layers.end(),
-              [&](const std::string& layer){return isValid(index, layer);});
+           [&](const std::string & layer){return isValid(index, layer);});
 }
 
 bool GridMap::getPosition3(
@@ -321,7 +323,7 @@ GridMap GridMap::getSubmap(const Position & position, const Length & length, boo
   // Get submap geometric information.
   SubmapGeometry submapInformation(*this, position, length, isSuccess);
   if (!isSuccess) {
-    return {layers_};
+    return GridMap(layers_);
   }
   submap.setGeometry(submapInformation);
   submap.startIndex_.setZero();  // Because of the way we copy the data below.
@@ -335,7 +337,7 @@ GridMap GridMap::getSubmap(const Position & position, const Length & length, boo
   {
     std::cout << "Cannot access submap of this size." << std::endl;
     isSuccess = false;
-    return {layers_};
+    return GridMap(layers_);
   }
 
   for (const auto & data : data_) {
@@ -511,10 +513,14 @@ bool GridMap::move(const Position & position, std::vector<BufferRegion> & newReg
           // One region to drop.
           if (i == 0) {
             clearRows(index, nCells);
-            newRegions.emplace_back(Index(index, 0), Size(nCells, getSize()(1)), BufferRegion::Quadrant::Undefined);
+            newRegions.emplace_back(
+              Index(index, 0), Size(nCells, getSize()(1)),
+              BufferRegion::Quadrant::Undefined);
           } else if (i == 1) {
             clearCols(index, nCells);
-            newRegions.emplace_back(Index(0, index), Size(getSize()(0), nCells), BufferRegion::Quadrant::Undefined);
+            newRegions.emplace_back(
+              Index(0, index), Size(getSize()(0), nCells),
+              BufferRegion::Quadrant::Undefined);
           }
         } else {
           // Two regions to drop.
@@ -522,20 +528,28 @@ bool GridMap::move(const Position & position, std::vector<BufferRegion> & newReg
           int firstNCells = getSize()(i) - firstIndex;
           if (i == 0) {
             clearRows(firstIndex, firstNCells);
-            newRegions.emplace_back(Index(firstIndex, 0), Size(firstNCells, getSize()(1)), BufferRegion::Quadrant::Undefined);
+            newRegions.emplace_back(
+              Index(firstIndex, 0), Size(firstNCells, getSize()(1)),
+              BufferRegion::Quadrant::Undefined);
           } else if (i == 1) {
             clearCols(firstIndex, firstNCells);
-            newRegions.emplace_back(Index(0, firstIndex), Size(getSize()(0), firstNCells), BufferRegion::Quadrant::Undefined);
+            newRegions.emplace_back(
+              Index(0, firstIndex), Size(getSize()(0), firstNCells),
+              BufferRegion::Quadrant::Undefined);
           }
 
           int secondIndex = 0;
           int secondNCells = nCells - firstNCells;
           if (i == 0) {
             clearRows(secondIndex, secondNCells);
-            newRegions.emplace_back(Index(secondIndex, 0), Size(secondNCells, getSize()(1)), BufferRegion::Quadrant::Undefined);
+            newRegions.emplace_back(
+              Index(secondIndex, 0), Size(secondNCells, getSize()(1)),
+              BufferRegion::Quadrant::Undefined);
           } else if (i == 1) {
             clearCols(secondIndex, secondNCells);
-            newRegions.emplace_back(Index(0, secondIndex), Size(getSize()(0), secondNCells), BufferRegion::Quadrant::Undefined);
+            newRegions.emplace_back(
+              Index(0, secondIndex), Size(getSize()(0), secondNCells),
+              BufferRegion::Quadrant::Undefined);
           }
         }
       }

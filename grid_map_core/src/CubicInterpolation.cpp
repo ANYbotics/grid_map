@@ -18,7 +18,7 @@ namespace grid_map
 unsigned int bindIndexToRange(unsigned int idReq, unsigned int nElem)
 {
   if (idReq >= nElem) {
-    return (nElem - 1);
+    return nElem - 1;
   }
   return idReq;
 }
@@ -94,9 +94,9 @@ bool assembleFunctionValueMatrix(
 
   const Matrix & layerMatrix = gridMap.get(layer);
   auto f = [&layerMatrix](unsigned int rowReq, unsigned int colReq) {
-    double retVal = getLayerValue(layerMatrix, rowReq, colReq);
-    return retVal;
-  };
+      double retVal = getLayerValue(layerMatrix, rowReq, colReq);
+      return retVal;
+    };
 
   const unsigned int i = middleKnotIndex.x();
   const unsigned int j = middleKnotIndex.y();
