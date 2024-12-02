@@ -1,0 +1,36 @@
+name: Industrial CI
+
+# Use industrial CI to ensure our packages express all dependencies.
+# Attempts to find issues like #490 before merge.
+# https://github.com/ros-industrial/industrial_ci?tab=readme-ov-file#for-github-actions
+
+on:
+  push:
+    branches:
+    - 'humble'
+  pull_request:
+    branches:
+    - '*'
+
+jobs:
+  industrial_ci:
+    strategy:
+      matrix:
+        env:
+          - {ROS_DISTRO: humble, ROS_REPO: testing}
+          - {ROS_DISTRO: humble, ROS_REPO: main}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # nav2 on rolling is not available with binaries
+      - name: Set UPSTREAM_WORKSPACE to bring in nav2 as a source dependency
+        if: ${{ matrix.env.ROS_DISTRO == 'rolling' }}
+        run: echo "UPSTREAM_WORKSPACE=https://raw.githubusercontent.com/ANYbotics/grid_map/rolling/tools/ros2_dependencies.repos" >> $GITHUB_ENV
+      # We duplicate NAV2's key skipping because I doubt they intend this bespoke file to be used by other CI jobs:
+      # https://github.com/ros-navigation/navigation2/blob/main/tools/skip_keys.txt
+      # It also is out of date, so grid_map is just going to skip keys we are sure don't work.
+      - name: set ROSDEP_SKIP_KEYS to skip nav2 keys
+        if: ${{ matrix.env.ROS_DISTRO == 'rolling' }}
+        run: echo "ROSDEP_SKIP_KEYS=slam_toolbox" >> $GITHUB_ENV
+      - uses: 'ros-industrial/industrial_ci@master'
+        env: ${{matrix.env}}
