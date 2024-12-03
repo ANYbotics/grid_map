@@ -388,6 +388,7 @@ double mixedSecondOrderDerivativeAt(
    * the order doesn't matter. Derivative values are the same.
    * Taken from https://www.mathematik.uni-dortmund.de/~kuzmin/cfdintro/lecture4.pdf
    */
+
   const int numCol = layerData.cols();
   const int numRow = layerData.rows();
 
