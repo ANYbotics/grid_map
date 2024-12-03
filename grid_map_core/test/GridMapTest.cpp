@@ -154,6 +154,208 @@ TEST(GridMap, ClipToMap)
   EXPECT_TRUE(map.isInside(clippedPositionOutMap));
 }
 
+TEST(GridMap, ClipToMap2)
+{
+  grid_map::GridMap map({"types"});
+  map.setGeometry(grid_map::Length(1.0, 1.0), 0.05, grid_map::Position(0.0, 0.0));
+
+  // Test 8 points outside of map.
+  /*
+   * A  B  C
+   *  +---+
+   *  |   |         X
+   * D|   |E        ^
+   *  |   |         |
+   *  +---+     Y<--+
+   * F  G  H
+   *
+   * Note: Position to index alignment is an half open interval.
+   *       An example position of 0.5 is assigned to the upper index.
+   *       The interval in the current example is:
+   *       Position: [...)[0.485 ... 0.5)[0.5 ... 0.505)[...)
+   *       Index:      8          9           10          11
+   */
+
+  grid_map::Index insideIndex;
+  grid_map::Position outsidePosition;
+
+  // Point A
+  outsidePosition = grid_map::Position(1.0, 1.0);
+  auto closestInsidePosition = map.getClosestPositionInMap(outsidePosition);
+  bool isInside = map.getIndex(closestInsidePosition, insideIndex);
+
+  auto expectedPosition = grid_map::Position(0.5, 0.5);
+  auto expectedIndex = grid_map::Index(0, 0);
+
+  // Check position.
+  EXPECT_DOUBLE_EQ(expectedPosition.x(), closestInsidePosition.x());
+  EXPECT_DOUBLE_EQ(expectedPosition.y(), closestInsidePosition.y());
+
+  // Check index.
+  EXPECT_EQ(expectedIndex.x(), insideIndex.x()) << "closestInsidePosition" << closestInsidePosition;
+  EXPECT_EQ(expectedIndex.y(), insideIndex.y()) << "closestInsidePosition" << closestInsidePosition;
+
+  // Check if index is inside.
+  EXPECT_TRUE(isInside) << "position is: " << std::endl
+                        << closestInsidePosition << std::endl
+                        << " index is: " << std::endl
+                        << insideIndex << std::endl;
+
+  // Point B
+  outsidePosition = grid_map::Position(1.0, 0.0);
+  closestInsidePosition = map.getClosestPositionInMap(outsidePosition);
+  isInside = map.getIndex(closestInsidePosition, insideIndex);
+
+  expectedPosition = grid_map::Position(0.5, 0.0);
+  expectedIndex = grid_map::Index(0, 10);
+
+  // Check position.
+  EXPECT_DOUBLE_EQ(expectedPosition.x(), closestInsidePosition.x());
+  EXPECT_DOUBLE_EQ(expectedPosition.y(), closestInsidePosition.y());
+
+  // Check index.
+  EXPECT_EQ(expectedIndex.x(), insideIndex.x()) << "closestInsidePosition" << closestInsidePosition;
+  EXPECT_EQ(expectedIndex.y(), insideIndex.y()) << "closestInsidePosition" << closestInsidePosition;
+
+  // Check if index is inside.
+  EXPECT_TRUE(isInside) << "position is: " << std::endl
+                        << closestInsidePosition << std::endl
+                        << " index is: " << std::endl
+                        << insideIndex << std::endl;
+
+  // Point C
+  outsidePosition = grid_map::Position(1.0, -1.0);
+  closestInsidePosition = map.getClosestPositionInMap(outsidePosition);
+  isInside = map.getIndex(closestInsidePosition, insideIndex);
+
+  expectedPosition = grid_map::Position(0.5, -0.5);
+  expectedIndex = grid_map::Index(0, 19);
+
+  // Check position.
+  EXPECT_DOUBLE_EQ(expectedPosition.x(), closestInsidePosition.x());
+  EXPECT_DOUBLE_EQ(expectedPosition.y(), closestInsidePosition.y());
+
+  // Check index.
+  EXPECT_EQ(expectedIndex.x(), insideIndex.x()) << "closestInsidePosition" << closestInsidePosition;
+  EXPECT_EQ(expectedIndex.y(), insideIndex.y()) << "closestInsidePosition" << closestInsidePosition;
+
+  // Check if index is inside.
+  EXPECT_TRUE(isInside) << "position is: " << std::endl
+                        << closestInsidePosition << std::endl
+                        << " index is: " << std::endl
+                        << insideIndex << std::endl;
+
+  // Point D
+  outsidePosition = grid_map::Position(0.0, 1.0);
+  closestInsidePosition = map.getClosestPositionInMap(outsidePosition);
+  isInside = map.getIndex(closestInsidePosition, insideIndex);
+
+  expectedPosition = grid_map::Position(0.0, 0.5);
+  expectedIndex = grid_map::Index(10, 0);
+
+  // Check position.
+  EXPECT_DOUBLE_EQ(expectedPosition.x(), closestInsidePosition.x());
+  EXPECT_DOUBLE_EQ(expectedPosition.y(), closestInsidePosition.y());
+
+  // Check index.
+  EXPECT_EQ(expectedIndex.x(), insideIndex.x()) << "closestInsidePosition" << closestInsidePosition;
+  EXPECT_EQ(expectedIndex.y(), insideIndex.y()) << "closestInsidePosition" << closestInsidePosition;
+
+  // Check if index is inside.
+  EXPECT_TRUE(isInside) << "position is: " << std::endl
+                        << closestInsidePosition << std::endl
+                        << " index is: " << std::endl
+                        << insideIndex << std::endl;
+
+  // Point E
+  outsidePosition = grid_map::Position(0.0, -1.0);
+  closestInsidePosition = map.getClosestPositionInMap(outsidePosition);
+  isInside = map.getIndex(closestInsidePosition, insideIndex);
+
+  expectedPosition = grid_map::Position(0.0, -0.5);
+  expectedIndex = grid_map::Index(10, 19);
+
+  // Check position.
+  EXPECT_DOUBLE_EQ(expectedPosition.x(), closestInsidePosition.x());
+  EXPECT_DOUBLE_EQ(expectedPosition.y(), closestInsidePosition.y());
+
+  // Check index.
+  EXPECT_EQ(expectedIndex.x(), insideIndex.x()) << "closestInsidePosition" << closestInsidePosition;
+  EXPECT_EQ(expectedIndex.y(), insideIndex.y()) << "closestInsidePosition" << closestInsidePosition;
+
+  // Check if index is inside.
+  EXPECT_TRUE(isInside) << "position is: " << std::endl
+                        << closestInsidePosition << std::endl
+                        << " index is: " << std::endl
+                        << insideIndex << std::endl;
+
+  // Point F
+  outsidePosition = grid_map::Position(-1.0, 1.0);
+  closestInsidePosition = map.getClosestPositionInMap(outsidePosition);
+  isInside = map.getIndex(closestInsidePosition, insideIndex);
+
+  expectedPosition = grid_map::Position(-0.5, 0.5);
+  expectedIndex = grid_map::Index(19, 0);
+
+  // Check position.
+  EXPECT_DOUBLE_EQ(expectedPosition.x(), closestInsidePosition.x());
+  EXPECT_DOUBLE_EQ(expectedPosition.y(), closestInsidePosition.y());
+
+  // Check index.
+  EXPECT_EQ(expectedIndex.x(), insideIndex.x()) << "closestInsidePosition" << closestInsidePosition;
+  EXPECT_EQ(expectedIndex.y(), insideIndex.y()) << "closestInsidePosition" << closestInsidePosition;
+
+  // Check if index is inside.
+  EXPECT_TRUE(isInside) << "position is: " << std::endl
+                        << closestInsidePosition << std::endl
+                        << " index is: " << std::endl
+                        << insideIndex << std::endl;
+
+  // Point G
+  outsidePosition = grid_map::Position(-1.0, 0.0);
+  closestInsidePosition = map.getClosestPositionInMap(outsidePosition);
+  isInside = map.getIndex(closestInsidePosition, insideIndex);
+
+  expectedPosition = grid_map::Position(-0.5, 0.0);
+  expectedIndex = grid_map::Index(19, 10);
+
+  // Check position.
+  EXPECT_DOUBLE_EQ(expectedPosition.x(), closestInsidePosition.x());
+  EXPECT_DOUBLE_EQ(expectedPosition.y(), closestInsidePosition.y());
+
+  // Check index.
+  EXPECT_EQ(expectedIndex.x(), insideIndex.x()) << "closestInsidePosition" << closestInsidePosition;
+  EXPECT_EQ(expectedIndex.y(), insideIndex.y()) << "closestInsidePosition" << closestInsidePosition;
+
+  // Check if index is inside.
+  EXPECT_TRUE(isInside) << "position is: " << std::endl
+                        << closestInsidePosition << std::endl
+                        << " index is: " << std::endl
+                        << insideIndex << std::endl;
+
+  // Point H
+  outsidePosition = grid_map::Position(-1.0, -1.0);
+  closestInsidePosition = map.getClosestPositionInMap(outsidePosition);
+  isInside = map.getIndex(closestInsidePosition, insideIndex);
+
+  expectedPosition = grid_map::Position(-0.5, -0.5);
+  expectedIndex = grid_map::Index(19, 19);
+
+  // Check position.
+  EXPECT_DOUBLE_EQ(expectedPosition.x(), closestInsidePosition.x());
+  EXPECT_DOUBLE_EQ(expectedPosition.y(), closestInsidePosition.y());
+
+  // Check index.
+  EXPECT_EQ(expectedIndex.x(), insideIndex.x()) << "closestInsidePosition" << closestInsidePosition;
+  EXPECT_EQ(expectedIndex.y(), insideIndex.y()) << "closestInsidePosition" << closestInsidePosition;
+
+  // Check if index is inside.
+  EXPECT_TRUE(isInside) << "position is: " << std::endl
+                        << closestInsidePosition << std::endl
+                        << " index is: " << std::endl
+                        << insideIndex << std::endl;
+}
+
 TEST(AddDataFrom, ExtendMapAligned)
 {
   grid_map::GridMap map1, map2;
