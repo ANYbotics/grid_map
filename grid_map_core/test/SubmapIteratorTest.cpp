@@ -202,10 +202,10 @@ TEST(SubmapIterator, InterleavedExecutionWithMove) {
 
   map.setGeometry(grid_map::Length(10, 10), 1.0, grid_map::Position(0.0, 0.0));  // bufferSize(8, 5)
 
-  auto& layer = map.get("layer");
+  auto & layer = map.get("layer");
 
   // Initialize the layer as sketched.
-  for (size_t colIndex = 0; colIndex < layer.cols(); colIndex++) {
+  for (size_t colIndex = 0; colIndex < static_cast<size_t>(layer.cols()); colIndex++) {
     layer.col(colIndex).setConstant(colIndex);
   }
 
@@ -215,19 +215,19 @@ TEST(SubmapIterator, InterleavedExecutionWithMove) {
 
   // check that the submap iterator returns {1,1,2,2}
   auto checkCorrectValues = [](std::array<double, 4> given) {
-    int countOnes = 0, countTwos = 0;
-    for (auto& value : given) {
-      if (std::abs(value - 1.0) < 1e-6) {
-        countOnes++;
-      } else if (std::abs(value - 2.0) < 1e-6) {
-        countTwos++;
-      } else {
-        FAIL() << "Submap iterator returned unexpected value.";
+      int countOnes = 0, countTwos = 0;
+      for (auto & value : given) {
+        if (std::abs(value - 1.0) < 1e-6) {
+          countOnes++;
+        } else if (std::abs(value - 2.0) < 1e-6) {
+          countTwos++;
+        } else {
+          FAIL() << "Submap iterator returned unexpected value.";
+        }
       }
-    }
-    EXPECT_EQ(countOnes, 2);
-    EXPECT_EQ(countTwos, 2);
-  };
+      EXPECT_EQ(countOnes, 2);
+      EXPECT_EQ(countTwos, 2);
+    };
 
   std::array<double, 4> returnedSequence;
   returnedSequence.fill(0);
@@ -239,7 +239,8 @@ TEST(SubmapIterator, InterleavedExecutionWithMove) {
 
   checkCorrectValues(returnedSequence);
 
-  // Reset the iterator and now check that it still returns the same sequence when we move the map interleaved with iterating.
+  // Reset the iterator and now check that it still returns the same sequence
+  // when we move the map interleaved with iterating.
   iterator = grid_map::SubmapIterator(map, submapTopLeftIndex, submapSize);
   returnedSequence.fill(0);
   for (size_t submapIndex = 0; submapIndex < 4; submapIndex++) {
@@ -252,9 +253,10 @@ TEST(SubmapIterator, InterleavedExecutionWithMove) {
   }
   checkCorrectValues(returnedSequence);
 
-  // TODO (mwulf, mgaertner): This behavior is not yet implemented:
+  // TODO(mwulf, mgaertner): This behavior is not yet implemented:
   //
-  //  // Reset the iterator and now check that the iterator throws? if the submap moved out of range.
+  //  // Reset the iterator and now check that the iterator throws?
+  //  // if the submap moved out of range.
   //  iterator = SubmapIterator(map, submapTopLeftIndex, submapSize);
   //
   //  EXPECT_ANY_THROW(for (size_t submapIndex = 0; submapIndex < 4; submapIndex++) {
