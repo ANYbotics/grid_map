@@ -142,10 +142,7 @@ bool getIndicesOfMiddleKnot(
   const GridMap & gridMap, const Position & queriedPosition,
   Index * index)
 {
-  if (!gridMap.getIndex(queriedPosition, *index)) {
-    return false;
-  }
-  return true;
+  return gridMap.getIndex(queriedPosition, *index);
 }
 
 }  // namespace bicubic_conv
@@ -275,10 +272,7 @@ bool getClosestPointIndices(
   const GridMap & gridMap, const Position & queriedPosition,
   Index * index)
 {
-  if (!gridMap.getIndex(queriedPosition, *index)) {
-    return false;
-  }
-  return true;
+  return gridMap.getIndex(queriedPosition, *index);
 }
 
 bool computeNormalizedCoordinates(

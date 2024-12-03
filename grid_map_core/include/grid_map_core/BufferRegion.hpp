@@ -50,7 +50,7 @@ public:
 
 private:
   //! Start index (typically top-left) of the buffer region.
-  Index staretIndex_;
+  Index startIndex_;
 
   //! Size of the buffer region.
   Size size_;
