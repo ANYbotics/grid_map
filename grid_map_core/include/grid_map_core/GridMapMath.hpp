@@ -19,6 +19,11 @@
 namespace grid_map
 {
 
+union Color{
+  uint64_t intColor;
+  float floatColor;
+};
+
 /*!
  * Gets the position of a cell specified by its index in the map frame.
  * @param[out] position the position of the center of the cell in the map frame.
@@ -310,27 +315,6 @@ size_t getLinearIndexFromIndex(
 Index getIndexFromLinearIndex(
   const size_t linearIndex, const Size & bufferSize,
   const bool rowMajor = false);
-
-/*!
- * Generates a list of indices for a region in the map.
- * @param regionIndex the region top-left index.
- * @param regionSize the region size.
- * @param indices the list of indices of the region.
- */
-void getIndicesForRegion(
-  const Index & regionIndex, const Size & regionSize,
-  std::vector<Index> indices);
-
-/*!
- * Generates a list of indices for multiple regions in the map.
- * This method makes sure every index is only once contained in the list.
- * @param regionIndeces the regions' top-left index.
- * @param regionSizes the regions' sizes.
- * @param indices the list of indices of the regions.
- */
-void getIndicesForRegions(
-  const std::vector<Index> & regionIndeces, const Size & regionSizes,
-  std::vector<Index> indices);
 
 /*!
  * Transforms an int color value (concatenated RGB values) to an int color vector (RGB from 0-255).
