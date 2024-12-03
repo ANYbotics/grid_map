@@ -30,7 +30,7 @@ public:
    * @param center the position of the circle center.
    * @param radius the radius of the circle.
    */
-  CircleIterator(const GridMap & gridMap, const Position & center, double radius);
+  CircleIterator(const GridMap & gridMap, const Position & center, const double radius);
 
   /*!
    * Assignment operator.

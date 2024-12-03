@@ -15,16 +15,16 @@
 namespace grid_map
 {
 
-using Matrix = Eigen::MatrixXf;
-using DataType = Matrix::Scalar;
-using Position = Eigen::Vector2d;
-using Vector = Eigen::Vector2d;
-using Position3 = Eigen::Vector3d;
-using Vector3 = Eigen::Vector3d;
-using Index = Eigen::Array2i;
-using Size = Eigen::Array2i;
-using Length = Eigen::Array2d;
-using Time = uint64_t;
+typedef Eigen::MatrixXf Matrix;
+typedef Matrix::Scalar DataType;
+typedef Eigen::Vector2d Position;
+typedef Eigen::Vector2d Vector;
+typedef Eigen::Vector3d Position3;
+typedef Eigen::Vector3d Vector3;
+typedef Eigen::Array2i Index;
+typedef Eigen::Array2i Size;
+typedef Eigen::Array2d Length;
+typedef uint64_t Time;
 
 /*
  * Interpolations are ordered in the order

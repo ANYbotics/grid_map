@@ -15,15 +15,18 @@
 namespace grid_map
 {
 
-unsigned int bindIndexToRange(unsigned int idReq, unsigned int nElem)
+unsigned int bindIndexToRange(int idReq, unsigned int nElem)
 {
-  if (idReq >= nElem) {
-    return nElem - 1;
+  if (idReq < 0) {
+    return 0;
   }
-  return idReq;
+  if ((unsigned)idReq >= nElem) {
+    return static_cast<unsigned int>(nElem - 1);
+  }
+  return static_cast<unsigned int>(idReq);
 }
 
-double getLayerValue(const Matrix & layerMat, unsigned int rowReq, unsigned int colReq)
+double getLayerValue(const Matrix & layerMat, int rowReq, int colReq)
 {
   const auto numCol = layerMat.cols();
   const auto numRow = layerMat.rows();
@@ -93,7 +96,7 @@ bool assembleFunctionValueMatrix(
   }
 
   const Matrix & layerMatrix = gridMap.get(layer);
-  auto f = [&layerMatrix](unsigned int rowReq, unsigned int colReq) {
+  auto f = [&layerMatrix](int rowReq, int colReq) {
       double retVal = getLayerValue(layerMatrix, rowReq, colReq);
       return retVal;
     };
@@ -298,8 +301,8 @@ bool getFunctionValues(const Matrix & layerData, const IndicesMatrix & indices, 
 
 void bindIndicesToRange(const GridMap & gridMap, IndicesMatrix * indices)
 {
-  const unsigned int numCol = gridMap.getSize().y();
-  const unsigned int numRow = gridMap.getSize().x();
+  const int numCol = gridMap.getSize().y();
+  const int numRow = gridMap.getSize().x();
 
   // top left
   {
@@ -349,11 +352,10 @@ double firstOrderDerivativeAt(
   const Matrix & layerData, const Index & index, Dim2D dim,
   double resolution)
 {
-  const auto numCol{static_cast<unsigned int>(layerData.cols())};
-  const auto numRow{static_cast<unsigned int>(layerData.rows())};
+  const int numCol = layerData.cols();
+  const int numRow = layerData.rows();
 
-  double left;
-  double right;
+  double left, right;
   switch (dim) {
     case Dim2D::X: {
         left = layerData(bindIndexToRange(index.x() + 1, numRow), index.y());
@@ -386,8 +388,8 @@ double mixedSecondOrderDerivativeAt(
    * the order doesn't matter. Derivative values are the same.
    * Taken from https://www.mathematik.uni-dortmund.de/~kuzmin/cfdintro/lecture4.pdf
    */
-  const auto numCol{static_cast<unsigned int>(layerData.cols())};
-  const auto numRow{static_cast<unsigned int>(layerData.rows())};
+  const int numCol = layerData.cols();
+  const int numRow = layerData.rows();
 
   const double f11 = layerData(
     bindIndexToRange(index.x() - 1, numRow),

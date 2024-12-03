@@ -75,8 +75,7 @@ TEST(EigenMatrixBaseAddons, minCoeffOfFinites)
   double min = matrix.minCoeff();
   EXPECT_NEAR(min, matrix.minCoeffOfFinites(), 1e-10);
 
-  int i;
-  int j;
+  int i, j;
   matrix.maxCoeff(&i, &j);
   matrix(i, j) = NAN;
   EXPECT_NEAR(min, matrix.minCoeffOfFinites(), 1e-10);
@@ -94,8 +93,7 @@ TEST(EigenMatrixBaseAddons, maxCoeffOfFinites)
   double max = matrix.maxCoeff();
   EXPECT_NEAR(max, matrix.maxCoeffOfFinites(), 1e-10);
 
-  int i;
-  int j;
+  int i, j;
   matrix.minCoeff(&i, &j);
   matrix(i, j) = NAN;
   EXPECT_NEAR(max, matrix.maxCoeffOfFinites(), 1e-10);

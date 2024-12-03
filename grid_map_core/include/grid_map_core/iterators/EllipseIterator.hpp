@@ -33,7 +33,7 @@ public:
    */
   EllipseIterator(
     const GridMap & gridMap, const Position & center, const Length & length,
-    double rotation = 0.0);
+    const double rotation = 0.0);
 
   /*!
    * Assignment operator.
@@ -88,7 +88,7 @@ private:
    * @param[out] bufferSize the buffer size of the submap.
    */
   void findSubmapParameters(
-    const Position & center, const Length & length, double rotation,
+    const Position & center, const Length & length, const double rotation,
     Index & startIndex, Size & bufferSize) const;
 
   //! Position of the circle center;

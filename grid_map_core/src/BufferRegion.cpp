@@ -18,11 +18,11 @@ BufferRegion::BufferRegion()
 }
 
 BufferRegion::BufferRegion(
-  Index index, Size size,
-  BufferRegion::Quadrant quadrant)
-: startIndex_(std::move(index)),
-  size_(std::move(size)),
-  quadrant_(std::move(quadrant))
+  const Index & index, const Size & size,
+  const BufferRegion::Quadrant & quadrant)
+: startIndex_(index),
+  size_(size),
+  quadrant_(quadrant)
 {
 }
 

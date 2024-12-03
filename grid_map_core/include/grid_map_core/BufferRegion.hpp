@@ -36,7 +36,9 @@ public:
   constexpr static unsigned int nQuadrants = 4;
 
   BufferRegion();
-  BufferRegion(Index startIndex, Size size, BufferRegion::Quadrant quadrant);
+  BufferRegion(
+    const Index & startIndex, const Size & size,
+    const BufferRegion::Quadrant & quadrant);
   virtual ~BufferRegion() = default;
 
   const Index & getStartIndex() const;
