@@ -36,6 +36,10 @@ Changelog for package grid_map_cv
 * Initial ROS2 port
 * Contributors: Maximilian Wulf, Steve Macenski
 
+1.6.3 (2020-09-30)
+------------------
+* Added getTransformedMap.
+
 1.6.2 (2019-10-14)
 ------------------
 
