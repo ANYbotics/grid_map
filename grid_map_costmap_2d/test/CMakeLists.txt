@@ -5,6 +5,8 @@ ament_add_gtest(${PROJECT_NAME}-test
 
 target_link_libraries(${PROJECT_NAME}-test
   ${PROJECT_NAME}::${PROJECT_NAME}
+  tf2_ros::tf2_ros
+  rclcpp::rclcpp
 )
 
 ament_add_gtest(costmap-2d-ros-test
