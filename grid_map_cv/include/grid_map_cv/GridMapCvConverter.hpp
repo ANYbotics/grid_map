@@ -115,20 +115,21 @@ public:
     grid_map::Matrix & data = gridMap[layer];
 
     for (GridMapIterator iterator(gridMap); !iterator.isPastEnd(); ++iterator) {
-      const Index index(*iterator);
+      const grid_map::Index gridMapIndex = *iterator;
+      const grid_map::Index imageIndex = iterator.getUnwrappedIndex();
 
       // Check for alpha layer.
       if (hasAlpha) {
-        const Type_ alpha =
-          image.at<cv::Vec<Type_, NChannels_>>(index(0), index(1))[NChannels_ - 1];
+        const Type_ alpha = image.at<cv::Vec<Type_,
+            NChannels_>>(imageIndex(0), imageIndex(1))[NChannels_ - 1];
         if (alpha < alphaTreshold) {continue;}
       }
 
       // Compute value.
-      const Type_ imageValue = imageMono.at<Type_>(index(0), index(1));
-      const float mapValue = lowerValue + mapValueDifference *
-        (static_cast<float>(imageValue) / maxImageValue);
-      data(index(0), index(1)) = mapValue;
+      const Type_ imageValue = imageMono.at<Type_>(imageIndex(0), imageIndex(1));
+      const float mapValue =
+        lowerValue + mapValueDifference * (static_cast<float>(imageValue) / maxImageValue);
+      data(gridMapIndex(0), gridMapIndex(1)) = mapValue;
     }
 
     return true;
@@ -245,8 +246,8 @@ public:
 
     for (GridMapIterator iterator(map); !iterator.isPastEnd(); ++iterator) {
       const Index index(*iterator);
-      if (std::isfinite(data(index(0), index(1)))) {
-        const float & value = data(index(0), index(1));
+      const float & value = data(index(0), index(1));
+      if (std::isfinite(value)) {
         const Type_ imageValue =
           (Type_) (((value - lowerValue) / (upperValue - lowerValue)) *
           static_cast<float>(imageMax));
