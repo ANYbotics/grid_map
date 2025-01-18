@@ -2,8 +2,8 @@
 Changelog for package grid_map_costmap_2d
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+2.0.1 (2025-01-18)
+------------------
 * Merge pull request `#449 <https://github.com/Ryanf55/grid_map/issues/449>`_ from ANYbotics/mergify/bp/humble/pr-424
   Use ament_export_targets in grid_map_costmap_2d (backport `#424 <https://github.com/Ryanf55/grid_map/issues/424>`_)
 * Use ament_export_targets
