@@ -2,6 +2,20 @@
 Changelog for package grid_map_demos
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge pull request `#445 <https://github.com/Ryanf55/grid_map/issues/445>`_ from ANYbotics/mergify/bp/humble/pr-443
+  Add Ryan as maintainer, remove Steve (backport `#443 <https://github.com/Ryanf55/grid_map/issues/443>`_)
+* Add Ryan as maintainer, remove Steve
+  (cherry picked from commit 852f67694637612e624e4c683a01ab589408b8e7)
+* Merge pull request `#427 <https://github.com/Ryanf55/grid_map/issues/427>`_ from ANYbotics/mergify/bp/humble/pr-419
+  Stop using deprecated CMAKE_COMPILER_IS_GNUCXX (backport `#419 <https://github.com/Ryanf55/grid_map/issues/419>`_)
+* Stop using deprecated CMAKE_COMPILER_IS_GNUCXX
+  * Switch to CMAKE_CXX_COMPILER_ID
+  * https://cmake.org/cmake/help/latest/variable/CMAKE_LANG_COMPILER_ID.html
+  (cherry picked from commit 661aac270a5496cb334e53f25f10c036699e6801)
+* Contributors: Ryan, Ryan Friedman
+
 2.0.0 (2022-09-13)
 ------------------
 * fix: mark Eigen library as SYSTEM

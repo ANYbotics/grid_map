@@ -2,6 +2,20 @@
 Changelog for package grid_map_costmap_2d
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge pull request `#449 <https://github.com/Ryanf55/grid_map/issues/449>`_ from ANYbotics/mergify/bp/humble/pr-424
+  Use ament_export_targets in grid_map_costmap_2d (backport `#424 <https://github.com/Ryanf55/grid_map/issues/424>`_)
+* Use ament_export_targets
+  * Link to exported namespace targets when possible
+  * And use INTERFACE targets
+  (cherry picked from commit c0c7ef1e4da0bbe84a5ab4003e6429d0ecba66bf)
+* Merge pull request `#445 <https://github.com/Ryanf55/grid_map/issues/445>`_ from ANYbotics/mergify/bp/humble/pr-443
+  Add Ryan as maintainer, remove Steve (backport `#443 <https://github.com/Ryanf55/grid_map/issues/443>`_)
+* Add Ryan as maintainer, remove Steve
+  (cherry picked from commit 852f67694637612e624e4c683a01ab589408b8e7)
+* Contributors: Ryan, Ryan Friedman
+
 2.0.0 (2022-09-13)
 ------------------
 * fix: mark Eigen library as SYSTEM

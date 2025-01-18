@@ -2,6 +2,18 @@
 Changelog for package grid_map_rviz_plugin
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge pull request `#445 <https://github.com/Ryanf55/grid_map/issues/445>`_ from ANYbotics/mergify/bp/humble/pr-443
+  Add Ryan as maintainer, remove Steve (backport `#443 <https://github.com/Ryanf55/grid_map/issues/443>`_)
+* Add Ryan as maintainer, remove Steve
+  (cherry picked from commit 852f67694637612e624e4c683a01ab589408b8e7)
+* Merge pull request `#432 <https://github.com/Ryanf55/grid_map/issues/432>`_ from ANYbotics/mergify/bp/humble/pr-422
+  update deprecated ogre header file (backport `#422 <https://github.com/Ryanf55/grid_map/issues/422>`_)
+* update header file
+  (cherry picked from commit a56647cc481ed7f2abe13b2ace5c1081cbd971d4)
+* Contributors: JTaveau, Ryan, Ryan Friedman
+
 2.0.0 (2022-09-13)
 ------------------
 * fix: mark Eigen library as SYSTEM
