@@ -2,6 +2,9 @@
 Changelog for package grid_map_cv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 2.2.0 (2024-07-23)
 ------------------
 * Merge pull request `#458 <https://github.com/ANYbotics/grid_map/issues/458>`_ from ANYbotics/ci-temp-skip-octomap-server

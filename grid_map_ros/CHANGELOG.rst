@@ -2,6 +2,24 @@
 Changelog for package grid_map_ros
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Add test dependency to on rosbad default plugins (`#491 <https://github.com/Ryanf55/grid_map/issues/491>`_) (`#495 <https://github.com/Ryanf55/grid_map/issues/495>`_)
+  (cherry picked from commit 73d9427add8429b299da8f266b562c5c3f0e13cb)
+  Co-authored-by: Ryan <25047695+Ryanf55@users.noreply.github.com>
+* Fix LoadFromBag assumptions causing C++ exceptions during serialization (`#438 <https://github.com/Ryanf55/grid_map/issues/438>`_) (`#468 <https://github.com/Ryanf55/grid_map/issues/468>`_)
+  Fix LoadFromBag assumptions
+  * Not all bags have only GridMap messages
+  * Not all bags have GridMap on the right topic
+  * Add test for trying to load a grid map from a bag that doesn't
+  contain it on the expected topic
+  * Add nullptr check on reader messages
+  * Remove unused include
+  * Don't skip reporting when tests fail
+  (cherry picked from commit 25a1ea53297ac739d0b2fd6eff6a5c0145cee5c6)
+  Co-authored-by: Ryan <ryanfriedman5410+github@gmail.com>
+* Contributors: mergify[bot]
+
 2.2.0 (2024-07-23)
 ------------------
 * Merge pull request `#458 <https://github.com/ANYbotics/grid_map/issues/458>`_ from ANYbotics/ci-temp-skip-octomap-server
