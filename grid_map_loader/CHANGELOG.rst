@@ -2,6 +2,14 @@
 Changelog for package grid_map_loader
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge pull request `#444 <https://github.com/Ryanf55/grid_map/issues/444>`_ from ANYbotics/mergify/bp/iron/pr-443
+  Add Ryan as maintainer, remove Steve (backport `#443 <https://github.com/Ryanf55/grid_map/issues/443>`_)
+* Add Ryan as maintainer, remove Steve
+  (cherry picked from commit 852f67694637612e624e4c683a01ab589408b8e7)
+* Contributors: Ryan, Ryan Friedman
+
 2.1.0 (2022-11-08)
 ------------------
 

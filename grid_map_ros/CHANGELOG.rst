@@ -2,6 +2,28 @@
 Changelog for package grid_map_ros
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Add test dependency to on rosbad default plugins (`#491 <https://github.com/Ryanf55/grid_map/issues/491>`_) (`#496 <https://github.com/Ryanf55/grid_map/issues/496>`_)
+  (cherry picked from commit 73d9427add8429b299da8f266b562c5c3f0e13cb)
+  Co-authored-by: Ryan <25047695+Ryanf55@users.noreply.github.com>
+* Fix LoadFromBag assumptions causing C++ exceptions during serialization (`#438 <https://github.com/Ryanf55/grid_map/issues/438>`_) (`#469 <https://github.com/Ryanf55/grid_map/issues/469>`_)
+  Fix LoadFromBag assumptions
+  * Not all bags have only GridMap messages
+  * Not all bags have GridMap on the right topic
+  * Add test for trying to load a grid map from a bag that doesn't
+  contain it on the expected topic
+  * Add nullptr check on reader messages
+  * Remove unused include
+  * Don't skip reporting when tests fail
+  (cherry picked from commit 25a1ea53297ac739d0b2fd6eff6a5c0145cee5c6)
+  Co-authored-by: Ryan Friedman <25047695+Ryanf55@users.noreply.github.com>
+* Merge pull request `#444 <https://github.com/Ryanf55/grid_map/issues/444>`_ from ANYbotics/mergify/bp/iron/pr-443
+  Add Ryan as maintainer, remove Steve (backport `#443 <https://github.com/Ryanf55/grid_map/issues/443>`_)
+* Add Ryan as maintainer, remove Steve
+  (cherry picked from commit 852f67694637612e624e4c683a01ab589408b8e7)
+* Contributors: Ryan, Ryan Friedman, mergify[bot]
+
 2.1.0 (2022-11-08)
 ------------------
 * fix: change cv_bridge.h -> .hpp (`#376 <https://github.com/ANYbotics/grid_map/issues/376>`_)

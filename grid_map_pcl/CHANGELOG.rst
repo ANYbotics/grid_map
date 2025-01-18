@@ -7,6 +7,18 @@ unreleased (2021-06-24)
 * Replaced pcl_ros dependency with PCL
 * Contributors: Matthew Young (Trimble Inc) 
 
+Forthcoming
+-----------
+* Merge pull request `#444 <https://github.com/Ryanf55/grid_map/issues/444>`_ from ANYbotics/mergify/bp/iron/pr-443
+  Add Ryan as maintainer, remove Steve (backport `#443 <https://github.com/Ryanf55/grid_map/issues/443>`_)
+* Add Ryan as maintainer, remove Steve
+  (cherry picked from commit 852f67694637612e624e4c683a01ab589408b8e7)
+* Merge pull request `#436 <https://github.com/Ryanf55/grid_map/issues/436>`_ from ANYbotics/mergify/bp/iron/pr-423
+  Split PCL deps for dev and runtime (backport `#423 <https://github.com/Ryanf55/grid_map/issues/423>`_)
+* Split PCL deps to dev and runtime
+  (cherry picked from commit 220def8b3a3f941b3f2f4f5280012326a89007ed)
+* Contributors: Ryan, Ryan Friedman
+
 2.1.0 (2022-11-08)
 ------------------
 

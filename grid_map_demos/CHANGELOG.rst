@@ -2,6 +2,20 @@
 Changelog for package grid_map_demos
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge pull request `#444 <https://github.com/Ryanf55/grid_map/issues/444>`_ from ANYbotics/mergify/bp/iron/pr-443
+  Add Ryan as maintainer, remove Steve (backport `#443 <https://github.com/Ryanf55/grid_map/issues/443>`_)
+* Add Ryan as maintainer, remove Steve
+  (cherry picked from commit 852f67694637612e624e4c683a01ab589408b8e7)
+* Merge pull request `#426 <https://github.com/Ryanf55/grid_map/issues/426>`_ from ANYbotics/mergify/bp/iron/pr-419
+  Stop using deprecated CMAKE_COMPILER_IS_GNUCXX (backport `#419 <https://github.com/Ryanf55/grid_map/issues/419>`_)
+* Stop using deprecated CMAKE_COMPILER_IS_GNUCXX
+  * Switch to CMAKE_CXX_COMPILER_ID
+  * https://cmake.org/cmake/help/latest/variable/CMAKE_LANG_COMPILER_ID.html
+  (cherry picked from commit 661aac270a5496cb334e53f25f10c036699e6801)
+* Contributors: Ryan, Ryan Friedman
+
 2.1.0 (2022-11-08)
 ------------------
 * fix: change cv_bridge.h -> .hpp (`#376 <https://github.com/ANYbotics/grid_map/issues/376>`_)

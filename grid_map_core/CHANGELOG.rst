@@ -2,6 +2,23 @@
 Changelog for package grid_map_core
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix UB in SpiralIterator::operator++ (`#481 <https://github.com/Ryanf55/grid_map/issues/481>`_) (`#488 <https://github.com/Ryanf55/grid_map/issues/488>`_)
+  * Calling pop_back on an iterator past the end is UB
+  (cherry picked from commit 74dbbc83ad695c09bc60dcc856aa8a75741311a9)
+  Co-authored-by: Ryan <25047695+Ryanf55@users.noreply.github.com>
+* Merge pull request `#444 <https://github.com/Ryanf55/grid_map/issues/444>`_ from ANYbotics/mergify/bp/iron/pr-443
+  Add Ryan as maintainer, remove Steve (backport `#443 <https://github.com/Ryanf55/grid_map/issues/443>`_)
+* Add Ryan as maintainer, remove Steve
+  (cherry picked from commit 852f67694637612e624e4c683a01ab589408b8e7)
+* Merge pull request `#433 <https://github.com/Ryanf55/grid_map/issues/433>`_ from ANYbotics/mergify/bp/iron/pr-404
+  grid_map_core: Use ament_export_targets and improve eigen linkage (backport `#404 <https://github.com/Ryanf55/grid_map/issues/404>`_)
+* Update ament to latest recommendations
+  * Fixes include errors in grid_map_geo ros2 port
+  (cherry picked from commit 4f32682271add9477a4566596c1997053d59f345)
+* Contributors: Ryan, Ryan Friedman, mergify[bot]
+
 2.1.0 (2022-11-08)
 ------------------
 
