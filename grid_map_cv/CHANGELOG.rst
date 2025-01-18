@@ -2,8 +2,8 @@
 Changelog for package grid_map_cv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+2.1.1 (2025-01-18)
+------------------
 * Merge pull request `#446 <https://github.com/Ryanf55/grid_map/issues/446>`_ from ANYbotics/mergify/bp/iron/pr-442
   Bugfix use old style include directories for filters (backport `#442 <https://github.com/Ryanf55/grid_map/issues/442>`_)
 * Add link to upstream ticket
