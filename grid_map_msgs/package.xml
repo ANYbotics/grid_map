@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <package format="3">
   <name>grid_map_msgs</name>
-  <version>1.7.17</version>
+  <version>1.7.18</version>
   <description>Definition of the multi-layered grid map message type.</description>
 
   <license>BSD</license>
