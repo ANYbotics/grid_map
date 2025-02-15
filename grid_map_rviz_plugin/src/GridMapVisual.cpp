@@ -17,8 +17,8 @@
 #include <OGRE/OgreSceneNode.h>
 #include <OGRE/OgreTechnique.h>
 #include <OGRE/OgreTextureManager.h>
-#include <OGRE/OgreVector3.h>
 #include <rviz/ogre_helpers/billboard_line.h>
+#include <rviz/ogre_helpers/ogre_vector.h>
 #include <rviz/uniform_string_stream.h>
 #include <chrono>
 

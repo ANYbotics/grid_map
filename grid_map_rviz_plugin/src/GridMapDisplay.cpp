@@ -305,5 +305,5 @@ void GridMapDisplay::updateColorMapList()
 
 }  // end namespace grid_map_rviz_plugin
 
-#include <pluginlib/class_list_macros.h>
+#include <pluginlib/class_list_macros.hpp>
 PLUGINLIB_EXPORT_CLASS(grid_map_rviz_plugin::GridMapDisplay, rviz::Display)
