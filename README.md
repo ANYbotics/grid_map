@@ -15,7 +15,7 @@ Features:
 * **Visualizations:** The *grid_map_rviz_plugin* renders grid maps as 3d surface plots (height maps) in [RViz]. Additionally, the *grid_map_visualization* package helps to visualize grid maps as point clouds, occupancy grids, grid cells etc.
 * **Filters:** The *grid_map_filters* provides are range of filters to process grid maps as a sequence of filters. Parsing of mathematical expressions allows to flexibly setup powerful computations such as thresholding, normal vectors, smoothening, variance, inpainting, and matrix kernel convolutions.
 
-The grid map package has been tested with ROS2 Foxy (under Ubuntu 20.04). This is research code, expect that it changes often and any fitness for a particular purpose is disclaimed.
+The grid map package has been tested with ROS2 Humble (under Ubuntu Jammy 22.04). This is research code, expect that it changes often and any fitness for a particular purpose is disclaimed.
 
 The source code is released under a [BSD 3-Clause license](LICENSE).
 
@@ -77,7 +77,7 @@ The C++ API is documented here:
 
 #### Dependencies
 
-Install ROS 2 Foxy from [here](https://index.ros.org/doc/ros2/Installation/Foxy/Linux-Development-Setup/).
+Install ROS 2 Humble from [here](https://index.ros.org/doc/ros2/https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debs.html).
 
 The *grid_map_core* package depends only on the linear algebra library [Eigen].
 
@@ -85,7 +85,7 @@ The *grid_map_core* package depends only on the linear algebra library [Eigen].
 
 Source the ROS 2 underlay workspace.
 
-    source /opt/ros/foxy/setup.bash
+    source /opt/ros/humble/setup.bash
 
 Clone and build grid_map ROS2 dependencies.
 
