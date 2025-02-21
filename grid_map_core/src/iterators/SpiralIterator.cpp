@@ -27,7 +27,7 @@ SpiralIterator::SpiralIterator(const grid_map::GridMap& gridMap, Eigen::Vector2d
   resolution_ = gridMap.getResolution();
   bufferSize_ = gridMap.getSize();
   gridMap.getIndex(center_, indexCenter_);
-  nRings_ = std::ceil(radius_ / resolution_);
+  nRings_ = static_cast<uint>(std::ceil(radius_ / resolution_));
   if (checkIfIndexInRange(indexCenter_, bufferSize_)) {
     pointsRing_.push_back(indexCenter_);
   } else {

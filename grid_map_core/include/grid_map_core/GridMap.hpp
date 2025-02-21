@@ -47,7 +47,7 @@ class GridMap {
    * Constructor.
    * @param layers a vector of strings containing the definition/description of the data layer.
    */
-  GridMap(const std::vector<std::string>& layers);
+  explicit GridMap(const std::vector<std::string>& layers);
 
   /*!
    * Emtpy constructor.
@@ -86,7 +86,7 @@ class GridMap {
    * @param layer the name of the layer.
    * @value value the value to initialize the cells with.
    */
-  void add(const std::string& layer, const double value = NAN);
+  void add(const std::string& layer, const float value = NAN);
 
   /*!
    * Add a new data layer (if the layer already exists, overwrite its data, otherwise add layer and data).

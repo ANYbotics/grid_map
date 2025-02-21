@@ -22,8 +22,8 @@ unsigned int bindIndexToRange(unsigned int idReq, unsigned int nElem)
 
 double getLayerValue(const Matrix &layerMat, unsigned int rowReq, unsigned int colReq)
 {
-  const auto numCol = layerMat.cols();
-  const auto numRow = layerMat.rows();
+  const auto numCol = static_cast<unsigned int>(layerMat.cols());
+  const auto  numRow = static_cast<unsigned int>(layerMat.rows());
   const unsigned int iBoundToRange = bindIndexToRange(rowReq, numRow);
   const unsigned int jBoundToRange = bindIndexToRange(colReq, numCol);
   return layerMat(iBoundToRange, jBoundToRange);

@@ -79,7 +79,7 @@ bool GridMap::hasSameLayers(const GridMap& other) const {
                      [&](const std::string& layer){return other.exists(layer);});
 }
 
-void GridMap::add(const std::string& layer, const double value) {
+void GridMap::add(const std::string& layer, const float value) {
   add(layer, Matrix::Constant(size_(0), size_(1), value));
 }
 
@@ -271,7 +271,7 @@ bool GridMap::getPosition3(const std::string& layer, const Index& index, Positio
 
 bool GridMap::getVector(const std::string& layerPrefix, const Index& index, Eigen::Vector3d& vector) const {
   Eigen::Vector3d temp{at(layerPrefix + "x", index), at(layerPrefix + "y", index), at(layerPrefix + "z", index)};
-  if (!isValid(temp[0]) || !isValid(temp[1]) || !isValid(temp[2])) {
+  if (!isValid(temp[0]) || !isValid(temp[1]) || !isValid(temp[2])) { // NOLINT (implicit-float-conversion)
     return false;
   } else {
     vector = temp;
@@ -294,7 +294,7 @@ GridMap GridMap::getSubmap(const Position& position, const Length& length, Index
   // Get submap geometric information.
   SubmapGeometry submapInformation(*this, position, length, isSuccess);
   if (!isSuccess) {
-    return {layers_};
+    return GridMap{layers_};
   }
   submap.setGeometry(submapInformation);
   submap.startIndex_.setZero();  // Because of the way we copy the data below.
@@ -305,7 +305,7 @@ GridMap GridMap::getSubmap(const Position& position, const Length& length, Index
   if (!getBufferRegionsForSubmap(bufferRegions, submapInformation.getStartIndex(), submap.getSize(), size_, startIndex_)) {
     cout << "Cannot access submap of this size." << endl;
     isSuccess = false;
-    return {layers_};
+    return GridMap{layers_};
   }
 
   for (const auto& data : data_) {
@@ -423,7 +423,7 @@ GridMap GridMap::getTransformedMap(const Eigen::Isometry3d& transform, const std
         const auto currentValueInOldGrid = at(layer, *iterator);
         auto& newValue = newMap.at(layer, newIndex);
         if (layer == heightLayerName) {
-          newValue = transformedPosition.z();
+          newValue = static_cast<float>(transformedPosition.z());
         }  // adjust height
         else {
           newValue = currentValueInOldGrid;
@@ -840,8 +840,9 @@ bool GridMap::atPositionLinearInterpolated(const std::string& layer, const Posit
   const Position positionRed = (position - point) / resolution_;
   const Position positionRedFlip = Position(1., 1.) - positionRed;
 
-  value = f[0] * positionRedFlip.x() * positionRedFlip.y() + f[1] * positionRed.x() * positionRedFlip.y() +
-          f[2] * positionRedFlip.x() * positionRed.y() + f[3] * positionRed.x() * positionRed.y();
+  
+  value = f[0] * positionRedFlip.x() * positionRedFlip.y() + f[1] * positionRed.x() * positionRedFlip.y() + // NOLINT (implicit-float-conversion)
+          f[2] * positionRedFlip.x() * positionRed.y() + f[3] * positionRed.x() * positionRed.y(); // NOLINT (implicit-float-conversion)
   return true;
 }
 
@@ -864,7 +865,7 @@ bool GridMap::atPositionBicubicConvolutionInterpolated(const std::string& layer,
   if (!std::isfinite(interpolatedValue)) {
     return false;
   }
-  value = interpolatedValue;
+  value = static_cast<float>(interpolatedValue);
 
   return true;
 }
@@ -880,7 +881,7 @@ bool GridMap::atPositionBicubicInterpolated(const std::string& layer, const Posi
   if (!std::isfinite(interpolatedValue)) {
     return false;
   }
-  value = interpolatedValue;
+  value = static_cast<float>(interpolatedValue);
 
   return true;
 
