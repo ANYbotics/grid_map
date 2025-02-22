@@ -59,6 +59,16 @@ bool LineIterator::isPastEnd() const
   return iCell_ >= nCells_;
 }
 
+double LineIterator::length() const {
+    Position c;
+    getPositionFromIndex(c, index_, mapLength_, mapPosition_, resolution_, bufferSize_, bufferStartIndex_);
+    const double tx1{(c.x() - resolution_ / 2 - pStart_.x()) * nInv_.x()};
+    const double tx2{(c.x() + resolution_ / 2 - pStart_.x()) * nInv_.x()};
+    const double ty1{(c.y() - resolution_ / 2 - pStart_.y()) * nInv_.y()};
+    const double ty2{(c.y() + resolution_ / 2 - pStart_.y()) * nInv_.y()};
+    return std::min(std::max(tx1, tx2), std::max(ty1, ty2)) - std::max(std::min(tx1, tx2), std::min(ty1, ty2));
+}
+
 bool LineIterator::initialize(const grid_map::GridMap& gridMap, const Index& start, const Index& end)
 {
     start_ = start;
@@ -69,6 +79,12 @@ bool LineIterator::initialize(const grid_map::GridMap& gridMap, const Index& sta
     bufferSize_ = gridMap.getSize();
     bufferStartIndex_ = gridMap.getStartIndex();
     initializeIterationParameters();
+
+    getPositionFromIndex(pStart_, start, mapLength_, mapPosition_, resolution_, bufferSize_, bufferStartIndex_);
+    Position pEnd;
+    getPositionFromIndex(pEnd, end, mapLength_, mapPosition_, resolution_, bufferSize_, bufferStartIndex_);
+    nInv_ = (pEnd - pStart_).normalized().array().inverse().matrix();
+
     return true;
 }
 
