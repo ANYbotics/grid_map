@@ -31,7 +31,6 @@ class PclLoaderParameters {
     double clusterTolerance_ = 0.3;
     unsigned int minNumPoints_ = 2;
     unsigned int maxNumPoints_ = 1000000;
-    bool useMaxHeightAsCellElevation_;
   };
   struct OutlierRemovalParameters {
     bool isRemoveOutliers_ = false;
@@ -47,6 +46,12 @@ class PclLoaderParameters {
     double resolution_ = 0.1;
     unsigned int minCloudPointsPerCell_ = 2;
     unsigned int maxCloudPointsPerCell_ = 100000;
+    // 0: Smallest value among the average values ​​of each cluster
+    // 1: Largest value among the average values ​​of each cluster
+    // 2: Mean value of the cluster with the most points
+    unsigned int height_type_ = 0;
+    // For height_type 2
+    double height_thresh_ = 1.0;
   };
 
   struct Parameters {
