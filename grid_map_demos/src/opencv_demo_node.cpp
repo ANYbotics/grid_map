@@ -1,7 +1,7 @@
 #include <rclcpp/rclcpp.hpp>
 #include <grid_map_ros/grid_map_ros.hpp>
 #include <grid_map_cv/grid_map_cv.hpp>
-#include <cv_bridge/cv_bridge.hpp>
+#include <cv_bridge/cv_bridge.h>
 #include <opencv2/highgui/highgui.hpp>
 #include <memory>
 #include <utility>

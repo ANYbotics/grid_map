@@ -14,7 +14,7 @@
 #include <Eigen/Core>
 
 // ROS
-#include <cv_bridge/cv_bridge.hpp>
+#include <cv_bridge/cv_bridge.h>
 #include <nav_msgs/msg/occupancy_grid.hpp>
 #include <nav2_msgs/msg/costmap.hpp>
 #include <sensor_msgs/image_encodings.hpp>

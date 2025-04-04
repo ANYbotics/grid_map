@@ -23,7 +23,7 @@
 #include <nav_msgs/msg/occupancy_grid.hpp>
 #include <nav_msgs/msg/grid_cells.hpp>
 #include <nav2_msgs/msg/costmap.hpp>
-#include <cv_bridge/cv_bridge.hpp>
+#include <cv_bridge/cv_bridge.h>
 
 // STL
 #include <vector>

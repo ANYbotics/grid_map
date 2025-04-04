@@ -688,7 +688,7 @@ bool GridMapRosConverter::saveToBag(
 
   auto bag_message = std::make_shared<rosbag2_storage::SerializedBagMessage>();
 
-  auto ret = rcutils_system_time_now(&bag_message->send_timestamp);
+  auto ret = rcutils_system_time_now(&bag_message->time_stamp);
   if (ret != RCL_RET_OK) {
     RCLCPP_ERROR(rclcpp::get_logger("saveToBag"), "couldn't assign time rosbag message");
   }

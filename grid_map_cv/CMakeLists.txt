@@ -43,13 +43,8 @@ add_library(${PROJECT_NAME} SHARED
   src/InpaintFilter.cpp
 )
 
-target_link_libraries(${PROJECT_NAME} PUBLIC
-  cv_bridge::cv_bridge
-  grid_map_core::grid_map_core
-  opencv_photo
-  pluginlib::pluginlib
-  rclcpp::rclcpp
-  ${sensor_msgs_TARGETS}
+ament_target_dependencies(${PROJECT_NAME} SYSTEM
+  ${dependencies}
 )
 
 # Filters does not expose targets (yet)

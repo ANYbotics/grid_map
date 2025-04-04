@@ -12,7 +12,7 @@
 #include <grid_map_core/grid_map_core.hpp>
 
 // OpenCV
-#include <cv_bridge/cv_bridge.hpp>
+#include <cv_bridge/cv_bridge.h>
 
 // STD
 #include <iostream>
