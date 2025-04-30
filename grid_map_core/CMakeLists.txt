@@ -5,9 +5,6 @@ project(grid_map_core)
 find_package(ament_cmake REQUIRED)
 find_package(grid_map_cmake_helpers REQUIRED)
 
-## Define Eigen addons.
-include(cmake/${PROJECT_NAME}-extras.cmake)
-
 ## System dependencies are found with CMake's conventions
 find_package(Eigen3 REQUIRED)
 
@@ -43,6 +40,12 @@ target_include_directories(${PROJECT_NAME}
 )
 
 target_link_libraries(${PROJECT_NAME} PUBLIC Eigen3::Eigen)
+
+target_compile_definitions(${PROJECT_NAME}
+  PUBLIC
+    EIGEN_DENSEBASE_PLUGIN="grid_map_core/eigen_plugins/DenseBasePlugin.hpp"
+    EIGEN_FUNCTORS_PLUGIN="grid_map_core/eigen_plugins/FunctorsPlugin.hpp"
+)
 
 #############
 ## Install ##
@@ -127,6 +130,4 @@ endif()
 
 ament_export_targets(export_${PROJECT_NAME} HAS_LIBRARY_TARGET)
 ament_export_dependencies(Eigen3)
-ament_package(CONFIG_EXTRAS
-  cmake/${PROJECT_NAME}-extras.cmake
-)
+ament_package()
