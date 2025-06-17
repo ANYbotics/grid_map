@@ -7,6 +7,7 @@
  */
 
 // gtest
+#include <filesystem>
 #include <gtest/gtest.h>
 #include <stdlib.h>
 
@@ -77,9 +78,9 @@ TEST(RosbagHandling, saveLoad)
   EXPECT_FALSE(gridMapOut.exists(layer));
 
   // Cleaning in case the previous bag was not removed
-  rcpputils::fs::path dir(pathToBag);
-  EXPECT_TRUE(!dir.exists() || rcpputils::fs::remove_all(dir));
-  EXPECT_TRUE(!dir.exists() || rcpputils::fs::create_directories(dir));
+  std::filesystem::path dir(pathToBag);
+  EXPECT_TRUE((!std::filesystem::exists(dir) || std::filesystem::remove_all(dir) > 0));
+  EXPECT_TRUE((!std::filesystem::exists(dir) || std::filesystem::create_directories(dir)));
 
   EXPECT_TRUE(GridMapRosConverter::saveToBag(gridMapIn, pathToBag, topic));
   EXPECT_TRUE(GridMapRosConverter::loadFromBag(pathToBag, topic, gridMapOut));
@@ -90,7 +91,7 @@ TEST(RosbagHandling, saveLoad)
   }
 
   // Removing the created bag
-  rcpputils::fs::remove_all(dir);
+  std::filesystem::remove_all(dir);
 }
 
 TEST(RosbagHandling, saveLoadWithTime)
@@ -115,9 +116,9 @@ TEST(RosbagHandling, saveLoadWithTime)
   gridMapIn.setTimestamp(clock.now().nanoseconds());
 
   // Cleaning in case the previous bag was not removed
-  rcpputils::fs::path dir(pathToBag);
-  EXPECT_TRUE(!dir.exists() || rcpputils::fs::remove_all(dir));
-  EXPECT_TRUE(!dir.exists() || rcpputils::fs::create_directories(dir));
+  std::filesystem::path dir(pathToBag);
+  EXPECT_TRUE((!std::filesystem::exists(dir) || std::filesystem::remove_all(dir) > 0));
+  EXPECT_TRUE((!std::filesystem::exists(dir) || std::filesystem::create_directories(dir)));
 
   EXPECT_TRUE(GridMapRosConverter::saveToBag(gridMapIn, pathToBag, topic));
   EXPECT_TRUE(GridMapRosConverter::loadFromBag(pathToBag, topic, gridMapOut));
@@ -129,7 +130,7 @@ TEST(RosbagHandling, saveLoadWithTime)
   }
 
   // Removing the created bag
-  rcpputils::fs::remove_all(dir);
+  std::filesystem::remove_all(dir);
 }
 
 TEST(RosbagHandling, wrongTopicType)
@@ -140,7 +141,7 @@ TEST(RosbagHandling, wrongTopicType)
   std::string pathToBag = "double_chatter";
   string topic = "/chatter1";
   GridMap gridMapOut;
-  rcpputils::fs::path dir(pathToBag);
+  std::filesystem::path dir(pathToBag);
 
   EXPECT_FALSE(GridMapRosConverter::loadFromBag(pathToBag, topic, gridMapOut));
 }
@@ -155,7 +156,7 @@ TEST(RosbagHandling, checkTopicTypes)
   string topic_correct = "/grid_map";
   string topic_non_existing = "/grid_map_non_existing";
   GridMap gridMapOut;
-  rcpputils::fs::path dir(pathToBag);
+  std::filesystem::path dir(pathToBag);
 
   EXPECT_FALSE(GridMapRosConverter::loadFromBag(pathToBag, topic_wrong, gridMapOut));
   EXPECT_TRUE(GridMapRosConverter::loadFromBag(pathToBag, topic_correct, gridMapOut));
