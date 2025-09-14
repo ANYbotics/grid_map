@@ -5,6 +5,7 @@ find_package(ament_cmake REQUIRED)
 find_package(grid_map_cmake_helpers REQUIRED)
 find_package(grid_map_msgs REQUIRED)
 find_package(grid_map_ros REQUIRED)
+find_package(grid_map_core REQUIRED)
 find_package(Qt5 REQUIRED COMPONENTS Core Widgets)
 find_package(rclcpp REQUIRED)
 find_package(rviz_common REQUIRED)
@@ -20,6 +21,7 @@ set(CMAKE_AUTOMOC ON) # This setting causes Qt's "MOC" generation to happen auto
 set(dependencies
   grid_map_msgs
   grid_map_ros
+  grid_map_core
   rclcpp
   rviz_common
   rviz_ogre_vendor

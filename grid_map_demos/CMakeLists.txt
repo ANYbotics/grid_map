@@ -27,6 +27,7 @@ grid_map_package()
 set(dependencies
   grid_map_msgs
   grid_map_ros
+  grid_map_core
   rclcpp
 )
 

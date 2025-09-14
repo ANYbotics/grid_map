@@ -10,7 +10,7 @@
 #include <grid_map_core/gtest_eigen.hpp>
 
 // OpenCV
-#include <cv_bridge/cv_bridge.hpp>
+#include <cv_bridge/cv_bridge.h>
 
 // gtest
 #include <gtest/gtest.h>
