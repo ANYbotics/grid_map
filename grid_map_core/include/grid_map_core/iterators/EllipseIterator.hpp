@@ -40,7 +40,7 @@ public:
    * @param iterator the iterator to copy data from.
    * @return a reference to *this.
    */
-  EllipseIterator & operator=(const EllipseIterator & other);
+  EllipseIterator & operator=(const EllipseIterator & other) = default;
 
   /*!
    * Compare to another iterator.

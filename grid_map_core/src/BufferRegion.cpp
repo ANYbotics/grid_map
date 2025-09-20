@@ -11,7 +11,7 @@ namespace grid_map
 {
 
 BufferRegion::BufferRegion()
-: staretIndex_(Index::Zero()),
+: startIndex_(Index::Zero()),
   size_(Size::Zero()),
   quadrant_(BufferRegion::Quadrant::Undefined)
 {
@@ -20,7 +20,7 @@ BufferRegion::BufferRegion()
 BufferRegion::BufferRegion(
   const Index & index, const Size & size,
   const BufferRegion::Quadrant & quadrant)
-: staretIndex_(index),
+: startIndex_(index),
   size_(size),
   quadrant_(quadrant)
 {
@@ -28,12 +28,12 @@ BufferRegion::BufferRegion(
 
 const Index & BufferRegion::getStartIndex() const
 {
-  return staretIndex_;
+  return startIndex_;
 }
 
-void BufferRegion::setStartIndex(const Index & staretIndex)
+void BufferRegion::setStartIndex(const Index & startIndex)
 {
-  staretIndex_ = staretIndex;
+  startIndex_ = startIndex;
 }
 
 const Size & BufferRegion::getSize() const

@@ -8,7 +8,7 @@
 
 #include <Eigen/Dense>
 
-#include <math.h>
+#include <cmath>
 #include <algorithm>
 #include <cassert>
 #include <iostream>
@@ -82,17 +82,13 @@ const std::vector<std::string> & GridMap::getBasicLayers() const
 
 bool GridMap::hasBasicLayers() const
 {
-  return basicLayers_.size() > 0;
+  return !basicLayers_.empty();
 }
 
 bool GridMap::hasSameLayers(const GridMap & other) const
 {
-  for (const auto & layer : layers_) {
-    if (!other.exists(layer)) {
-      return false;
-    }
-  }
-  return true;
+  return std::all_of(layers_.begin(), layers_.end(),
+           [&](const std::string & layer){return other.exists(layer);});
 }
 
 void GridMap::add(const std::string & layer, const double value)
@@ -283,12 +279,8 @@ bool GridMap::isValid(const Index & index, const std::vector<std::string> & laye
   if (layers.empty()) {
     return false;
   }
-  for (const auto & layer : layers) {
-    if (!isValid(index, layer)) {
-      return false;
-    }
-  }
-  return true;
+  return std::all_of(layers.begin(), layers.end(),
+           [&](const std::string & layer){return isValid(index, layer);});
 }
 
 bool GridMap::getPosition3(
@@ -448,10 +440,10 @@ GridMap GridMap::getTransformedMap(
     if (sampleRatio > 0.0) {
       positionSamples.reserve(5);
       positionSamples.push_back(center);
-      positionSamples.push_back(Position3(center.x() - sampleLength, center.y(), center.z()));
-      positionSamples.push_back(Position3(center.x() + sampleLength, center.y(), center.z()));
-      positionSamples.push_back(Position3(center.x(), center.y() - sampleLength, center.z()));
-      positionSamples.push_back(Position3(center.x(), center.y() + sampleLength, center.z()));
+      positionSamples.emplace_back(center.x() - sampleLength, center.y(), center.z());
+      positionSamples.emplace_back(center.x() + sampleLength, center.y(), center.z());
+      positionSamples.emplace_back(center.x(), center.y() - sampleLength, center.z());
+      positionSamples.emplace_back(center.x(), center.y() + sampleLength, center.z());
     } else {
       positionSamples.push_back(center);
     }
@@ -507,10 +499,7 @@ bool GridMap::move(const Position & position, std::vector<BufferRegion> & newReg
       if (abs(indexShift(i)) >= getSize()(i)) {
         // Entire map is dropped.
         clearAll();
-        newRegions.push_back(
-          BufferRegion(
-            Index(0, 0), getSize(),
-            BufferRegion::Quadrant::Undefined));
+        newRegions.emplace_back(Index(0, 0), getSize(), BufferRegion::Quadrant::Undefined);
       } else {
         // Drop cells out of map.
         int sign = (indexShift(i) > 0 ? 1 : -1);
@@ -524,16 +513,14 @@ bool GridMap::move(const Position & position, std::vector<BufferRegion> & newReg
           // One region to drop.
           if (i == 0) {
             clearRows(index, nCells);
-            newRegions.push_back(
-              BufferRegion(
-                Index(index, 0), Size(nCells, getSize()(1)),
-                BufferRegion::Quadrant::Undefined));
+            newRegions.emplace_back(
+              Index(index, 0), Size(nCells, getSize()(1)),
+              BufferRegion::Quadrant::Undefined);
           } else if (i == 1) {
             clearCols(index, nCells);
-            newRegions.push_back(
-              BufferRegion(
-                Index(0, index), Size(getSize()(0), nCells),
-                BufferRegion::Quadrant::Undefined));
+            newRegions.emplace_back(
+              Index(0, index), Size(getSize()(0), nCells),
+              BufferRegion::Quadrant::Undefined);
           }
         } else {
           // Two regions to drop.
@@ -541,32 +528,28 @@ bool GridMap::move(const Position & position, std::vector<BufferRegion> & newReg
           int firstNCells = getSize()(i) - firstIndex;
           if (i == 0) {
             clearRows(firstIndex, firstNCells);
-            newRegions.push_back(
-              BufferRegion(
-                Index(firstIndex, 0), Size(firstNCells, getSize()(1)),
-                BufferRegion::Quadrant::Undefined));
+            newRegions.emplace_back(
+              Index(firstIndex, 0), Size(firstNCells, getSize()(1)),
+              BufferRegion::Quadrant::Undefined);
           } else if (i == 1) {
             clearCols(firstIndex, firstNCells);
-            newRegions.push_back(
-              BufferRegion(
-                Index(0, firstIndex), Size(getSize()(0), firstNCells),
-                BufferRegion::Quadrant::Undefined));
+            newRegions.emplace_back(
+              Index(0, firstIndex), Size(getSize()(0), firstNCells),
+              BufferRegion::Quadrant::Undefined);
           }
 
           int secondIndex = 0;
           int secondNCells = nCells - firstNCells;
           if (i == 0) {
             clearRows(secondIndex, secondNCells);
-            newRegions.push_back(
-              BufferRegion(
-                Index(secondIndex, 0),
-                Size(secondNCells, getSize()(1)), BufferRegion::Quadrant::Undefined));
+            newRegions.emplace_back(
+              Index(secondIndex, 0), Size(secondNCells, getSize()(1)),
+              BufferRegion::Quadrant::Undefined);
           } else if (i == 1) {
             clearCols(secondIndex, secondNCells);
-            newRegions.push_back(
-              BufferRegion(
-                Index(0, secondIndex),
-                Size(getSize()(0), secondNCells), BufferRegion::Quadrant::Undefined));
+            newRegions.emplace_back(
+              Index(0, secondIndex), Size(getSize()(0), secondNCells),
+              BufferRegion::Quadrant::Undefined);
           }
         }
       }
@@ -579,7 +562,7 @@ bool GridMap::move(const Position & position, std::vector<BufferRegion> & newReg
   position_ += alignedPositionShift;
 
   // Check if map has been moved at all.
-  return indexShift.any() != 0;
+  return indexShift.any();
 }
 
 bool GridMap::move(const Position & position)

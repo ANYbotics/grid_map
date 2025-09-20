@@ -37,20 +37,6 @@ CircleIterator::CircleIterator(
   if (!isInside()) {++(*this);}
 }
 
-CircleIterator & CircleIterator::operator=(const CircleIterator & other)
-{
-  center_ = other.center_;
-  radius_ = other.radius_;
-  radiusSquare_ = other.radiusSquare_;
-  internalIterator_ = other.internalIterator_;
-  mapLength_ = other.mapLength_;
-  mapPosition_ = other.mapPosition_;
-  resolution_ = other.resolution_;
-  bufferSize_ = other.bufferSize_;
-  bufferStartIndex_ = other.bufferStartIndex_;
-  return *this;
-}
-
 bool CircleIterator::operator!=(const CircleIterator & other) const
 {
   return internalIterator_ != other.internalIterator_;
