@@ -42,15 +42,14 @@ int main(int argc, char** argv)
   for (grid_map::PolygonIterator iterator(map, polygon); !iterator.isPastEnd(); ++iterator) {
     map.at("original", *iterator) = 0.3;
   }
-
   // Convert to CV image.
   cv::Mat originalImage;
   if (useTransparency) {
     // Note: The template parameters have to be set based on your encoding
     // of the image. For 8-bit images use `unsigned char`.
-    GridMapCvConverter::toImage<unsigned short, 4>(map, "original", CV_16UC4, 0.0, 0.3, originalImage);
+    GridMapCvConverter::toImage<unsigned short, 4>(map, "original", CV_16UC4, useTransparency, 0.0, 0.3, originalImage);
   } else {
-    GridMapCvConverter::toImage<unsigned short, 1>(map, "original", CV_16UC1, 0.0, 0.3, originalImage);
+    GridMapCvConverter::toImage<unsigned short, 1>(map, "original", CV_16UC1, useTransparency, 0.0, 0.3, originalImage);
   }
 
   // Create OpenCV window.
@@ -77,7 +76,7 @@ int main(int argc, char** argv)
     if (useTransparency) {
       GridMapCvConverter::addLayerFromImage<unsigned short, 4>(modifiedImage, "elevation", map, 0.0, 0.3, 0.3);
     } else {
-      GridMapCvConverter::addLayerFromImage<unsigned short, 1>(modifiedImage, "elevation", map, 0.0, 0.3);
+      GridMapCvConverter::addLayerFromImage<unsigned short, 1>(modifiedImage, "elevation", map, useTransparency, 0.0, 0.3, 0.3);
     }
 
     // Publish grid map.

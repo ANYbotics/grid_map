@@ -12,6 +12,7 @@
 
 // OpenCV
 #include <cv_bridge/cv_bridge.h>
+#include <opencv2/core/eigen.hpp>
 
 // STD
 #include <iostream>
@@ -117,7 +118,73 @@ class GridMapCvConverter
 
     return true;
   }
+  /*!
+   * Adds a layer with data from image, uses faster cv conversions for images without transparency
+   * @param[in] image the image to be added. If it is a color image
+   * (bgr or bgra encoding), it will be transformed in a grayscale image.
+   * @param[in] layer the layer that is filled with the image data.
+   * @param[out] gridMap the grid map to be populated.
+   * @param[in] isAlpha transparent image
+   * @param[in] lowerValue value of the layer corresponding to black image pixels.
+   * @param[in] upperValue value of the layer corresponding to white image pixels.
+   * @param[in] alphaThreshold the threshold ([0.0, 1.0]) for the alpha value at which
+   * cells in the grid map are marked as empty.
+   * @return true if successful, false otherwise.
+   */
+  template<typename Type_, int NChannels_>
+  static bool addLayerFromImage(const cv::Mat& image, const std::string& layer,
+                                grid_map::GridMap& gridMap, bool isAlpha, const float lowerValue,
+                                const float upperValue, const double alphaThreshold)
+  {
+    if (gridMap.getSize()(0) != image.rows || gridMap.getSize()(1) != image.cols) {
+      std::cerr << "Image size does not correspond to grid map size!" << std::endl;
+      return false;
+    }
 
+    bool isColor = false;
+    if (image.channels() >= 3) isColor = true;
+    if (image.channels() >= 4 || isAlpha) {
+      return addLayerFromImage<Type_, NChannels_>(image, layer, gridMap, lowerValue, upperValue, alphaThreshold);
+    }
+
+    cv::Mat imageMono;
+    if (isColor) {
+      cv::cvtColor(image, imageMono, CV_BGR2GRAY);
+    } else if (!isColor){
+      imageMono = image;
+    } else {
+      std::cerr << "Something went wrong when adding grid map layer from image!" << std::endl;
+      return false;
+    }
+
+    const float mapValueDifference = upperValue - lowerValue;
+
+    float maxImageValue;
+    if (std::is_same<Type_, float>::value || std::is_same<Type_, double>::value) {
+      maxImageValue = 1.0;
+    } else if (std::is_same<Type_, unsigned short>::value || std::is_same<Type_, unsigned char>::value) {
+      maxImageValue = (float)std::numeric_limits<Type_>::max();
+    } else {
+      std::cerr << "This image type is not supported." << std::endl;
+      return false;
+    }
+
+    gridMap.add(layer);
+    grid_map::Matrix& data = gridMap[layer];
+    grid_map::Matrix image_data(data.rows(), data.cols());
+    cv2eigen(imageMono, image_data);
+    image_data.array()/maxImageValue * mapValueDifference + lowerValue;
+
+    grid_map::GridMap unbuffered_grid = gridMap;
+    Index def(0, 0);
+    unbuffered_grid.setStartIndex(def);
+    unbuffered_grid.get(layer) = image_data;
+    grid_map::Index reflected_index(data.rows() - gridMap.getStartIndex()(0), data.cols() - gridMap.getStartIndex()(1));
+    unbuffered_grid.setStartIndex(reflected_index);
+    unbuffered_grid.convertToDefaultStartIndex();
+    gridMap.get(layer) = unbuffered_grid[layer];
+    return true;
+  }
   /*!
    * Adds a color layer with data from an image.
    * @param[in] image the image to be added (BGR format).
@@ -245,7 +312,58 @@ class GridMapCvConverter
 
     return true;
   }
+  /*!
+   * Creates a cv mat from a grid map layer, uses faster cv conversions for images without transparency.
+   * @param[in] grid map to be added.
+   * @param[in] layer the layer that is converted to the image.
+   * @param[in] encoding the desired encoding of the image.
+   * @param[in] isAlpha is transparent
+   * @param[in] lowerValue the value of the layer corresponding to black image pixels.
+   * @param[in] upperValue the value of the layer corresponding to white image pixels.
+   * @param[out] image the image to be populated.
+   * @return true if successful, false otherwise.
+   */
+  template<typename Type_, int NChannels_>
+  static bool toImage(const grid_map::GridMap& gridMap, const std::string& layer,
+                      const int encoding, bool isAlpha, const float lowerValue, const float upperValue,
+                      cv::Mat& image)
+  {
+    // Initialize image.
+    if (gridMap.getSize()(0) > 0 && gridMap.getSize()(1) > 0) {
+      image = cv::Mat::zeros(gridMap.getSize()(0), gridMap.getSize()(1), encoding);
+    } else {
+      std::cerr << "Invalid grid map?" << std::endl;
+      return false;
+    }
 
+    // Get max image value.
+    Type_ imageMax;
+    if (std::is_same<Type_, float>::value || std::is_same<Type_, double>::value) {
+      imageMax = 1.0;
+    } else if (std::is_same<Type_, unsigned short>::value || std::is_same<Type_, unsigned char>::value) {
+      imageMax = (Type_)std::numeric_limits<Type_>::max();
+    } else {
+      std::cerr << "This image type is not supported." << std::endl;
+      return false;
+    }
+
+    // Convert to image.
+    bool isColor = false;
+    if (image.channels() >= 3) isColor = true;
+    if (image.channels() >= 4 || isAlpha) {
+      return toImage<Type_, NChannels_>(gridMap, layer, encoding, lowerValue, upperValue, image);
+    }
+
+    // Clamp outliers.
+    grid_map::GridMap map = gridMap;
+    map.get(layer) = map.get(layer).unaryExpr(grid_map::Clamp<float>(lowerValue, upperValue));
+
+    grid_map::GridMap unbuffered_grid = gridMap;
+    unbuffered_grid.convertToDefaultStartIndex();
+    grid_map::Matrix &unbuffered_data = unbuffered_grid[layer];
+    eigen2cv(unbuffered_data, image);
+    return true;
+  }
 };
 
 } /* namespace */

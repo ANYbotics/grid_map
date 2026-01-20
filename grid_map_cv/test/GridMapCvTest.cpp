@@ -61,6 +61,33 @@ TEST(ImageConversion, roundTrip8UC3)
   EXPECT_TRUE((mapIn.getSize() == mapOut.getSize()).all());
 }
 
+TEST(ImageConversionFast, roundTrip8UC3)
+{
+  // Create grid map.
+  GridMap mapIn({"layer"});
+  mapIn.setGeometry(grid_map::Length(2.0, 1.0), 0.1);
+  mapIn["layer"].setRandom(); // Sets the layer to random values in [-1.0, 1.0].
+  mapIn.move(Position(0.5, -0.2));
+  const float minValue = -1.0;
+  const float maxValue = 1.0;
+  replaceNan(mapIn.get("layer"), minValue); // When we move `mapIn`, new areas are filled with NaN. As `toImage` does not support NaN, we replace NaN with `minValue` instead.
+
+  // Convert to image.
+  cv::Mat image;
+  GridMapCvConverter::toImage<unsigned char, 3>(mapIn, "layer", CV_8UC3, false, minValue, maxValue, image);
+
+  // Convert back to grid map.
+  GridMap mapOut(mapIn);
+  mapOut["layer"].setConstant(NAN);
+  GridMapCvConverter::addLayerFromImage<unsigned char, 3>(image, "layer", mapOut, false, minValue, maxValue, 0);
+
+  // Check data.
+  const float resolution = (maxValue - minValue) / (float) std::numeric_limits<unsigned char>::max();
+  expectNear(mapIn["layer"], mapOut["layer"], resolution, "");
+  EXPECT_TRUE((mapIn.getLength() == mapOut.getLength()).all());
+  EXPECT_TRUE((mapIn.getSize() == mapOut.getSize()).all());
+}
+
 TEST(ImageConversion, roundTrip8UC4)
 {
   // Create grid map.
@@ -107,6 +134,33 @@ TEST(ImageConversion, roundTrip16UC1)
   GridMap mapOut(mapIn);
   mapOut["layer"].setConstant(NAN);
   GridMapCvConverter::addLayerFromImage<unsigned short, 1>(image, "layer", mapOut, minValue, maxValue);
+
+  // Check data.
+  const float resolution = (maxValue - minValue) / (float) std::numeric_limits<unsigned char>::max();
+  expectNear(mapIn["layer"], mapOut["layer"], resolution, "");
+  EXPECT_TRUE((mapIn.getLength() == mapOut.getLength()).all());
+  EXPECT_TRUE((mapIn.getSize() == mapOut.getSize()).all());
+}
+
+TEST(ImageConversionFast, roundTrip16UC1)
+{
+  // Create grid map.
+  GridMap mapIn({"layer"});
+  mapIn.setGeometry(grid_map::Length(2.0, 1.0), 0.1);
+  mapIn["layer"].setRandom(); // Sets the layer to random values in [-1.0, 1.0].
+  mapIn.move(Position(0.5, -0.2));
+  const float minValue = -1.0;
+  const float maxValue = 1.0;
+  replaceNan(mapIn.get("layer"), minValue); // When we move `mapIn`, new areas are filled with NaN. As `toImage` does not support NaN, we replace NaN with `minValue` instead.
+
+  // Convert to image.
+  cv::Mat image;
+  GridMapCvConverter::toImage<unsigned short, 1>(mapIn, "layer", CV_16UC1, false, minValue, maxValue, image);
+
+  // Convert back to grid map.
+  GridMap mapOut(mapIn);
+  mapOut["layer"].setConstant(NAN);
+  GridMapCvConverter::addLayerFromImage<unsigned short, 1>(image, "layer", mapOut, false, minValue, maxValue, 0);
 
   // Check data.
   const float resolution = (maxValue - minValue) / (float) std::numeric_limits<unsigned char>::max();
