@@ -84,7 +84,8 @@ class MessageFilterDisplay : public _RosTopicDisplay {
     tf_filter_ = new tf2_ros::MessageFilter<MessageType>(*context_->getTF2BufferPtr(), fixed_frame_.toStdString(), 1u, update_nh_);
 
     tf_filter_->connectInput(sub_);
-    tf_filter_->registerCallback(boost::bind(&MessageFilterDisplay<MessageType>::incomingMessage, this, _1));
+    tf_filter_->registerCallback(boost::bind(&MessageFilterDisplay<MessageType>::incomingMessage, this,
+        boost::placeholders::_1));
     context_->getFrameManager()->registerFilterForTransformStatusCheck(tf_filter_, this);
   }
 

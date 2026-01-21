@@ -15,7 +15,6 @@
 #include <grid_map_core/GridMap.hpp>
 
 namespace Ogre {
-class Vector3;
 class Quaternion;
 class ManualObject;
 class ColourValue;
