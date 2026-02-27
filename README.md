@@ -237,7 +237,7 @@ Note: For maximum efficiency when using iterators, it is recommended to locally 
 
     grid_map::Matrix& data = map["layer"];
     for (GridMapIterator iterator(map); !iterator.isPastEnd(); ++iterator) {
-        const Index index(*iterator);
+        const Index(*iterator);
         cout << "The value at index " << index.transpose() << " is " << data(index(0), index(1)) << endl;
     }
 
@@ -273,7 +273,7 @@ Beware that while iterators are convenient, it is often the cleanest and most ef
 ### Changing the Position of the Map
 
 There are two different methods to change the position of the map:
-* `setPosition(...)`: Changes the position of the map without changing data stored in the map. This changes the corresponce between the data and the map frame.
+* `setPosition(...)`: Changes the position of the map without changing data stored in the map. This changes the correspondence between the data and the map frame.
 * `move(...)`:
  Relocates the region captured by grid map w.r.t. to the static grid map frame. Use this to move the grid map boundaries
  without relocating the grid map data. Takes care of all the data handling, such that the grid map data is stationary in the grid map
@@ -401,7 +401,7 @@ The published topics are configured with the [YAML parameter file](grid_map_demo
 
 ### grid_map_filters
 
-The *grid_map_filters* package containts several filters which can be applied a grid map to perform computations on the data in the layers. The grid map filters are based on [ROS Filters], which means that a chain of filters can be configured as a YAML file. Furthermore, additional filters can be written and made available through the ROS plugin mechanism, such as the [`InpaintFilter`](grid_map_cv/include/grid_map_cv/InpaintFilter.hpp) from the `grid_map_cv` package.
+The *grid_map_filters* package contains several filters which can be applied a grid map to perform computations on the data in the layers. The grid map filters are based on [ROS Filters], which means that a chain of filters can be configured as a YAML file. Furthermore, additional filters can be written and made available through the ROS plugin mechanism, such as the [`InpaintFilter`](grid_map_cv/include/grid_map_cv/InpaintFilter.hpp) from the `grid_map_cv` package.
 
 Several basic filters are provided in the *grid_map_filters* package:
 
