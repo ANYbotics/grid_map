@@ -7,6 +7,7 @@
  */
 
 #include <rclcpp/rclcpp.hpp>
+#include <rclcpp_lifecycle/lifecycle_node.hpp>
 #include <grid_map_visualization/GridMapVisualization.hpp>
 
 #include <memory>
@@ -16,7 +17,7 @@ int main(int argc, char ** argv)
   rclcpp::init(argc, argv);
   auto node = std::make_shared<grid_map_visualization::GridMapVisualization>(
     "grid_map_visualizations");
-  rclcpp::spin(node->nodePtr);
+  rclcpp::spin(node->get_node_base_interface());
   rclcpp::shutdown();
   return 0;
 }
