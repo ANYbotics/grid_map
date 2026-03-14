@@ -20,6 +20,7 @@
   <depend>grid_map_ros</depend>
   <depend>nav_msgs</depend>
   <depend>rclcpp</depend>
+  <depend>rclcpp_lifecycle</depend>
   <depend>sensor_msgs</depend>
   <depend>visualization_msgs</depend>
 

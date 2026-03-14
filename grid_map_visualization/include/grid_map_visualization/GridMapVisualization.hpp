@@ -19,6 +19,7 @@
 
 // ROS
 #include <rclcpp/rclcpp.hpp>
+#include <rclcpp_lifecycle/lifecycle_node.hpp>
 
 // STD
 #include <memory>
@@ -30,10 +31,14 @@ namespace grid_map_visualization
 
 /*!
  * Visualizes a grid map by publishing different topics that can be viewed in Rviz.
+ * Implemented as a lifecycle node so the visualization pipeline can be activated
+ * only when needed, saving CPU when no operator is monitoring.
  */
-class GridMapVisualization
+class GridMapVisualization : public rclcpp_lifecycle::LifecycleNode
 {
 public:
+  using CallbackReturn = rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn;
+
   /*!
    * Constructor.
    * @param parameterName The config parameter name.
@@ -43,16 +48,38 @@ public:
   /*!
    * Destructor.
    */
-  virtual ~GridMapVisualization();
+  virtual ~GridMapVisualization() = default;
+
+  /*!
+   * Reads parameters and sets up visualizations.
+   */
+  CallbackReturn on_configure(const rclcpp_lifecycle::State & state);
+
+  /*!
+   * Creates the grid map subscription and starts processing.
+   */
+  CallbackReturn on_activate(const rclcpp_lifecycle::State & state);
+
+  /*!
+   * Destroys the grid map subscription and stops processing.
+   */
+  CallbackReturn on_deactivate(const rclcpp_lifecycle::State & state);
+
+  /*!
+   * Cleans up visualizations and factory.
+   */
+  CallbackReturn on_cleanup(const rclcpp_lifecycle::State & state);
+
+  /*!
+   * Shuts down the node.
+   */
+  CallbackReturn on_shutdown(const rclcpp_lifecycle::State & state);
 
   /*!
    * Callback function for the grid map.
    * @param message the grid map message to be visualized.
    */
   void callback(const grid_map_msgs::msg::GridMap::SharedPtr message);
-
-  //! ROS node shared pointer
-  rclcpp::Node::SharedPtr nodePtr;
 
 private:
   /*!
@@ -66,14 +93,6 @@ private:
    * @return true if successful.
    */
   bool initialize();
-
-  /*!
-   * Check if visualizations are active (subscribed to),
-   * and accordingly cancels/activates the subscription to the
-   * grid map to save bandwidth.
-   * @param timerEvent the timer event.
-   */
-  void updateSubscriptionCallback();
 
   //! Parameter name of the visualizer configuration list.
   std::string visualizationsParameter_;
@@ -90,16 +109,7 @@ private:
   //! Visualization factory.
   std::shared_ptr<VisualizationFactory> factory_;
 
-  //! Timer to check the activity of the visualizations.
-  rclcpp::TimerBase::SharedPtr activityCheckTimer_;
-
-  //! Rate of checking the activity of the visualizations.
-  double activityCheckRate_;
-
-  //! If the grid map visualization is subscribed to the grid map.
-  bool isSubscribed_;
-
-  //! If the grid map subscriber is Transient local.
+  //! If the grid map subscriber uses Transient Local durability.
   bool isGridMapSubLatched_;
 };
 
