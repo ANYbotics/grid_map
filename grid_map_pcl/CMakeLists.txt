@@ -7,6 +7,13 @@ find_package(grid_map_cmake_helpers REQUIRED)
 find_package(grid_map_core REQUIRED)
 find_package(grid_map_msgs REQUIRED)
 find_package(grid_map_ros REQUIRED)
+
+# PCL's package configuration uses upper-case *_ROOT variables for some of its
+# dependencies (for example EIGEN_ROOT and FLANN_ROOT). CMake 3.27+ warns unless
+# CMP0144 is selected before PCLConfig.cmake is evaluated.
+if(POLICY CMP0144)
+  cmake_policy(SET CMP0144 NEW)
+endif()
 find_package(PCL REQUIRED) ## See ROS REP2000 for expected PCL version
 find_package(rclcpp REQUIRED)
 find_package(rcutils REQUIRED)
