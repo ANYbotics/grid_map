@@ -6,6 +6,13 @@ project(grid_map_sdf)
 find_package(ament_cmake REQUIRED)
 find_package(grid_map_cmake_helpers REQUIRED)
 find_package(grid_map_core REQUIRED)
+
+# PCL's package configuration uses upper-case *_ROOT variables for some of its
+# dependencies (for example EIGEN_ROOT and FLANN_ROOT). CMake 3.27+ warns unless
+# CMP0144 is selected before PCLConfig.cmake is evaluated.
+if(POLICY CMP0144)
+  cmake_policy(SET CMP0144 NEW)
+endif()
 find_package(PCL REQUIRED COMPONENTS common)
 
 ## System dependencies are found with CMake's conventions
