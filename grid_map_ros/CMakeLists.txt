@@ -56,8 +56,25 @@ add_library(${PROJECT_NAME} SHARED
   src/PolygonRosConverter.cpp
 )
 
-ament_target_dependencies(${PROJECT_NAME} SYSTEM
-  ${dependencies}
+target_link_libraries(${PROJECT_NAME} PUBLIC
+  cv_bridge::cv_bridge
+  grid_map_core::grid_map_core
+  rclcpp::rclcpp
+  rcutils::rcutils
+  rosbag2_cpp::rosbag2_cpp
+  tf2::tf2
+  ${geometry_msgs_TARGETS}
+  ${grid_map_msgs_TARGETS}
+  ${nav2_msgs_TARGETS}
+  ${nav_msgs_TARGETS}
+  ${sensor_msgs_TARGETS}
+  ${std_msgs_TARGETS}
+  ${visualization_msgs_TARGETS}
+  ${grid_map_cv_LIBRARIES}
+)
+
+target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC
+  ${grid_map_cv_INCLUDE_DIRS}
 )
 
 #############
