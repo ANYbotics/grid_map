@@ -127,4 +127,20 @@
       </description>
     </class>
   </library>
+
+  <library path="cvar_filter">
+    <class name="gridMapFilters/CVaRFilter" type="grid_map::CVaRFilter&lt;grid_map::GridMap&gt;" base_class_type="filters::FilterBase&lt;grid_map::GridMap&gt;">
+      <description>
+        Computes the Conditional Value-at-Risk (CVaR) of values inside a sliding window.
+      </description>
+    </class>
+  </library>
+
+  <library path="combinedmap_filter">
+    <class name="gridMapFilters/CombinedMapFilter" type="grid_map::CombinedMapFilter&lt;grid_map::GridMap&gt;" base_class_type="filters::FilterBase&lt;grid_map::GridMap&gt;">
+      <description>
+        Combines multiple grid maps into a single map.
+      </description>
+    </class>
+  </library>
 </class_libraries>
