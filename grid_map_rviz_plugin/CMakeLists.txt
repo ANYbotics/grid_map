@@ -3,6 +3,7 @@ project(grid_map_rviz_plugin)
 
 find_package(ament_cmake REQUIRED)
 find_package(grid_map_cmake_helpers REQUIRED)
+find_package(grid_map_core REQUIRED)
 find_package(grid_map_msgs REQUIRED)
 find_package(grid_map_ros REQUIRED)
 find_package(Qt5 REQUIRED COMPONENTS Core Widgets)
@@ -18,6 +19,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON) # This setting causes Qt's "MOC" generation to happen automatically.
 
 set(dependencies
+  grid_map_core
   grid_map_msgs
   grid_map_ros
   rclcpp
