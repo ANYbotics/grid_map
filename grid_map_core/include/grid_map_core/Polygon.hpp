@@ -157,8 +157,12 @@ public:
   /*!
    * Offsets the polygon inward (buffering) by a margin.
    * Use a negative margin to offset the polygon outward.
+   * Supports convex and non-convex polygons with clockwise or
+   * counter-clockwise ordered vertices.
    * @param margin the margin to offset the polygon by (in [m]).
-   * @return true if successful, false otherwise.
+   * @return true if successful, false for degenerate polygons (fewer than
+   * three vertices, zero area, repeated vertices, or vertices whose adjacent
+   * edges fold back onto each other).
    */
   bool offsetInward(const double margin);
 

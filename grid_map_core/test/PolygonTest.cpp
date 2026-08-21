@@ -227,6 +227,20 @@ TEST(convertToInequalityConstraints, triangle2)
   EXPECT_NEAR(0.0000, b(2), 1e-4);
 }
 
+/*!
+ * Distance of a point to the infinite line through lineStart and lineEnd,
+ * positive if the point lies to the left of the line direction (the interior
+ * side for counter-clockwise ordered polygons).
+ */
+static double signedDistanceToLine(
+  const grid_map::Position & lineStart, const grid_map::Position & lineEnd,
+  const grid_map::Position & point)
+{
+  const Eigen::Vector2d direction = (lineEnd - lineStart).normalized();
+  const Eigen::Vector2d toPoint = point - lineStart;
+  return direction.x() * toPoint.y() - direction.y() * toPoint.x();
+}
+
 TEST(offsetInward, triangle)
 {
   grid_map::Polygon polygon({grid_map::Position(1.0, 1.0), grid_map::Position(0.0, 0.0),
@@ -238,6 +252,113 @@ TEST(offsetInward, triangle)
   EXPECT_NEAR(0.0, polygon.getVertex(1)(1), 1e-4);
   EXPECT_NEAR(0.9, polygon.getVertex(2)(0), 1e-4);
   EXPECT_NEAR(-0.758579, polygon.getVertex(2)(1), 1e-4);
+}
+
+TEST(offsetInward, nonConvexPolygon)
+{
+  // Non-convex polygon with collinear vertices from issue #514
+  // (counter-clockwise ordered).
+  const std::vector<grid_map::Position> original{
+    grid_map::Position(0.0, 0.0), grid_map::Position(1.0, 1.0),
+    grid_map::Position(2.0, 1.0), grid_map::Position(3.0, 0.0),
+    grid_map::Position(3.0, 1.0), grid_map::Position(3.0, 2.0),
+    grid_map::Position(2.0, 3.0), grid_map::Position(1.0, 3.0),
+    grid_map::Position(0.0, 2.0), grid_map::Position(0.0, 1.0)};
+  const double margin = 0.1;
+  grid_map::Polygon polygon(original);
+  ASSERT_TRUE(polygon.offsetInward(margin));
+  const size_t n = original.size();
+  ASSERT_EQ(n, polygon.nVertices());
+
+  // Every offset vertex keeps the distance `margin` to the lines through both
+  // adjacent original edges, on the interior side.
+  for (size_t i = 0; i < n; ++i) {
+    const grid_map::Position & previous = original[(i + n - 1) % n];
+    const grid_map::Position & current = original[i];
+    const grid_map::Position & next = original[(i + 1) % n];
+    EXPECT_NEAR(margin, signedDistanceToLine(previous, current, polygon.getVertex(i)), 1e-9);
+    EXPECT_NEAR(margin, signedDistanceToLine(current, next, polygon.getVertex(i)), 1e-9);
+  }
+
+  // Collinear vertices (4 and 9) move perpendicularly to their edge. The
+  // previous implementation left them in place because its offset direction
+  // (v1 + v2) degenerated to the zero vector.
+  EXPECT_NEAR(2.9, polygon.getVertex(4).x(), 1e-9);
+  EXPECT_NEAR(1.0, polygon.getVertex(4).y(), 1e-9);
+  EXPECT_NEAR(0.1, polygon.getVertex(9).x(), 1e-9);
+  EXPECT_NEAR(1.0, polygon.getVertex(9).y(), 1e-9);
+
+  // Reflex vertex 1 moves into the interior (upward), where the previous
+  // implementation moved it outward (downward).
+  EXPECT_GT(polygon.getVertex(1).y(), original[1].y());
+}
+
+TEST(offsetInward, collinearVertices)
+{
+  // Square with an additional collinear vertex on the bottom edge.
+  grid_map::Polygon polygon({grid_map::Position(0.0, 0.0), grid_map::Position(1.0, 0.0),
+      grid_map::Position(2.0, 0.0), grid_map::Position(2.0, 2.0),
+      grid_map::Position(0.0, 2.0)});
+  ASSERT_TRUE(polygon.offsetInward(0.1));
+  EXPECT_NEAR(0.1, polygon.getVertex(0)(0), 1e-9);
+  EXPECT_NEAR(0.1, polygon.getVertex(0)(1), 1e-9);
+  EXPECT_NEAR(1.0, polygon.getVertex(1)(0), 1e-9);
+  EXPECT_NEAR(0.1, polygon.getVertex(1)(1), 1e-9);
+  EXPECT_NEAR(1.9, polygon.getVertex(2)(0), 1e-9);
+  EXPECT_NEAR(0.1, polygon.getVertex(2)(1), 1e-9);
+  EXPECT_NEAR(1.9, polygon.getVertex(3)(0), 1e-9);
+  EXPECT_NEAR(1.9, polygon.getVertex(3)(1), 1e-9);
+  EXPECT_NEAR(0.1, polygon.getVertex(4)(0), 1e-9);
+  EXPECT_NEAR(1.9, polygon.getVertex(4)(1), 1e-9);
+}
+
+TEST(offsetInward, clockwiseOrder)
+{
+  // Same triangle as the triangle test, but with clockwise vertex order.
+  grid_map::Polygon polygon({grid_map::Position(1.0, -1.0), grid_map::Position(0.0, 0.0),
+      grid_map::Position(1.0, 1.0)});
+  ASSERT_TRUE(polygon.offsetInward(0.1));
+  EXPECT_NEAR(0.9, polygon.getVertex(0)(0), 1e-4);
+  EXPECT_NEAR(-0.758579, polygon.getVertex(0)(1), 1e-4);
+  EXPECT_NEAR(0.141421, polygon.getVertex(1)(0), 1e-4);
+  EXPECT_NEAR(0.0, polygon.getVertex(1)(1), 1e-4);
+  EXPECT_NEAR(0.9, polygon.getVertex(2)(0), 1e-4);
+  EXPECT_NEAR(0.758579, polygon.getVertex(2)(1), 1e-4);
+}
+
+TEST(offsetInward, outwardWithNegativeMargin)
+{
+  grid_map::Polygon polygon({grid_map::Position(0.0, 0.0), grid_map::Position(1.0, 0.0),
+      grid_map::Position(1.0, 1.0), grid_map::Position(0.0, 1.0)});
+  ASSERT_TRUE(polygon.offsetInward(-0.1));
+  EXPECT_NEAR(-0.1, polygon.getVertex(0)(0), 1e-9);
+  EXPECT_NEAR(-0.1, polygon.getVertex(0)(1), 1e-9);
+  EXPECT_NEAR(1.1, polygon.getVertex(1)(0), 1e-9);
+  EXPECT_NEAR(-0.1, polygon.getVertex(1)(1), 1e-9);
+  EXPECT_NEAR(1.1, polygon.getVertex(2)(0), 1e-9);
+  EXPECT_NEAR(1.1, polygon.getVertex(2)(1), 1e-9);
+  EXPECT_NEAR(-0.1, polygon.getVertex(3)(0), 1e-9);
+  EXPECT_NEAR(1.1, polygon.getVertex(3)(1), 1e-9);
+}
+
+TEST(offsetInward, degenerateInputs)
+{
+  // Fewer than three vertices.
+  grid_map::Polygon line({grid_map::Position(0.0, 0.0), grid_map::Position(1.0, 0.0)});
+  EXPECT_FALSE(line.offsetInward(0.1));
+
+  // Repeated vertex: the edge direction is undefined and the polygon is left
+  // unchanged.
+  grid_map::Polygon repeated({grid_map::Position(0.0, 0.0), grid_map::Position(1.0, 0.0),
+      grid_map::Position(1.0, 0.0), grid_map::Position(1.0, 1.0)});
+  EXPECT_FALSE(repeated.offsetInward(0.1));
+  EXPECT_NEAR(0.0, repeated.getVertex(0)(0), 1e-9);
+  EXPECT_NEAR(0.0, repeated.getVertex(0)(1), 1e-9);
+
+  // Zero-area polygon.
+  grid_map::Polygon degenerate({grid_map::Position(0.0, 0.0), grid_map::Position(1.0, 0.0),
+      grid_map::Position(2.0, 0.0)});
+  EXPECT_FALSE(degenerate.offsetInward(0.1));
 }
 
 TEST(triangulation, triangle)

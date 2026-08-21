@@ -201,25 +201,67 @@ bool Polygon::thickenLine(const double thickness)
 
 bool Polygon::offsetInward(const double margin)
 {
-  // Create a list of indices of the neighbours of each vertex.
-  // TODO(needs_assignment): Assuming counter-clockwise ordered convex polygon.
-  std::vector<Eigen::Array2i> neighbourIndices;
-  const unsigned int n = nVertices();
-  neighbourIndices.resize(n);
-  for (unsigned int i = 0; i < n; ++i) {
-    neighbourIndices[i] << (i > 0 ? (i - 1) % n : n - 1), (i + 1) % n;
+  const size_t n = nVertices();
+  if (n < 3) {
+    return false;
   }
 
-  std::vector<Position> copy(vertices_);
-  for (unsigned int i = 0; i < neighbourIndices.size(); ++i) {
-    Eigen::Vector2d v1 = vertices_[neighbourIndices[i](0)] - vertices_[i];
-    Eigen::Vector2d v2 = vertices_[neighbourIndices[i](1)] - vertices_[i];
-    v1.normalize();
-    v2.normalize();
-    const double angle = acos(v1.dot(v2));
-    copy[i] += margin / sin(angle) * (v1 + v2);
+  // Determine the winding order with the shoelace formula, so that clockwise
+  // and counter-clockwise ordered polygons are both offset towards the
+  // interior.
+  double signedAreaTwice = 0.0;
+  for (size_t i = 0; i < n; ++i) {
+    const Position & current = vertices_[i];
+    const Position & next = vertices_[(i + 1) % n];
+    signedAreaTwice += current.x() * next.y() - next.x() * current.y();
   }
-  vertices_ = copy;
+  if (signedAreaTwice == 0.0) {
+    return false;
+  }
+  const double orientation = signedAreaTwice > 0.0 ? 1.0 : -1.0;
+
+  std::vector<Position> offsetVertices(n);
+  for (size_t i = 0; i < n; ++i) {
+    const Position & previous = vertices_[(i + n - 1) % n];
+    const Position & current = vertices_[i];
+    const Position & next = vertices_[(i + 1) % n];
+
+    Eigen::Vector2d incoming = current - previous;
+    Eigen::Vector2d outgoing = next - current;
+    const double incomingNorm = incoming.norm();
+    const double outgoingNorm = outgoing.norm();
+    if (incomingNorm == 0.0 || outgoingNorm == 0.0) {
+      return false;
+    }
+    incoming /= incomingNorm;
+    outgoing /= outgoingNorm;
+
+    // Inward normals of the adjacent edges (left-hand normals for
+    // counter-clockwise ordering).
+    const Eigen::Vector2d normal1 =
+      orientation * Eigen::Vector2d(-incoming.y(), incoming.x());
+    const Eigen::Vector2d normal2 =
+      orientation * Eigen::Vector2d(-outgoing.y(), outgoing.x());
+
+    // The offset vertex keeps the distance `margin` to the lines through both
+    // adjacent edges: it lies on the bisector of the edge normals at the miter
+    // distance margin / cos(alpha / 2), where alpha is the angle between the
+    // normals. This also holds for reflex and collinear vertices, where the
+    // previous formulation (margin / sin(angle) * (v1 + v2)) offset in the
+    // wrong direction or degenerated to a zero vector.
+    Eigen::Vector2d bisector = normal1 + normal2;
+    const double bisectorNorm = bisector.norm();  // Equals 2 * cos(alpha / 2).
+    if (bisectorNorm < 1e-12) {
+      // Spike vertex: the adjacent edges fold back onto each other and the
+      // miter distance is unbounded.
+      return false;
+    }
+    bisector /= bisectorNorm;
+    const double cosHalfAngle = 0.5 * bisectorNorm;
+    offsetVertices[i] = current + margin / cosHalfAngle * bisector;
+  }
+
+  vertices_ = std::move(offsetVertices);
   return true;
 }
 
