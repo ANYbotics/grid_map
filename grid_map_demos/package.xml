@@ -16,6 +16,7 @@
   <build_depend>grid_map_cmake_helpers</build_depend>
   
   <depend>cv_bridge</depend>
+  <depend>filters</depend>
   <depend>geometry_msgs</depend>
   <depend>grid_map_core</depend>
   <depend>grid_map_cv</depend>
