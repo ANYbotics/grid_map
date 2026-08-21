@@ -18,6 +18,7 @@
 
   <depend>filters</depend>
   <depend>grid_map_core</depend>
+  <depend>grid_map_cv</depend>
   <depend>grid_map_msgs</depend>
   <depend>grid_map_ros</depend>
   <depend>pluginlib</depend>
