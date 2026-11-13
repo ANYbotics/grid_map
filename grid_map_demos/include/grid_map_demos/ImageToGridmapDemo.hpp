@@ -45,7 +45,7 @@ public:
   */
   bool readParameters();
 
-  void imageCallback(const sensor_msgs::msg::Image::SharedPtr msg);
+  void imageCallback(const sensor_msgs::msg::Image::ConstSharedPtr msg);
 
 private:
   //! Grid map publisher.
