@@ -14,6 +14,7 @@ find_package(catkin REQUIRED COMPONENTS
 
 find_package(OpenCV REQUIRED
   COMPONENTS
+  opencv_core
   opencv_photo
 )
 
