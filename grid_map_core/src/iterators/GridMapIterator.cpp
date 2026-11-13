@@ -17,7 +17,7 @@ GridMapIterator::GridMapIterator(const grid_map::GridMap& gridMap)
   startIndex_ = gridMap.getStartIndex();
   linearSize_ = size_.prod();
   linearIndex_ = 0;
-  isPastEnd_ = false;
+  isPastEnd_ = linearSize_ > linearIndex_ ? false : true;
 }
 
 GridMapIterator::GridMapIterator(const GridMapIterator* other)
