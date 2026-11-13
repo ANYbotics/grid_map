@@ -63,12 +63,6 @@ ROSCostmapServer::ROSCostmapServer(
 : tfBuffer_(node_->get_clock()),
   tfListener_(tfBuffer_)
 {
-  // lots of parameters here affect the construction ( e.g. rolling window)
-  // if you don't have any parameters set, then this
-  //  - alot of defaults which get dumped on the ros param server
-  //  - fires up an obstacle layer and an inflation layer
-  //  - creates a publisher for an occupancy grid
-
   // Costmap2DROS declares most parameters in on_configure(), so set them as overrides.
   // Only the NodeOptions constructor keeps the overrides.
   rclcpp::NodeOptions options;
