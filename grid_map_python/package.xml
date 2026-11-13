@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>grid_map_python</name>
+  <version>0.0.1</version>
+  <description>Python bindings to the grid_map package.</description>
+  <maintainer email="mwulf@anybotics.com">Maximilian Wulf</maintainer>
+  <maintainer email="ynava@anybotics.com">Yoshua Nava</maintainer>
+  <license>BSD</license>
+  <url type="website">http://github.com/anybotics/grid_map</url>
+  <url type="bugtracker">http://github.com/anybotics/grid_map/issues</url>
+  <author email="antoine.lima@hds.utc.fr">Antoine Lima</author>
+  <buildtool_depend>catkin</buildtool_depend>
+  <depend>eigen</depend>
+  <depend>pybind11_catkin</depend>
+  <depend>grid_map_core</depend>
+  <depend>grid_map_msgs</depend>
+</package>
