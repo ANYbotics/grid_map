@@ -17,8 +17,8 @@ jobs:
       matrix:
         config:
           - {rosdistro: 'lyrical', ros_repo: 'main', skip_keys: ''}
-          # octomap_rviz_plugins has no Rolling binary on Ubuntu 26.04 yet.
-          - {rosdistro: 'rolling', ros_repo: 'testing', skip_keys: 'octomap_rviz_plugins'}
+          # octomap_rviz_plugins and octomap_server have no Rolling binary on Ubuntu 26.04 yet.
+          - {rosdistro: 'rolling', ros_repo: 'testing', skip_keys: 'octomap_rviz_plugins octomap_server'}
     container:
       image: ros:${{ matrix.config.rosdistro }}-ros-base-resolute
     steps:
