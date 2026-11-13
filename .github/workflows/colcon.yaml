@@ -26,7 +26,10 @@ jobs:
       with:
         path: src/grid_map
     - name: Use the ROS testing repository
-      run: sed -i 's|packages.ros.org/ros2/ubuntu|packages.ros.org/ros2-testing/ubuntu|' /etc/apt/sources.list.d/*
+      run: |
+        sed -i 's|packages.ros.org/ros2/ubuntu|packages.ros.org/ros2-testing/ubuntu|' /etc/apt/sources.list.d/*
+        apt-get update
+        DEBIAN_FRONTEND=noninteractive apt-get -y dist-upgrade
       shell: bash
       if: ${{ matrix.config.ros_repo == 'testing' }}
     - name: Pull in repos with vcs
