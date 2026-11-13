@@ -48,7 +48,7 @@ bool ImageToGridmapDemo::readParameters()
   return true;
 }
 
-void ImageToGridmapDemo::imageCallback(const sensor_msgs::msg::Image::SharedPtr msg)
+void ImageToGridmapDemo::imageCallback(const sensor_msgs::msg::Image::ConstSharedPtr msg)
 {
   if (!mapInitialized_) {
     grid_map::GridMapRosConverter::initializeFromImage(*msg, resolution_, map_);
