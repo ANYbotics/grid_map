@@ -6,7 +6,7 @@
  *      Institute: ETH Zurich, Robotic Systems Lab
  */
 
-#include <ament_index_cpp/get_package_share_directory.hpp>
+#include <ament_index_cpp/get_package_share_path.hpp>
 
 #include <string>
 #include <vector>
@@ -29,8 +29,8 @@ std::string getConfigFilePath()
 
 std::string getTestDataFolderPath()
 {
-  std::string dir = ament_index_cpp::get_package_share_directory("grid_map_pcl") +
-    "/test_data";
+  const auto sharePath = ament_index_cpp::get_package_share_path("grid_map_pcl");
+  std::string dir = (sharePath / "test_data").string();
   return dir;
 }
 
@@ -195,8 +195,8 @@ Pointcloud::Ptr createStepTerrain(
 
 std::string getTestPcdFilePath()
 {
-  std::string filename = ament_index_cpp::get_package_share_directory("grid_map_pcl") +
-    "/test_data/plane_noisy.pcd";
+  const auto sharePath = ament_index_cpp::get_package_share_path("grid_map_pcl");
+  std::string filename = (sharePath / "test_data" / "plane_noisy.pcd").string();
   return filename;
 }
 
