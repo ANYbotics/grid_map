@@ -782,6 +782,9 @@ bool GridMap::atPositionLinearInterpolated(const std::string& layer, const Posit
 
   getIndex(position, indices[0]);
   getPosition(indices[0], point);
+  if (!checkIfIndexInRange(indices[0], size_)) {
+    return false;
+  }
 
   if (position.x() >= point.x()) {
     indices[1] = indices[0] + Index(-1, 0);  // Second point is above first point.
@@ -789,6 +792,9 @@ bool GridMap::atPositionLinearInterpolated(const std::string& layer, const Posit
   } else {
     indices[1] = indices[0] + Index(+1, 0);
     idxTempDir = false;
+  }
+  if (!checkIfIndexInRange(indices[1], size_)) {
+    return false;
   }
   if (position.y() >= point.y()) {
     indices[2] = indices[0] + Index(0, -1);  // Third point is right of first point.
@@ -818,6 +824,10 @@ bool GridMap::atPositionLinearInterpolated(const std::string& layer, const Posit
       idxShift[3] = 0;
     }
   }
+  if (!checkIfIndexInRange(indices[2], size_)) {
+    return false;
+  }
+
   indices[3].x() = indices[1].x();
   indices[3].y() = indices[2].y();
 
