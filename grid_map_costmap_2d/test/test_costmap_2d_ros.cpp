@@ -69,16 +69,22 @@ ROSCostmapServer::ROSCostmapServer(
   //  - fires up an obstacle layer and an inflation layer
   //  - creates a publisher for an occupancy grid
 
-  costmap_ = std::make_shared<ROSCostmap>(name);
-  costmap_->set_parameter(rclcpp::Parameter{"plugins", std::vector<std::string>()});
-  costmap_->set_parameter(rclcpp::Parameter{"robot_base_frame", baseLinkTransformName});
-  costmap_->set_parameter(rclcpp::Parameter{"origin_x", origin.x()});
-  costmap_->set_parameter(rclcpp::Parameter{"origin_y", origin.y()});
-  costmap_->set_parameter(rclcpp::Parameter{"width", width});
-  costmap_->set_parameter(rclcpp::Parameter{"height", height});
-  costmap_->set_parameter(rclcpp::Parameter{"resolution", 0.5});
-  // clears 1 cell if inside, up to 4 cells on a vertex
-  costmap_->set_parameter(rclcpp::Parameter{"robot_radius", 0.03});
+  // Costmap2DROS declares most parameters in on_configure(), so set them as overrides.
+  // Only the NodeOptions constructor keeps the overrides.
+  rclcpp::NodeOptions options;
+  options.arguments({"--ros-args", "-r", "__node:=" + name});
+  options.parameter_overrides({
+    {"plugins", std::vector<std::string>()},
+    {"robot_base_frame", baseLinkTransformName},
+    {"origin_x", origin.x()},
+    {"origin_y", origin.y()},
+    {"width", width},
+    {"height", height},
+    {"resolution", 0.5},
+    // clears 1 cell if inside, up to 4 cells on a vertex
+    {"robot_radius", 0.03},
+  });
+  costmap_ = std::make_shared<ROSCostmap>(options);
 
   costmap_->configure();
   costmap_->activate();
