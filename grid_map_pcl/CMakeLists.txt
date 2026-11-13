@@ -7,6 +7,9 @@ find_package(grid_map_cmake_helpers REQUIRED)
 find_package(grid_map_core REQUIRED)
 find_package(grid_map_msgs REQUIRED)
 find_package(grid_map_ros REQUIRED)
+# VTK 9.5 on Ubuntu 26.04 links VTK::jsoncpp to JsonCpp::JsonCpp, but defines it only when a
+# caller asks VTK for jsoncpp. opencv_viz from grid_map_ros pulls VTK::jsoncpp into the link.
+find_package(jsoncpp QUIET)
 find_package(PCL REQUIRED) ## See ROS REP2000 for expected PCL version
 find_package(rclcpp REQUIRED)
 find_package(rcutils REQUIRED)
