@@ -80,6 +80,66 @@ bool GridMapPclConverter::addLayerFromPolygonMesh(const pcl::PolygonMesh& mesh, 
   return true;
 }
 
+bool GridMapPclConverter::addColorLayerFromPolygonMesh(const pcl::PolygonMesh& mesh, const std::string& layer, grid_map::GridMap& gridMap) {
+  // Adding a layer to the grid map to put data into
+  gridMap.add(layer);
+  // Converting out of binary cloud data
+  pcl::PointCloud<pcl::PointXYZRGB> cloud;
+  pcl::fromPCLPointCloud2(mesh.cloud, cloud);
+  // Direction and max height for projection ray
+  const Eigen::Vector3f ray = -Eigen::Vector3f::UnitZ();
+  pcl::PointXYZRGB minBound;
+  pcl::PointXYZRGB maxBound;
+  pcl::getMinMax3D(cloud, minBound, maxBound);
+
+  // Iterating over the triangles in the mesh
+  for (const pcl::Vertices& polygon : mesh.polygons) {
+    // Testing this is a triangle
+    assert(polygon.vertices.size() == 3);
+    // Getting the vertices of the triangle (as a single matrix)
+    Eigen::Matrix3f triangleVertexMatrix;
+    triangleVertexMatrix.row(0) = cloud[polygon.vertices[0]].getVector3fMap();
+    triangleVertexMatrix.row(1) = cloud[polygon.vertices[1]].getVector3fMap();
+    triangleVertexMatrix.row(2) = cloud[polygon.vertices[2]].getVector3fMap();
+
+    Eigen::Matrix3i triangleColorMatrix;
+    triangleColorMatrix.row(0) = cloud[polygon.vertices[0]].getRGBVector3i();
+    triangleColorMatrix.row(1) = cloud[polygon.vertices[1]].getRGBVector3i();
+    triangleColorMatrix.row(2) = cloud[polygon.vertices[2]].getRGBVector3i();
+
+    Eigen::Vector3i color_vector = triangleColorMatrix.colwise().mean();
+    // Getting the bounds in the XY plane (down projection)
+    float maxX = triangleVertexMatrix.col(0).maxCoeff();
+    float minX = triangleVertexMatrix.col(0).minCoeff();
+    float maxY = triangleVertexMatrix.col(1).maxCoeff();
+    float minY = triangleVertexMatrix.col(1).minCoeff();
+    // Iterating over the grid cells in the a submap below the triangle
+    grid_map::Length length(maxX - minX, maxY - minY);
+    grid_map::Position position((maxX + minX) / 2.0, (maxY + minY) / 2.0);
+    bool isSuccess;
+    SubmapGeometry submap(gridMap, position, length, isSuccess);
+    if (isSuccess) {
+      for (grid_map::SubmapIterator iterator(submap); !iterator.isPastEnd(); ++iterator) {
+        // Cell position
+        const Index index(*iterator);
+        grid_map::Position vertexPositionXY;
+        gridMap.getPosition(index, vertexPositionXY);
+        // Ray origin
+        Eigen::Vector3f point(vertexPositionXY.x(), vertexPositionXY.y(), maxBound.z + 1.0);
+        // Vertical ray/triangle intersection
+        Eigen::Vector3f intersectionPoint;
+        if (rayTriangleIntersect(point, ray, triangleVertexMatrix, intersectionPoint)) {
+          float color_value;
+          grid_map::colorVectorToValue(color_vector, color_value);
+          gridMap.at(layer, index) = color_value;
+        }
+      }
+    }
+  }
+  // Success
+  return true;
+}
+
 bool GridMapPclConverter::rayTriangleIntersect(const Eigen::Vector3f& point, const Eigen::Vector3f& ray,
                                                const Eigen::Matrix3f& triangleVertexMatrix, Eigen::Vector3f& intersectionPoint) {
   // Algorithm here is adapted from:
