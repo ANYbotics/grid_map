@@ -46,7 +46,7 @@ public:
    * Callback method for the incoming grid map message.
    * @param message the incoming message.
    */
-  void callback(const grid_map_msgs::msg::GridMap::SharedPtr message);
+  void callback(const grid_map_msgs::msg::GridMap::ConstSharedPtr message);
 
 private:
   //! Name of the input grid map topic.
