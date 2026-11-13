@@ -49,6 +49,7 @@ bool MapRegionVisualization::initialize()
   marker_.lifetime = ros::Duration();
   marker_.action = visualization_msgs::Marker::ADD;
   marker_.type = visualization_msgs::Marker::LINE_STRIP;
+  marker_.pose.orientation.w = 1.0;
   marker_.scale.x = lineWidth_;
   marker_.points.resize(nVertices_); // Initialized to [0.0, 0.0, 0.0]
   marker_.colors.resize(nVertices_, color_);
