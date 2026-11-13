@@ -138,7 +138,9 @@ target_link_libraries(octomap_to_gridmap_demo PRIVATE
 )
 
 # OctoMap 1.10.1 and older include <ciso646>, which emits a #warning in C++20.
-target_compile_options(octomap_to_gridmap_demo PRIVATE -Wno-error=cpp)
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+  target_compile_options(octomap_to_gridmap_demo PRIVATE -Wno-error=cpp)
+endif()
 
 target_link_libraries(move_demo PRIVATE
   ${demo_libraries}
