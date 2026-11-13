@@ -54,8 +54,18 @@ add_library(${PROJECT_NAME} SHARED
   ${MOC_FILES}
 )
 
-ament_target_dependencies(${PROJECT_NAME} SYSTEM
-  ${dependencies}
+target_link_libraries(${PROJECT_NAME} PUBLIC
+  rclcpp::rclcpp
+  rviz_common::rviz_common
+  rviz_rendering::rviz_rendering
+  ${grid_map_msgs_TARGETS}
+  ${grid_map_ros_LIBRARIES}
+  ${rviz_ogre_vendor_LIBRARIES}
+)
+
+target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC
+  ${grid_map_ros_INCLUDE_DIRS}
+  ${rviz_ogre_vendor_INCLUDE_DIRS}
 )
 
 # Causes the visibility macros to use dllexport rather than dllimport,

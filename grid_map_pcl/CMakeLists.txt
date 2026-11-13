@@ -57,27 +57,28 @@ add_library(${PROJECT_NAME} SHARED
   ${SRC_FILES}
 )
 
-target_link_libraries(${PROJECT_NAME}
+target_link_libraries(${PROJECT_NAME} PUBLIC
+  grid_map_core::grid_map_core
+  rclcpp::rclcpp
+  rcutils::rcutils
+  ${grid_map_msgs_TARGETS}
+  ${grid_map_ros_LIBRARIES}
   ${OpenMP_CXX_LIBRARIES}
   ${PCL_LIBRARIES}
   yaml-cpp
 )
 
-ament_target_dependencies(${PROJECT_NAME} SYSTEM
-  ${dependencies}
+target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC
+  ${grid_map_ros_INCLUDE_DIRS}
 )
 
 add_executable(grid_map_pcl_loader_node
   src/grid_map_pcl_loader_node.cpp
 )
 
-target_link_libraries(grid_map_pcl_loader_node
+target_link_libraries(grid_map_pcl_loader_node PRIVATE
   ${PROJECT_NAME}
   ${OpenMP_CXX_LIBRARIES}
-)
-
-ament_target_dependencies(${PROJECT_NAME}
-  ${dependencies}
 )
 
 #############

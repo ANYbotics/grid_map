@@ -24,8 +24,13 @@ add_library(${PROJECT_NAME}
   src/GridMapOctomapConverter.cpp
 )
 
-ament_target_dependencies(${PROJECT_NAME} SYSTEM
-  ${dependencies}
+target_link_libraries(${PROJECT_NAME} PUBLIC
+  grid_map_core::grid_map_core
+  ${OCTOMAP_LIBRARIES}
+)
+
+target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC
+  ${OCTOMAP_INCLUDE_DIRS}
 )
 
 #############

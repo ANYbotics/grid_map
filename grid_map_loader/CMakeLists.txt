@@ -36,15 +36,16 @@ add_library(${library_name} SHARED
 )
 
 ## Specify libraries to link a library or executable target against
-ament_target_dependencies(${PROJECT_NAME} SYSTEM
-  ${dependencies}
+target_link_libraries(${library_name} PUBLIC
+  ${grid_map_msgs_TARGETS}
+  ${grid_map_ros_LIBRARIES}
 )
 
-target_link_libraries(${PROJECT_NAME} ${library_name})
-
-ament_target_dependencies(${library_name} SYSTEM
-  ${dependencies}
+target_include_directories(${library_name} SYSTEM PUBLIC
+  ${grid_map_ros_INCLUDE_DIRS}
 )
+
+target_link_libraries(${PROJECT_NAME} PRIVATE ${library_name})
 
 #############
 ## Install ##

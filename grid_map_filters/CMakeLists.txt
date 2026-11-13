@@ -83,8 +83,17 @@ add_library(set_basic_layers_filter SHARED src/SetBasicLayersFilter.cpp)
 add_library(buffer_normalizer_filter SHARED src/BufferNormalizerFilter.cpp)
 
 foreach(lib_name ${filter_libs})
-  ament_target_dependencies(${lib_name} SYSTEM
-    ${dependencies}
+  target_link_libraries(${lib_name} PUBLIC
+    grid_map_core::grid_map_core
+    pluginlib::pluginlib
+    ${filters_TARGETS}
+    ${grid_map_msgs_TARGETS}
+    ${grid_map_ros_LIBRARIES}
+    ${TBB_LIBRARIES}
+  )
+
+  target_include_directories(${lib_name} SYSTEM PUBLIC
+    ${grid_map_ros_INCLUDE_DIRS}
   )
 
   if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
