@@ -14,7 +14,7 @@
   <buildtool_depend>ament_cmake</buildtool_depend>
 
   <build_depend>grid_map_cmake_helpers</build_depend>
-  <build_depend>qtbase5-dev</build_depend>
+  <build_depend>qt-base-dev</build_depend>
 
   <depend>grid_map_msgs</depend>
   <depend>grid_map_ros</depend>
@@ -23,9 +23,9 @@
   <depend>rviz_ogre_vendor</depend>
   <depend>rviz_rendering</depend>
   
-  <exec_depend>libqt5-core</exec_depend>
-  <exec_depend>libqt5-gui</exec_depend>
-  <exec_depend>libqt5-widgets</exec_depend>
+  <exec_depend>libqtcore</exec_depend>
+  <exec_depend>libqtgui</exec_depend>
+  <exec_depend>libqtwidgets</exec_depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>

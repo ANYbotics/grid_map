@@ -20,7 +20,7 @@ find_package(rviz_rendering REQUIRED COMPONENTS Core Widgets)
 
 grid_map_package()
 
-## Qt5 boilerplate options from http://doc.qt.io/qt-5/cmake-manual.html
+## Qt boilerplate options
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON) # This setting causes Qt's "MOC" generation to happen automatically.
 
