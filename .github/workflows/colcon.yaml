@@ -15,6 +15,7 @@ concurrency:
 
 jobs:
   build-test:
+    name: build-test (${{ matrix.config.rosdistro }}, ${{ matrix.config.ros_repo }})
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
