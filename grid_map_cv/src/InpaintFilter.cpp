@@ -7,7 +7,7 @@
  */
 
 #include "grid_map_cv/InpaintFilter.hpp"
-#include <pluginlib/class_list_macros.h>
+#include <pluginlib/class_list_macros.hpp>
 #include <ros/ros.h>
 
 // Grid Map
