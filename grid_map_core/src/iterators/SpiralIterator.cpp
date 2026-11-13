@@ -49,6 +49,9 @@ const Eigen::Array2i& SpiralIterator::operator *() const
 
 SpiralIterator& SpiralIterator::operator ++()
 {
+  if (isPastEnd()) {
+    return *this;
+  }
   pointsRing_.pop_back();
   if (pointsRing_.empty() && !isPastEnd()) {
     generateRing();
