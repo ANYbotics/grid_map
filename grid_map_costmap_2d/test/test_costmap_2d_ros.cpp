@@ -72,7 +72,7 @@ ROSCostmapServer::ROSCostmapServer(
   // Costmap2DROS declares most parameters in on_configure(), so set them as overrides.
   // Only the NodeOptions constructor keeps the overrides.
   rclcpp::NodeOptions options;
-  options.arguments({"--ros-args", "-r", "__node:=" + name});
+  options.arguments({"--ros-args", "-r", "__node:=" + name, "-r", "__ns:=/" + name});
   options.parameter_overrides({
     {"plugins", std::vector<std::string>()},
     {"robot_base_frame", baseLinkTransformName},
