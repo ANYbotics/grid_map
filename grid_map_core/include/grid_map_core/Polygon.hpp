@@ -40,6 +40,9 @@ public:
    */
   explicit Polygon(std::vector<Position> vertices);
 
+  Polygon(const Polygon & other) = default;
+  Polygon & operator=(const Polygon & other) = default;
+
   /*!
    * Destructor.
    */

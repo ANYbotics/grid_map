@@ -39,6 +39,8 @@ public:
   BufferRegion(
     const Index & startIndex, const Size & size,
     const BufferRegion::Quadrant & quadrant);
+  BufferRegion(const BufferRegion & other) = default;
+  BufferRegion & operator=(const BufferRegion & other) = default;
   virtual ~BufferRegion() = default;
 
   const Index & getStartIndex() const;
