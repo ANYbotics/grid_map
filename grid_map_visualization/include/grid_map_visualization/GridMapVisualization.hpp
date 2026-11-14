@@ -49,7 +49,7 @@ public:
    * Callback function for the grid map.
    * @param message the grid map message to be visualized.
    */
-  void callback(const grid_map_msgs::msg::GridMap::SharedPtr message);
+  void callback(const grid_map_msgs::msg::GridMap::ConstSharedPtr message);
 
   //! ROS node shared pointer
   rclcpp::Node::SharedPtr nodePtr;

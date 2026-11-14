@@ -160,7 +160,7 @@ void GridMapVisualization::updateSubscriptionCallback()
   }
 }
 
-void GridMapVisualization::callback(const grid_map_msgs::msg::GridMap::SharedPtr message)
+void GridMapVisualization::callback(const grid_map_msgs::msg::GridMap::ConstSharedPtr message)
 {
   RCLCPP_DEBUG(
     nodePtr->get_logger(),

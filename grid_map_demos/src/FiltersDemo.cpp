@@ -66,7 +66,7 @@ bool FiltersDemo::readParameters()
   return true;
 }
 
-void FiltersDemo::callback(const grid_map_msgs::msg::GridMap::SharedPtr message)
+void FiltersDemo::callback(const grid_map_msgs::msg::GridMap::ConstSharedPtr message)
 {
   // Convert message to map.
   grid_map::GridMap inputMap;
