@@ -24,10 +24,10 @@ find_package(OpenCV REQUIRED
 
 grid_map_package()
 
-set(dependencies
-  grid_map_msgs
-  grid_map_ros
-  rclcpp
+set(demo_libraries
+  rclcpp::rclcpp
+  ${grid_map_msgs_TARGETS}
+  ${grid_map_ros_LIBRARIES}
 )
 
 ###########
@@ -40,6 +40,9 @@ include_directories(
   include
   SYSTEM
     ${EIGEN3_INCLUDE_DIR}
+    ${grid_map_cv_INCLUDE_DIRS}
+    ${grid_map_octomap_INCLUDE_DIRS}
+    ${grid_map_ros_INCLUDE_DIRS}
 )
 
 ## Declare a cpp executable
@@ -112,76 +115,66 @@ add_executable(
 )
 
 ## Specify libraries to link a library or executable target against
-ament_target_dependencies(
-  simple_demo SYSTEM
-  ${dependencies}
+target_link_libraries(simple_demo PRIVATE
+  ${demo_libraries}
 )
 
-ament_target_dependencies(
-  tutorial_demo SYSTEM
-  ${dependencies}
+target_link_libraries(tutorial_demo PRIVATE
+  ${demo_libraries}
 )
 
-ament_target_dependencies(
-  iterators_demo SYSTEM
-  ${dependencies}
+target_link_libraries(iterators_demo PRIVATE
+  ${demo_libraries}
 )
 
-ament_target_dependencies(image_to_gridmap_demo SYSTEM
-  ${dependencies}
+target_link_libraries(image_to_gridmap_demo PRIVATE
+  ${demo_libraries}
 )
 
-ament_target_dependencies(
-  octomap_to_gridmap_demo SYSTEM
-  ${dependencies}
-  grid_map_octomap
-  octomap_msgs
+target_link_libraries(octomap_to_gridmap_demo PRIVATE
+  ${demo_libraries}
+  ${grid_map_octomap_LIBRARIES}
+  ${octomap_msgs_TARGETS}
 )
 
-ament_target_dependencies(
-  move_demo SYSTEM
-  ${dependencies}
+# OctoMap 1.10.1 and older include <ciso646>, which emits a #warning in C++20.
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+  target_compile_options(octomap_to_gridmap_demo PRIVATE -Wno-error=cpp)
+endif()
+
+target_link_libraries(move_demo PRIVATE
+  ${demo_libraries}
 )
 
-ament_target_dependencies(
-  iterator_benchmark SYSTEM
-  grid_map_core
+target_link_libraries(iterator_benchmark PRIVATE
+  grid_map_core::grid_map_core
 )
 
-ament_target_dependencies(
-  opencv_demo SYSTEM
-  ${dependencies}
-  grid_map_cv
+target_link_libraries(opencv_demo PRIVATE
+  ${demo_libraries}
+  ${grid_map_cv_LIBRARIES}
 )
 
-ament_target_dependencies(
-  resolution_change_demo SYSTEM
-  ${dependencies}
+target_link_libraries(resolution_change_demo PRIVATE
+  ${demo_libraries}
 )
 
-target_link_libraries(filters_demo filters_demo_lib)
-
-ament_target_dependencies(
-  filters_demo_lib SYSTEM
-  ${dependencies}
-  filters
+target_link_libraries(filters_demo_lib PUBLIC
+  ${demo_libraries}
+  ${filters_TARGETS}
 )
 
-ament_target_dependencies(
-  filters_demo SYSTEM
-  ${dependencies}
-  filters
+target_link_libraries(filters_demo PRIVATE
+  filters_demo_lib
 )
 
-ament_target_dependencies(
-  normal_filter_comparison_demo SYSTEM
-  ${dependencies}
-  filters
+target_link_libraries(normal_filter_comparison_demo PRIVATE
+  ${demo_libraries}
+  ${filters_TARGETS}
 )
 
-ament_target_dependencies(
-  interpolation_demo SYSTEM
-  ${dependencies}
+target_link_libraries(interpolation_demo PRIVATE
+  ${demo_libraries}
 )
 
 set(targets_list

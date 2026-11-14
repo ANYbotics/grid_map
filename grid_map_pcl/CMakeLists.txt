@@ -7,6 +7,9 @@ find_package(grid_map_cmake_helpers REQUIRED)
 find_package(grid_map_core REQUIRED)
 find_package(grid_map_msgs REQUIRED)
 find_package(grid_map_ros REQUIRED)
+# VTK 9.5 on Ubuntu 26.04 links VTK::jsoncpp to JsonCpp::JsonCpp, but defines it only when a
+# caller asks VTK for jsoncpp. opencv_viz from grid_map_ros pulls VTK::jsoncpp into the link.
+find_package(jsoncpp QUIET)
 find_package(PCL REQUIRED) ## See ROS REP2000 for expected PCL version
 find_package(rclcpp REQUIRED)
 find_package(rcutils REQUIRED)
@@ -57,27 +60,28 @@ add_library(${PROJECT_NAME} SHARED
   ${SRC_FILES}
 )
 
-target_link_libraries(${PROJECT_NAME}
+target_link_libraries(${PROJECT_NAME} PUBLIC
+  grid_map_core::grid_map_core
+  rclcpp::rclcpp
+  rcutils::rcutils
+  ${grid_map_msgs_TARGETS}
+  ${grid_map_ros_LIBRARIES}
   ${OpenMP_CXX_LIBRARIES}
   ${PCL_LIBRARIES}
   yaml-cpp
 )
 
-ament_target_dependencies(${PROJECT_NAME} SYSTEM
-  ${dependencies}
+target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC
+  ${grid_map_ros_INCLUDE_DIRS}
 )
 
 add_executable(grid_map_pcl_loader_node
   src/grid_map_pcl_loader_node.cpp
 )
 
-target_link_libraries(grid_map_pcl_loader_node
+target_link_libraries(grid_map_pcl_loader_node PRIVATE
   ${PROJECT_NAME}
   ${OpenMP_CXX_LIBRARIES}
-)
-
-ament_target_dependencies(${PROJECT_NAME}
-  ${dependencies}
 )
 
 #############

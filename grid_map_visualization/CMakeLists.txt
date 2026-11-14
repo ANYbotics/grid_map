@@ -52,8 +52,18 @@ add_library(${library_name} SHARED
   src/visualizations/VisualizationBase.cpp
 )
 
-ament_target_dependencies(${library_name} SYSTEM
-  ${dependencies}
+target_link_libraries(${library_name} PUBLIC
+  grid_map_core::grid_map_core
+  rclcpp::rclcpp
+  ${grid_map_msgs_TARGETS}
+  ${grid_map_ros_LIBRARIES}
+  ${nav_msgs_TARGETS}
+  ${sensor_msgs_TARGETS}
+  ${visualization_msgs_TARGETS}
+)
+
+target_include_directories(${library_name} SYSTEM PUBLIC
+  ${grid_map_ros_INCLUDE_DIRS}
 )
 
 # Declare cpp node executable
@@ -62,11 +72,7 @@ add_executable(${PROJECT_NAME}
 )
 
 ## Specify libraries to link executable target against
-target_link_libraries(${PROJECT_NAME} ${library_name})
-
-ament_target_dependencies(${PROJECT_NAME} SYSTEM
-  ${dependencies}
-)
+target_link_libraries(${PROJECT_NAME} PRIVATE ${library_name})
 
 #############
 ## Install ##

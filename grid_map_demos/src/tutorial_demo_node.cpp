@@ -12,6 +12,8 @@ int main(int argc, char ** argv)
   // Initialize node and publisher.
   rclcpp::init(argc, argv);
   rclcpp::Node::SharedPtr node = std::make_shared<rclcpp::Node>("grid_map_tutorial_demo");
+  rclcpp::executors::SingleThreadedExecutor executor;
+  executor.add_node(node);
   auto publisher = node->create_publisher<grid_map_msgs::msg::GridMap>(
     "grid_map", rclcpp::QoS(1).transient_local());
 
@@ -108,7 +110,7 @@ int main(int argc, char ** argv)
     publisher->publish(std::move(message));
     RCLCPP_INFO_THROTTLE(node->get_logger(), clock, 1000, "Grid map published.");
 
-    rclcpp::spin_some(node->get_node_base_interface());
+    executor.spin_some();
     rate.sleep();
   }
 
