@@ -40,9 +40,7 @@ public:
     const nav2_costmap_2d::Costmap2D & costMap)
   {
     // Check map info.
-    // Different conventions: Costmap2d returns the *centerpoint* of the last cell in the map.
-    grid_map::Length length =
-      gridMap.getLength() - grid_map::Length::Constant(0.5 * gridMap.getResolution());
+    grid_map::Length length = gridMap.getLength();
     grid_map::Length position = gridMap.getPosition() - 0.5 * gridMap.getLength().matrix();
     EXPECT_EQ(costMap.getSizeInMetersX(), length.x());
     EXPECT_EQ(costMap.getSizeInMetersY(), length.y());
