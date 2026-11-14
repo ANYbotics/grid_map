@@ -9,20 +9,34 @@ on:
   pull_request:
     branches:
     - '*'
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build-test:
+    name: build-test (${{ matrix.config.rosdistro }}, ${{ matrix.config.ros_repo }})
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         config:
-          - {rosdistro: 'rolling', container: 'rostooling/setup-ros-docker:ubuntu-noble-ros-rolling-desktop-latest'}
-    container: 
-      image: ${{ matrix.config.container }}
+          - {rosdistro: 'lyrical', ros_repo: 'main', skip_keys: ''}
+          # octomap_rviz_plugins and octomap_server have no Rolling binary on Ubuntu 26.04 yet.
+          - {rosdistro: 'rolling', ros_repo: 'testing', skip_keys: 'octomap_rviz_plugins octomap_server'}
+    container:
+      image: ros:${{ matrix.config.rosdistro }}-ros-base-resolute
     steps:
     - uses: actions/checkout@v4
       with:
         path: src/grid_map
+    - name: Use the ROS testing repository
+      run: |
+        sed -i 's|packages.ros.org/ros2/ubuntu|packages.ros.org/ros2-testing/ubuntu|' /etc/apt/sources.list.d/*
+        apt-get update
+        DEBIAN_FRONTEND=noninteractive apt-get -y dist-upgrade
+      shell: bash
+      if: ${{ matrix.config.ros_repo == 'testing' }}
     - name: Pull in repos with vcs
       run: |
         apt-get update
@@ -32,10 +46,10 @@ jobs:
       if: ${{ matrix.config.rosdistro == 'rolling' }}
     - name: Install Dependencies with Rosdep
       run: |
-        apt update
-        rosdep update
+        apt-get update
+        rosdep update --rosdistro ${{matrix.config.rosdistro}}
         source /opt/ros/${{matrix.config.rosdistro}}/setup.bash
-        rosdep install --from-paths src --ignore-src -y --skip-keys "slam_toolbox"
+        rosdep install --from-paths $(colcon list --packages-up-to grid_map --paths-only) --ignore-src -y --rosdistro ${{matrix.config.rosdistro}} --skip-keys "${{matrix.config.skip_keys}}"
       shell: bash
     - name: Colcon Build (Release)
       run: |
