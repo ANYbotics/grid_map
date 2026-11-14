@@ -28,8 +28,6 @@ TEST(SubmapIterator, Simple)
 {
   Eigen::Array2i submapTopLeftIndex(3, 1);
   Eigen::Array2i submapBufferSize(3, 2);
-  Eigen::Array2i index;
-  Eigen::Array2i submapIndex;
 
   std::vector<std::string> types;
   types.push_back("type");
@@ -91,8 +89,6 @@ TEST(SubmapIterator, CircularBuffer)
 {
   Eigen::Array2i submapTopLeftIndex(6, 3);
   Eigen::Array2i submapBufferSize(2, 4);
-  Eigen::Array2i index;
-  Eigen::Array2i submapIndex;
 
   std::vector<std::string> types;
   types.push_back("type");
