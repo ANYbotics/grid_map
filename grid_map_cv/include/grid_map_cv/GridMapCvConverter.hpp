@@ -87,9 +87,9 @@ public:
 
     cv::Mat imageMono;
     if (isColor && !hasAlpha) {
-      cv::cvtColor(image, imageMono, CV_BGR2GRAY);
+      cv::cvtColor(image, imageMono, cv::COLOR_BGR2GRAY);
     } else if (isColor && hasAlpha) {
-      cv::cvtColor(image, imageMono, CV_BGRA2GRAY);
+      cv::cvtColor(image, imageMono, cv::COLOR_BGRA2GRAY);
     } else if (!isColor && !hasAlpha) {
       imageMono = image;
     } else {
@@ -156,7 +156,7 @@ public:
 
     cv::Mat imageRGB;
     if (hasAlpha) {
-      cv::cvtColor(image, imageRGB, CV_BGRA2RGB);
+      cv::cvtColor(image, imageRGB, cv::COLOR_BGRA2RGB);
     } else {
       imageRGB = image;
     }
