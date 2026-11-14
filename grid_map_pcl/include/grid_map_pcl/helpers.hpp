@@ -42,7 +42,7 @@ void saveGridMap(
   const std::string & mapTopic);
 
 inline void printTimeElapsedToRosInfoStream(
-  const std::chrono::system_clock::time_point & start,
+  const std::chrono::high_resolution_clock::time_point & start,
   const std::string & prefix,
   const rclcpp::Logger & node_logger)
 {
