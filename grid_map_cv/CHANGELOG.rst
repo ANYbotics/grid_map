@@ -2,8 +2,8 @@
 Changelog for package grid_map_cv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+2.5.0 (2026-11-15)
+------------------
 * fix(grid_map_cv): use the cv::COLOR\_* constants (`#558 <https://github.com/ANYbotics/grid_map/issues/558>`_)
 * Contributors: Daisuke Nishimatsu
 
