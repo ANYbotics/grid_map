@@ -2,6 +2,12 @@
 Changelog for package grid_map_demos
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* fix: take ConstSharedPtr in the subscription callbacks (`#557 <https://github.com/ANYbotics/grid_map/issues/557>`_)
+* fix: build on ROS 2 Lyrical (`#551 <https://github.com/ANYbotics/grid_map/issues/551>`_)
+* Contributors: Daisuke Nishimatsu, Mete Fatih Cırıt
+
 2.4.0 (2025-09-14)
 ------------------
 

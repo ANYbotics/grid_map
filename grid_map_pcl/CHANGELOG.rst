@@ -7,6 +7,13 @@ unreleased (2021-06-24)
 * Replaced pcl_ros dependency with PCL
 * Contributors: Matthew Young (Trimble Inc) 
 
+Forthcoming
+-----------
+* test: fix the tests on ROS 2 Lyrical (`#552 <https://github.com/ANYbotics/grid_map/issues/552>`_)
+* fix: build on ROS 2 Lyrical (`#551 <https://github.com/ANYbotics/grid_map/issues/551>`_)
+* build: match grid_map_pcl timer clock type (`#542 <https://github.com/ANYbotics/grid_map/issues/542>`_)
+* Contributors: Mete Fatih Cırıt, Tobias Fischer
+
 2.4.0 (2025-09-14)
 ------------------
 

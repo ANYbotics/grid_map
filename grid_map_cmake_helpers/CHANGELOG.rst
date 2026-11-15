@@ -2,6 +2,9 @@
 Changelog for package grid_map_cmake_helpers
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 2.4.0 (2025-09-14)
 ------------------
 

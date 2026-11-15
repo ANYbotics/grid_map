@@ -2,6 +2,11 @@
 Changelog for package grid_map_octomap
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* fix: build on ROS 2 Lyrical (`#551 <https://github.com/ANYbotics/grid_map/issues/551>`_)
+* Contributors: Mete Fatih Cırıt
+
 2.4.0 (2025-09-14)
 ------------------
 * build: switch to use system octomap (`#483 <https://github.com/ANYbotics/grid_map/issues/483>`_)

@@ -2,6 +2,13 @@
 Changelog for package grid_map_core
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* test(grid_map_core): remove unused variables in SubmapIteratorTest (`#559 <https://github.com/ANYbotics/grid_map/issues/559>`_)
+* build: remove deprecated Eigen empty struct constructors (`#540 <https://github.com/ANYbotics/grid_map/issues/540>`_)
+* build: default copy operations for grid_map_core types (`#541 <https://github.com/ANYbotics/grid_map/issues/541>`_)
+* Contributors: Daisuke Nishimatsu, Tobias Fischer
+
 2.4.0 (2025-09-14)
 ------------------
 * Fix UB in SpiralIterator::operator++ (`#481 <https://github.com/ANYbotics/grid_map/issues/481>`_)

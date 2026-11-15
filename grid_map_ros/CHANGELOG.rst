@@ -2,6 +2,11 @@
 Changelog for package grid_map_ros
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* fix: build on ROS 2 Lyrical (`#551 <https://github.com/ANYbotics/grid_map/issues/551>`_)
+* Contributors: Mete Fatih Cırıt
+
 2.4.0 (2025-09-14)
 ------------------
 * Add test dependency to on rosbad default plugins (`#491 <https://github.com/ANYbotics/grid_map/issues/491>`_)

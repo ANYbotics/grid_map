@@ -2,6 +2,11 @@
 Changelog for package grid_map_costmap_2d
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* test: fix the tests on ROS 2 Lyrical (`#552 <https://github.com/ANYbotics/grid_map/issues/552>`_)
+* Contributors: Mete Fatih Cırıt
+
 2.4.0 (2025-09-14)
 ------------------
 
