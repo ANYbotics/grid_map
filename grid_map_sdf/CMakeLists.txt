@@ -39,6 +39,7 @@ set(dependencies
 
 ## Declare a cpp library
 add_library(${PROJECT_NAME}
+  src/SignedDistance2d.cpp
   src/SignedDistanceField.cpp
 )
 
