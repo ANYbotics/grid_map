@@ -19,15 +19,29 @@
 
 #include "grid_map_cv/grid_map_cv.hpp"
 
+void replaceNan(grid_map::Matrix & m, const double newValue)
+{
+  for(int r = 0; r < m.rows(); r++) {
+    for(int c = 0; c < m.cols(); c++) {
+      if (std::isnan(m(r, c))) {
+        m(r, c) = newValue;
+      }
+    }
+  }
+}
 
 TEST(ImageConversion, roundTrip8UC3)
 {
   // Create grid map.
   grid_map::GridMap mapIn({"layer"});
-  mapIn.setGeometry(grid_map::Length(2.0, 1.0), 0.01);
-  mapIn["layer"].setRandom();
+  mapIn.setGeometry(grid_map::Length(2.0, 1.0), 0.1);
+  mapIn["layer"].setRandom();  // Sets the layer to random values in [-1.0, 1.0].
+  mapIn.move(grid_map::Position(0.5, -0.2));
   const float minValue = -1.0;
   const float maxValue = 1.0;
+  // When we move `mapIn`, new areas are filled with NaN.
+  // As `toImage` does not support NaN, we replace NaN with `minValue` instead.
+  replaceNan(mapIn.get("layer"), minValue);
 
   // Convert to image.
   cv::Mat image;
@@ -55,10 +69,13 @@ TEST(ImageConversion, roundTrip8UC4)
   // Create grid map.
   grid_map::GridMap mapIn({"layer"});
   mapIn.setGeometry(grid_map::Length(2.0, 1.0), 0.1);
-  mapIn["layer"].setRandom();
-  mapIn["layer"](1, 2) = NAN;  // To check for transparnecy/nan handling.
+  mapIn["layer"].setRandom();  // Sets the layer to random values in [-1.0, 1.0].
+  mapIn.move(grid_map::Position(0.5, -0.2));
   const float minValue = -1.0;
   const float maxValue = 1.0;
+  // When we move `mapIn`, new areas are filled with NaN.
+  // As `toImage` does not support NaN, we replace NaN with `minValue` instead.
+  replaceNan(mapIn.get("layer"), minValue);
 
   // Convert to image.
   cv::Mat image;
@@ -85,10 +102,14 @@ TEST(ImageConversion, roundTrip16UC1)
 {
   // Create grid map.
   grid_map::GridMap mapIn({"layer"});
-  mapIn.setGeometry(grid_map::Length(2.0, 1.0), 0.01);
-  mapIn["layer"].setRandom();
+  mapIn.setGeometry(grid_map::Length(2.0, 1.0), 0.1);
+  mapIn["layer"].setRandom();  // Sets the layer to random values in [-1.0, 1.0].
+  mapIn.move(grid_map::Position(0.5, -0.2));
   const float minValue = -1.0;
   const float maxValue = 1.0;
+  // When we move `mapIn`, new areas are filled with NaN.
+  // As `toImage` does not support NaN, we replace NaN with `minValue` instead.
+  replaceNan(mapIn.get("layer"), minValue);
 
   // Convert to image.
   cv::Mat image;
@@ -115,10 +136,14 @@ TEST(ImageConversion, roundTrip32FC1)
 {
   // Create grid map.
   grid_map::GridMap mapIn({"layer"});
-  mapIn.setGeometry(grid_map::Length(2.0, 1.0), 0.01);
-  mapIn["layer"].setRandom();
+  mapIn.setGeometry(grid_map::Length(2.0, 1.0), 0.1);
+  mapIn["layer"].setRandom();  // Sets the layer to random values in [-1.0, 1.0].
+  mapIn.move(grid_map::Position(0.5, -0.2));
   const float minValue = -1.0;
   const float maxValue = 1.0;
+  // When we move `mapIn`, new areas are filled with NaN.
+  // As `toImage` does not support NaN, we replace NaN with `minValue` instead.
+  replaceNan(mapIn.get("layer"), minValue);
 
   // Convert to image.
   cv::Mat image;
