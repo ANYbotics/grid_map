@@ -242,9 +242,24 @@ void wrapIndexToRange(Index & index, const Size & bufferSize)
 
 void wrapIndexToRange(int & index, int bufferSize)
 {
-  index = index % bufferSize;
-  if (index < 0) {
-    index += bufferSize;
+  // Try shortcuts before resorting to the expensive modulo operation.
+  if (index < bufferSize) {
+    if (index >= 0) {  // within the wanted range
+      return;
+      // Index is below range, but not more than one span of the range.
+    } else if (index >= -bufferSize) {
+      index += bufferSize;
+      return;
+    } else {  // Index is largely below range.
+      index = index % bufferSize;
+      index += bufferSize;
+    }
+    // Index is above range, but not more than one span of the range.
+  } else if (index < bufferSize * 2) {
+    index -= bufferSize;
+    return;
+  } else {  // Index is largely above range.
+    index = index % bufferSize;
   }
 }
 
