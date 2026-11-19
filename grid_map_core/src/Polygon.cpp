@@ -223,11 +223,10 @@ bool Polygon::offsetInward(const double margin)
   return true;
 }
 
-std::vector<Polygon> Polygon::triangulate(const TriangulationMethods & method) const
+std::vector<Polygon> Polygon::triangulate(const TriangulationMethods & /*method*/) const
 {
   // TODO(needs_assignment): Add more triangulation methods.
   // https://en.wikipedia.org/wiki/Polygon_triangulation
-  (void)(method);  // method parameter unused, should be removed once used.
   std::vector<Polygon> polygons;
   if (vertices_.size() < 3) {
     return polygons;

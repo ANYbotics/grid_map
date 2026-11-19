@@ -84,10 +84,9 @@ bool PolygonIterator::isInside() const
 }
 
 void PolygonIterator::findSubmapParameters(
-  const grid_map::Polygon & polygon, Index & startIndex,
+  const grid_map::Polygon & /*polygon*/, Index & startIndex,
   Size & bufferSize) const
 {
-  (void)(polygon);  // polygon parameter unused, should be removed when used.
   Position topLeft = polygon_.getVertices()[0];
   Position bottomRight = topLeft;
   for (const auto & vertex : polygon_.getVertices()) {

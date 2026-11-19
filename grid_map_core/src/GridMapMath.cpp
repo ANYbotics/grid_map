@@ -607,23 +607,6 @@ Index getIndexFromLinearIndex(
       1), static_cast<int>(linearIndex) % bufferSize(1));
 }
 
-// void getIndicesForRegion(
-//   const Index & regionIndex, const Size & regionSize,
-//   std::vector<Index> indices)
-// {
-// //  for (int i = line.index_; col < line.endIndex(); col++) {
-// //    for (int i = 0; i < getSize()(0); i++) {
-// //
-// //    }
-// //  }
-// }
-
-// void getIndicesForRegions(
-//   const std::vector<Index> & regionIndeces, const Size & regionSizes,
-//   std::vector<Index> indices)
-// {
-// }
-
 bool colorValueToVector(const uint64_t & colorValue, Eigen::Vector3i & colorVector)
 {
   colorVector(0) = (colorValue >> 16) & 0x0000ff;
@@ -657,9 +640,9 @@ bool colorVectorToValue(const Eigen::Vector3i & colorVector, uint64_t & colorVal
 
 void colorVectorToValue(const Eigen::Vector3i & colorVector, float & colorValue)
 {
-  uint64_t color = (colorVector(0) << 16) + (colorVector(1) << 8) + colorVector(2);
-  float * temp = reinterpret_cast<float *>(&color);
-  colorValue = *temp;
+  Color colors;
+  colors.intColor = (colorVector(0) << 16) + (colorVector(1) << 8) + colorVector(2);
+  colorValue = colors.floatColor;
 }
 
 void colorVectorToValue(const Eigen::Vector3f & colorVector, float & colorValue)

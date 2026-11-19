@@ -53,9 +53,8 @@ SpiralIterator & SpiralIterator::operator=(const SpiralIterator & other)
   return *this;
 }
 
-bool SpiralIterator::operator!=(const SpiralIterator & other) const
+bool SpiralIterator::operator!=(const SpiralIterator & /*other*/) const
 {
-  (void)(other);  // other parameter unused, should be removed when used.
   return (pointsRing_.back() != pointsRing_.back()).any();
 }
 
@@ -119,7 +118,7 @@ void SpiralIterator::generateRing()
       point.x() += normal.x();
       point.y() += normal.y();
     }
-  } while ((unsigned)point.x() != distance_ || point.y() != 0);
+  } while (static_cast<unsigned int>(point.x()) != distance_ || point.y() != 0);
 }
 
 double SpiralIterator::getCurrentRadius() const
