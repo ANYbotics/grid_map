@@ -37,7 +37,7 @@ public:
    * @param iterator the iterator to copy data from.
    * @return a reference to *this.
    */
-  CircleIterator & operator=(const CircleIterator & other);
+  CircleIterator & operator=(const CircleIterator & other) = default;
 
   /*!
    * Compare to another iterator.

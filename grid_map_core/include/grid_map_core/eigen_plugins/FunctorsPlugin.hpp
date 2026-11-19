@@ -1,7 +1,7 @@
 #ifndef GRID_MAP_CORE__EIGEN_PLUGINS__FUNCTORSPLUGIN_HPP_
 #define GRID_MAP_CORE__EIGEN_PLUGINS__FUNCTORSPLUGIN_HPP_
 
-#include <math.h>
+#include <cmath>
 
 template<typename Scalar>
 struct scalar_sum_of_finites_op
