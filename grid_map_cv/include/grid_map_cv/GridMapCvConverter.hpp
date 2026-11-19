@@ -116,16 +116,17 @@ public:
 
     for (GridMapIterator iterator(gridMap); !iterator.isPastEnd(); ++iterator) {
       const Index index(*iterator);
+      const Index imageIndex(iterator.getUnwrappedIndex());
 
       // Check for alpha layer.
       if (hasAlpha) {
         const Type_ alpha =
-          image.at<cv::Vec<Type_, NChannels_>>(index(0), index(1))[NChannels_ - 1];
+          image.at<cv::Vec<Type_, NChannels_>>(imageIndex(0), imageIndex(1))[NChannels_ - 1];
         if (alpha < alphaTreshold) {continue;}
       }
 
       // Compute value.
-      const Type_ imageValue = imageMono.at<Type_>(index(0), index(1));
+      const Type_ imageValue = imageMono.at<Type_>(imageIndex(0), imageIndex(1));
       const float mapValue = lowerValue + mapValueDifference *
         (static_cast<float>(imageValue) / maxImageValue);
       data(index(0), index(1)) = mapValue;
